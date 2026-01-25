@@ -305,6 +305,7 @@
             
             outputArea.classList.add('hidden');
             loading.classList.remove('hidden');
+            outputText.innerHTML = ''; // Clear previous text
 
             let prompt = "";
 
@@ -314,14 +315,18 @@
                 const input = document.getElementById('pose-input').value;
                 
                 prompt = `
-                Role: Professional Wedding Photographer at 'With You Photo Studio'.
-                Task: Suggest poses for a photoshoot.
-                Language: Burmese (Myanmar).
-                Context: Scene=${scene}, Mood=${mood}, Client Situation=${input}.
-                Output: 
-                1. Pose Idea (Visual description)
-                2. Directing (What to say to client in Burmese)
-                3. Encouragement (How to make them smile)
+                You are a professional photographer at 'With You Photo Studio' in Myanmar.
+                Please provide a Pose Suggestion based on:
+                - Scene: ${scene}
+                - Mood: ${mood}
+                - Client Info: ${input || "General"}
+
+                RESPONSE FORMAT (in Burmese):
+                1. **Pose**: (Describe the pose briefly)
+                2. **Directing**: (Exact words to say to the couple to guide them)
+                3. **Cheer Up**: (Short encouragement)
+
+                IMPORTANT: Keep it concise (under 150 words) and ensure the response is complete.
                 `;
             } 
             else if (type === 'content') {
@@ -332,19 +337,24 @@
 
                 let formatInstruction = "";
                 if(platform === 'tiktok') {
-                    formatInstruction = "Create a script. Include [Visual Scene] descriptions in brackets and (Audio/Dialogue) for the speaker. Add 5 trending hashtags.";
+                    formatInstruction = "Write a short 15-second script. Column format: [Scene] | (Audio).";
                 } else {
-                    formatInstruction = "Create a Facebook post. Use emojis. Structure it with a Catchy Hook, Main Story/Info, and a Call to Action.";
+                    formatInstruction = "Write a Facebook Caption. Use short paragraphs and emojis.";
                 }
 
                 prompt = `
-                Role: Social Media Manager for 'With You Photo Studio' (Myanmar).
-                Task: Create content for ${platform}.
-                Format: ${format}.
-                Tone: ${tone}.
-                Topic: ${topic || "General Promotion"}.
-                Language: Burmese (Myanmar).
-                Instructions: ${formatInstruction}
+                Act as a Social Media Manager for 'With You Photo Studio'.
+                Write a ${platform} post about: ${topic || "Studio Promotion"}.
+                
+                Style: ${tone}
+                Format: ${format}
+                Language: Burmese (Myanmar)
+
+                Instructions:
+                - ${formatInstruction}
+                - Keep it engaging but concise.
+                - Include 3-5 hashtags.
+                - Ensure the text is fully finished.
                 `;
             } 
             else if (type === 'dm') {
@@ -352,12 +362,16 @@
                 const message = document.getElementById('dm-input').value;
 
                 prompt = `
-                Role: Customer Service for 'With You Photo Studio'.
-                Task: Write a reply message.
-                Tone: ${tone}.
-                Client Message: ${message}.
-                Language: Burmese (Myanmar).
-                Requirement: Polite, clear, professional Burmese.
+                Act as 'With You Photo Studio' customer support.
+                Reply to this client message: "${message}"
+                
+                Tone: ${tone}
+                Language: Burmese (Myanmar)
+
+                Instructions:
+                - Be polite, professional, and warm.
+                - Keep the reply short (under 100 words).
+                - Ensure the sentence ends completely.
                 `;
             }
 
@@ -375,7 +389,13 @@
                 
                 // Parse Markdown
                 const aiText = data.result || data.text || "No response text found.";
-                outputText.innerHTML = marked.parse(aiText);
+                
+                // Safety check for empty response
+                if (!aiText || aiText.length < 5) {
+                    outputText.innerHTML = '<p class="text-red-400">Response was empty. Please try again.</p>';
+                } else {
+                    outputText.innerHTML = marked.parse(aiText);
+                }
                 
                 outputArea.classList.remove('hidden');
 
