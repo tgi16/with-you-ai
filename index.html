@@ -376,21 +376,22 @@
 
                 // Prompt: Explicit structure for FB
                 prompt = `
-                Role: Social Media Manager for 'With You Photo Studio' (Myanmar).
-                Task: Write a ${fbType} for Facebook.
+                Act as a Social Media Manager for 'With You Photo Studio' (Myanmar).
+                Write a complete ${fbType} for Facebook in Burmese.
                 
-                Context:
+                Details:
                 - Tone: ${fbTone}
                 - Topic: ${fbInput || "Studio Promotion"}
-                - Language: Burmese
-
-                OUTPUT STRUCTURE:
-                [HEADLINE]: Catchy hook.
-                [BODY]: 3-4 short engaging sentences.
-                [CTA]: Call to action.
-                [HASHTAGS]: #WithYouStudio #Taunggyi #WeddingMyanmar
                 
-                INSTRUCTION: Write a COMPLETE post. Do not leave sentences unfinished.
+                Please generate the content in this format:
+                
+                **Headline:** (Write a catchy hook here)
+                
+                **Content:** (Write 3-4 engaging sentences)
+                
+                **Call to Action:** (Encourage booking)
+                
+                **Hashtags:** #WithYouStudio #Taunggyi #WeddingMyanmar (and add 3 more relevant ones)
                 `;
             }
             else if (type === 'tiktok') {
