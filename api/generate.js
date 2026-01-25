@@ -34,7 +34,7 @@ export default async function handler(req, res) {
     // ✅ CORRECT ENDPOINT + MODEL
     const url =
       "https://generativelanguage.googleapis.com/v1/models/" +
-      "gemini-1.5-pro:generateContent?key=" + apiKey;
+      "gemini-2.5-flash:generateContent?key=" + apiKey;
 
     const geminiRes = await fetch(url, {
       method: "POST",
