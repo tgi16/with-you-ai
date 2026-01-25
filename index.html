@@ -4,129 +4,101 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>With You Photo Studio – AI Pose Helper</title>
+  <title>With You Photo Studio AI</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: Padauk, sans-serif; }
+    body { font-family: 'Padauk', sans-serif; }
   </style>
 </head>
-<body class="bg-slate-950 text-white min-h-screen flex flex-col">
+<body class="bg-slate-950 text-slate-100 min-h-screen">
 
-  <!-- HEADER -->
+  <!-- Header -->
 
-  <header class="px-4 py-4 bg-slate-900 border-b border-white/10">
-    <h1 class="text-xl font-bold">With You Photo Studio</h1>
-    <p class="text-xs text-slate-400">Pre-Wedding Pose & Direction AI</p>
+  <header class="p-4 border-b border-white/10">
+    <h1 class="text-xl font-bold">With You Photo Studio, Taunggyi</h1>
+    <p class="text-sm text-slate-400">AI Assistant for Photographer</p>
   </header>
 
-  <!-- MAIN CONTENT -->
+  <!-- Tabs -->
 
-  <main class="flex-1 p-4 space-y-6">
+  <div class="flex gap-2 p-4">
+    <button onclick="showTab('pose')" class="tab-btn bg-pink-600 px-4 py-2 rounded">🎨 Pose Helper</button>
+    <button onclick="showTab('studio')" class="tab-btn bg-slate-800 px-4 py-2 rounded">📸 Studio</button>
+    <button onclick="showTab('dm')" class="tab-btn bg-slate-800 px-4 py-2 rounded">💬 DM Scripts</button>
+  </div>
 
-```
-<!-- TAB BUTTONS -->
-<div class="flex gap-2">
-  <button onclick="switchTab('pose')" class="flex-1 bg-pink-600 py-2 rounded">🎨 Pose Helper</button>
-  <button onclick="switchTab('studio')" class="flex-1 bg-slate-800 py-2 rounded">📸 Studio</button>
-  <button onclick="switchTab('dm')" class="flex-1 bg-slate-800 py-2 rounded">💬 DM</button>
-</div>
+  <!-- Pose Helper -->
 
-<!-- POSE TAB -->
-<section id="pose" class="space-y-4">
-  <h2 class="text-lg font-bold">Pre-Wedding Pose Helper</h2>
-  <p class="text-sm text-slate-400">Pose မတတ် / မလှမှာ စိတ်ပူတဲ့ client အတွက် AI direction</p>
+  <section id="pose" class="p-4 space-y-4">
+    <h2 class="text-lg font-bold">Pre-Wedding Pose + Direction</h2>
+    <textarea id="poseInput" rows="3" class="w-full bg-slate-900 p-3 rounded" placeholder="ဥပမာ – Couple shy, outdoor, romantic"></textarea>
+    <button onclick="generatePose()" class="w-full bg-pink-600 py-3 rounded font-bold">Generate Pose</button>
+    <pre id="poseOutput" class="bg-slate-900 p-4 rounded whitespace-pre-wrap"></pre>
+  </section>
 
-  <select id="scene" class="w-full p-3 rounded bg-slate-800">
-    <option value="Outdoor">🌿 Outdoor</option>
-    <option value="Studio">💡 Studio</option>
-    <option value="Cafe">☕ Cafe</option>
-  </select>
+  <!-- Studio -->
 
-  <select id="mood" class="w-full p-3 rounded bg-slate-800">
-    <option value="Romantic">💞 Romantic</option>
-    <option value="Natural">🌸 Natural</option>
-    <option value="Cinematic">🎬 Cinematic</option>
-  </select>
-<textarea
-  id="poseInput"
-  placeholder="Client အခြေအနေ / Couple vibe (ဥပမာ - ရှက်တတ်တယ်၊ pose မတတ်ဘူး…)"
-  class="w-full p-3 rounded-lg bg-slate-800 text-white mt-4"
-></textarea>
+  <section id="studio" class="p-4 space-y-4 hidden">
+    <h2 class="text-lg font-bold">Studio Caption Generator</h2>
+    <textarea id="studioInput" rows="3" class="w-full bg-slate-900 p-3 rounded" placeholder="Pre-Wedding promotion idea"></textarea>
+    <button onclick="generateStudio()" class="w-full bg-indigo-600 py-3 rounded font-bold">Generate Caption</button>
+    <pre id="studioOutput" class="bg-slate-900 p-4 rounded whitespace-pre-wrap"></pre>
+  </section>
 
-  <button onclick="generatePose()" class="w-full bg-pink-600 py-3 rounded font-bold">Generate Pose</button>
+  <!-- DM -->
 
-  <div id="poseOutput" class="bg-slate-800 p-4 rounded text-sm whitespace-pre-wrap"></div>
-</section>
-<div
-  id="poseResult"
-  class="mt-6 p-4 rounded-lg bg-slate-900 text-white whitespace-pre-wrap hidden"
-></div>
+  <section id="dm" class="p-4 space-y-4 hidden">
+    <h2 class="text-lg font-bold">Client DM Reply Helper</h2>
+    <select id="dmType" class="w-full bg-slate-900 p-3 rounded">
+      <option value="cheap">💰 Cheap Client</option>
+      <option value="silent">😶 Silent Client</option>
+      <option value="compare">⚖️ Compare Client</option>
+      <option value="hurry">⏰ Hurry Client</option>
+      <option value="nervous">😰 Nervous Client</option>
+    </select>
+    <button onclick="generateDM()" class="w-full bg-emerald-600 py-3 rounded font-bold">Generate DM Script</button>
+    <pre id="dmOutput" class="bg-slate-900 p-4 rounded whitespace-pre-wrap"></pre>
+  </section>
 
+<script>
+const API = '/api/generate';
 
-<!-- STUDIO TAB -->
-<section id="studio" class="hidden space-y-3">
-  <h2 class="text-lg font-bold">Studio Assistant</h2>
-  <p class="text-sm text-slate-400">Wedding / Pre-Wedding content ideas (next step)</p>
-</section>
-
-<!-- DM TAB -->
-<section id="dm" class="hidden space-y-3">
-  <h2 class="text-lg font-bold">Client DM Helper</h2>
-  <p class="text-sm text-slate-400">Client ကို စကားနဲ့ close လုပ်ဖို့ (next step)</p>
-</section>
-```
-
-  </main>
-
-  <!-- JS -->
-
-  <script>
-    function switchTab(tab) {
-      ['pose','studio','dm'].forEach(id => document.getElementById(id).classList.add('hidden'));
-      document.getElementById(tab).classList.remove('hidden');
-    }
-
-    async function generatePose() {
-  const mood = document.getElementById("mood").value;
-  const scene = document.getElementById("scene").value;
-  const input = document.getElementById("poseInput").value;
-  const output = document.getElementById("poseResult");
-
-  output.classList.remove("hidden");
-  output.innerText = "⏳ Generating pose & direction...";
-
-  const prompt = `
-You are a professional pre-wedding photographer in Myanmar.
-Studio: With You Photo Studio, Taunggyi.
-
-Scene: ${scene}
-Mood: ${mood}
-Client situation: ${input}
-
-Give:
-1. Pose idea
-2. What photographer should say to guide
-3. How to calm & encourage the couple
-
-Write in Burmese.
-`;
-
-  try {
-    const res = await fetch("/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt })
-    });
-
-    const data = await res.json();
-    output.innerText = data.result || "No result.";
-  } catch (e) {
-    output.innerText = "Error generating pose.";
-  }
+function showTab(id){
+  ['pose','studio','dm'].forEach(t=>document.getElementById(t).classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
 }
 
-  </script>
+async function callAI(prompt){
+  const res = await fetch(API,{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({prompt})
+  });
+  const data = await res.json();
+  return data.result || 'No result';
+}
+
+async function generatePose(){
+  const input = document.getElementById('poseInput').value;
+  const prompt = `You are a professional pre-wedding photographer. Give pose + direction for shy couples. Explain what photographer says and what couple does. Language Burmese. Situation: ${input}`;
+  document.getElementById('poseOutput').textContent = 'Loading...';
+  document.getElementById('poseOutput').textContent = await callAI(prompt);
+}
+
+async function generateStudio(){
+  const input = document.getElementById('studioInput').value;
+  const prompt = `Write Facebook & TikTok caption for With You Photo Studio, Taunggyi. Focus on trust, patience, beautiful memories. Topic: ${input}`;
+  document.getElementById('studioOutput').textContent = 'Loading...';
+  document.getElementById('studioOutput').textContent = await callAI(prompt);
+}
+
+async function generateDM(){
+  const type = document.getElementById('dmType').value;
+  const prompt = `You are a Myanmar photographer. Write polite but confident DM reply to a ${type} client. No price war. Emphasize trust and experience.`;
+  document.getElementById('dmOutput').textContent = 'Loading...';
+  document.getElementById('dmOutput').textContent = await callAI(prompt);
+}
+</script>
 
 </body>
 </html>
