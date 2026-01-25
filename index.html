@@ -1,104 +1,365 @@
 <!DOCTYPE html>
-
 <html lang="my">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>With You Photo Studio AI</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Padauk', sans-serif; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>With You Photo Studio - AI Assistant</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Marked for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        body { font-family: 'Padauk', sans-serif; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Glass Effect */
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Loading Animation */
+        .typing-dot {
+            animation: typing 1.4s infinite ease-in-out both;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* Markdown Styles */
+        .prose h3 { color: #f472b6; font-weight: bold; margin-top: 1em; margin-bottom: 0.5em; }
+        .prose ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; }
+        .prose p { margin-bottom: 0.8em; line-height: 1.6; }
+        .prose strong { color: #e2e8f0; }
+    </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col overflow-hidden">
 
-  <!-- Header -->
+    <!-- HEADER -->
+    <header class="flex-none px-5 py-4 bg-slate-900/90 backdrop-blur border-b border-slate-800 flex justify-between items-center z-10 shadow-lg">
+        <div>
+            <h1 class="text-xl font-bold bg-gradient-to-r from-pink-500 to-rose-400 text-transparent bg-clip-text">With You</h1>
+            <p class="text-[10px] text-slate-400 tracking-wider">PHOTO STUDIO AI ASSISTANT</p>
+        </div>
+        <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700">
+            <i data-lucide="aperture" class="w-4 h-4 text-pink-500"></i>
+        </div>
+    </header>
 
-  <header class="p-4 border-b border-white/10">
-    <h1 class="text-xl font-bold">With You Photo Studio, Taunggyi</h1>
-    <p class="text-sm text-slate-400">AI Assistant for Photographer</p>
-  </header>
+    <!-- MAIN SCROLLABLE CONTENT -->
+    <main class="flex-1 overflow-y-auto p-4 pb-24 hide-scrollbar relative">
+        
+        <!-- TABS CONTENT -->
+        
+        <!-- 1. POSE HELPER TAB -->
+        <div id="tab-pose" class="tab-content space-y-5 animate-fade-in">
+            <div class="bg-gradient-to-br from-pink-900/20 to-slate-900 border border-pink-500/20 p-4 rounded-2xl">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="p-2 bg-pink-500/20 rounded-lg text-pink-400"><i data-lucide="camera"></i></div>
+                    <h2 class="font-bold text-lg">Pose Helper</h2>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">Client တွေ Pose မပေးတတ်ရင်၊ ရှက်နေရင် ဘာလုပ်ရမလဲ? AI ကိုမေးမယ်။</p>
+            </div>
 
-  <!-- Tabs -->
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs text-slate-400 ml-1 mb-1 block">Scene</label>
+                        <select id="pose-scene" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-3 text-sm focus:border-pink-500 outline-none">
+                            <option value="Outdoor Nature">🌿 Outdoor (Nature)</option>
+                            <option value="Minimal Studio">💡 Studio (Minimal)</option>
+                            <option value="Vintage Cafe">☕ Cafe / Vintage</option>
+                            <option value="Night Street">🌃 Night Street</option>
+                            <option value="Myanmar Traditional">🌸 Traditional</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 ml-1 mb-1 block">Mood</label>
+                        <select id="pose-mood" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-3 text-sm focus:border-pink-500 outline-none">
+                            <option value="Romantic & Sweet">💞 Romantic</option>
+                            <option value="Candid & Fun">😂 Candid / Fun</option>
+                            <option value="Cool & Chic">😎 Cool / Chic</option>
+                            <option value="Emotional">🥺 Emotional</option>
+                        </select>
+                    </div>
+                </div>
 
-  <div class="flex gap-2 p-4">
-    <button onclick="showTab('pose')" class="tab-btn bg-pink-600 px-4 py-2 rounded">🎨 Pose Helper</button>
-    <button onclick="showTab('studio')" class="tab-btn bg-slate-800 px-4 py-2 rounded">📸 Studio</button>
-    <button onclick="showTab('dm')" class="tab-btn bg-slate-800 px-4 py-2 rounded">💬 DM Scripts</button>
-  </div>
+                <div>
+                    <label class="text-xs text-slate-400 ml-1 mb-1 block">Situation (Optional)</label>
+                    <textarea id="pose-input" rows="2" placeholder="ဥပမာ - သတို့သားက ရှက်တတ်တယ်၊ အရပ်ကွာနေတယ်..." 
+                        class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-pink-500 outline-none placeholder:text-slate-600 resize-none"></textarea>
+                </div>
 
-  <!-- Pose Helper -->
+                <button onclick="generateContent('pose')" class="w-full bg-slate-100 hover:bg-white text-slate-900 font-bold py-3.5 rounded-xl shadow-lg shadow-white/10 active:scale-[0.98] transition flex justify-center items-center gap-2">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-pink-600"></i> Generate Pose Ideas
+                </button>
+            </div>
 
-  <section id="pose" class="p-4 space-y-4">
-    <h2 class="text-lg font-bold">Pre-Wedding Pose + Direction</h2>
-    <textarea id="poseInput" rows="3" class="w-full bg-slate-900 p-3 rounded" placeholder="ဥပမာ – Couple shy, outdoor, romantic"></textarea>
-    <button onclick="generatePose()" class="w-full bg-pink-600 py-3 rounded font-bold">Generate Pose</button>
-    <pre id="poseOutput" class="bg-slate-900 p-4 rounded whitespace-pre-wrap"></pre>
-  </section>
+            <!-- Result Area -->
+            <div id="result-pose" class="hidden glass-panel rounded-2xl p-5 mt-4">
+                <div class="flex justify-between items-start mb-3 border-b border-slate-700/50 pb-2">
+                    <span class="text-xs font-bold text-pink-400 uppercase tracking-wider">AI Suggestion</span>
+                    <button onclick="copyToClipboard('output-pose')" class="text-slate-400 hover:text-white"><i data-lucide="copy" class="w-4 h-4"></i></button>
+                </div>
+                <div id="output-pose" class="prose prose-invert prose-sm max-w-none text-slate-300 text-sm leading-relaxed"></div>
+            </div>
+        </div>
 
-  <!-- Studio -->
+        <!-- 2. CONTENT CREATOR TAB -->
+        <div id="tab-content" class="tab-content hidden space-y-5 animate-fade-in">
+            <div class="bg-gradient-to-br from-indigo-900/20 to-slate-900 border border-indigo-500/20 p-4 rounded-2xl">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="p-2 bg-indigo-500/20 rounded-lg text-indigo-400"><i data-lucide="pen-tool"></i></div>
+                    <h2 class="font-bold text-lg">Content & Caption</h2>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">Page အတွက် Caption ရေးမလား? Reels idea ရှာမလား?</p>
+            </div>
 
-  <section id="studio" class="p-4 space-y-4 hidden">
-    <h2 class="text-lg font-bold">Studio Caption Generator</h2>
-    <textarea id="studioInput" rows="3" class="w-full bg-slate-900 p-3 rounded" placeholder="Pre-Wedding promotion idea"></textarea>
-    <button onclick="generateStudio()" class="w-full bg-indigo-600 py-3 rounded font-bold">Generate Caption</button>
-    <pre id="studioOutput" class="bg-slate-900 p-4 rounded whitespace-pre-wrap"></pre>
-  </section>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs text-slate-400 ml-1 mb-1 block">Content Type</label>
+                    <select id="content-type" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none">
+                        <option value="Facebook Caption">📝 Facebook Photo Caption</option>
+                        <option value="Reels Idea">🎬 TikTok/Reels Script</option>
+                        <option value="Promotion Text">🎉 Promotion Post</option>
+                    </select>
+                </div>
 
-  <!-- DM -->
+                <div>
+                    <label class="text-xs text-slate-400 ml-1 mb-1 block">Topic / Details</label>
+                    <textarea id="content-input" rows="3" placeholder="ဓာတ်ပုံအကြောင်း သို့မဟုတ် Promotion အကြောင်း ရေးပါ (ဥပမာ - မိုးတွင်း Promotion 20% off)" 
+                        class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none placeholder:text-slate-600 resize-none"></textarea>
+                </div>
 
-  <section id="dm" class="p-4 space-y-4 hidden">
-    <h2 class="text-lg font-bold">Client DM Reply Helper</h2>
-    <select id="dmType" class="w-full bg-slate-900 p-3 rounded">
-      <option value="cheap">💰 Cheap Client</option>
-      <option value="silent">😶 Silent Client</option>
-      <option value="compare">⚖️ Compare Client</option>
-      <option value="hurry">⏰ Hurry Client</option>
-      <option value="nervous">😰 Nervous Client</option>
-    </select>
-    <button onclick="generateDM()" class="w-full bg-emerald-600 py-3 rounded font-bold">Generate DM Script</button>
-    <pre id="dmOutput" class="bg-slate-900 p-4 rounded whitespace-pre-wrap"></pre>
-  </section>
+                <button onclick="generateContent('content')" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-indigo-500/20 active:scale-[0.98] transition flex justify-center items-center gap-2">
+                    <i data-lucide="zap" class="w-4 h-4 text-white"></i> Write Content
+                </button>
+            </div>
 
-<script>
-const API = '/api/generate';
+            <!-- Result Area -->
+            <div id="result-content" class="hidden glass-panel rounded-2xl p-5 mt-4">
+                <div class="flex justify-between items-start mb-3 border-b border-slate-700/50 pb-2">
+                    <span class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Draft</span>
+                    <button onclick="copyToClipboard('output-content')" class="text-slate-400 hover:text-white"><i data-lucide="copy" class="w-4 h-4"></i></button>
+                </div>
+                <div id="output-content" class="prose prose-invert prose-sm max-w-none text-slate-300 text-sm leading-relaxed"></div>
+            </div>
+        </div>
 
-function showTab(id){
-  ['pose','studio','dm'].forEach(t=>document.getElementById(t).classList.add('hidden'));
-  document.getElementById(id).classList.remove('hidden');
-}
+        <!-- 3. DM HELPER TAB -->
+        <div id="tab-dm" class="tab-content hidden space-y-5 animate-fade-in">
+            <div class="bg-gradient-to-br from-emerald-900/20 to-slate-900 border border-emerald-500/20 p-4 rounded-2xl">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="p-2 bg-emerald-500/20 rounded-lg text-emerald-400"><i data-lucide="message-circle"></i></div>
+                    <h2 class="font-bold text-lg">DM Reply Helper</h2>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">Client တွေကို Professional ကျကျ ပြန်ဖြေဖို့ ကူညီပေးမယ်။</p>
+            </div>
 
-async function callAI(prompt){
-  const res = await fetch(API,{
-    method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({prompt})
-  });
-  const data = await res.json();
-  return data.result || 'No result';
-}
+            <div class="space-y-4">
+                 <div>
+                    <label class="text-xs text-slate-400 ml-1 mb-1 block">Reply Tone</label>
+                    <select id="dm-tone" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-emerald-500 outline-none">
+                        <option value="Professional & Warm">🤝 Professional & Warm</option>
+                        <option value="Friendly & Casual">😊 Friendly & Casual</option>
+                        <option value="Apologetic">🙏 Apologetic (For complaints)</option>
+                    </select>
+                </div>
 
-async function generatePose(){
-  const input = document.getElementById('poseInput').value;
-  const prompt = `You are a professional pre-wedding photographer. Give pose + direction for shy couples. Explain what photographer says and what couple does. Language Burmese. Situation: ${input}`;
-  document.getElementById('poseOutput').textContent = 'Loading...';
-  document.getElementById('poseOutput').textContent = await callAI(prompt);
-}
+                <div>
+                    <label class="text-xs text-slate-400 ml-1 mb-1 block">Client's Message / Context</label>
+                    <textarea id="dm-input" rows="3" placeholder="Client မေးတဲ့စာ (သို့) အကြောင်းအရာ (ဥပမာ - Package ဈေးနှုန်းမေးတာ)" 
+                        class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-emerald-500 outline-none placeholder:text-slate-600 resize-none"></textarea>
+                </div>
 
-async function generateStudio(){
-  const input = document.getElementById('studioInput').value;
-  const prompt = `Write Facebook & TikTok caption for With You Photo Studio, Taunggyi. Focus on trust, patience, beautiful memories. Topic: ${input}`;
-  document.getElementById('studioOutput').textContent = 'Loading...';
-  document.getElementById('studioOutput').textContent = await callAI(prompt);
-}
+                <button onclick="generateContent('dm')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition flex justify-center items-center gap-2">
+                    <i data-lucide="send" class="w-4 h-4 text-white"></i> Generate Reply
+                </button>
+            </div>
 
-async function generateDM(){
-  const type = document.getElementById('dmType').value;
-  const prompt = `You are a Myanmar photographer. Write polite but confident DM reply to a ${type} client. No price war. Emphasize trust and experience.`;
-  document.getElementById('dmOutput').textContent = 'Loading...';
-  document.getElementById('dmOutput').textContent = await callAI(prompt);
-}
-</script>
+            <!-- Result Area -->
+            <div id="result-dm" class="hidden glass-panel rounded-2xl p-5 mt-4">
+                <div class="flex justify-between items-start mb-3 border-b border-slate-700/50 pb-2">
+                    <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Reply Draft</span>
+                    <button onclick="copyToClipboard('output-dm')" class="text-slate-400 hover:text-white"><i data-lucide="copy" class="w-4 h-4"></i></button>
+                </div>
+                <div id="output-dm" class="prose prose-invert prose-sm max-w-none text-slate-300 text-sm leading-relaxed"></div>
+            </div>
+        </div>
+        
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex flex-col items-center justify-center">
+            <div class="flex space-x-2 mb-4">
+                <div class="w-3 h-3 bg-pink-500 rounded-full typing-dot"></div>
+                <div class="w-3 h-3 bg-pink-400 rounded-full typing-dot"></div>
+                <div class="w-3 h-3 bg-pink-300 rounded-full typing-dot"></div>
+            </div>
+            <p class="text-sm font-medium text-pink-200 animate-pulse">Thinking...</p>
+        </div>
 
+    </main>
+
+    <!-- BOTTOM NAVIGATION -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 pb-safe z-40">
+        <div class="flex justify-around items-center h-16 max-w-md mx-auto">
+            <button onclick="switchTab('pose')" id="nav-pose" class="nav-btn flex flex-col items-center justify-center w-full h-full text-pink-500 transition-colors">
+                <i data-lucide="camera" class="w-6 h-6 mb-1"></i>
+                <span class="text-[10px] font-medium">Pose</span>
+            </button>
+            <button onclick="switchTab('content')" id="nav-content" class="nav-btn flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-indigo-400 transition-colors">
+                <i data-lucide="pen-tool" class="w-6 h-6 mb-1"></i>
+                <span class="text-[10px] font-medium">Content</span>
+            </button>
+            <button onclick="switchTab('dm')" id="nav-dm" class="nav-btn flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-emerald-400 transition-colors">
+                <i data-lucide="message-circle" class="w-6 h-6 mb-1"></i>
+                <span class="text-[10px] font-medium">Reply</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // --- TAB SWITCHING LOGIC ---
+        function switchTab(tabId) {
+            // Hide all contents
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            // Show selected content
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            
+            // Reset Nav Buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-pink-500', 'text-indigo-500', 'text-emerald-500');
+                btn.classList.add('text-slate-500');
+            });
+
+            // Highlight Active Nav
+            const activeBtn = document.getElementById('nav-' + tabId);
+            activeBtn.classList.remove('text-slate-500');
+            
+            if(tabId === 'pose') activeBtn.classList.add('text-pink-500');
+            if(tabId === 'content') activeBtn.classList.add('text-indigo-500');
+            if(tabId === 'dm') activeBtn.classList.add('text-emerald-500');
+        }
+
+        // --- MAIN AI LOGIC (Connects to /api/generate) ---
+        async function generateContent(type) {
+            const loading = document.getElementById('loading-overlay');
+            const outputArea = document.getElementById('result-' + type);
+            const outputText = document.getElementById('output-' + type);
+            
+            // Hide previous results and show loading
+            outputArea.classList.add('hidden');
+            loading.classList.remove('hidden');
+
+            let prompt = "";
+
+            // Construct Prompt based on Type
+            if (type === 'pose') {
+                const scene = document.getElementById('pose-scene').value;
+                const mood = document.getElementById('pose-mood').value;
+                const input = document.getElementById('pose-input').value;
+                
+                prompt = `
+                Role: Professional Pre-wedding Photographer at 'With You Photo Studio' in Myanmar.
+                Task: Suggest pose ideas and directions.
+                Language: Burmese (Myanmar).
+                
+                Context:
+                - Scene: ${scene}
+                - Mood: ${mood}
+                - Client Situation: ${input || "General couple"}
+
+                Output Format:
+                1. **Pose Idea**: (Describe visually)
+                2. **Directing**: (Exact words the photographer should say to the couple in Burmese)
+                3. **Advice**: (How to make them comfortable)
+                `;
+            } 
+            else if (type === 'content') {
+                const contentType = document.getElementById('content-type').value;
+                const topic = document.getElementById('content-input').value;
+
+                prompt = `
+                Role: Social Media Manager for 'With You Photo Studio'.
+                Task: Write engaging content.
+                Language: Burmese (Myanmar).
+                
+                Context:
+                - Format: ${contentType}
+                - Topic/Details: ${topic || "General studio promotion"}
+                
+                Requirements:
+                - Use emojis.
+                - Tone: Welcoming, Professional, yet Artistic.
+                - If it's a caption, include relevant hashtags.
+                `;
+            } 
+            else if (type === 'dm') {
+                const tone = document.getElementById('dm-tone').value;
+                const message = document.getElementById('dm-input').value;
+
+                prompt = `
+                Role: Customer Service for 'With You Photo Studio'.
+                Task: Write a reply message to a client.
+                Language: Burmese (Myanmar).
+                
+                Context:
+                - Tone: ${tone}
+                - Client Message/Inquiry: ${message || "General inquiry"}
+                
+                Requirements:
+                - Be polite and helpful.
+                - Use "With You Photo Studio" name where appropriate.
+                - Clear and concise Burmese.
+                `;
+            }
+
+            try {
+                // Call the Backend API (Vercel)
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: prompt })
+                });
+
+                if (!response.ok) throw new Error('Network response was not ok');
+
+                const data = await response.json();
+                
+                // Parse Markdown and Display
+                // Assuming the backend returns { result: "..." } or { text: "..." }
+                const aiText = data.result || data.text || "No response text found.";
+                outputText.innerHTML = marked.parse(aiText);
+                
+                outputArea.classList.remove('hidden');
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert("စနစ်ချို့ယွင်းနေပါသည်။ ကျေးဇူးပြု၍ ခဏအကြာမှ ပြန်စမ်းကြည့်ပေးပါ။");
+            } finally {
+                loading.classList.add('hidden');
+            }
+        }
+
+        // --- UTILS ---
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied to clipboard!');
+            });
+        }
+    </script>
 </body>
 </html>
