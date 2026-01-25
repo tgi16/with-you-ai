@@ -37,10 +37,11 @@
         }
 
         /* Markdown Styles */
-        .prose h3 { color: #f472b6; font-weight: bold; margin-top: 1em; margin-bottom: 0.5em; }
-        .prose ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; }
-        .prose p { margin-bottom: 0.8em; line-height: 1.6; }
-        .prose strong { color: #e2e8f0; }
+        .prose h3 { color: #f472b6; font-weight: bold; margin-top: 1em; margin-bottom: 0.5em; font-size: 1.1em; }
+        .prose ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; color: #cbd5e1; }
+        .prose p { margin-bottom: 0.8em; line-height: 1.8; color: #e2e8f0; }
+        .prose strong { color: #fff; font-weight: 700; }
+        .prose blockquote { border-left: 4px solid #db2777; padding-left: 1em; font-style: italic; color: #fbcfe8; }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col overflow-hidden">
@@ -58,8 +59,6 @@
 
     <!-- MAIN SCROLLABLE CONTENT -->
     <main class="flex-1 overflow-y-auto p-4 pb-24 hide-scrollbar relative">
-        
-        <!-- TABS CONTENT -->
         
         <!-- 1. POSE HELPER TAB -->
         <div id="tab-pose" class="tab-content space-y-5 animate-fade-in">
@@ -81,6 +80,7 @@
                             <option value="Vintage Cafe">☕ Cafe / Vintage</option>
                             <option value="Night Street">🌃 Night Street</option>
                             <option value="Myanmar Traditional">🌸 Traditional</option>
+                            <option value="Group Photo">👨‍👩‍👧‍👦 Group / Family</option>
                         </select>
                     </div>
                     <div>
@@ -106,53 +106,74 @@
             </div>
 
             <!-- Result Area -->
-            <div id="result-pose" class="hidden glass-panel rounded-2xl p-5 mt-4">
+            <div id="result-pose" class="hidden glass-panel rounded-2xl p-5 mt-4 border border-pink-500/30">
                 <div class="flex justify-between items-start mb-3 border-b border-slate-700/50 pb-2">
                     <span class="text-xs font-bold text-pink-400 uppercase tracking-wider">AI Suggestion</span>
                     <button onclick="copyToClipboard('output-pose')" class="text-slate-400 hover:text-white"><i data-lucide="copy" class="w-4 h-4"></i></button>
                 </div>
-                <div id="output-pose" class="prose prose-invert prose-sm max-w-none text-slate-300 text-sm leading-relaxed"></div>
+                <div id="output-pose" class="prose prose-invert prose-sm max-w-none text-sm leading-relaxed"></div>
             </div>
         </div>
 
-        <!-- 2. CONTENT CREATOR TAB -->
+        <!-- 2. CONTENT CREATOR TAB (ENHANCED FOR FB & TIKTOK) -->
         <div id="tab-content" class="tab-content hidden space-y-5 animate-fade-in">
             <div class="bg-gradient-to-br from-indigo-900/20 to-slate-900 border border-indigo-500/20 p-4 rounded-2xl">
                 <div class="flex items-center gap-3 mb-2">
-                    <div class="p-2 bg-indigo-500/20 rounded-lg text-indigo-400"><i data-lucide="pen-tool"></i></div>
-                    <h2 class="font-bold text-lg">Content & Caption</h2>
+                    <div class="p-2 bg-indigo-500/20 rounded-lg text-indigo-400"><i data-lucide="video"></i></div>
+                    <h2 class="font-bold text-lg">Social Media Content</h2>
                 </div>
-                <p class="text-xs text-slate-400 leading-relaxed">Page အတွက် Caption ရေးမလား? Reels idea ရှာမလား?</p>
+                <p class="text-xs text-slate-400 leading-relaxed">Facebook Post သို့မဟုတ် TikTok Script ရေးခိုင်းရန်။</p>
             </div>
 
             <div class="space-y-4">
+                <!-- Platform & Format Selector -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs text-slate-400 ml-1 mb-1 block">Platform</label>
+                        <select id="content-platform" onchange="updateContentOptions()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-3 text-sm focus:border-indigo-500 outline-none">
+                            <option value="facebook">Facebook</option>
+                            <option value="tiktok">TikTok / Reels</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 ml-1 mb-1 block">Tone</label>
+                        <select id="content-tone" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-3 text-sm focus:border-indigo-500 outline-none">
+                            <option value="Emotional & Storytelling">🥺 Emotional / Story</option>
+                            <option value="Fun & Energetic">🔥 Fun & Energetic</option>
+                            <option value="Professional & Elegant">🎩 Professional</option>
+                            <option value="Promotional & Sales">💰 Hard Sell / Promo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Dynamic Format Selector -->
                 <div>
-                    <label class="text-xs text-slate-400 ml-1 mb-1 block">Content Type</label>
-                    <select id="content-type" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none">
-                        <option value="Facebook Caption">📝 Facebook Photo Caption</option>
-                        <option value="Reels Idea">🎬 TikTok/Reels Script</option>
-                        <option value="Promotion Text">🎉 Promotion Post</option>
+                    <label class="text-xs text-slate-400 ml-1 mb-1 block">Post Type</label>
+                    <select id="content-format" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none">
+                        <!-- Options filled by JS -->
+                        <option value="photo_caption">📸 Photo Caption (ပုံအောက်စာ)</option>
+                        <option value="text_post">📝 Text Only Post (စာသီးသန့်)</option>
                     </select>
                 </div>
 
                 <div>
-                    <label class="text-xs text-slate-400 ml-1 mb-1 block">Topic / Details</label>
-                    <textarea id="content-input" rows="3" placeholder="ဓာတ်ပုံအကြောင်း သို့မဟုတ် Promotion အကြောင်း ရေးပါ (ဥပမာ - မိုးတွင်း Promotion 20% off)" 
+                    <label class="text-xs text-slate-400 ml-1 mb-1 block">Topic / Key Points</label>
+                    <textarea id="content-input" rows="3" placeholder="ဘာအကြောင်းရေးမလဲ? (ဥပမာ - Pre-wedding discount 20%, မိုးတွင်း Promotion, Client ဇာတ်လမ်းလေး)" 
                         class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none placeholder:text-slate-600 resize-none"></textarea>
                 </div>
 
                 <button onclick="generateContent('content')" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-indigo-500/20 active:scale-[0.98] transition flex justify-center items-center gap-2">
-                    <i data-lucide="zap" class="w-4 h-4 text-white"></i> Write Content
+                    <i data-lucide="wand-2" class="w-4 h-4 text-white"></i> Create Post
                 </button>
             </div>
 
             <!-- Result Area -->
-            <div id="result-content" class="hidden glass-panel rounded-2xl p-5 mt-4">
+            <div id="result-content" class="hidden glass-panel rounded-2xl p-5 mt-4 border border-indigo-500/30">
                 <div class="flex justify-between items-start mb-3 border-b border-slate-700/50 pb-2">
-                    <span class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Draft</span>
+                    <span class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Draft Content</span>
                     <button onclick="copyToClipboard('output-content')" class="text-slate-400 hover:text-white"><i data-lucide="copy" class="w-4 h-4"></i></button>
                 </div>
-                <div id="output-content" class="prose prose-invert prose-sm max-w-none text-slate-300 text-sm leading-relaxed"></div>
+                <div id="output-content" class="prose prose-invert prose-sm max-w-none text-sm leading-relaxed"></div>
             </div>
         </div>
 
@@ -182,18 +203,23 @@
                         class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-emerald-500 outline-none placeholder:text-slate-600 resize-none"></textarea>
                 </div>
 
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="quickDm('Price Inquiry')" class="bg-slate-800 hover:bg-slate-700 text-xs py-2 rounded-lg text-slate-300 transition">💰 Price မေးတာ</button>
+                    <button onclick="quickDm('Date Availability')" class="bg-slate-800 hover:bg-slate-700 text-xs py-2 rounded-lg text-slate-300 transition">📅 ရက်အားမေးတာ</button>
+                </div>
+
                 <button onclick="generateContent('dm')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition flex justify-center items-center gap-2">
                     <i data-lucide="send" class="w-4 h-4 text-white"></i> Generate Reply
                 </button>
             </div>
 
             <!-- Result Area -->
-            <div id="result-dm" class="hidden glass-panel rounded-2xl p-5 mt-4">
+            <div id="result-dm" class="hidden glass-panel rounded-2xl p-5 mt-4 border border-emerald-500/30">
                 <div class="flex justify-between items-start mb-3 border-b border-slate-700/50 pb-2">
                     <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Reply Draft</span>
                     <button onclick="copyToClipboard('output-dm')" class="text-slate-400 hover:text-white"><i data-lucide="copy" class="w-4 h-4"></i></button>
                 </div>
-                <div id="output-dm" class="prose prose-invert prose-sm max-w-none text-slate-300 text-sm leading-relaxed"></div>
+                <div id="output-dm" class="prose prose-invert prose-sm max-w-none text-sm leading-relaxed"></div>
             </div>
         </div>
         
@@ -204,7 +230,7 @@
                 <div class="w-3 h-3 bg-pink-400 rounded-full typing-dot"></div>
                 <div class="w-3 h-3 bg-pink-300 rounded-full typing-dot"></div>
             </div>
-            <p class="text-sm font-medium text-pink-200 animate-pulse">Thinking...</p>
+            <p class="text-sm font-medium text-pink-200 animate-pulse">Creating Magic...</p>
         </div>
 
     </main>
@@ -217,7 +243,7 @@
                 <span class="text-[10px] font-medium">Pose</span>
             </button>
             <button onclick="switchTab('content')" id="nav-content" class="nav-btn flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-indigo-400 transition-colors">
-                <i data-lucide="pen-tool" class="w-6 h-6 mb-1"></i>
+                <i data-lucide="video" class="w-6 h-6 mb-1"></i>
                 <span class="text-[10px] font-medium">Content</span>
             </button>
             <button onclick="switchTab('dm')" id="nav-dm" class="nav-btn flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-emerald-400 transition-colors">
@@ -231,20 +257,38 @@
         // Initialize Icons
         lucide.createIcons();
 
+        // --- CONTENT OPTION UPDATER ---
+        function updateContentOptions() {
+            const platform = document.getElementById('content-platform').value;
+            const formatSelect = document.getElementById('content-format');
+            
+            formatSelect.innerHTML = ''; // Clear existing
+
+            if (platform === 'facebook') {
+                formatSelect.innerHTML += '<option value="photo_caption">📸 Photo Caption (ပုံအောက်စာ)</option>';
+                formatSelect.innerHTML += '<option value="text_post">📝 Text Only Post (စာသီးသန့်)</option>';
+                formatSelect.innerHTML += '<option value="album_story">📖 Photo Album Story</option>';
+            } else if (platform === 'tiktok') {
+                formatSelect.innerHTML += '<option value="speaking_script">🗣️ Speaking Script (စကားပြော)</option>';
+                formatSelect.innerHTML += '<option value="vlog_voiceover">🎙️ Vlog Voiceover (နောက်ခံစကားပြော)</option>';
+                formatSelect.innerHTML += '<option value="trend_sync">🎵 Music Trend Sync</option>';
+            }
+        }
+
+        function quickDm(text) {
+            document.getElementById('dm-input').value = text;
+        }
+
         // --- TAB SWITCHING LOGIC ---
         function switchTab(tabId) {
-            // Hide all contents
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            // Show selected content
             document.getElementById('tab-' + tabId).classList.remove('hidden');
             
-            // Reset Nav Buttons
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('text-pink-500', 'text-indigo-500', 'text-emerald-500');
                 btn.classList.add('text-slate-500');
             });
 
-            // Highlight Active Nav
             const activeBtn = document.getElementById('nav-' + tabId);
             activeBtn.classList.remove('text-slate-500');
             
@@ -259,51 +303,48 @@
             const outputArea = document.getElementById('result-' + type);
             const outputText = document.getElementById('output-' + type);
             
-            // Hide previous results and show loading
             outputArea.classList.add('hidden');
             loading.classList.remove('hidden');
 
             let prompt = "";
 
-            // Construct Prompt based on Type
             if (type === 'pose') {
                 const scene = document.getElementById('pose-scene').value;
                 const mood = document.getElementById('pose-mood').value;
                 const input = document.getElementById('pose-input').value;
                 
                 prompt = `
-                Role: Professional Pre-wedding Photographer at 'With You Photo Studio' in Myanmar.
-                Task: Suggest pose ideas and directions.
+                Role: Professional Wedding Photographer at 'With You Photo Studio'.
+                Task: Suggest poses for a photoshoot.
                 Language: Burmese (Myanmar).
-                
-                Context:
-                - Scene: ${scene}
-                - Mood: ${mood}
-                - Client Situation: ${input || "General couple"}
-
-                Output Format:
-                1. **Pose Idea**: (Describe visually)
-                2. **Directing**: (Exact words the photographer should say to the couple in Burmese)
-                3. **Advice**: (How to make them comfortable)
+                Context: Scene=${scene}, Mood=${mood}, Client Situation=${input}.
+                Output: 
+                1. Pose Idea (Visual description)
+                2. Directing (What to say to client in Burmese)
+                3. Encouragement (How to make them smile)
                 `;
             } 
             else if (type === 'content') {
-                const contentType = document.getElementById('content-type').value;
+                const platform = document.getElementById('content-platform').value;
+                const format = document.getElementById('content-format').value;
+                const tone = document.getElementById('content-tone').value;
                 const topic = document.getElementById('content-input').value;
 
+                let formatInstruction = "";
+                if(platform === 'tiktok') {
+                    formatInstruction = "Create a script. Include [Visual Scene] descriptions in brackets and (Audio/Dialogue) for the speaker. Add 5 trending hashtags.";
+                } else {
+                    formatInstruction = "Create a Facebook post. Use emojis. Structure it with a Catchy Hook, Main Story/Info, and a Call to Action.";
+                }
+
                 prompt = `
-                Role: Social Media Manager for 'With You Photo Studio'.
-                Task: Write engaging content.
+                Role: Social Media Manager for 'With You Photo Studio' (Myanmar).
+                Task: Create content for ${platform}.
+                Format: ${format}.
+                Tone: ${tone}.
+                Topic: ${topic || "General Promotion"}.
                 Language: Burmese (Myanmar).
-                
-                Context:
-                - Format: ${contentType}
-                - Topic/Details: ${topic || "General studio promotion"}
-                
-                Requirements:
-                - Use emojis.
-                - Tone: Welcoming, Professional, yet Artistic.
-                - If it's a caption, include relevant hashtags.
+                Instructions: ${formatInstruction}
                 `;
             } 
             else if (type === 'dm') {
@@ -312,22 +353,16 @@
 
                 prompt = `
                 Role: Customer Service for 'With You Photo Studio'.
-                Task: Write a reply message to a client.
+                Task: Write a reply message.
+                Tone: ${tone}.
+                Client Message: ${message}.
                 Language: Burmese (Myanmar).
-                
-                Context:
-                - Tone: ${tone}
-                - Client Message/Inquiry: ${message || "General inquiry"}
-                
-                Requirements:
-                - Be polite and helpful.
-                - Use "With You Photo Studio" name where appropriate.
-                - Clear and concise Burmese.
+                Requirement: Polite, clear, professional Burmese.
                 `;
             }
 
             try {
-                // Call the Backend API (Vercel)
+                // Backend API Call
                 const response = await fetch('/api/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -338,8 +373,7 @@
 
                 const data = await response.json();
                 
-                // Parse Markdown and Display
-                // Assuming the backend returns { result: "..." } or { text: "..." }
+                // Parse Markdown
                 const aiText = data.result || data.text || "No response text found.";
                 outputText.innerHTML = marked.parse(aiText);
                 
@@ -357,9 +391,12 @@
         function copyToClipboard(elementId) {
             const text = document.getElementById(elementId).innerText;
             navigator.clipboard.writeText(text).then(() => {
-                alert('Copied to clipboard!');
+                // Optional: Show toast
             });
         }
+
+        // Init
+        updateContentOptions();
     </script>
 </body>
 </html>
