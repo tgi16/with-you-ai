@@ -1,5 +1,3 @@
-import fetch from "node-fetch";
-
 export const config = {
   runtime: "nodejs"
 };
@@ -10,8 +8,9 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
   if (req.method === "OPTIONS") return res.status(200).end();
-  if (req.method !== "POST")
+  if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
+  }
 
   try {
     const { prompt } = req.body || {};
@@ -21,9 +20,7 @@ export default async function handler(req, res) {
 
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-      return res.status(500).json({
-        error: "GEMINI_API_KEY is missing in environment variables"
-      });
+      return res.status(500).json({ error: "GEMINI_API_KEY missing" });
     }
 
     const url =
@@ -36,8 +33,8 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         contents: [{ role: "user", parts: [{ text: prompt }] }],
         generationConfig: {
-          temperature: 0.65,
-          maxOutputTokens: 1400
+          temperature: 0.6,
+          maxOutputTokens: 1500
         }
       })
     });
@@ -56,9 +53,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ result: text });
 
   } catch (err) {
-    console.error("Backend error:", err);
-    return res.status(500).json({
-      error: "Internal server error"
-    });
+    console.error("Backend crash:", err);
+    return res.status(500).json({ error: "Server crashed" });
   }
 }
