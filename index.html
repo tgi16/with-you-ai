@@ -5,36 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>With You Photo Studio - AI Assistant</title>
     
-    <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS -->
+    <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tailwind Typography Plugin -->
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
-    
-    <!-- Lucide Icons (Fixed UMD Build) -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    
-    <!-- Marked for Markdown parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <style>
         body { font-family: 'Padauk', sans-serif; }
+        .font-inter { font-family: 'Inter', sans-serif; }
+        
+        /* Hide Scrollbar */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Glass Effect */
-        .glass-panel {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
+        /* Modern Glass Effect */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .glass-nav {
+            background: rgba(9, 9, 11, 0.85);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Input Fields */
+        .input-field {
+            background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .input-field:focus {
+            background: rgba(0, 0, 0, 0.5);
+            border-color: rgba(244, 114, 182, 0.5); /* Pink-400 */
+            box-shadow: 0 0 0 2px rgba(244, 114, 182, 0.1);
         }
 
         /* Loading Animation */
-        .typing-dot {
-            animation: typing 1.4s infinite ease-in-out both;
-        }
+        .typing-dot { animation: typing 1.4s infinite ease-in-out both; }
         .typing-dot:nth-child(1) { animation-delay: -0.32s; }
         .typing-dot:nth-child(2) { animation-delay: -0.16s; }
         @keyframes typing {
@@ -42,299 +58,363 @@
             40% { transform: scale(1); }
         }
 
-        /* Custom Prose Styles for AI Output */
-        .prose p { margin-bottom: 0.8em; line-height: 1.7; color: #e2e8f0; }
-        .prose ul { list-style-type: disc; padding-left: 1.2em; margin-bottom: 1em; color: #cbd5e1; }
-        .prose li { margin-bottom: 0.4em; }
-        .prose strong { color: #fff; font-weight: 700; }
-        .prose h1, .prose h2, .prose h3 { color: #f472b6; font-weight: bold; margin-top: 1em; margin-bottom: 0.5em; }
+        /* Markdown Output Styling */
+        .prose { color: #e4e4e7; max-width: none; }
+        .prose h1, .prose h2, .prose h3 { color: #f472b6; font-weight: 700; margin-top: 1.2em; margin-bottom: 0.6em; }
+        .prose strong { color: #fff; font-weight: 600; }
+        .prose ul { list-style-type: none; padding-left: 0; }
+        .prose li { position: relative; padding-left: 1.5em; margin-bottom: 0.5em; }
+        .prose li::before { content: "•"; color: #f472b6; position: absolute; left: 0; font-weight: bold; }
+        .prose blockquote { border-left-color: #f472b6; background: rgba(244, 114, 182, 0.1); padding: 0.5em 1em; border-radius: 0 8px 8px 0; font-style: normal; }
         
-        /* Ensure text wraps correctly on mobile */
+        /* Mobile Text Wrapping */
         .break-words { overflow-wrap: break-word; word-wrap: break-word; }
+
+        /* Button Gradient */
+        .btn-gradient {
+            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+        }
+        .btn-gradient:hover {
+            background: linear-gradient(135deg, #db2777 0%, #be185d 100%);
+        }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col overflow-hidden">
+<body class="bg-neutral-950 text-zinc-100 min-h-screen flex flex-col overflow-hidden selection:bg-pink-500/30">
 
     <!-- HEADER -->
-    <header class="flex-none px-5 py-4 bg-slate-900/90 backdrop-blur border-b border-slate-800 flex justify-between items-center z-10 shadow-lg">
+    <header class="flex-none px-6 py-5 flex justify-between items-center z-10">
         <div>
-            <h1 class="text-xl font-bold bg-gradient-to-r from-pink-500 to-rose-400 text-transparent bg-clip-text">With You</h1>
-            <p class="text-[10px] text-slate-400 tracking-wider">PHOTO STUDIO AI ASSISTANT</p>
+            <h1 class="text-2xl font-bold font-inter tracking-tight bg-gradient-to-r from-white via-pink-200 to-pink-400 text-transparent bg-clip-text">With You</h1>
+            <p class="text-[10px] text-zinc-500 font-inter tracking-[0.2em] uppercase mt-0.5">Studio AI Assistant</p>
         </div>
-        <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700">
-            <i data-lucide="aperture" class="w-4 h-4 text-pink-500"></i>
+        <div class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shadow-lg shadow-pink-500/5">
+            <i data-lucide="aperture" class="w-5 h-5 text-pink-400"></i>
         </div>
     </header>
 
     <!-- MAIN SCROLLABLE CONTENT -->
-    <!-- Added pb-32 to ensure content isn't hidden behind bottom nav -->
-    <main class="flex-1 overflow-y-auto p-4 pb-32 hide-scrollbar relative">
+    <main class="flex-1 overflow-y-auto p-4 pb-36 hide-scrollbar relative">
         
         <!-- 1. POSE HELPER TAB -->
-        <div id="tab-pose" class="tab-content space-y-5">
-            <div class="bg-gradient-to-br from-pink-900/20 to-slate-900 border border-pink-500/20 p-4 rounded-2xl">
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="p-2 bg-pink-500/20 rounded-lg text-pink-400"><i data-lucide="camera"></i></div>
-                    <h2 class="font-bold text-lg">Pose Helper</h2>
+        <div id="tab-pose" class="tab-content space-y-6 animate-fade-in">
+            <div class="glass-card p-5 rounded-3xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-pink-500/10 rounded-full blur-3xl -mr-10 -mt-10"></div>
+                <div class="flex items-center gap-4 mb-2 relative z-10">
+                    <div class="p-3 bg-gradient-to-br from-pink-500/20 to-transparent rounded-2xl border border-pink-500/20 text-pink-400 shadow-lg shadow-pink-500/10">
+                        <i data-lucide="camera" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-lg text-white">Pose Director</h2>
+                        <p class="text-xs text-zinc-400">Smart posing guide for couples</p>
+                    </div>
                 </div>
-                <p class="text-xs text-slate-400 leading-relaxed">Client တွေ Pose မပေးတတ်ရင်၊ ရှက်နေရင် ဘာလုပ်ရမလဲ? AI ကိုမေးမယ်။</p>
             </div>
 
             <div class="space-y-4">
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="text-xs text-slate-400 ml-1 mb-1 block">Scene</label>
-                        <select id="pose-scene" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-3 text-sm focus:border-pink-500 outline-none">
-                            <option value="Outdoor Nature">🌿 Outdoor (Nature)</option>
-                            <option value="Minimal Studio">💡 Studio (Minimal)</option>
-                            <option value="Vintage Cafe">☕ Cafe / Vintage</option>
-                            <option value="Night Street">🌃 Night Street</option>
-                            <option value="Myanmar Traditional">🌸 Traditional</option>
-                            <option value="Group Photo">👨‍👩‍👧‍👦 Group / Family</option>
-                        </select>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider ml-1">Scene</label>
+                        <div class="relative">
+                            <select id="pose-scene" class="w-full input-field text-sm rounded-2xl px-4 py-3.5 appearance-none text-zinc-200 focus:outline-none">
+                                <option value="Outdoor Nature">🌿 Outdoor Nature</option>
+                                <option value="Minimal Studio">💡 Minimal Studio</option>
+                                <option value="Vintage Cafe">☕ Vintage Cafe</option>
+                                <option value="Night Street">🌃 Night Street</option>
+                                <option value="Traditional">🌸 Myanmar Traditional</option>
+                            </select>
+                            <i data-lucide="chevron-down" class="absolute right-3 top-3.5 w-4 h-4 text-zinc-500 pointer-events-none"></i>
+                        </div>
                     </div>
-                    <div>
-                        <label class="text-xs text-slate-400 ml-1 mb-1 block">Mood</label>
-                        <select id="pose-mood" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-3 text-sm focus:border-pink-500 outline-none">
-                            <option value="Romantic & Sweet">💞 Romantic</option>
-                            <option value="Candid & Fun">😂 Candid / Fun</option>
-                            <option value="Cool & Chic">😎 Cool / Chic</option>
-                            <option value="Emotional">🥺 Emotional</option>
-                        </select>
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider ml-1">Vibe</label>
+                        <div class="relative">
+                            <select id="pose-mood" class="w-full input-field text-sm rounded-2xl px-4 py-3.5 appearance-none text-zinc-200 focus:outline-none">
+                                <option value="Romantic & Intimate">💞 Romantic</option>
+                                <option value="Fun & Candid">😂 Fun & Candid</option>
+                                <option value="Chic & Editorial">😎 Editorial Chic</option>
+                                <option value="Emotional">🥺 Emotional</option>
+                            </select>
+                            <i data-lucide="chevron-down" class="absolute right-3 top-3.5 w-4 h-4 text-zinc-500 pointer-events-none"></i>
+                        </div>
                     </div>
                 </div>
 
-                <div>
-                    <label class="text-xs text-slate-400 ml-1 mb-1 block">Situation (Optional)</label>
+                <div class="space-y-1.5">
+                    <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider ml-1">Specific Details</label>
                     <textarea id="pose-input" rows="2" placeholder="ဥပမာ - သတို့သားက ရှက်တတ်တယ်၊ အရပ်ကွာနေတယ်..." 
-                        class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-pink-500 outline-none placeholder:text-slate-600 resize-none"></textarea>
+                        class="w-full input-field text-sm rounded-2xl px-4 py-3.5 text-zinc-200 focus:outline-none placeholder:text-zinc-600 resize-none"></textarea>
                 </div>
 
-                <button onclick="generateContent('pose')" class="w-full bg-slate-100 hover:bg-white text-slate-900 font-bold py-3.5 rounded-xl shadow-lg shadow-white/10 active:scale-[0.98] transition flex justify-center items-center gap-2">
-                    <i data-lucide="sparkles" class="w-4 h-4 text-pink-600"></i> Generate Pose Ideas
+                <button onclick="generateContent('pose')" class="w-full btn-gradient text-white font-bold py-4 rounded-2xl shadow-lg shadow-pink-500/25 active:scale-[0.98] transition flex justify-center items-center gap-2.5">
+                    <i data-lucide="sparkles" class="w-5 h-5"></i> <span>Generate Magic</span>
                 </button>
             </div>
 
-            <!-- Pose Result Area -->
-            <div id="result-pose" class="hidden glass-panel rounded-2xl p-5 mt-4 border border-pink-500/30">
-                <div class="flex justify-between items-start mb-3 border-b border-slate-700/50 pb-2">
-                    <span class="text-xs font-bold text-pink-400 uppercase tracking-wider">AI Suggestion</span>
-                    <button onclick="copyToClipboard('output-pose')" class="text-slate-400 hover:text-white"><i data-lucide="copy" class="w-4 h-4"></i></button>
+            <div id="result-pose" class="hidden space-y-2">
+                <div class="flex justify-between items-end px-1">
+                    <span class="text-[10px] font-bold text-pink-400 uppercase tracking-widest">Suggestion</span>
+                    <button onclick="copyToClipboard('output-pose')" class="text-zinc-500 hover:text-white transition"><i data-lucide="copy" class="w-4 h-4"></i></button>
                 </div>
-                <!-- Content Container -->
-                <div id="output-pose" class="prose prose-invert prose-sm max-w-none text-sm break-words"></div>
+                <div class="glass-card rounded-3xl p-6 border-pink-500/20">
+                    <div id="output-pose" class="prose prose-sm break-words leading-relaxed"></div>
+                </div>
             </div>
         </div>
 
         <!-- 2. FACEBOOK TAB -->
-        <div id="tab-facebook" class="tab-content hidden space-y-5">
-            <div class="bg-gradient-to-br from-blue-900/20 to-slate-900 border border-blue-500/20 p-4 rounded-2xl">
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="p-2 bg-blue-600/20 rounded-lg text-blue-400"><i data-lucide="facebook"></i></div>
-                    <h2 class="font-bold text-lg">Facebook Content</h2>
+        <div id="tab-facebook" class="tab-content hidden space-y-6">
+            <div class="glass-card p-5 rounded-3xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -mr-10 -mt-10"></div>
+                <div class="flex items-center gap-4 mb-2 relative z-10">
+                    <div class="p-3 bg-gradient-to-br from-blue-500/20 to-transparent rounded-2xl border border-blue-500/20 text-blue-400 shadow-lg shadow-blue-500/10">
+                        <i data-lucide="facebook" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-lg text-white">Facebook Pro</h2>
+                        <p class="text-xs text-zinc-400">High-engagement post creator</p>
+                    </div>
                 </div>
-                <p class="text-xs text-slate-400 leading-relaxed">Page အတွက် Caption, Story နဲ့ Promotion စာများ ရေးရန်။</p>
             </div>
 
             <div class="space-y-4">
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="text-xs text-slate-400 ml-1 mb-1 block">Post Type</label>
-                        <select id="fb-type" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-3 text-sm focus:border-blue-500 outline-none">
-                            <option value="Photo Caption">📸 Photo Caption</option>
-                            <option value="Promotion Post">🎉 Sale/Promo Post</option>
-                            <option value="Storytelling">📖 Storytelling (Long)</option>
-                            <option value="Short & Sweet">⚡ Short Text</option>
-                        </select>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider ml-1">Format</label>
+                        <div class="relative">
+                            <select id="fb-type" class="w-full input-field text-sm rounded-2xl px-4 py-3.5 appearance-none text-zinc-200 focus:outline-none">
+                                <option value="Photo Caption">📸 Caption</option>
+                                <option value="Sales Copy">💰 Sales/Promo</option>
+                                <option value="Storytelling">📖 Storytelling</option>
+                            </select>
+                            <i data-lucide="chevron-down" class="absolute right-3 top-3.5 w-4 h-4 text-zinc-500 pointer-events-none"></i>
+                        </div>
                     </div>
-                    <div>
-                        <label class="text-xs text-slate-400 ml-1 mb-1 block">Tone</label>
-                        <select id="fb-tone" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-3 text-sm focus:border-blue-500 outline-none">
-                            <option value="Friendly & Engaging">😊 Friendly</option>
-                            <option value="Professional">👔 Professional</option>
-                            <option value="Emotional">🥺 Emotional</option>
-                            <option value="Excited & Hype">🔥 Excited</option>
-                        </select>
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider ml-1">Tone</label>
+                        <div class="relative">
+                            <select id="fb-tone" class="w-full input-field text-sm rounded-2xl px-4 py-3.5 appearance-none text-zinc-200 focus:outline-none">
+                                <option value="Warm & Welcoming">😊 Warm</option>
+                                <option value="Professional & Elegant">👔 Elegant</option>
+                                <option value="Deep & Emotional">🥺 Emotional</option>
+                                <option value="Exciting & Urgency">🔥 Hype</option>
+                            </select>
+                            <i data-lucide="chevron-down" class="absolute right-3 top-3.5 w-4 h-4 text-zinc-500 pointer-events-none"></i>
+                        </div>
                     </div>
                 </div>
 
-                <div>
-                    <label class="text-xs text-slate-400 ml-1 mb-1 block">Topic / Key Points</label>
-                    <textarea id="fb-input" rows="3" placeholder="ဘာအကြောင်းရေးမလဲ? (ဥပမာ - မိုးရာသီ Promotion 20% off၊ Couple Photo အသစ်တင်တာ)" 
-                        class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none placeholder:text-slate-600 resize-none"></textarea>
+                <div class="space-y-1.5">
+                    <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider ml-1">Key Points / Topic</label>
+                    <textarea id="fb-input" rows="3" placeholder="Post ရဲ့ အဓိကအကြောင်းအရာ (Promotion 20% off, New Pre-wedding set...)" 
+                        class="w-full input-field text-sm rounded-2xl px-4 py-3.5 text-zinc-200 focus:outline-none placeholder:text-zinc-600 resize-none"></textarea>
                 </div>
 
-                <button onclick="generateContent('facebook')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-500/20 active:scale-[0.98] transition flex justify-center items-center gap-2">
-                    <i data-lucide="pen-line" class="w-4 h-4 text-white"></i> Draft Facebook Post
+                <button onclick="generateContent('facebook')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-600/20 active:scale-[0.98] transition flex justify-center items-center gap-2.5">
+                    <i data-lucide="pen-tool" class="w-5 h-5"></i> <span>Write Post</span>
                 </button>
             </div>
 
-            <!-- Facebook Result Area -->
-            <div id="result-facebook" class="hidden glass-panel rounded-2xl p-5 mt-4 border border-blue-500/30">
-                <div class="flex justify-between items-start mb-3 border-b border-slate-700/50 pb-2">
-                    <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">Post Draft</span>
-                    <button onclick="copyToClipboard('output-facebook')" class="text-slate-400 hover:text-white"><i data-lucide="copy" class="w-4 h-4"></i></button>
+            <div id="result-facebook" class="hidden space-y-2">
+                <div class="flex justify-between items-end px-1">
+                    <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Draft Content</span>
+                    <button onclick="copyToClipboard('output-facebook')" class="text-zinc-500 hover:text-white transition"><i data-lucide="copy" class="w-4 h-4"></i></button>
                 </div>
-                <div id="output-facebook" class="prose prose-invert prose-sm max-w-none text-sm break-words"></div>
+                <div class="glass-card rounded-3xl p-6 border-blue-500/20">
+                    <div id="output-facebook" class="prose prose-sm break-words leading-relaxed"></div>
+                </div>
             </div>
         </div>
 
         <!-- 3. TIKTOK TAB -->
-        <div id="tab-tiktok" class="tab-content hidden space-y-5">
-            <div class="bg-gradient-to-br from-fuchsia-900/20 to-slate-900 border border-fuchsia-500/20 p-4 rounded-2xl">
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="p-2 bg-fuchsia-600/20 rounded-lg text-fuchsia-400"><i data-lucide="music-2"></i></div>
-                    <h2 class="font-bold text-lg">TikTok Script</h2>
+        <div id="tab-tiktok" class="tab-content hidden space-y-6">
+            <div class="glass-card p-5 rounded-3xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-fuchsia-500/10 rounded-full blur-3xl -mr-10 -mt-10"></div>
+                <div class="flex items-center gap-4 mb-2 relative z-10">
+                    <div class="p-3 bg-gradient-to-br from-fuchsia-500/20 to-transparent rounded-2xl border border-fuchsia-500/20 text-fuchsia-400 shadow-lg shadow-fuchsia-500/10">
+                        <i data-lucide="clapperboard" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-lg text-white">TikTok Creator</h2>
+                        <p class="text-xs text-zinc-400">Viral script writer & director</p>
+                    </div>
                 </div>
-                <p class="text-xs text-slate-400 leading-relaxed">Video ရိုက်ဖို့ Idea နဲ့ Script လိုချင်ရင် ဒီမှာရှာပါ။</p>
             </div>
 
             <div class="space-y-4">
-                <div>
-                    <label class="text-xs text-slate-400 ml-1 mb-1 block">Video Style</label>
-                    <select id="tiktok-style" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-3 text-sm focus:border-fuchsia-500 outline-none">
-                        <option value="Vlog / Voiceover">🎙️ Vlog / Voiceover (နောက်ခံစကားပြော)</option>
-                        <option value="Speaking to Camera">🗣️ Speaking (ကင်မရာကြည့်ပြော)</option>
-                        <option value="Cinematic Montage">🎬 Cinematic Montage (သီချင်းသီးသန့်)</option>
-                        <option value="Acting / Skit">🎭 Acting / Comedy Skit</option>
-                    </select>
+                <div class="space-y-1.5">
+                    <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider ml-1">Content Style</label>
+                    <div class="relative">
+                        <select id="tiktok-style" class="w-full input-field text-sm rounded-2xl px-4 py-3.5 appearance-none text-zinc-200 focus:outline-none">
+                            <option value="Aesthetic Vlog">✨ Aesthetic Vlog (Voiceover)</option>
+                            <option value="Educational Tip">🧠 Educational / Tips</option>
+                            <option value="Trending Transition">🎵 Music & Transition</option>
+                            <option value="Funny Skit">🎭 Comedy Skit</option>
+                        </select>
+                        <i data-lucide="chevron-down" class="absolute right-3 top-3.5 w-4 h-4 text-zinc-500 pointer-events-none"></i>
+                    </div>
                 </div>
 
-                <div>
-                    <label class="text-xs text-slate-400 ml-1 mb-1 block">Video Topic</label>
-                    <textarea id="tiktok-input" rows="3" placeholder="ဗီဒီယို အကြောင်းအရာ (ဥပမာ - Pre-wedding မရိုက်ခင် သိသင့်တာများ၊ Studio Tour)" 
-                        class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-fuchsia-500 outline-none placeholder:text-slate-600 resize-none"></textarea>
+                <div class="space-y-1.5">
+                    <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider ml-1">Video Idea</label>
+                    <textarea id="tiktok-input" rows="3" placeholder="ဘာ Video ရိုက်ချင်လဲ? (Studio Tour, Makeup Transformation...)" 
+                        class="w-full input-field text-sm rounded-2xl px-4 py-3.5 text-zinc-200 focus:outline-none placeholder:text-zinc-600 resize-none"></textarea>
                 </div>
 
-                <button onclick="generateContent('tiktok')" class="w-full bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-fuchsia-500/20 active:scale-[0.98] transition flex justify-center items-center gap-2">
-                    <i data-lucide="video" class="w-4 h-4 text-white"></i> Create Script
+                <button onclick="generateContent('tiktok')" class="w-full bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-bold py-4 rounded-2xl shadow-lg shadow-fuchsia-600/20 active:scale-[0.98] transition flex justify-center items-center gap-2.5">
+                    <i data-lucide="video" class="w-5 h-5"></i> <span>Create Script</span>
                 </button>
             </div>
 
-            <!-- TikTok Result Area -->
-            <div id="result-tiktok" class="hidden glass-panel rounded-2xl p-5 mt-4 border border-fuchsia-500/30">
-                <div class="flex justify-between items-start mb-3 border-b border-slate-700/50 pb-2">
-                    <span class="text-xs font-bold text-fuchsia-400 uppercase tracking-wider">Video Script</span>
-                    <button onclick="copyToClipboard('output-tiktok')" class="text-slate-400 hover:text-white"><i data-lucide="copy" class="w-4 h-4"></i></button>
+            <div id="result-tiktok" class="hidden space-y-2">
+                <div class="flex justify-between items-end px-1">
+                    <span class="text-[10px] font-bold text-fuchsia-400 uppercase tracking-widest">Video Script</span>
+                    <button onclick="copyToClipboard('output-tiktok')" class="text-zinc-500 hover:text-white transition"><i data-lucide="copy" class="w-4 h-4"></i></button>
                 </div>
-                <div id="output-tiktok" class="prose prose-invert prose-sm max-w-none text-sm break-words"></div>
+                <div class="glass-card rounded-3xl p-6 border-fuchsia-500/20">
+                    <div id="output-tiktok" class="prose prose-sm break-words leading-relaxed"></div>
+                </div>
             </div>
         </div>
 
         <!-- 4. DM HELPER TAB -->
-        <div id="tab-dm" class="tab-content hidden space-y-5">
-            <div class="bg-gradient-to-br from-emerald-900/20 to-slate-900 border border-emerald-500/20 p-4 rounded-2xl">
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="p-2 bg-emerald-500/20 rounded-lg text-emerald-400"><i data-lucide="message-circle"></i></div>
-                    <h2 class="font-bold text-lg">DM Reply</h2>
+        <div id="tab-dm" class="tab-content hidden space-y-6">
+            <div class="glass-card p-5 rounded-3xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -mr-10 -mt-10"></div>
+                <div class="flex items-center gap-4 mb-2 relative z-10">
+                    <div class="p-3 bg-gradient-to-br from-emerald-500/20 to-transparent rounded-2xl border border-emerald-500/20 text-emerald-400 shadow-lg shadow-emerald-500/10">
+                        <i data-lucide="message-square" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-lg text-white">Smart Reply</h2>
+                        <p class="text-xs text-zinc-400">Close deals with perfect replies</p>
+                    </div>
                 </div>
-                <p class="text-xs text-slate-400 leading-relaxed">Client မေးတာတွေကို လိမ္မာပါးနပ်စွာ ပြန်ဖြေမယ်။</p>
             </div>
 
             <div class="space-y-4">
-                 <div>
-                    <label class="text-xs text-slate-400 ml-1 mb-1 block">Reply Tone</label>
-                    <select id="dm-tone" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-emerald-500 outline-none">
-                        <option value="Professional & Warm">🤝 Professional & Warm</option>
-                        <option value="Friendly & Casual">😊 Friendly & Casual</option>
-                        <option value="Apologetic">🙏 Apologetic (For complaints)</option>
-                    </select>
+                <div class="space-y-1.5">
+                    <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider ml-1">Tone</label>
+                    <div class="relative">
+                        <select id="dm-tone" class="w-full input-field text-sm rounded-2xl px-4 py-3.5 appearance-none text-zinc-200 focus:outline-none">
+                            <option value="Professional & Warm">🤝 Professional & Warm</option>
+                            <option value="Friendly & Casual">😊 Friendly (Sis/Bro)</option>
+                            <option value="Polite Rejection">✋ Polite Decline</option>
+                            <option value="Apologetic">🙏 Apologetic</option>
+                        </select>
+                        <i data-lucide="chevron-down" class="absolute right-3 top-3.5 w-4 h-4 text-zinc-500 pointer-events-none"></i>
+                    </div>
                 </div>
 
-                <div>
-                    <label class="text-xs text-slate-400 ml-1 mb-1 block">Client's Message / Context</label>
-                    <textarea id="dm-input" rows="3" placeholder="Client မေးတဲ့စာ (သို့) အကြောင်းအရာ (ဥပမာ - Package ဈေးနှုန်းမေးတာ)" 
-                        class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-emerald-500 outline-none placeholder:text-slate-600 resize-none"></textarea>
+                <div class="space-y-1.5">
+                    <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider ml-1">Client Message</label>
+                    <textarea id="dm-input" rows="3" placeholder="Customer မေးတဲ့စာ (Package Price?, Date Available?...)" 
+                        class="w-full input-field text-sm rounded-2xl px-4 py-3.5 text-zinc-200 focus:outline-none placeholder:text-zinc-600 resize-none"></textarea>
                 </div>
 
-                <div class="grid grid-cols-2 gap-2">
-                    <button onclick="quickDm('Price Inquiry')" class="bg-slate-800 hover:bg-slate-700 text-xs py-2 rounded-lg text-slate-300 transition">💰 Price မေးတာ</button>
-                    <button onclick="quickDm('Date Availability')" class="bg-slate-800 hover:bg-slate-700 text-xs py-2 rounded-lg text-slate-300 transition">📅 ရက်အားမေးတာ</button>
+                <div class="flex gap-2">
+                    <button onclick="quickDm('ဈေးနှုန်းဘယ်လောက်လဲရှင့်? Package တွေသိချင်ပါတယ်')" class="flex-1 bg-white/5 hover:bg-white/10 border border-white/5 py-3 rounded-xl text-xs text-zinc-400 transition">💰 Ask Price</button>
+                    <button onclick="quickDm('Next month 15 ရက်နေ့ အားလား?')" class="flex-1 bg-white/5 hover:bg-white/10 border border-white/5 py-3 rounded-xl text-xs text-zinc-400 transition">📅 Check Date</button>
                 </div>
 
-                <button onclick="generateContent('dm')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition flex justify-center items-center gap-2">
-                    <i data-lucide="send" class="w-4 h-4 text-white"></i> Generate Reply
+                <button onclick="generateContent('dm')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-2xl shadow-lg shadow-emerald-600/20 active:scale-[0.98] transition flex justify-center items-center gap-2.5">
+                    <i data-lucide="send" class="w-5 h-5"></i> <span>Generate Reply</span>
                 </button>
             </div>
 
-            <!-- DM Result Area -->
-            <div id="result-dm" class="hidden glass-panel rounded-2xl p-5 mt-4 border border-emerald-500/30">
-                <div class="flex justify-between items-start mb-3 border-b border-slate-700/50 pb-2">
-                    <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Reply Draft</span>
-                    <button onclick="copyToClipboard('output-dm')" class="text-slate-400 hover:text-white"><i data-lucide="copy" class="w-4 h-4"></i></button>
+            <div id="result-dm" class="hidden space-y-2">
+                <div class="flex justify-between items-end px-1">
+                    <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Response</span>
+                    <button onclick="copyToClipboard('output-dm')" class="text-zinc-500 hover:text-white transition"><i data-lucide="copy" class="w-4 h-4"></i></button>
                 </div>
-                <div id="output-dm" class="prose prose-invert prose-sm max-w-none text-sm break-words"></div>
+                <div class="glass-card rounded-3xl p-6 border-emerald-500/20">
+                    <div id="output-dm" class="prose prose-sm break-words leading-relaxed"></div>
+                </div>
             </div>
         </div>
         
         <!-- Loading Overlay -->
-        <div id="loading-overlay" class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex flex-col items-center justify-center">
-            <div class="flex space-x-2 mb-4">
-                <div class="w-3 h-3 bg-pink-500 rounded-full typing-dot"></div>
-                <div class="w-3 h-3 bg-pink-400 rounded-full typing-dot"></div>
-                <div class="w-3 h-3 bg-pink-300 rounded-full typing-dot"></div>
+        <div id="loading-overlay" class="absolute inset-0 bg-neutral-950/90 backdrop-blur-sm z-50 hidden flex flex-col items-center justify-center">
+            <div class="flex space-x-2.5 mb-6">
+                <div class="w-3.5 h-3.5 bg-pink-500 rounded-full typing-dot"></div>
+                <div class="w-3.5 h-3.5 bg-pink-400 rounded-full typing-dot"></div>
+                <div class="w-3.5 h-3.5 bg-pink-300 rounded-full typing-dot"></div>
             </div>
-            <p class="text-sm font-medium text-pink-200 animate-pulse">Creating Magic...</p>
+            <p class="text-sm font-medium text-pink-200 animate-pulse font-inter tracking-wide">Crafting brilliance...</p>
         </div>
 
     </main>
 
-    <!-- BOTTOM NAVIGATION -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 pb-safe z-40">
-        <div class="flex justify-around items-center h-16 max-w-md mx-auto px-2">
-            <button onclick="switchTab('pose')" id="nav-pose" class="nav-btn flex flex-col items-center justify-center w-full h-full text-pink-500 transition-colors">
-                <i data-lucide="camera" class="w-6 h-6 mb-1"></i>
-                <span class="text-[10px] font-medium">Pose</span>
+    <!-- BOTTOM NAVIGATION (Glassmorphism) -->
+    <nav class="fixed bottom-0 left-0 right-0 glass-nav pb-safe z-40">
+        <div class="flex justify-around items-center h-20 max-w-md mx-auto px-4">
+            <button onclick="switchTab('pose')" id="nav-pose" class="nav-btn group flex flex-col items-center justify-center w-full h-full text-pink-500 transition-all duration-300">
+                <div class="mb-1 p-1.5 rounded-xl group-hover:bg-white/5 transition-colors">
+                    <i data-lucide="camera" class="w-6 h-6 transition-transform group-active:scale-90"></i>
+                </div>
+                <span class="text-[10px] font-medium opacity-100">Pose</span>
             </button>
-            <button onclick="switchTab('facebook')" id="nav-facebook" class="nav-btn flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-blue-400 transition-colors">
-                <i data-lucide="facebook" class="w-6 h-6 mb-1"></i>
-                <span class="text-[10px] font-medium">FB</span>
+            <button onclick="switchTab('facebook')" id="nav-facebook" class="nav-btn group flex flex-col items-center justify-center w-full h-full text-zinc-500 hover:text-blue-400 transition-all duration-300">
+                <div class="mb-1 p-1.5 rounded-xl group-hover:bg-white/5 transition-colors">
+                    <i data-lucide="facebook" class="w-6 h-6 transition-transform group-active:scale-90"></i>
+                </div>
+                <span class="text-[10px] font-medium opacity-60">FB</span>
             </button>
-             <button onclick="switchTab('tiktok')" id="nav-tiktok" class="nav-btn flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-fuchsia-400 transition-colors">
-                <i data-lucide="music-2" class="w-6 h-6 mb-1"></i>
-                <span class="text-[10px] font-medium">TikTok</span>
+             <button onclick="switchTab('tiktok')" id="nav-tiktok" class="nav-btn group flex flex-col items-center justify-center w-full h-full text-zinc-500 hover:text-fuchsia-400 transition-all duration-300">
+                <div class="mb-1 p-1.5 rounded-xl group-hover:bg-white/5 transition-colors">
+                    <i data-lucide="clapperboard" class="w-6 h-6 transition-transform group-active:scale-90"></i>
+                </div>
+                <span class="text-[10px] font-medium opacity-60">TikTok</span>
             </button>
-            <button onclick="switchTab('dm')" id="nav-dm" class="nav-btn flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-emerald-400 transition-colors">
-                <i data-lucide="message-circle" class="w-6 h-6 mb-1"></i>
-                <span class="text-[10px] font-medium">Reply</span>
+            <button onclick="switchTab('dm')" id="nav-dm" class="nav-btn group flex flex-col items-center justify-center w-full h-full text-zinc-500 hover:text-emerald-400 transition-all duration-300">
+                <div class="mb-1 p-1.5 rounded-xl group-hover:bg-white/5 transition-colors">
+                    <i data-lucide="message-square" class="w-6 h-6 transition-transform group-active:scale-90"></i>
+                </div>
+                <span class="text-[10px] font-medium opacity-60">Reply</span>
             </button>
         </div>
     </nav>
 
     <script>
-        // Initialize Icons
-        // Ensure Lucide is loaded before creating icons
+        // Init Icons
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
-        } else {
-            console.error('Lucide library could not be loaded.');
         }
 
         function quickDm(text) {
             document.getElementById('dm-input').value = text;
         }
 
-        // --- TAB SWITCHING LOGIC ---
         function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            // Content Transition
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.add('hidden');
+            });
+            const selectedTab = document.getElementById('tab-' + tabId);
+            selectedTab.classList.remove('hidden');
             
-            // Reset all buttons
+            // Nav State
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.className = 'nav-btn flex flex-col items-center justify-center w-full h-full text-slate-500 transition-colors';
+                btn.classList.remove('text-pink-500', 'text-blue-500', 'text-fuchsia-500', 'text-emerald-500', 'text-zinc-500');
+                btn.querySelector('span').classList.add('opacity-60');
+                btn.querySelector('span').classList.remove('opacity-100');
             });
 
-            // Highlight Active
             const activeBtn = document.getElementById('nav-' + tabId);
-            activeBtn.classList.remove('text-slate-500');
-            
+            // Default inactive color for others
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                 if(btn.id !== 'nav-' + tabId) btn.classList.add('text-zinc-500');
+            });
+
+            // Active Color Logic
             if(tabId === 'pose') activeBtn.classList.add('text-pink-500');
             if(tabId === 'facebook') activeBtn.classList.add('text-blue-500');
             if(tabId === 'tiktok') activeBtn.classList.add('text-fuchsia-500');
             if(tabId === 'dm') activeBtn.classList.add('text-emerald-500');
+            
+            activeBtn.querySelector('span').classList.remove('opacity-60');
+            activeBtn.querySelector('span').classList.add('opacity-100');
         }
 
-        // --- MAIN AI LOGIC (Connects to /api/generate) ---
         async function generateContent(type) {
             const loading = document.getElementById('loading-overlay');
             const outputArea = document.getElementById('result-' + type);
@@ -342,31 +422,33 @@
             
             outputArea.classList.add('hidden');
             loading.classList.remove('hidden');
-            outputText.innerHTML = ''; // Clear previous text
+            outputText.innerHTML = '';
 
             let prompt = "";
 
+            // --- ADVANCED PROMPTS FOR BETTER QUALITY ---
+            
             if (type === 'pose') {
                 const scene = document.getElementById('pose-scene').value;
                 const mood = document.getElementById('pose-mood').value;
                 const input = document.getElementById('pose-input').value;
                 
-                // Prompt: Focused on Bullet points to ensure completion
                 prompt = `
-                You are a professional photographer at 'With You Photo Studio' in Myanmar.
-                Provide specific guidance for a couple photoshoot.
-                
-                Details:
+                Role: Top-tier Wedding Photographer & Creative Director in Myanmar.
+                Task: Provide artistic pose guidance.
+                Context:
                 - Scene: ${scene}
                 - Mood: ${mood}
-                - Couple info: ${input || "General couple"}
+                - Details: ${input || "General couple"}
 
-                OUTPUT FORMAT (Burmese):
-                1. **Pose Idea**: [Describe ONE main pose clearly]
-                2. **Directing**: [Say this to the couple]
-                3. **Vibe Check**: [One tip to relax]
-
-                INSTRUCTION: Keep it punchy and complete. Do not cutoff.
+                INSTRUCTIONS:
+                Write in Burmese (Myanmar).
+                Provide a structured response:
+                1. **The Concept**: Explain the visual idea briefly.
+                2. **Pose Instruction**: Step-by-step body placement (Hands, Eyes, Posture).
+                3. **Directing Line**: "Say this to the couple to get the reaction" (e.g., a joke or romantic line).
+                
+                Keep it practical and easy to follow.
                 `;
             } 
             else if (type === 'facebook') {
@@ -374,43 +456,39 @@
                 const fbTone = document.getElementById('fb-tone').value;
                 const fbInput = document.getElementById('fb-input').value;
 
-                // Prompt: Explicit structure for FB
                 prompt = `
-                Act as a Social Media Manager for 'With You Photo Studio' (Myanmar).
-                Write a complete ${fbType} for Facebook in Burmese.
-                
-                Details:
-                - Tone: ${fbTone}
-                - Topic: ${fbInput || "Studio Promotion"}
-                
-                Please generate the content in this format:
-                
-                **Headline:** (Write a catchy hook here)
-                
-                **Content:** (Write 3-4 engaging sentences)
-                
-                **Call to Action:** (Encourage booking)
-                
-                **Hashtags:** #WithYouStudio #Taunggyi #WeddingMyanmar (and add 3 more relevant ones)
+                Role: Senior Social Media Copywriter for 'With You Photo Studio'.
+                Task: Write a high-converting Facebook Post in Burmese.
+                Type: ${fbType}
+                Tone: ${fbTone}
+                Topic: ${fbInput || "General Promotion"}
+
+                STRUCTURE (Strictly follow this):
+                1. **Headline (Hook)**: Catchy, emotional, or curiosity-driven first line.
+                2. **The Story/Body**: 3-4 engaging sentences that connect with the audience's emotions or needs. Use line breaks for readability.
+                3. **The Offer/Value**: Clear explanation of what is being offered (if promo).
+                4. **Call to Action (CTA)**: Clear instruction on how to book (Messenger/Phone).
+                5. **Hashtags**: #WithYouStudio #Taunggyi #MyanmarWedding + 5 relevant tags.
+
+                IMPORTANT: Write at least 150 words. Make it sound premium yet accessible. Do not cut off.
                 `;
             }
             else if (type === 'tiktok') {
                 const ttStyle = document.getElementById('tiktok-style').value;
                 const ttInput = document.getElementById('tiktok-input').value;
 
-                // Prompt: Table/Split format for Script
                 prompt = `
-                Role: TikTok Content Creator for 'With You Photo Studio'.
-                Task: Write a script for: ${ttInput || "Studio Vibes"}.
-                Style: ${ttStyle}.
-                Language: Burmese.
+                Role: Viral TikTok Content Strategist for a Photo Studio.
+                Task: Write a Video Script in Burmese.
+                Style: ${ttStyle}
+                Topic: ${ttInput || "Studio Vibes"}
 
-                OUTPUT FORMAT:
-                - **Hook (0-3s)**: [Visual] + [Audio]
-                - **Main Content**: [Visual] + [Audio]
-                - **Ending**: [Call to Action]
+                FORMAT (Table-like structure):
+                - **0:00-0:03 (Hook)**: [Visual Action] + [Audio/Text Overlay]
+                - **0:03-0:15 (Body)**: [Key Visuals] + [Voiceover/Music Sync]
+                - **0:15-end (CTA)**: [Final Shot] + [Text: Book Now]
 
-                INSTRUCTION: Keep the script under 30 seconds reading time. Ensure the ending is written completely.
+                NOTE: Make it trendy, fast-paced, and suitable for Gen Z audience in Myanmar.
                 `;
             }
             else if (type === 'dm') {
@@ -418,17 +496,21 @@
                 const message = document.getElementById('dm-input').value;
 
                 prompt = `
-                Role: Customer Service for 'With You Photo Studio'.
-                Task: Reply to: "${message}".
-                Tone: ${tone}.
-                Language: Burmese.
+                Role: Customer Success Manager at 'With You Photo Studio'.
+                Task: Reply to a client message.
+                Tone: ${tone}
+                Client Says: "${message}"
 
-                INSTRUCTION: Write a single, complete, polite paragraph. Do not cut off.
+                INSTRUCTIONS:
+                - Write in Burmese.
+                - If they ask for price, invite them to visit or offer a call (don't invent fake prices unless specified).
+                - Use "With You Photo Studio" name naturally.
+                - Closing: Warm sign-off.
+                - Keep it under 80 words but complete.
                 `;
             }
 
             try {
-                // Backend API Call
                 const response = await fetch('/api/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -438,12 +520,10 @@
                 if (!response.ok) throw new Error('Network response was not ok');
 
                 const data = await response.json();
-                
-                // Parse Markdown
                 const aiText = data.result || data.text || "No response text found.";
                 
                 if (!aiText || aiText.length < 5) {
-                    outputText.innerHTML = '<p class="text-red-400">Response was empty. Please try again.</p>';
+                    outputText.innerHTML = '<p class="text-pink-400">Response was empty. Please try again.</p>';
                 } else {
                     outputText.innerHTML = marked.parse(aiText);
                 }
@@ -458,11 +538,10 @@
             }
         }
 
-        // --- UTILS ---
         function copyToClipboard(elementId) {
             const text = document.getElementById(elementId).innerText;
             navigator.clipboard.writeText(text).then(() => {
-                // Optional: Show toast
+                // Feedback animation could go here
             });
         }
     </script>
