@@ -31,20 +31,26 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "API key missing" });
     }
 
+    // ✅ CORRECT ENDPOINT + MODEL
     const url =
-      "https://generativelanguage.googleapis.com/v1beta/models/" +
-      "gemini-1.5-flash:generateContent?key=" + apiKey;
+      "https://generativelanguage.googleapis.com/v1/models/" +
+      "gemini-1.5-pro:generateContent?key=" + apiKey;
 
     const geminiRes = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({
         contents: [
-          { role: "user", parts: [{ text: prompt }] }
+          {
+            role: "user",
+            parts: [{ text: prompt }]
+          }
         ],
         generationConfig: {
           temperature: 0.7,
-          maxOutputTokens: 600
+          maxOutputTokens: 800
         }
       })
     });
@@ -53,7 +59,7 @@ export default async function handler(req, res) {
     console.log("📦 Gemini response:", data);
 
     if (!geminiRes.ok) {
-      return res.status(200).json({
+      return res.status(500).json({
         error: data?.error?.message || "Gemini API error"
       });
     }
@@ -65,7 +71,7 @@ export default async function handler(req, res) {
 
   } catch (err) {
     console.error("❌ Backend error:", err);
-    return res.status(200).json({
+    return res.status(500).json({
       error: "Server error"
     });
   }
