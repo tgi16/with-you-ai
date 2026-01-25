@@ -48,11 +48,21 @@
     <option value="Natural">🌸 Natural</option>
     <option value="Cinematic">🎬 Cinematic</option>
   </select>
+<textarea
+  id="poseInput"
+  placeholder="Client အခြေအနေ / Couple vibe (ဥပမာ - ရှက်တတ်တယ်၊ pose မတတ်ဘူး…)"
+  class="w-full p-3 rounded-lg bg-slate-800 text-white mt-4"
+></textarea>
 
   <button onclick="generatePose()" class="w-full bg-pink-600 py-3 rounded font-bold">Generate Pose</button>
 
   <div id="poseOutput" class="bg-slate-800 p-4 rounded text-sm whitespace-pre-wrap"></div>
 </section>
+<div
+  id="poseResult"
+  class="mt-6 p-4 rounded-lg bg-slate-900 text-white whitespace-pre-wrap hidden"
+></div>
+
 
 <!-- STUDIO TAB -->
 <section id="studio" class="hidden space-y-3">
@@ -78,25 +88,44 @@
     }
 
     async function generatePose() {
-      const scene = document.getElementById('scene').value;
-      const mood = document.getElementById('mood').value;
-      const out = document.getElementById('poseOutput');
-      out.textContent = 'Generating…';
+  const mood = document.getElementById("mood").value;
+  const scene = document.getElementById("scene").value;
+  const input = document.getElementById("poseInput").value;
+  const output = document.getElementById("poseResult");
 
-      try {
-        const res = await fetch('/api/generate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            prompt: `You are a professional pre-wedding photographer from With You Photo Studio, Taunggyi.\nScene: ${scene}\nMood: ${mood}\nGive pose idea, exact Burmese direction words, and confidence-building tips. Respond only in Burmese.`
-          })
-        });
-        const data = await res.json();
-        out.textContent = data.result || 'No response';
-      } catch (e) {
-        out.textContent = 'Error generating pose';
-      }
-    }
+  output.classList.remove("hidden");
+  output.innerText = "⏳ Generating pose & direction...";
+
+  const prompt = `
+You are a professional pre-wedding photographer in Myanmar.
+Studio: With You Photo Studio, Taunggyi.
+
+Scene: ${scene}
+Mood: ${mood}
+Client situation: ${input}
+
+Give:
+1. Pose idea
+2. What photographer should say to guide
+3. How to calm & encourage the couple
+
+Write in Burmese.
+`;
+
+  try {
+    const res = await fetch("/api/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt })
+    });
+
+    const data = await res.json();
+    output.innerText = data.result || "No result.";
+  } catch (e) {
+    output.innerText = "Error generating pose.";
+  }
+}
+
   </script>
 
 </body>
