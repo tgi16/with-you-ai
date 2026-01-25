@@ -1,82 +1,103 @@
 <!DOCTYPE html>
+
 <html lang="my">
 <head>
   <meta charset="UTF-8" />
-  <title>With You Photo Studio — AI Creative Assistant</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>With You Photo Studio – AI Pose Helper</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: Padauk, sans-serif; background:#0b1220; color:#f8fafc; }
+    body { font-family: Padauk, sans-serif; }
   </style>
 </head>
-<body class="min-h-screen flex justify-center items-start p-6">
+<body class="bg-slate-950 text-white min-h-screen flex flex-col">
 
-<div class="w-full max-w-3xl bg-slate-900/80 rounded-2xl p-6 shadow-xl border border-white/10">
-  <h1 class="text-2xl font-bold mb-1">📸 With You Photo Studio</h1>
-  <p class="text-gray-400 mb-6">AI Content Assistant (Pre-Wedding Focus)</p>
+  <!-- HEADER -->
 
-  <!-- Brand Brain -->
-  <div class="mb-4">
-    <label class="text-sm text-gray-300">Studio Strength</label>
-    <textarea id="brand" class="w-full mt-1 p-3 rounded bg-slate-800 border border-white/10"
-      placeholder="စိတ်ချရပြီး စိတ်ရှည်ပြီး သေချာရိုက်ပေးတယ်"></textarea>
-  </div>
+  <header class="px-4 py-4 bg-slate-900 border-b border-white/10">
+    <h1 class="text-xl font-bold">With You Photo Studio</h1>
+    <p class="text-xs text-slate-400">Pre-Wedding Pose & Direction AI</p>
+  </header>
 
-  <!-- Prompt -->
-  <div class="mb-4">
-    <label class="text-sm text-gray-300">What do you want to generate?</label>
-    <textarea id="prompt" rows="4"
-      class="w-full mt-1 p-3 rounded bg-slate-800 border border-white/10"
-      placeholder="Pre-Wedding ကို မလှမှာ ကြောက်တဲ့ Bride အတွက် TikTok caption ရေးပေးပါ"></textarea>
-  </div>
+  <!-- MAIN CONTENT -->
 
-  <button onclick="generate()"
-    class="w-full py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 font-bold">
-    Generate Content
-  </button>
+  <main class="flex-1 p-4 space-y-6">
 
-  <div id="output" class="mt-6 whitespace-pre-wrap text-gray-200"></div>
+```
+<!-- TAB BUTTONS -->
+<div class="flex gap-2">
+  <button onclick="switchTab('pose')" class="flex-1 bg-pink-600 py-2 rounded">🎨 Pose Helper</button>
+  <button onclick="switchTab('studio')" class="flex-1 bg-slate-800 py-2 rounded">📸 Studio</button>
+  <button onclick="switchTab('dm')" class="flex-1 bg-slate-800 py-2 rounded">💬 DM</button>
 </div>
 
-<script>
-async function generate() {
-  const brand = document.getElementById("brand").value;
-  const prompt = document.getElementById("prompt").value;
-  const output = document.getElementById("output");
-  output.textContent = "⏳ Generating...";
+<!-- POSE TAB -->
+<section id="pose" class="space-y-4">
+  <h2 class="text-lg font-bold">Pre-Wedding Pose Helper</h2>
+  <p class="text-sm text-slate-400">Pose မတတ် / မလှမှာ စိတ်ပူတဲ့ client အတွက် AI direction</p>
 
-  const fullPrompt = `
-You are a Burmese marketing writer for "With You Photo Studio, Taunggyi".
-Studio strength: ${brand}
+  <select id="scene" class="w-full p-3 rounded bg-slate-800">
+    <option value="Outdoor">🌿 Outdoor</option>
+    <option value="Studio">💡 Studio</option>
+    <option value="Cafe">☕ Cafe</option>
+  </select>
 
-Task:
-${prompt}
+  <select id="mood" class="w-full p-3 rounded bg-slate-800">
+    <option value="Romantic">💞 Romantic</option>
+    <option value="Natural">🌸 Natural</option>
+    <option value="Cinematic">🎬 Cinematic</option>
+  </select>
 
-Write in warm, emotional Burmese.
-For Facebook / TikTok ready.
-No pricing. Focus on trust & comfort.
-`;
+  <button onclick="generatePose()" class="w-full bg-pink-600 py-3 rounded font-bold">Generate Pose</button>
 
-  try {
-    const res = await fetch("/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt: fullPrompt })
-    });
-    const data = await res.json();
-    output.textContent = data.result || "No content generated.";
-  } catch {
-    output.textContent = "AI service unavailable.";
-  }
-}
-fetch("/api/generate", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ prompt })
-})
+  <div id="poseOutput" class="bg-slate-800 p-4 rounded text-sm whitespace-pre-wrap"></div>
+</section>
 
-</script>
+<!-- STUDIO TAB -->
+<section id="studio" class="hidden space-y-3">
+  <h2 class="text-lg font-bold">Studio Assistant</h2>
+  <p class="text-sm text-slate-400">Wedding / Pre-Wedding content ideas (next step)</p>
+</section>
+
+<!-- DM TAB -->
+<section id="dm" class="hidden space-y-3">
+  <h2 class="text-lg font-bold">Client DM Helper</h2>
+  <p class="text-sm text-slate-400">Client ကို စကားနဲ့ close လုပ်ဖို့ (next step)</p>
+</section>
+```
+
+  </main>
+
+  <!-- JS -->
+
+  <script>
+    function switchTab(tab) {
+      ['pose','studio','dm'].forEach(id => document.getElementById(id).classList.add('hidden'));
+      document.getElementById(tab).classList.remove('hidden');
+    }
+
+    async function generatePose() {
+      const scene = document.getElementById('scene').value;
+      const mood = document.getElementById('mood').value;
+      const out = document.getElementById('poseOutput');
+      out.textContent = 'Generating…';
+
+      try {
+        const res = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            prompt: `You are a professional pre-wedding photographer from With You Photo Studio, Taunggyi.\nScene: ${scene}\nMood: ${mood}\nGive pose idea, exact Burmese direction words, and confidence-building tips. Respond only in Burmese.`
+          })
+        });
+        const data = await res.json();
+        out.textContent = data.result || 'No response';
+      } catch (e) {
+        out.textContent = 'Error generating pose';
+      }
+    }
+  </script>
 
 </body>
 </html>
