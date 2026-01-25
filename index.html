@@ -39,6 +39,7 @@
         /* Markdown Styles */
         .prose h3 { color: #f472b6; font-weight: bold; margin-top: 1em; margin-bottom: 0.5em; font-size: 1.1em; }
         .prose ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; color: #cbd5e1; }
+        .prose ol { list-style-type: decimal; padding-left: 1.5em; margin-bottom: 1em; color: #cbd5e1; }
         .prose p { margin-bottom: 0.8em; line-height: 1.8; color: #e2e8f0; }
         .prose strong { color: #fff; font-weight: 700; }
         .prose blockquote { border-left: 4px solid #db2777; padding-left: 1em; font-style: italic; color: #fbcfe8; }
@@ -115,76 +116,109 @@
             </div>
         </div>
 
-        <!-- 2. CONTENT CREATOR TAB (ENHANCED FOR FB & TIKTOK) -->
-        <div id="tab-content" class="tab-content hidden space-y-5 animate-fade-in">
-            <div class="bg-gradient-to-br from-indigo-900/20 to-slate-900 border border-indigo-500/20 p-4 rounded-2xl">
+        <!-- 2. FACEBOOK TAB -->
+        <div id="tab-facebook" class="tab-content hidden space-y-5 animate-fade-in">
+            <div class="bg-gradient-to-br from-blue-900/20 to-slate-900 border border-blue-500/20 p-4 rounded-2xl">
                 <div class="flex items-center gap-3 mb-2">
-                    <div class="p-2 bg-indigo-500/20 rounded-lg text-indigo-400"><i data-lucide="video"></i></div>
-                    <h2 class="font-bold text-lg">Social Media Content</h2>
+                    <div class="p-2 bg-blue-600/20 rounded-lg text-blue-400"><i data-lucide="facebook"></i></div>
+                    <h2 class="font-bold text-lg">Facebook Content</h2>
                 </div>
-                <p class="text-xs text-slate-400 leading-relaxed">Facebook Post သို့မဟုတ် TikTok Script ရေးခိုင်းရန်။</p>
+                <p class="text-xs text-slate-400 leading-relaxed">Page အတွက် Caption, Story နဲ့ Promotion စာများ ရေးရန်။</p>
             </div>
 
             <div class="space-y-4">
-                <!-- Platform & Format Selector -->
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="text-xs text-slate-400 ml-1 mb-1 block">Platform</label>
-                        <select id="content-platform" onchange="updateContentOptions()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-3 text-sm focus:border-indigo-500 outline-none">
-                            <option value="facebook">Facebook</option>
-                            <option value="tiktok">TikTok / Reels</option>
+                        <label class="text-xs text-slate-400 ml-1 mb-1 block">Post Type</label>
+                        <select id="fb-type" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-3 text-sm focus:border-blue-500 outline-none">
+                            <option value="Photo Caption">📸 Photo Caption</option>
+                            <option value="Promotion Post">🎉 Sale/Promo Post</option>
+                            <option value="Storytelling">📖 Storytelling (Long)</option>
+                            <option value="Short & Sweet">⚡ Short Text</option>
                         </select>
                     </div>
                     <div>
                         <label class="text-xs text-slate-400 ml-1 mb-1 block">Tone</label>
-                        <select id="content-tone" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-3 text-sm focus:border-indigo-500 outline-none">
-                            <option value="Emotional & Storytelling">🥺 Emotional / Story</option>
-                            <option value="Fun & Energetic">🔥 Fun & Energetic</option>
-                            <option value="Professional & Elegant">🎩 Professional</option>
-                            <option value="Promotional & Sales">💰 Hard Sell / Promo</option>
+                        <select id="fb-tone" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-3 text-sm focus:border-blue-500 outline-none">
+                            <option value="Friendly & Engaging">😊 Friendly</option>
+                            <option value="Professional">👔 Professional</option>
+                            <option value="Emotional">🥺 Emotional</option>
+                            <option value="Excited & Hype">🔥 Excited</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- Dynamic Format Selector -->
-                <div>
-                    <label class="text-xs text-slate-400 ml-1 mb-1 block">Post Type</label>
-                    <select id="content-format" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none">
-                        <!-- Options filled by JS -->
-                        <option value="photo_caption">📸 Photo Caption (ပုံအောက်စာ)</option>
-                        <option value="text_post">📝 Text Only Post (စာသီးသန့်)</option>
-                    </select>
-                </div>
-
                 <div>
                     <label class="text-xs text-slate-400 ml-1 mb-1 block">Topic / Key Points</label>
-                    <textarea id="content-input" rows="3" placeholder="ဘာအကြောင်းရေးမလဲ? (ဥပမာ - Pre-wedding discount 20%, မိုးတွင်း Promotion, Client ဇာတ်လမ်းလေး)" 
-                        class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none placeholder:text-slate-600 resize-none"></textarea>
+                    <textarea id="fb-input" rows="3" placeholder="ဘာအကြောင်းရေးမလဲ? (ဥပမာ - မိုးရာသီ Promotion 20% off၊ Couple Photo အသစ်တင်တာ)" 
+                        class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none placeholder:text-slate-600 resize-none"></textarea>
                 </div>
 
-                <button onclick="generateContent('content')" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-indigo-500/20 active:scale-[0.98] transition flex justify-center items-center gap-2">
-                    <i data-lucide="wand-2" class="w-4 h-4 text-white"></i> Create Post
+                <button onclick="generateContent('facebook')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-500/20 active:scale-[0.98] transition flex justify-center items-center gap-2">
+                    <i data-lucide="pen-line" class="w-4 h-4 text-white"></i> Draft Facebook Post
                 </button>
             </div>
 
             <!-- Result Area -->
-            <div id="result-content" class="hidden glass-panel rounded-2xl p-5 mt-4 border border-indigo-500/30">
+            <div id="result-facebook" class="hidden glass-panel rounded-2xl p-5 mt-4 border border-blue-500/30">
                 <div class="flex justify-between items-start mb-3 border-b border-slate-700/50 pb-2">
-                    <span class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Draft Content</span>
-                    <button onclick="copyToClipboard('output-content')" class="text-slate-400 hover:text-white"><i data-lucide="copy" class="w-4 h-4"></i></button>
+                    <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">Post Draft</span>
+                    <button onclick="copyToClipboard('output-facebook')" class="text-slate-400 hover:text-white"><i data-lucide="copy" class="w-4 h-4"></i></button>
                 </div>
-                <div id="output-content" class="prose prose-invert prose-sm max-w-none text-sm leading-relaxed"></div>
+                <div id="output-facebook" class="prose prose-invert prose-sm max-w-none text-sm leading-relaxed"></div>
             </div>
         </div>
 
-        <!-- 3. DM HELPER TAB -->
+        <!-- 3. TIKTOK TAB -->
+        <div id="tab-tiktok" class="tab-content hidden space-y-5 animate-fade-in">
+            <div class="bg-gradient-to-br from-fuchsia-900/20 to-slate-900 border border-fuchsia-500/20 p-4 rounded-2xl">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="p-2 bg-fuchsia-600/20 rounded-lg text-fuchsia-400"><i data-lucide="music-2"></i></div>
+                    <h2 class="font-bold text-lg">TikTok Script</h2>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">Video ရိုက်ဖို့ Idea နဲ့ Script လိုချင်ရင် ဒီမှာရှာပါ။</p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs text-slate-400 ml-1 mb-1 block">Video Style</label>
+                    <select id="tiktok-style" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-3 text-sm focus:border-fuchsia-500 outline-none">
+                        <option value="Vlog / Voiceover">🎙️ Vlog / Voiceover (နောက်ခံစကားပြော)</option>
+                        <option value="Speaking to Camera">🗣️ Speaking (ကင်မရာကြည့်ပြော)</option>
+                        <option value="Cinematic Montage">🎬 Cinematic Montage (သီချင်းသီးသန့်)</option>
+                        <option value="Acting / Skit">🎭 Acting / Comedy Skit</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="text-xs text-slate-400 ml-1 mb-1 block">Video Topic</label>
+                    <textarea id="tiktok-input" rows="3" placeholder="ဗီဒီယို အကြောင်းအရာ (ဥပမာ - Pre-wedding မရိုက်ခင် သိသင့်တာများ၊ Studio Tour)" 
+                        class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-fuchsia-500 outline-none placeholder:text-slate-600 resize-none"></textarea>
+                </div>
+
+                <button onclick="generateContent('tiktok')" class="w-full bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-fuchsia-500/20 active:scale-[0.98] transition flex justify-center items-center gap-2">
+                    <i data-lucide="video" class="w-4 h-4 text-white"></i> Create Script
+                </button>
+            </div>
+
+            <!-- Result Area -->
+            <div id="result-tiktok" class="hidden glass-panel rounded-2xl p-5 mt-4 border border-fuchsia-500/30">
+                <div class="flex justify-between items-start mb-3 border-b border-slate-700/50 pb-2">
+                    <span class="text-xs font-bold text-fuchsia-400 uppercase tracking-wider">Video Script</span>
+                    <button onclick="copyToClipboard('output-tiktok')" class="text-slate-400 hover:text-white"><i data-lucide="copy" class="w-4 h-4"></i></button>
+                </div>
+                <div id="output-tiktok" class="prose prose-invert prose-sm max-w-none text-sm leading-relaxed"></div>
+            </div>
+        </div>
+
+        <!-- 4. DM HELPER TAB -->
         <div id="tab-dm" class="tab-content hidden space-y-5 animate-fade-in">
             <div class="bg-gradient-to-br from-emerald-900/20 to-slate-900 border border-emerald-500/20 p-4 rounded-2xl">
                 <div class="flex items-center gap-3 mb-2">
                     <div class="p-2 bg-emerald-500/20 rounded-lg text-emerald-400"><i data-lucide="message-circle"></i></div>
-                    <h2 class="font-bold text-lg">DM Reply Helper</h2>
+                    <h2 class="font-bold text-lg">DM Reply</h2>
                 </div>
-                <p class="text-xs text-slate-400 leading-relaxed">Client တွေကို Professional ကျကျ ပြန်ဖြေဖို့ ကူညီပေးမယ်။</p>
+                <p class="text-xs text-slate-400 leading-relaxed">Client မေးတာတွေကို လိမ္မာပါးနပ်စွာ ပြန်ဖြေမယ်။</p>
             </div>
 
             <div class="space-y-4">
@@ -237,14 +271,18 @@
 
     <!-- BOTTOM NAVIGATION -->
     <nav class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 pb-safe z-40">
-        <div class="flex justify-around items-center h-16 max-w-md mx-auto">
+        <div class="flex justify-around items-center h-16 max-w-md mx-auto px-2">
             <button onclick="switchTab('pose')" id="nav-pose" class="nav-btn flex flex-col items-center justify-center w-full h-full text-pink-500 transition-colors">
                 <i data-lucide="camera" class="w-6 h-6 mb-1"></i>
                 <span class="text-[10px] font-medium">Pose</span>
             </button>
-            <button onclick="switchTab('content')" id="nav-content" class="nav-btn flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-indigo-400 transition-colors">
-                <i data-lucide="video" class="w-6 h-6 mb-1"></i>
-                <span class="text-[10px] font-medium">Content</span>
+            <button onclick="switchTab('facebook')" id="nav-facebook" class="nav-btn flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-blue-400 transition-colors">
+                <i data-lucide="facebook" class="w-6 h-6 mb-1"></i>
+                <span class="text-[10px] font-medium">FB</span>
+            </button>
+             <button onclick="switchTab('tiktok')" id="nav-tiktok" class="nav-btn flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-fuchsia-400 transition-colors">
+                <i data-lucide="music-2" class="w-6 h-6 mb-1"></i>
+                <span class="text-[10px] font-medium">TikTok</span>
             </button>
             <button onclick="switchTab('dm')" id="nav-dm" class="nav-btn flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-emerald-400 transition-colors">
                 <i data-lucide="message-circle" class="w-6 h-6 mb-1"></i>
@@ -257,24 +295,6 @@
         // Initialize Icons
         lucide.createIcons();
 
-        // --- CONTENT OPTION UPDATER ---
-        function updateContentOptions() {
-            const platform = document.getElementById('content-platform').value;
-            const formatSelect = document.getElementById('content-format');
-            
-            formatSelect.innerHTML = ''; // Clear existing
-
-            if (platform === 'facebook') {
-                formatSelect.innerHTML += '<option value="photo_caption">📸 Photo Caption (ပုံအောက်စာ)</option>';
-                formatSelect.innerHTML += '<option value="text_post">📝 Text Only Post (စာသီးသန့်)</option>';
-                formatSelect.innerHTML += '<option value="album_story">📖 Photo Album Story</option>';
-            } else if (platform === 'tiktok') {
-                formatSelect.innerHTML += '<option value="speaking_script">🗣️ Speaking Script (စကားပြော)</option>';
-                formatSelect.innerHTML += '<option value="vlog_voiceover">🎙️ Vlog Voiceover (နောက်ခံစကားပြော)</option>';
-                formatSelect.innerHTML += '<option value="trend_sync">🎵 Music Trend Sync</option>';
-            }
-        }
-
         function quickDm(text) {
             document.getElementById('dm-input').value = text;
         }
@@ -284,16 +304,18 @@
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.getElementById('tab-' + tabId).classList.remove('hidden');
             
+            // Reset all buttons
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('text-pink-500', 'text-indigo-500', 'text-emerald-500');
-                btn.classList.add('text-slate-500');
+                btn.className = 'nav-btn flex flex-col items-center justify-center w-full h-full text-slate-500 transition-colors';
             });
 
+            // Highlight Active
             const activeBtn = document.getElementById('nav-' + tabId);
             activeBtn.classList.remove('text-slate-500');
             
             if(tabId === 'pose') activeBtn.classList.add('text-pink-500');
-            if(tabId === 'content') activeBtn.classList.add('text-indigo-500');
+            if(tabId === 'facebook') activeBtn.classList.add('text-blue-500');
+            if(tabId === 'tiktok') activeBtn.classList.add('text-fuchsia-500');
             if(tabId === 'dm') activeBtn.classList.add('text-emerald-500');
         }
 
@@ -329,34 +351,46 @@
                 IMPORTANT: Keep it concise (under 150 words) and ensure the response is complete.
                 `;
             } 
-            else if (type === 'content') {
-                const platform = document.getElementById('content-platform').value;
-                const format = document.getElementById('content-format').value;
-                const tone = document.getElementById('content-tone').value;
-                const topic = document.getElementById('content-input').value;
-
-                let formatInstruction = "";
-                if(platform === 'tiktok') {
-                    formatInstruction = "Write a short 15-second script. Column format: [Scene] | (Audio).";
-                } else {
-                    formatInstruction = "Write a Facebook Caption. Use short paragraphs and emojis.";
-                }
+            else if (type === 'facebook') {
+                const fbType = document.getElementById('fb-type').value;
+                const fbTone = document.getElementById('fb-tone').value;
+                const fbInput = document.getElementById('fb-input').value;
 
                 prompt = `
-                Act as a Social Media Manager for 'With You Photo Studio'.
-                Write a ${platform} post about: ${topic || "Studio Promotion"}.
+                Act as a Social Media Manager for 'With You Photo Studio' (Myanmar).
+                Write a Facebook Post.
                 
-                Style: ${tone}
-                Format: ${format}
-                Language: Burmese (Myanmar)
+                - Type: ${fbType}
+                - Tone: ${fbTone}
+                - Topic: ${fbInput || "General Promotion"}
+                - Language: Burmese (Myanmar)
 
                 Instructions:
-                - ${formatInstruction}
-                - Keep it engaging but concise.
-                - Include 3-5 hashtags.
-                - Ensure the text is fully finished.
+                - Use a catchy hook/headline.
+                - Use relevant emojis.
+                - Include Call to Action at the end.
+                - Include 5 relevant hashtags (e.g. #WithYouStudio #Taunggyi).
+                - Keep it complete and ready to post.
                 `;
-            } 
+            }
+            else if (type === 'tiktok') {
+                const ttStyle = document.getElementById('tiktok-style').value;
+                const ttInput = document.getElementById('tiktok-input').value;
+
+                prompt = `
+                Act as a Content Creator for 'With You Photo Studio'.
+                Create a TikTok/Reels Script.
+                
+                - Style: ${ttStyle}
+                - Topic: ${ttInput || "Studio Vibes"}
+                - Language: Burmese (Myanmar)
+
+                Instructions:
+                - Structure: Hook (0-3s), Body, Call to Action.
+                - Format: Table or clear split between [Visual/Action] and (Audio/Speech).
+                - Make it engaging for Gen Z.
+                `;
+            }
             else if (type === 'dm') {
                 const tone = document.getElementById('dm-tone').value;
                 const message = document.getElementById('dm-input').value;
@@ -414,9 +448,6 @@
                 // Optional: Show toast
             });
         }
-
-        // Init
-        updateContentOptions();
     </script>
 </body>
 </html>
