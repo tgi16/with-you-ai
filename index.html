@@ -545,7 +545,8 @@
         const systemPrompt = `
         ROLE: Senior Sales Manager & Studio Owner of "With You Photo Studio" in Taunggyi.
         GOAL: Close deals warmly. Be helpful, persuasive, and confident.
-        TONE: Natural Burmese (Bya). Sandwich Method (Value -> Price -> Value).
+        CRITICAL INSTRUCTION - GENDER: You are MALE. ALWAYS use "Bya" (ဗျ) or "Khamya" (ခင်ဗျာ) at the end. NEVER use "Shin" (ရှင်).
+        TONE: Natural Burmese (Bya/Khamya). Sandwich Method (Value -> Price -> Value).
         DATA: Packages: ${brandPackages}, Contact: ${contactInfo}.
         IMPORTANT: Always output COMPLETE responses. Do not stop mid-sentence.
         `;
@@ -581,7 +582,7 @@
             if(isContinue) {
                 const prevText = document.getElementById('fbOutput').innerText;
                 const lastChunk = prevText.slice(-300);
-                taskPrompt = `CONTEXT: Writing FB post. Stopped at: "...${lastChunk}". TASK: CONTINUE writing. Finish body, CTA, Hashtags. End with "--- End of Post ---".`;
+                taskPrompt = `CONTEXT: Writing FB post. Stopped at: "...${lastChunk}". TASK: CONTINUE writing from there. Finish body, CTA, Hashtags. End with "--- End of Post ---".`;
             } else {
                 if(len === "Long") {
                     taskPrompt = `TASK: Write ONE detailed storytelling Facebook Post about "${topic}". Tone: ${tone}. Go deep. Don't cut off.`;
@@ -683,8 +684,11 @@
         let prompt = "";
         if(type === 'fb_ideas') prompt = "Generate 5 Creative Facebook Post Ideas for a photography studio.";
         if(type === 'fb_hooks') prompt = "Write 5 catchy hooks (first sentences) in Burmese to stop scrolling.";
+        
+        const maleInstruction = "IMPORTANT: Write as a MALE speaker using 'Bya' (ဗျ). Do NOT use 'Shin'. ";
+
         try {
-             const res = await fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt: "Context: Myanmar Photo Studio. " + prompt }) });
+             const res = await fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt: "Context: Myanmar Photo Studio. " + maleInstruction + prompt }) });
              const data = await res.json();
              document.getElementById(outputId).innerText = data.result;
              saveToRecents('Idea/Hook', data.result, "Creative Brainstorm");
