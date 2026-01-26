@@ -82,30 +82,48 @@
         </div>
     </section>
 
-    <!-- 1. TIMELINE HELPER TAB -->
+    <!-- 1. TIMELINE HELPER TAB (UPGRADED) -->
     <section id="timeline" class="space-y-4 hidden animate-fade-in">
         <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 shadow-sm">
             <h2 class="text-lg font-bold text-orange-400 flex items-center gap-2 mb-4">
               <span>⏳</span> Pre-Wedding Timeline Generator
             </h2>
-            <p class="text-xs text-slate-400 mb-4">မနက်စမည့်အချိန်နှင့် Location အရေအတွက်ပေါ်မူတည်ပြီး အချိန်ဇယားဆွဲပေးပါမည်။</p>
+            <p class="text-xs text-slate-400 mb-4">နေရာ (Location) နှင့် ဝတ်စုံအရေအတွက်အလိုက် အချိန်ဇယားဆွဲပေးပါမည်။</p>
     
-            <div class="grid grid-cols-2 gap-3 mb-4">
-                <div>
-                    <label class="text-xs text-slate-400 uppercase font-bold">Start Time</label>
-                    <select id="tlStart" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 text-sm outline-none">
-                        <option value="7:00 AM">☀️ 7:00 AM</option>
-                        <option value="8:00 AM">☀️ 8:00 AM</option>
-                        <option value="9:00 AM">☀️ 9:00 AM</option>
-                        <option value="1:00 PM">🌤️ 1:00 PM</option>
-                    </select>
+            <div class="space-y-3 mb-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs text-slate-400 uppercase font-bold">Start Time</label>
+                        <select id="tlStart" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 text-sm outline-none">
+                            <option value="6:00 AM">🌅 6:00 AM</option>
+                            <option value="7:00 AM">☀️ 7:00 AM</option>
+                            <option value="8:00 AM">☀️ 8:00 AM</option>
+                            <option value="9:00 AM">☀️ 9:00 AM</option>
+                            <option value="1:00 PM">🌤️ 1:00 PM</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 uppercase font-bold">Location (နေရာ)</label>
+                        <select id="tlPlace" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 text-sm outline-none">
+                            <option value="Taunggyi City">🏙️ Taunggyi (မြို့တွင်း)</option>
+                            <option value="Inle Lake">🛶 Inle Lake (အင်းလေး)</option>
+                            <option value="Kalaw">🌲 Kalaw (ကလော)</option>
+                            <option value="Kakku">🛕 Kakku (မွေတော်ကက္ကူ)</option>
+                            <option value="Ayetharyar">🍇 Ayetharyar (အေးသာယာ)</option>
+                        </select>
+                    </div>
                 </div>
+
                 <div>
-                    <label class="text-xs text-slate-400 uppercase font-bold">Locations</label>
-                    <select id="tlLocs" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 text-sm outline-none">
-                        <option value="1 Location">📍 1 Location</option>
-                        <option value="2 Locations">📍 2 Locations</option>
-                        <option value="3 Locations">📍 3 Locations</option>
+                    <label class="text-xs text-slate-400 uppercase font-bold">Outfits (ဝတ်စုံအရေအတွက်)</label>
+                    <select id="tlDress" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 text-sm outline-none">
+                        <option value="2 Dresses">👗 2 Dresses (စတူဒီယိုဝတ်စုံ)</option>
+                        <option value="3 Dresses">👗 3 Dresses (စတူဒီယိုဝတ်စုံ)</option>
+                        <option value="4 Dresses">👗 4 Dresses (စတူဒီယိုဝတ်စုံ)</option>
+                        <option value="5 Dresses">👗 5 Dresses (စတူဒီယိုဝတ်စုံ)</option>
+                        <option value="2 Dresses + 1 Own">👗 2 Dresses + 1 Own Outfit</option>
+                        <option value="3 Dresses + 1 Own">👗 3 Dresses + 1 Own Outfit</option>
+                        <option value="4 Dresses + 1 Own">👗 4 Dresses + 1 Own Outfit</option>
                     </select>
                 </div>
             </div>
@@ -435,22 +453,29 @@
         return `\n[BRAND BRAIN CONTEXT]\nStudio Style: ${style}\nTarget Audience: ${client}\nMotto: ${motto}\nKeep this identity in mind.\n`;
     }
 
-    // --- TIMELINE GENERATOR ---
+    // --- TIMELINE GENERATOR (UPDATED) ---
     async function generateTimeline() {
         const start = document.getElementById('tlStart').value;
-        const locs = document.getElementById('tlLocs').value;
+        const place = document.getElementById('tlPlace').value;
+        const dress = document.getElementById('tlDress').value;
         const output = document.getElementById('tlOutput');
         
         document.getElementById('tlOutputArea').classList.remove('hidden');
         output.innerHTML = "<span class='animate-pulse text-orange-400'>⏳ Calculating best schedule...</span>";
 
         const prompt = `
-            Role: Experienced Wedding Planner.
-            Task: Create a Pre-wedding Photography Timeline Schedule.
-            Start Time: ${start}
-            Scale: ${locs} (Assume 2 outfit changes per location roughly).
-            Language: Burmese.
-            Output: List format with timestamps (e.g., 9:00 AM - Makeup).
+            Role: Experienced Wedding Planner for With You Photo Studio (Taunggyi).
+            Task: Create a detailed Pre-wedding Photography Timeline.
+            
+            Inputs:
+            - Start Time: ${start}
+            - Location: ${place} (Assume travel time from Taunggyi city if needed).
+            - Outfits: ${dress} (Calculate changing time approx 20-30 mins per outfit).
+            
+            Requirements:
+            - Include Travel time, Makeup touch-ups, Outfit changes, and Lunch break.
+            - Language: Burmese.
+            - Format: Clear List with timestamps.
         `;
         
         await callAI(prompt, output);
