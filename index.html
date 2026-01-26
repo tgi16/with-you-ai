@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Sales Master AI v3.9.1</title>
+  <title>With You Studio - Sales Master AI v4.4</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -28,7 +28,7 @@
         border-color: transparent;
     }
 
-    .tactic-btn.active {
+    .tactic-btn.active, .creative-btn.active {
         background-color: #7e22ce; 
         border-color: #a855f7;
         color: white;
@@ -116,11 +116,15 @@
         <div>
             <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Priority</p>
             <div class="space-y-1">
+                <!-- NEW CREATIVE DIRECTOR TAB -->
+                <button onclick="window.loadView('creative')" id="nav-creative" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i class="ph ph-lightbulb text-lg text-yellow-400"></i> Ideas (What to post?)
+                </button>
                 <button onclick="window.loadView('dm')" id="nav-dm" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
                     <i class="ph ph-chat-circle-text text-lg text-purple-400"></i> DM Sales Master
                 </button>
                 <button onclick="window.loadView('brand')" id="nav-brand" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                    <i class="ph ph-brain text-lg text-yellow-400"></i> Brand Brain
+                    <i class="ph ph-brain text-lg text-blue-400"></i> Brand Brain
                 </button>
             </div>
         </div>
@@ -142,7 +146,7 @@
                     <i class="ph ph-clock text-lg"></i> Timeline
                 </button>
                 <button onclick="window.loadView('pose')" id="nav-pose" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                    <i class="ph ph-camera"></i> Pose Helper
+                    <i class="ph ph-camera text-lg"></i> Pose Helper
                 </button>
             </div>
         </div>
@@ -175,6 +179,9 @@
 
     <!-- MOBILE QUICK NAV -->
     <div class="md:hidden bg-slate-900/90 border-b border-slate-800 overflow-x-auto no-scrollbar py-2 px-3 flex gap-2 shrink-0 backdrop-blur-sm z-20 sticky top-0">
+        <button onclick="window.loadView('creative')" id="mob-creative" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
+            <i class="ph ph-lightbulb text-yellow-400"></i> Ideas
+        </button>
         <button onclick="window.loadView('dm')" id="mob-dm" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
             <i class="ph ph-chat-circle-text text-purple-400"></i> DM Sales
         </button>
@@ -208,6 +215,88 @@
 
   <!-- TEMPLATES -->
   
+  <!-- 0. CREATIVE DIRECTOR TEMPLATE (NEW) -->
+  <template id="tpl-creative">
+    <div class="animate-fade-in space-y-6">
+        <div class="flex items-center justify-between">
+            <h2 class="text-xl md:text-2xl font-bold text-yellow-400 flex items-center gap-2"><i class="ph ph-lightbulb"></i> Creative Director</h2>
+            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">v4.4</div>
+        </div>
+        
+        <div class="glass-panel p-6 rounded-xl border border-yellow-500/20 shadow-lg relative overflow-hidden">
+             <!-- Background Icon -->
+             <i class="ph ph-sparkle absolute -top-4 -right-4 text-9xl text-yellow-500 opacity-5 rotate-12"></i>
+
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
+                <!-- Inputs -->
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Today's Workload (အလုပ်ရှုပ်လား)</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="setCreativeOption('workload', 'Busy', this)" class="creative-btn p-3 rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-center transition">Busy<br>🥵</button>
+                            <button onclick="setCreativeOption('workload', 'Normal', this)" class="creative-btn active p-3 rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-center transition">Normal<br>😐</button>
+                            <button onclick="setCreativeOption('workload', 'Free', this)" class="creative-btn p-3 rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-center transition">Motivated<br>🤩</button>
+                        </div>
+                        <input type="hidden" id="crWorkload" value="Normal">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Focus Area (ဘာအကြောင်းတင်ချင်လဲ)</label>
+                        <select id="crFocus" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white focus:border-yellow-500 outline-none">
+                            <option value="Anything">🎲 Anything (Best Choice)</option>
+                            <option value="Pre-Wedding">💍 Pre-Wedding Focus</option>
+                            <option value="Wedding Day">👰 Wedding Day</option>
+                            <option value="Studio Branding">🏢 Studio Branding</option>
+                            <option value="Family Portrait">👨‍👩‍👧‍👦 Family / Portrait</option>
+                        </select>
+                    </div>
+
+                    <div>
+                         <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Platforms</label>
+                         <div class="flex gap-4">
+                             <label class="flex items-center gap-2 cursor-pointer">
+                                 <input type="checkbox" id="crFB" checked class="w-4 h-4 rounded bg-slate-700 border-slate-600 text-blue-500 focus:ring-0">
+                                 <span class="text-sm text-slate-300">Facebook</span>
+                             </label>
+                             <label class="flex items-center gap-2 cursor-pointer">
+                                 <input type="checkbox" id="crTT" checked class="w-4 h-4 rounded bg-slate-700 border-slate-600 text-teal-500 focus:ring-0">
+                                 <span class="text-sm text-slate-300">TikTok</span>
+                             </label>
+                         </div>
+                    </div>
+
+                    <button onclick="window.generateAI('creative_director')" class="w-full mt-4 bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-500 hover:to-orange-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-yellow-900/30 transition active:scale-95 flex items-center justify-center gap-2">
+                        <i class="ph ph-magic-wand text-lg"></i> Tell Me What To Post
+                    </button>
+                </div>
+
+                <!-- Output Area (Desktop) -->
+                <div id="crResultArea" class="hidden md:block h-full">
+                     <div class="bg-slate-900/50 rounded-xl border border-slate-700 p-4 h-full flex flex-col">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold text-yellow-400 uppercase">3-Day Plan</span>
+                            <button onclick="window.copyText('crOutput')" class="text-xs bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded border border-slate-600 transition">Copy</button>
+                        </div>
+                        <div id="crOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 overflow-y-auto max-h-[400px] custom-scroll"></div>
+                     </div>
+                </div>
+            </div>
+
+            <!-- Output Area (Mobile) -->
+            <div id="crResultAreaMobile" class="md:hidden hidden mt-4">
+                 <div class="bg-slate-900/50 rounded-xl border border-slate-700 p-4">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-yellow-400 uppercase">Your Plan</span>
+                        <button onclick="window.copyText('crOutputMobile')" class="text-xs bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded border border-slate-600 transition">Copy</button>
+                    </div>
+                    <div id="crOutputMobile" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed"></div>
+                 </div>
+            </div>
+        </div>
+    </div>
+  </template>
+
+  <!-- 1. DM SALES MASTER TEMPLATE -->
   <template id="tpl-dm">
     <div class="animate-fade-in space-y-6">
         <div class="flex items-center justify-between">
@@ -216,6 +305,7 @@
         </div>
         
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Left Column: Strategy & Input -->
             <div class="space-y-4">
                 <div class="glass-panel p-4 md:p-5 rounded-xl space-y-4 border border-purple-500/20 shadow-lg shadow-purple-900/10">
                     <div class="grid grid-cols-2 gap-3">
@@ -244,8 +334,10 @@
                     <div>
                         <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Client Message / Context</label>
                         <div class="relative">
-                            <textarea id="dmInput" placeholder="Client မေးတဲ့စာ (သို့) အခြေအနေ..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm h-32 text-white resize-none focus:border-purple-500 pr-10 shadow-inner"></textarea>
-                            <button onclick="window.startVoiceInput('dmInput', this)" class="absolute right-2 bottom-2 bg-slate-700/80 hover:bg-purple-600 p-2 rounded-full transition text-slate-300 hover:text-white" title="Speak"><i class="ph ph-microphone text-lg"></i></button>
+                            <textarea id="dmInput" placeholder="Client မေးတဲ့စာ (သို့) အခြေအနေ..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm h-24 text-white resize-none focus:border-purple-500 pr-10 shadow-inner"></textarea>
+                            <button onclick="window.startVoiceInput('dmInput', this)" class="absolute right-2 bottom-2 bg-slate-700/80 hover:bg-purple-600 p-2 rounded-full transition text-slate-300 hover:text-white" title="Speak">
+                                <i class="ph ph-microphone text-lg"></i>
+                            </button>
                         </div>
                     </div>
 
@@ -266,17 +358,32 @@
                         </div>
                         <input type="hidden" id="dmType" value="Soft Close">
                     </div>
+
+                    <button onclick="window.generateAI('dm_best')" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-purple-900/40 transition active:scale-95 flex items-center justify-center gap-2">
+                        <i class="ph ph-magic-wand text-lg"></i> Generate 3 Replies
+                    </button>
                 </div>
             </div>
 
+            <!-- Right Column: Output -->
             <div id="dmResultArea" class="hidden h-full">
                 <div class="glass-panel p-4 md:p-6 rounded-xl border-purple-500/30 h-full flex flex-col relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10"><i class="ph ph-robot text-6xl text-purple-500"></i></div>
+                    
                     <div class="flex justify-between items-center mb-3 z-10">
-                        <span class="text-xs font-bold text-purple-400 uppercase flex items-center gap-1"><i class="ph ph-check-circle"></i> Generated Reply</span>
-                        <div class="flex gap-2"><button onclick="window.copyText('dmOutput')" class="text-xs bg-purple-900/50 hover:bg-purple-800 px-3 py-1.5 rounded text-purple-200 border border-purple-700">Copy</button></div>
+                        <span class="text-xs font-bold text-purple-400 uppercase flex items-center gap-1"><i class="ph ph-check-circle"></i> Suggested Options</span>
+                        <div class="flex gap-2">
+                            <button onclick="window.copyText('dmOutput')" class="text-xs bg-purple-900/50 hover:bg-purple-800 px-3 py-1.5 rounded text-purple-200 border border-purple-700">Copy All</button>
+                        </div>
                     </div>
+                    
                     <div id="dmOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 overflow-y-auto max-h-[600px] z-10 pr-2 custom-scroll"></div>
-                    <button id="dmContinueBtn" onclick="window.continueAI('dm_best')" class="hidden w-full mt-3 py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-purple-300 text-sm font-bold flex items-center justify-center gap-2 transition active:scale-95"><span>⚠️ Continue Writing (စာဆက်ရေးပါ)</span><i class="ph ph-arrow-right"></i></button>
+                    
+                    <!-- DM CONTINUE BUTTON -->
+                    <button id="dmContinueBtn" onclick="window.continueAI('dm_best')" class="hidden w-full mt-3 py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-purple-300 text-sm font-bold flex items-center justify-center gap-2 transition active:scale-95">
+                        <span>⚠️ Continue Writing (စာဆက်ရေးပါ)</span>
+                        <i class="ph ph-arrow-right"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -377,7 +484,6 @@
         </div>
         <div id="tlResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl">
             <div id="tlOutput" class="whitespace-pre-wrap text-sm text-slate-200 font-mono"></div>
-            <button id="tlContinueBtn" onclick="window.continueAI('timeline')" class="hidden w-full mt-2 py-2 bg-slate-800 text-orange-400 text-xs border border-slate-600 rounded">⚠️ Continue Writing</button>
             <div class="mt-4 flex gap-2">
                 <button onclick="window.downloadFile('Schedule.txt', 'tlOutput')" class="text-xs text-blue-400 border border-blue-900 p-2 rounded">⬇️ Download</button>
                 <button onclick="window.copyText('tlOutput')" class="text-xs text-slate-400 border border-slate-700 p-2 rounded">📋 Copy</button>
@@ -468,6 +574,7 @@
         let templateId = 'tpl-' + viewId;
         if(viewId === 'tiktok') container.innerHTML = getTikTokHTML();
         else if(viewId === 'pose') container.innerHTML = getPoseHTML();
+        else if(viewId === 'creative') { const tpl = document.getElementById('tpl-creative'); if(tpl) container.appendChild(tpl.content.cloneNode(true)); } // ADDED HANDLER
         else if(viewId === 'recent') { const tpl = document.getElementById('tpl-recent'); if(tpl) container.appendChild(tpl.content.cloneNode(true)); renderHistoryList(); }
         else { const tpl = document.getElementById(templateId); if(tpl) { container.appendChild(tpl.content.cloneNode(true)); if(viewId === 'brand') loadBrandData(); } }
         window.currentView = viewId;
@@ -475,6 +582,19 @@
 
     function getTikTokHTML() { return `<div class="animate-fade-in space-y-6"><h2 class="text-xl md:text-2xl font-bold text-teal-400 flex items-center gap-2"><i class="ph ph-tiktok-logo"></i> TikTok Script</h2><div class="glass-panel p-4 md:p-5 rounded-xl space-y-4"><div class="flex gap-2"><input type="text" id="ttInput" placeholder="Video Topic..." class="flex-1 bg-slate-800 border border-slate-700 rounded p-3 text-white"><button onclick="window.startVoiceInput('ttInput', this)" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded px-4 text-teal-400"><i class="ph ph-microphone text-xl"></i></button></div><select id="ttStyle" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white"><option>Trending & Fast</option><option>Vlog / Behind Scenes</option><option>Cinematic Mood</option></select><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><button onclick="window.generateAI('tt_caption')" class="bg-slate-700 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Get 3 Captions</button><button onclick="window.generateAI('tt_script')" class="bg-teal-600 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Write 3 Scripts</button></div></div><div id="ttResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl"><div id="ttOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div><button id="ttContinueBtn" onclick="window.continueAI('tt_script')" class="hidden w-full mt-2 py-2 bg-slate-800 text-teal-400 text-xs border border-slate-600 rounded">⚠️ Continue Writing</button><div class="text-xs text-green-400 mt-2">✅ Auto-saved to Cloud</div></div></div>`; }
     function getPoseHTML() { return `<div class="animate-fade-in space-y-6"><h2 class="text-xl md:text-2xl font-bold text-pink-400 flex items-center gap-2"><i class="ph ph-camera"></i> Pose Helper</h2><div class="glass-panel p-4 md:p-5 rounded-xl space-y-4"><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><div><label class="text-xs font-bold text-slate-400 uppercase">Outfit</label><select id="poseOutfit" class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm"><option>Wedding Gown/Suit</option><option>Traditional</option><option>Casual</option></select></div><div><label class="text-xs font-bold text-slate-400 uppercase">Props</label><input type="text" id="poseProps" placeholder="Flowers..." class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm"></div></div><div class="flex gap-2 mb-2"><button onclick="window.fillPose('Shy')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">😳 Shy</button><button onclick="window.fillPose('Plus')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">❤️ Plus</button></div><div class="relative"><textarea id="poseInput" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white h-24 pr-10" placeholder="Situation..."></textarea><button onclick="window.startVoiceInput('poseInput', this)" class="absolute right-2 bottom-2 bg-slate-700/80 hover:bg-pink-600 p-2 rounded-full transition text-slate-300 hover:text-white"><i class="ph ph-microphone text-lg"></i></button></div><button onclick="window.generateAI('pose')" class="w-full bg-pink-600 py-3 rounded text-white font-bold active:scale-95 transition">Generate Poses</button></div><div id="poseResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl"><div id="poseOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div><div class="text-xs text-green-400 mt-2">✅ Auto-saved to Cloud</div></div></div>`; }
+
+    // --- NEW: CREATIVE DIRECTOR HELPERS ---
+    window.setCreativeOption = function(type, value, btn) {
+        if(type === 'workload') {
+            document.getElementById('crWorkload').value = value;
+            document.querySelectorAll('.creative-btn').forEach(b => b.classList.remove('active')); // Note: Selector might need adjustment if clone
+            // Better: Find siblings
+            if(btn && btn.parentElement) {
+                Array.from(btn.parentElement.children).forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+            }
+        }
+    };
 
     // --- UPDATED SAVE FUNCTION WITH STATUS ---
     window.saveBrandData = async function() {
@@ -517,8 +637,8 @@
     }
 
     window.generateAI = async function(type, isContinue = false) {
-        const outputIds = { 'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'timeline': 'tlOutput', 'tt_caption': 'ttOutput', 'tt_script': 'ttOutput', 'pose': 'poseOutput' };
-        const areaIds = { 'fbpost': 'fbResultArea', 'dm_best': 'dmResultArea', 'timeline': 'tlResultArea', 'tt_caption': 'ttResultArea', 'tt_script': 'ttResultArea', 'pose': 'poseResultArea' };
+        const outputIds = { 'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'timeline': 'tlOutput', 'tt_caption': 'ttOutput', 'tt_script': 'ttOutput', 'pose': 'poseOutput', 'creative_director': 'crOutput' };
+        const areaIds = { 'fbpost': 'fbResultArea', 'dm_best': 'dmResultArea', 'timeline': 'tlResultArea', 'tt_caption': 'ttResultArea', 'tt_script': 'ttResultArea', 'pose': 'poseResultArea', 'creative_director': 'crResultArea' };
         const continueBtnIds = { 'fbpost': 'fbContinueBtn', 'dm_best': 'dmContinueBtn', 'timeline': 'tlContinueBtn', 'tt_caption': 'ttContinueBtn', 'tt_script': 'ttContinueBtn' };
 
         const outId = outputIds[type];
@@ -529,9 +649,21 @@
              if(panel) { panel.classList.remove('hidden'); panel.innerHTML = "<div class='text-center text-indigo-400 text-sm animate-pulse'>🔍 Analyzing Sales Status...</div>"; }
         } else {
              if(document.getElementById(areaId)) document.getElementById(areaId).classList.remove('hidden');
+             // Special handling for Creative Director Mobile
+             if(type === 'creative_director') {
+                 if(window.innerWidth < 768) document.getElementById('crResultAreaMobile').classList.remove('hidden');
+             }
+
              if(!isContinue && document.getElementById(outId)) {
                 document.getElementById(outId).innerHTML = "<span class='animate-pulse text-purple-400'>✨ Senior Sales Manager is thinking...</span>";
-                if(window.innerWidth < 768) setTimeout(() => { document.getElementById(areaId).scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+                if(type === 'creative_director' && window.innerWidth < 768) {
+                    document.getElementById('crOutputMobile').innerHTML = "<span class='animate-pulse text-yellow-400'>✨ Creating...</span>";
+                }
+                
+                if(window.innerWidth < 768) {
+                    const scrollTarget = type === 'creative_director' ? document.getElementById('crResultAreaMobile') : document.getElementById(areaId);
+                    setTimeout(() => scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+                }
             }
         }
 
@@ -539,9 +671,10 @@
         if (userId) { try { const docSnap = await getDoc(doc(db, 'artifacts', appId, 'users', userId, 'config', 'brand')); if (docSnap.exists()) brandData = docSnap.data(); } catch(e) {} }
         
         const brandStyle = brandData.brandStyle || "Professional";
-        const brandPackages = brandData.brandPackages || "Not specified.";
+        const brandPackages = brandData.brandPackages || "Not specified. Ask client for details.";
         const contactInfo = `Phone: ${brandData.brandPhone || ''}, Viber: ${brandData.brandViber || ''}, Facebook: ${brandData.brandFB || ''}, TikTok: ${brandData.brandTT || ''}`;
 
+        // CORE SYSTEM PROMPT
         const systemPrompt = `
         ROLE: Senior Sales Manager & Studio Owner of "With You Photo Studio" in Taunggyi.
         GOAL: Close deals warmly. Be helpful, persuasive, and confident.
@@ -554,7 +687,26 @@
         let taskPrompt = "";
         let contextTopic = "";
 
-        if (type === 'dm_analyze') {
+        if (type === 'creative_director') {
+            const workload = getValue('crWorkload');
+            const focus = getValue('crFocus');
+            const fbChecked = document.getElementById('crFB').checked ? "Facebook" : "";
+            const ttChecked = document.getElementById('crTT').checked ? "TikTok" : "";
+            const platforms = [fbChecked, ttChecked].filter(Boolean).join(" & ");
+            
+            contextTopic = `Creative Plan: ${focus}`;
+            taskPrompt = `
+            ROLE: Creative Director for With You Photo Studio.
+            TASK: Create a 3-Day Mini Content Plan.
+            INPUTS: Workload=${workload}, Focus=${focus}, Platforms=${platforms}.
+            OUTPUT RULES:
+            - Day 1, 2, 3 format.
+            - Specific Hook & Call to Action for each.
+            - Write in Burmese.
+            - Keep it realistic for a studio owner.
+            `;
+        }
+        else if (type === 'dm_analyze') {
             const msg = getValue('dmInput');
             taskPrompt = `ROLE: Senior Sales Strategist. TASK: Analyze message: "${msg}". RETURN FORMAT: Status: READY|THINKING|NOT_READY. Reason: ... NextAction: ... Tone: ... DO NOT write full reply.`;
         }
@@ -570,7 +722,10 @@
                 const prev = document.getElementById(outId).innerText;
                 taskPrompt = `CONTEXT: Writing 3 DM replies. Stopped at: "...${prev.slice(-100)}". TASK: CONTINUE exactly from there. Finish the options. Add a closing.`;
             } else {
-                taskPrompt = `TASK: Write 3 DISTINCT SALES REPLIES (Numbered 1, 2, 3). Context: ${service}. Status: ${scenario}. Client: "${msg}". Strategy: ${strategy}. ${analysisContext}. OUTPUT: 1. [Warm] 2. [Direct] 3. [Short]. MUST include Contact in CTA. Ensure full text.`;
+                taskPrompt = `TASK: Write 3 DISTINCT SALES REPLIES (Numbered 1, 2, 3). 
+                Context: ${service}. Status: ${scenario}. Client: "${msg}". Strategy: ${strategy}. 
+                ${analysisContext}
+                OUTPUT: 1. [Warm Reply] 2. [Direct/Value Reply] 3. [Short/Urgent Reply]. MUST include Contact in CTA. Ensure full text.`;
             }
         } 
         else if (type === 'fbpost') {
@@ -585,7 +740,7 @@
                 taskPrompt = `CONTEXT: Writing FB post. Stopped at: "...${lastChunk}". TASK: CONTINUE writing from there. Finish body, CTA, Hashtags. End with "--- End of Post ---".`;
             } else {
                 if(len === "Long") {
-                    taskPrompt = `TASK: Write ONE detailed storytelling Facebook Post about "${topic}". Tone: ${tone}. Go deep. Don't cut off.`;
+                    taskPrompt = `TASK: Write ONE detailed, long-form storytelling Facebook Post about "${topic}". Tone: ${tone}. Go deep into emotion. Don't cut off.`;
                 } else {
                     taskPrompt = `TASK: Write 3 DISTINCT Facebook Post Variations about "${topic}". Tone: ${tone}. Length: ${len}. FORMAT: Option 1, Option 2, Option 3. Include CTA with ${contactInfo}. Ensure all 3 options are fully written out.`;
                 }
@@ -660,6 +815,14 @@
                     document.getElementById(outId).innerText = data.result || "Error generating.";
                     finalContent = data.result;
                 }
+                
+                // Duplicate to Mobile Creative Output
+                if(type === 'creative_director') {
+                    if (document.getElementById('crOutputMobile')) {
+                        document.getElementById('crOutputMobile').innerText = finalContent;
+                    }
+                }
+
                 if (finalContent && !finalContent.includes("Error")) { saveToRecents(type, finalContent, contextTopic); }
                 if(continueBtnIds[type]) { const btn = document.getElementById(continueBtnIds[type]); if(btn) btn.classList.remove('hidden'); }
             }
@@ -684,11 +847,8 @@
         let prompt = "";
         if(type === 'fb_ideas') prompt = "Generate 5 Creative Facebook Post Ideas for a photography studio.";
         if(type === 'fb_hooks') prompt = "Write 5 catchy hooks (first sentences) in Burmese to stop scrolling.";
-        
-        const maleInstruction = "IMPORTANT: Write as a MALE speaker using 'Bya' (ဗျ). Do NOT use 'Shin'. ";
-
         try {
-             const res = await fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt: "Context: Myanmar Photo Studio. " + maleInstruction + prompt }) });
+             const res = await fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt: "Context: Myanmar Photo Studio. " + prompt }) });
              const data = await res.json();
              document.getElementById(outputId).innerText = data.result;
              saveToRecents('Idea/Hook', data.result, "Creative Brainstorm");
