@@ -13,6 +13,10 @@
     ::-webkit-scrollbar-track { background: #0f172a; }
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
     
+    /* Hide scrollbar for tab container */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
     /* Animation */
     .animate-fade-in { animation: fadeIn 0.5s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -24,23 +28,103 @@
   <header class="px-4 py-4 bg-slate-900 border-b border-white/10 flex justify-between items-center sticky top-0 z-50 shadow-lg">
     <div>
       <h1 class="text-xl font-bold text-blue-400 tracking-tight">With You Photo Studio</h1>
-      <p class="text-xs text-slate-400">AI Content & Pose Assistant</p>
+      <p class="text-xs text-slate-400">AI Daily Assistant</p>
     </div>
-    <div class="text-xs bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700 text-slate-300">Taunggyi Branch</div>
+    <div onclick="switchTab('brand')" class="cursor-pointer text-xs bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700 text-slate-300 flex items-center gap-1 hover:bg-slate-700 hover:text-white transition">
+        <span>🧠</span> Brand Brain
+    </div>
   </header>
 
   <!-- MAIN CONTENT -->
   <main class="flex-1 p-4 space-y-6 max-w-3xl mx-auto w-full">
 
-    <!-- TAB BUTTONS -->
-    <div class="grid grid-cols-4 gap-2 bg-slate-900 p-1.5 rounded-xl border border-slate-800">
-      <button onclick="switchTab('pose')" id="btn-pose" class="tab-btn py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 hover:bg-slate-800">🎨 Poses</button>
-      <button onclick="switchTab('fbpost')" id="btn-fbpost" class="tab-btn py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 hover:bg-slate-800">📝 FB Post</button>
-      <button onclick="switchTab('tiktok')" id="btn-tiktok" class="tab-btn py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 hover:bg-slate-800">🎵 TikTok</button>
-      <button onclick="switchTab('dm')" id="btn-dm" class="tab-btn py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 hover:bg-slate-800">💬 DM</button>
+    <!-- SCROLLABLE TAB BUTTONS -->
+    <div class="flex gap-2 overflow-x-auto no-scrollbar bg-slate-900 p-1.5 rounded-xl border border-slate-800 sticky top-[70px] z-40 backdrop-blur-md bg-opacity-90">
+      <button onclick="switchTab('brand')" id="btn-brand" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:bg-slate-800">🧠 Brand Brain</button>
+      <button onclick="switchTab('timeline')" id="btn-timeline" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:bg-slate-800">⏳ Timeline</button>
+      <button onclick="switchTab('pose')" id="btn-pose" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:bg-slate-800">🎨 Poses</button>
+      <button onclick="switchTab('fbpost')" id="btn-fbpost" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:bg-slate-800">📝 FB Post</button>
+      <button onclick="switchTab('tiktok')" id="btn-tiktok" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:bg-slate-800">🎵 TikTok</button>
+      <button onclick="switchTab('dm')" id="btn-dm" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:bg-slate-800">💬 DM</button>
     </div>
 
-    <!-- 1. POSE HELPER TAB -->
+    <!-- 0. BRAND BRAIN TAB (NEW) -->
+    <section id="brand" class="space-y-4 hidden animate-fade-in">
+        <div class="bg-gradient-to-br from-slate-900 to-slate-800 p-6 rounded-2xl border border-blue-500/30 shadow-lg relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">🧠</div>
+            <h2 class="text-lg font-bold text-blue-300 flex items-center gap-2 mb-2">
+                Brand Brain (စတူဒီယို ဦးနှောက်)
+            </h2>
+            <p class="text-xs text-slate-400 mb-6">ဒီမှာ ဖြည့်ထားတဲ့ အချက်တွေကို AI က မှတ်ထားပြီး Post ရေးတဲ့အခါ၊ DM ပြန်တဲ့အခါ ထည့်သုံးပေးသွားပါမယ်။</p>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs font-bold text-slate-400 uppercase">Studio Vibe / Style</label>
+                    <input type="text" id="brandStyle" value="Moody, Cinematic, Emotional" 
+                        class="w-full p-3 mt-1 rounded-lg bg-slate-950 border border-slate-700 text-sm text-white focus:border-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-400 uppercase">Target Client</label>
+                    <input type="text" id="brandClient" value="Luxury Couples, Young Professionals" 
+                        class="w-full p-3 mt-1 rounded-lg bg-slate-950 border border-slate-700 text-sm text-white focus:border-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-400 uppercase">Signature Phrase / Motto</label>
+                    <input type="text" id="brandMotto" value="Memories that last forever" 
+                        class="w-full p-3 mt-1 rounded-lg bg-slate-950 border border-slate-700 text-sm text-white focus:border-blue-500 outline-none">
+                </div>
+            </div>
+            
+            <div class="mt-6 flex items-center gap-2 text-xs text-green-400 bg-green-900/20 p-3 rounded-lg border border-green-900/50">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                <span>Auto-saved! AI will use this context automatically.</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 1. TIMELINE HELPER TAB (NEW) -->
+    <section id="timeline" class="space-y-4 hidden animate-fade-in">
+        <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 shadow-sm">
+            <h2 class="text-lg font-bold text-orange-400 flex items-center gap-2 mb-4">
+              <span>⏳</span> Pre-Wedding Timeline Generator
+            </h2>
+            <p class="text-xs text-slate-400 mb-4">မနက်စမည့်အချိန်နှင့် Location အရေအတွက်ပေါ်မူတည်ပြီး အချိန်ဇယားဆွဲပေးပါမည်။</p>
+    
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <div>
+                    <label class="text-xs text-slate-400 uppercase font-bold">Start Time</label>
+                    <select id="tlStart" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 text-sm outline-none">
+                        <option value="7:00 AM">☀️ 7:00 AM</option>
+                        <option value="8:00 AM">☀️ 8:00 AM</option>
+                        <option value="9:00 AM">☀️ 9:00 AM</option>
+                        <option value="1:00 PM">🌤️ 1:00 PM</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 uppercase font-bold">Locations</label>
+                    <select id="tlLocs" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 text-sm outline-none">
+                        <option value="1 Location">📍 1 Location</option>
+                        <option value="2 Locations">📍 2 Locations</option>
+                        <option value="3 Locations">📍 3 Locations</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button onclick="generateTimeline()" class="w-full bg-orange-600 hover:bg-orange-500 text-white py-3 rounded-xl font-bold shadow-lg shadow-orange-900/30 transition-all">
+                🗓️ Generate Schedule
+            </button>
+        </div>
+
+        <div id="tlOutputArea" class="hidden animate-fade-in">
+             <div class="flex justify-between items-end px-1 mb-2">
+                <span class="text-xs font-bold text-slate-400 uppercase">Suggested Schedule</span>
+                <button onclick="copyText('tlOutput')" class="text-xs text-orange-400 hover:text-orange-300">Copy</button>
+            </div>
+            <div id="tlOutput" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 whitespace-pre-wrap leading-relaxed text-slate-200 shadow-inner text-sm font-mono"></div>
+        </div>
+    </section>
+
+    <!-- 2. POSE HELPER TAB -->
     <section id="pose" class="space-y-4 hidden animate-fade-in">
       <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 shadow-sm">
         <h2 class="text-lg font-bold text-pink-400 flex items-center gap-2 mb-4">
@@ -50,23 +134,30 @@
         <div class="space-y-4">
           <div class="grid grid-cols-2 gap-3">
              <select id="scene" class="w-full p-3 rounded-lg bg-slate-800 border border-slate-700 focus:border-pink-500 outline-none text-sm">
-              <option value="Outdoor">🌿 Outdoor (Nature)</option>
+              <option value="Outdoor">🌿 Outdoor</option>
               <option value="Studio">💡 In-Studio</option>
-              <option value="Cafe">☕ Cafe / Casual</option>
-              <option value="Colonial Building">🏛️ Colonial Style</option>
+              <option value="Cafe">☕ Cafe</option>
+              <option value="Colonial">🏛️ Colonial</option>
             </select>
-
             <select id="mood" class="w-full p-3 rounded-lg bg-slate-800 border border-slate-700 focus:border-pink-500 outline-none text-sm">
               <option value="Romantic">💞 Romantic</option>
               <option value="Natural">🌸 Natural</option>
               <option value="Cinematic">🎬 Cinematic</option>
-              <option value="Fun">😂 Fun & Playful</option>
+              <option value="Fun">😂 Fun</option>
             </select>
+          </div>
+
+          <!-- CLIENT TYPE PRESETS -->
+          <div class="flex flex-wrap gap-2">
+            <span class="text-xs font-bold text-slate-500 uppercase self-center mr-1">Presets:</span>
+            <button onclick="setPosePreset('Shy Couple')" class="px-3 py-1 bg-slate-800 hover:bg-pink-900/50 border border-slate-700 rounded-full text-xs text-pink-200 transition">😳 Shy Couple</button>
+            <button onclick="setPosePreset('Stiff Groom')" class="px-3 py-1 bg-slate-800 hover:bg-pink-900/50 border border-slate-700 rounded-full text-xs text-pink-200 transition">🤖 Stiff Groom</button>
+            <button onclick="setPosePreset('Plus Size Couple')" class="px-3 py-1 bg-slate-800 hover:bg-pink-900/50 border border-slate-700 rounded-full text-xs text-pink-200 transition">❤️ Plus Size</button>
           </div>
 
           <textarea
             id="poseInput"
-            placeholder="Client အခြေအနေ (ဥပမာ - သတို့သားက ရှက်တတ်တယ်၊ အရမ်းဝတဲ့ အတွဲ...)"
+            placeholder="Client အခြေအနေ (ဥပမာ - သတို့သားက ရှက်တတ်တယ်...)"
             class="w-full p-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-pink-500 outline-none h-24 text-sm resize-none"
           ></textarea>
         
@@ -82,10 +173,9 @@
     </section>
 
 
-    <!-- 2. FB POST CREATOR TAB -->
+    <!-- 3. FB POST CREATOR TAB -->
     <section id="fbpost" class="space-y-6 hidden animate-fade-in">
       
-      <!-- Main Input Area -->
       <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 shadow-sm">
         <h2 class="text-lg font-bold text-blue-400 flex items-center gap-2 mb-4">
           <span>📝</span> Facebook Post Creator
@@ -101,10 +191,10 @@
           <div>
             <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Tone</label>
             <select id="fbTone" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-blue-500 outline-none text-sm">
-              <option value="Professional & Warm">Professional & Warm (ရိုသေလေးစားမှုရှိသော)</option>
-              <option value="Friendly & Exciting">Friendly & Exciting (ရင်းနှီးဖော်ရွေသော)</option>
-              <option value="Emotional & Touching">Emotional & Touching (စိတ်ခံစားမှု အသားပေး)</option>
-              <option value="Casual & Fun">Casual & Fun (ပေါ့ပေါ့ပါးပါး)</option>
+              <option value="Professional & Warm">Professional & Warm</option>
+              <option value="Friendly & Exciting">Friendly & Exciting</option>
+              <option value="Emotional & Touching">Emotional & Touching</option>
+              <option value="Casual & Fun">Casual & Fun</option>
             </select>
           </div>
 
@@ -114,27 +204,23 @@
         </div>
       </div>
 
-      <!-- Creative Assistant Section (New) -->
+      <!-- Creative Assistant -->
       <div class="bg-slate-900/30 p-5 rounded-2xl border border-blue-500/20">
         <h3 class="text-sm font-bold text-blue-300 mb-3 uppercase tracking-wider flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" /></svg>
-          ✨ ဖန်တီးမှုလက်ထောက် (Creative Assistant)
+          ✨ Creative Assistant
         </h3>
         <p class="text-xs text-slate-500 mb-4">Post တစ်ခုလုံး မရေးချင်ဘူး၊ အိုင်ဒီယာပဲ လိုချင်ရင် သုံးပါ</p>
         
         <div class="grid grid-cols-2 gap-3">
           <button onclick="fbAssistIdeas()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1">
-            <span class="text-xl">💡</span>
-            <span>Content Ideas</span>
+            <span class="text-xl">💡</span> Content Ideas
           </button>
           <button onclick="fbAssistHooks()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1">
-            <span class="text-xl">🎣</span>
-            <span>Catchy Hooks (ခေါင်းစဉ်)</span>
+            <span class="text-xl">🎣</span> Catchy Hooks
           </button>
         </div>
       </div>
 
-      <!-- Result Area for FB Post -->
       <div id="fbOutputArea" class="hidden space-y-4 animate-fade-in">
         <div id="fbResultWrapper" class="flex flex-col gap-2">
              <div class="flex justify-between items-end px-1">
@@ -142,20 +228,15 @@
                 <button onclick="copyText('fbAiResult')" class="text-xs text-blue-400 hover:text-blue-300">Copy Text</button>
             </div>
             <div id="fbAiResult" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 whitespace-pre-wrap leading-relaxed text-slate-200 shadow-inner"></div>
-            
-            <!-- Continue Button -->
             <button id="fbContinueBtn" onclick="continueFbPost()" class="hidden w-full py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl text-blue-300 text-sm font-bold flex items-center justify-center gap-2 transition-colors">
-                <span>⚠️ မပြီးသေးရင် နှိပ်ပါ (Continue Writing)</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                <span>⚠️ မပြီးသေးရင် နှိပ်ပါ (Continue)</span>
             </button>
         </div>
       </div>
     </section>
 
-    <!-- 3. TIKTOK CREATOR TAB -->
+    <!-- 4. TIKTOK CREATOR TAB -->
     <section id="tiktok" class="space-y-6 hidden animate-fade-in">
-      
-      <!-- Main Input -->
       <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 shadow-sm">
         <h2 class="text-lg font-bold text-teal-400 flex items-center gap-2 mb-4">
           <span>🎵</span> TikTok Script Creator
@@ -164,52 +245,35 @@
         <div class="space-y-4">
           <div>
             <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Video Idea / Topic</label>
-            <input type="text" id="ttInput" placeholder="ဥပမာ - Studio ဖွင့်ချိန် Vlog / မိုးရာသီ Pre-wedding tips" 
+            <input type="text" id="ttInput" placeholder="ဥပမာ - Studio ဖွင့်ချိန် Vlog" 
               class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-teal-500 outline-none text-sm transition-colors">
           </div>
-          
           <div>
             <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Video Style</label>
             <select id="ttStyle" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-teal-500 outline-none text-sm">
-              <option value="Trending & Fast">⚡ Trending & Fast Paced</option>
-              <option value="Vlog Style">📹 Vlog / Behind the Scenes</option>
-              <option value="Educational">🎓 Tips & Educational</option>
-              <option value="Cinematic Mood">🎬 Cinematic Mood</option>
+              <option value="Trending & Fast">⚡ Trending</option>
+              <option value="Vlog Style">📹 Vlog</option>
+              <option value="Educational">🎓 Tips</option>
+              <option value="Cinematic Mood">🎬 Cinematic</option>
             </select>
           </div>
-
           <div class="grid grid-cols-2 gap-3 pt-2">
-            <button onclick="generateTTCaption()" class="bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-slate-700 py-3 rounded-xl font-bold text-sm transition-all">
-              📝 Get Caption
-            </button>
-            <button onclick="generateTTAI()" class="bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 text-white py-3 rounded-xl font-bold text-sm shadow-lg shadow-teal-900/30 transition-all transform active:scale-95">
-              🤖 Write Script
-            </button>
+            <button onclick="generateTTCaption()" class="bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-slate-700 py-3 rounded-xl font-bold text-sm transition-all">📝 Get Caption</button>
+            <button onclick="generateTTAI()" class="bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 text-white py-3 rounded-xl font-bold text-sm shadow-lg shadow-teal-900/30">🤖 Write Script</button>
           </div>
         </div>
       </div>
 
-      <!-- Creative Assistant Section (New) -->
+      <!-- Creative Assistant -->
       <div class="bg-slate-900/30 p-5 rounded-2xl border border-teal-500/20">
-        <h3 class="text-sm font-bold text-teal-300 mb-3 uppercase tracking-wider flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" /></svg>
-          ✨ ဖန်တီးမှုလက်ထောက် (Creative Assistant)
-        </h3>
+        <h3 class="text-sm font-bold text-teal-300 mb-3 uppercase tracking-wider flex items-center gap-2">✨ Creative Assistant</h3>
         <p class="text-xs text-slate-500 mb-4">Trending ဖြစ်မယ့် အကြံဉာဏ်များ ရယူပါ</p>
-        
         <div class="grid grid-cols-2 gap-3">
-          <button onclick="ttAssistIdeas()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1">
-            <span class="text-xl">💡</span>
-            <span>Video Ideas</span>
-          </button>
-          <button onclick="ttAssistHooks()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1">
-            <span class="text-xl">⚡</span>
-            <span>Visual Hooks (အဖွင့်)</span>
-          </button>
+          <button onclick="ttAssistIdeas()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1"><span class="text-xl">💡</span> Video Ideas</button>
+          <button onclick="ttAssistHooks()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1"><span class="text-xl">⚡</span> Visual Hooks</button>
         </div>
       </div>
 
-       <!-- Result Area for TikTok -->
        <div id="ttOutputArea" class="hidden space-y-4 animate-fade-in">
         <div id="ttResultWrapper" class="flex flex-col gap-2">
             <div class="flex justify-between items-end px-1">
@@ -217,40 +281,41 @@
                 <button onclick="copyText('ttAiResult')" class="text-xs text-teal-400 hover:text-teal-300">Copy Text</button>
             </div>
             <div id="ttAiResult" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 whitespace-pre-wrap leading-relaxed text-slate-200 shadow-inner"></div>
-            
             <button id="ttContinueBtn" onclick="continueTikTok()" class="hidden w-full py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl text-teal-300 text-sm font-bold flex items-center justify-center gap-2 transition-colors">
                 <span>⚠️ မပြီးသေးရင် နှိပ်ပါ (Continue)</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </button>
         </div>
       </div>
     </section>
 
-
-    <!-- 4. DM HELPER TAB (UPGRADED) -->
+    <!-- 5. DM HELPER TAB -->
     <section id="dm" class="space-y-6 hidden animate-fade-in">
-      
-      <!-- Main Input Area -->
       <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 shadow-sm">
         <h2 class="text-lg font-bold text-purple-400 flex items-center gap-2 mb-4">
           <span>💬</span> Client DM Sales Master
         </h2>
 
         <div class="space-y-4">
-            <!-- Scenario Selector -->
             <div>
-                <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Client Situation (အခြေအနေ)</label>
+                <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Client Situation</label>
                 <select id="dmScenario" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-purple-500 outline-none text-sm text-slate-200">
-                    <option value="General Inquiry">❓ General Inquiry (စုံစမ်းမေးမြန်း)</option>
-                    <option value="Price Objection">💸 Price Objection (ဈေးကြီးတယ်ပြော)</option>
-                    <option value="Ghosting">👻 Ghosting (Seen ပြပြီးပျောက်)</option>
-                    <option value="Closing">🤝 Closing the Sale (Booking တင်ဖို့စကားစ)</option>
-                    <option value="Availability">📅 Date Availability (ရက်အားမေး)</option>
-                    <option value="Complaint">⚠️ Complaint Handling (စိတ်မတိုင်းကျဖြစ်)</option>
+                    <option value="General Inquiry">❓ General Inquiry</option>
+                    <option value="Price Objection">💸 Price Objection</option>
+                    <option value="Ghosting">👻 Ghosting</option>
+                    <option value="Closing">🤝 Closing</option>
+                    <option value="Availability">📅 Date Availability</option>
+                    <option value="Complaint">⚠️ Complaint Handling</option>
                 </select>
             </div>
 
-            <!-- Client Message -->
+             <!-- CLIENT TYPE PRESETS -->
+             <div class="flex flex-wrap gap-2">
+                <span class="text-xs font-bold text-slate-500 uppercase self-center mr-1">Presets:</span>
+                <button onclick="setDmPreset('Price Sensitive')" class="px-3 py-1 bg-slate-800 hover:bg-purple-900/50 border border-slate-700 rounded-full text-xs text-purple-200 transition">💰 Budget</button>
+                <button onclick="setDmPreset('Vip Client')" class="px-3 py-1 bg-slate-800 hover:bg-purple-900/50 border border-slate-700 rounded-full text-xs text-purple-200 transition">👑 VIP</button>
+                <button onclick="setDmPreset('Rude Client')" class="px-3 py-1 bg-slate-800 hover:bg-purple-900/50 border border-slate-700 rounded-full text-xs text-purple-200 transition">😤 Rude</button>
+              </div>
+
             <div>
                  <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Client's Message (Optional)</label>
                 <textarea
@@ -259,45 +324,31 @@
                     class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-purple-500 outline-none h-24 text-sm resize-none"
                 ></textarea>
             </div>
-
-            <!-- Tone Selector -->
             <div>
-                 <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Response Tone</label>
+                 <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Tone</label>
                 <select id="dmTone" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-purple-500 outline-none text-sm text-slate-200">
-                    <option value="Professional & Polite">👔 Professional & Polite (ရိုသေလေးစားစွာ)</option>
-                    <option value="Warm & Friendly">😊 Warm & Friendly (ရင်းနှီးဖော်ရွေစွာ)</option>
-                    <option value="Persuasive & Confident">🔥 Persuasive (ဆွဲဆောင်မှုရှိရှိ)</option>
-                    <option value="Apologetic & Solution-oriented">🙏 Apologetic (တောင်းပန်/ဖြေရှင်း)</option>
+                    <option value="Professional & Polite">👔 Professional</option>
+                    <option value="Warm & Friendly">😊 Friendly</option>
+                    <option value="Persuasive & Confident">🔥 Persuasive</option>
+                    <option value="Apologetic & Solution-oriented">🙏 Apologetic</option>
                 </select>
             </div>
-
             <button onclick="generateDmReply()" class="w-full bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white py-3 rounded-xl font-bold shadow-lg shadow-purple-900/30 transition-all transform active:scale-95 flex justify-center items-center gap-2">
                 <span>⚡</span> Generate Reply
             </button>
         </div>
       </div>
 
-      <!-- Quick Strategies (Creative Assistant) -->
+      <!-- Quick Strategies -->
       <div class="bg-slate-900/30 p-5 rounded-2xl border border-purple-500/20">
-        <h3 class="text-sm font-bold text-purple-300 mb-3 uppercase tracking-wider flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" /></svg>
-          ✨ Quick Strategies (နည်းလမ်းကောင်းများ)
-        </h3>
+        <h3 class="text-sm font-bold text-purple-300 mb-3 uppercase tracking-wider flex items-center gap-2">✨ Quick Strategies</h3>
         <p class="text-xs text-slate-500 mb-4">အရောင်းပိတ်ဖို့အတွက် အထောက်အကူပြု နည်းဗျူဟာများ</p>
-        
         <div class="grid grid-cols-2 gap-3">
-          <button onclick="dmAssistFollowUp()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1">
-            <span class="text-xl">📅</span>
-            <span>Smart Follow-up</span>
-          </button>
-          <button onclick="dmAssistDiscount()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1">
-            <span class="text-xl">🎁</span>
-            <span>Discount Offer</span>
-          </button>
+          <button onclick="dmAssistFollowUp()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1"><span class="text-xl">📅</span> Smart Follow-up</button>
+          <button onclick="dmAssistDiscount()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1"><span class="text-xl">🎁</span> Discount Offer</button>
         </div>
       </div>
 
-      <!-- Result Area -->
       <div id="dmOutputArea" class="hidden space-y-4 animate-fade-in">
         <div class="flex flex-col gap-2">
             <div class="flex justify-between items-end px-1">
@@ -305,10 +356,8 @@
                 <button onclick="copyText('dmOutput')" class="text-xs text-purple-400 hover:text-purple-300">Copy Text</button>
             </div>
             <div id="dmOutput" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 whitespace-pre-wrap leading-relaxed text-slate-200 shadow-inner"></div>
-             <!-- Continue Button -->
             <button id="dmContinueBtn" onclick="continueDmReply()" class="hidden w-full py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl text-purple-300 text-sm font-bold flex items-center justify-center gap-2 transition-colors">
                 <span>⚠️ မပြီးသေးရင် နှိပ်ပါ (Continue)</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </button>
         </div>
       </div>
@@ -320,12 +369,15 @@
   <script>
     // --- TAB SYSTEM ---
     function switchTab(tab) {
-      ['pose','fbpost','tiktok','dm'].forEach(id => {
-        document.getElementById(id).classList.add('hidden');
-        document.getElementById('btn-' + id).classList.remove('bg-pink-600', 'bg-blue-600', 'bg-teal-600', 'bg-purple-600', 'text-white', 'shadow-lg', 'bg-slate-800');
+      ['brand','timeline','pose','fbpost','tiktok','dm'].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.classList.add('hidden');
         
-        // Reset to default style
-        document.getElementById('btn-' + id).classList.add('bg-transparent', 'text-slate-400', 'hover:bg-slate-800');
+        const btn = document.getElementById('btn-' + id);
+        if(btn) {
+             btn.classList.remove('bg-pink-600', 'bg-blue-600', 'bg-teal-600', 'bg-purple-600', 'bg-orange-600', 'text-white', 'shadow-lg', 'bg-slate-800');
+             btn.classList.add('bg-transparent', 'text-slate-400', 'hover:bg-slate-800');
+        }
       });
 
       document.getElementById(tab).classList.remove('hidden');
@@ -333,8 +385,10 @@
       const btn = document.getElementById('btn-' + tab);
       btn.classList.remove('bg-transparent', 'text-slate-400', 'hover:bg-slate-800');
       
-      // Active styles
+      // Active styles based on tab
       btn.classList.add('text-white', 'shadow-lg');
+      if(tab === 'brand') btn.classList.add('bg-slate-700');
+      if(tab === 'timeline') btn.classList.add('bg-orange-600');
       if(tab === 'pose') btn.classList.add('bg-pink-600');
       if(tab === 'fbpost') btn.classList.add('bg-blue-600');
       if(tab === 'tiktok') btn.classList.add('bg-teal-600');
@@ -344,14 +398,65 @@
     // Init
     switchTab('fbpost'); 
 
+    // --- UTILS: PRESETS & HELPERS ---
+    
+    function setPosePreset(type) {
+        let text = "";
+        if(type === 'Shy Couple') text = "သတို့သားနဲ့ သတို့သမီးက အရမ်းရှက်တတ်တယ်။ Camera ကို မကြည့်ရဲဘူး။ သဘာဝကျကျ ရယ်မောနေတဲ့ ပုံစံလိုချင်တယ်။";
+        if(type === 'Stiff Groom') text = "သတို့သားက Pose လုံးဝမပေးတတ်ဘူး။ ကျောက်ရုပ်လို ဖြစ်နေတယ်။ သူ့ကို သက်သောင့်သက်သာဖြစ်အောင် ဘယ်လိုလုပ်ရမလဲ။";
+        if(type === 'Plus Size Couple') text = "ဝတဲ့ အတွဲဖြစ်လို့ ပိန်တဲ့ထောင့် (Angle) နဲ့ ယုံကြည်မှုရှိတဲ့ ပုံစံမျိုး လိုချင်တယ်။";
+        
+        document.getElementById('poseInput').value = text;
+    }
+
+    function setDmPreset(type) {
+        let text = "";
+        if(type === 'Price Sensitive') text = "ဈေးအရမ်းကြီးတယ်၊ လျှော့ပေးပါလားလို့ မေးနေတယ်။";
+        if(type === 'Vip Client') text = "ငွေကြေးပြဿနာမရှိဘူး။ အကောင်းဆုံး Quality နဲ့ အမြန်ဆုံး လိုချင်တဲ့ VIP client။";
+        if(type === 'Rude Client') text = "စကားပြောတာ နည်းနည်း ရိုင်းသလိုပဲ။ ဘာမှ မဟုတ်တာနဲ့ စိတ်ဆိုးနေတယ်။";
+        
+        document.getElementById('dmInput').value = text;
+    }
+
+    function getBrandContext() {
+        const style = document.getElementById('brandStyle').value;
+        const client = document.getElementById('brandClient').value;
+        const motto = document.getElementById('brandMotto').value;
+        return `\n[BRAND BRAIN CONTEXT]\nStudio Style: ${style}\nTarget Audience: ${client}\nMotto: ${motto}\nKeep this identity in mind.\n`;
+    }
+
+    // --- TIMELINE GENERATOR ---
+    async function generateTimeline() {
+        const start = document.getElementById('tlStart').value;
+        const locs = document.getElementById('tlLocs').value;
+        const output = document.getElementById('tlOutput');
+        
+        document.getElementById('tlOutputArea').classList.remove('hidden');
+        output.innerHTML = "<span class='animate-pulse text-orange-400'>⏳ Calculating best schedule...</span>";
+
+        const prompt = `
+            Role: Experienced Wedding Planner.
+            Task: Create a Pre-wedding Photography Timeline Schedule.
+            Start Time: ${start}
+            Scale: ${locs} (Assume 2 outfit changes per location roughly).
+            Language: Burmese.
+            Output: List format with timestamps (e.g., 9:00 AM - Makeup).
+        `;
+        
+        await callAI(prompt, output);
+    }
+
 
     // --- AI CALL HANDLER ---
     async function callAI(promptText, outputElement, isAppend = false) {
         try {
+            // INJECT BRAND BRAIN
+            const fullPrompt = getBrandContext() + promptText;
+
             const res = await fetch("/api/generate", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ prompt: promptText })
+                body: JSON.stringify({ prompt: fullPrompt })
             });
 
             const data = await res.json();
