@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Sales Master AI v3.3</title>
+  <title>With You Studio - Sales Master AI v3.4</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -120,8 +120,10 @@
         <!-- Group 4: Archive -->
         <div>
             <div class="space-y-1 border-t border-slate-800 pt-4">
-                <button onclick="loadView('history')" id="nav-history" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                    <i class="ph ph-calendar-check text-lg"></i> Saved History
+                <button onclick="loadView('recent')" id="nav-recent" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition group relative">
+                    <i class="ph ph-clock-counter-clockwise text-lg group-hover:text-green-400"></i> 
+                    <span>Recent Activity</span>
+                    <span id="recentBadge" class="hidden absolute right-3 top-3 w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                 </button>
             </div>
         </div>
@@ -130,7 +132,7 @@
 
     <!-- Footer -->
     <div class="p-4 border-t border-slate-800 text-xs text-slate-600 text-center">
-        <span class="inline-block px-2 py-1 rounded bg-slate-800 border border-slate-700 text-purple-400 font-mono">v3.3 (Fixed & Ready)</span>
+        <span class="inline-block px-2 py-1 rounded bg-slate-800 border border-slate-700 text-purple-400 font-mono">v3.4 (Auto-Recent)</span>
     </div>
   </aside>
 
@@ -165,8 +167,8 @@
         <button onclick="loadView('pose')" id="mob-pose" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
             <i class="ph ph-camera"></i> Pose
         </button>
-        <button onclick="loadView('history')" id="mob-history" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
-            <i class="ph ph-calendar"></i> History
+        <button onclick="loadView('recent')" id="mob-recent" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
+            <i class="ph ph-clock-counter-clockwise text-green-400"></i> Recent
         </button>
     </div>
 
@@ -265,7 +267,7 @@
                     <div class="flex justify-between items-center mb-3 z-10">
                         <span class="text-xs font-bold text-purple-400 uppercase flex items-center gap-1"><i class="ph ph-check-circle"></i> Suggested Options</span>
                         <div class="flex gap-2">
-                            <button onclick="saveResult('DM Reply', 'dmOutput')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded text-white border border-slate-600">Save</button>
+                            <!-- SAVE Removed: Now Auto-Save -->
                             <button onclick="copyText('dmOutput')" class="text-xs bg-purple-900/50 hover:bg-purple-800 px-3 py-1.5 rounded text-purple-200 border border-purple-700">Copy All</button>
                         </div>
                     </div>
@@ -283,7 +285,7 @@
     </div>
   </template>
 
-  <!-- 2. BRAND BRAIN TEMPLATE (Fixed & Added TikTok) -->
+  <!-- 2. BRAND BRAIN TEMPLATE -->
   <template id="tpl-brand">
     <div class="animate-fade-in max-w-2xl mx-auto space-y-6">
         <div class="bg-gradient-to-br from-slate-800 to-slate-900 p-6 md:p-8 rounded-2xl border border-slate-700 relative overflow-hidden shadow-2xl">
@@ -392,7 +394,8 @@
                     </button>
 
                     <div class="flex gap-2">
-                        <button onclick="saveResult('Facebook', 'fbOutput')" class="flex-1 bg-slate-800 hover:bg-slate-700 py-3 rounded-lg text-xs font-bold border border-slate-700">💾 Save</button>
+                        <!-- Auto-Saved Indicator -->
+                        <div class="flex-1 py-3 text-center text-xs text-green-400 italic">✅ Auto-saved to Recents</div>
                         <button onclick="copyText('fbOutput')" class="flex-1 bg-slate-800 hover:bg-slate-700 py-3 rounded-lg text-xs font-bold border border-slate-700">📋 Copy</button>
                     </div>
                 </div>
@@ -454,8 +457,18 @@
     </div>
   </template>
 
-  <!-- 5. TIKTOK & POSE (HTML Strings in JS to save space) -->
-  
+  <!-- 5. RECENT / HISTORY TEMPLATE -->
+  <template id="tpl-recent">
+    <div class="animate-fade-in space-y-6">
+        <div class="flex justify-between items-center">
+            <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2"><i class="ph ph-clock-counter-clockwise text-green-400"></i> Recent Activity</h2>
+            <button onclick="clearHistory()" class="text-red-400 text-xs border border-red-900/50 px-3 py-1.5 rounded hover:bg-red-900/20">Clear All</button>
+        </div>
+        <p class="text-xs text-slate-500 mb-4">Items are automatically saved here when you generate them.</p>
+        <div id="historyListContainer" class="space-y-4 pb-20"></div>
+    </div>
+  </template>
+
   <!-- JAVASCRIPT LOGIC -->
   <script>
     let currentView = 'dm'; 
@@ -509,7 +522,11 @@
         
         if(viewId === 'tiktok') container.innerHTML = getTikTokHTML();
         else if(viewId === 'pose') container.innerHTML = getPoseHTML();
-        else if(viewId === 'history') { container.innerHTML = getHistoryHTML(); renderHistoryList(); }
+        else if(viewId === 'recent') { // Changed ID from 'history' to 'recent'
+            const tpl = document.getElementById('tpl-recent');
+            if(tpl) container.appendChild(tpl.content.cloneNode(true));
+            renderHistoryList();
+        }
         else {
             const tpl = document.getElementById(templateId);
             if(tpl) {
@@ -522,20 +539,15 @@
 
     // --- HTML GENERATORS ---
     function getTikTokHTML() {
-        return `<div class="animate-fade-in space-y-6"><h2 class="text-xl md:text-2xl font-bold text-teal-400 flex items-center gap-2"><i class="ph ph-tiktok-logo"></i> TikTok Script</h2><div class="glass-panel p-4 md:p-5 rounded-xl space-y-4"><div class="flex gap-2"><input type="text" id="ttInput" placeholder="Video Topic..." class="flex-1 bg-slate-800 border border-slate-700 rounded p-3 text-white"><button onclick="startVoiceInput('ttInput', this)" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded px-4 text-teal-400"><i class="ph ph-microphone text-xl"></i></button></div><select id="ttStyle" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white"><option>Trending & Fast</option><option>Vlog / Behind Scenes</option><option>Cinematic Mood</option></select><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><button onclick="generateAI('tt_caption')" class="bg-slate-700 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Get 3 Captions</button><button onclick="generateAI('tt_script')" class="bg-teal-600 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Write 3 Scripts</button></div></div><div id="ttResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl"><div id="ttOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div><button id="ttContinueBtn" onclick="continueAI('tt_script')" class="hidden w-full mt-2 py-2 bg-slate-800 text-teal-400 text-xs border border-slate-600 rounded">⚠️ Continue Writing</button><button onclick="saveResult('TikTok', 'ttOutput')" class="mt-4 bg-slate-800 text-xs py-2 px-4 rounded border border-slate-700">💾 Save</button></div></div>`;
+        return `<div class="animate-fade-in space-y-6"><h2 class="text-xl md:text-2xl font-bold text-teal-400 flex items-center gap-2"><i class="ph ph-tiktok-logo"></i> TikTok Script</h2><div class="glass-panel p-4 md:p-5 rounded-xl space-y-4"><div class="flex gap-2"><input type="text" id="ttInput" placeholder="Video Topic..." class="flex-1 bg-slate-800 border border-slate-700 rounded p-3 text-white"><button onclick="startVoiceInput('ttInput', this)" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded px-4 text-teal-400"><i class="ph ph-microphone text-xl"></i></button></div><select id="ttStyle" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white"><option>Trending & Fast</option><option>Vlog / Behind Scenes</option><option>Cinematic Mood</option></select><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><button onclick="generateAI('tt_caption')" class="bg-slate-700 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Get 3 Captions</button><button onclick="generateAI('tt_script')" class="bg-teal-600 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Write 3 Scripts</button></div></div><div id="ttResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl"><div id="ttOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div><button id="ttContinueBtn" onclick="continueAI('tt_script')" class="hidden w-full mt-2 py-2 bg-slate-800 text-teal-400 text-xs border border-slate-600 rounded">⚠️ Continue Writing</button><div class="text-xs text-green-400 mt-2">✅ Auto-saved</div></div></div>`;
     }
     function getPoseHTML() {
-        return `<div class="animate-fade-in space-y-6"><h2 class="text-xl md:text-2xl font-bold text-pink-400 flex items-center gap-2"><i class="ph ph-camera"></i> Pose Helper</h2><div class="glass-panel p-4 md:p-5 rounded-xl space-y-4"><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><div><label class="text-xs font-bold text-slate-400 uppercase">Outfit</label><select id="poseOutfit" class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm"><option>Wedding Gown/Suit</option><option>Traditional</option><option>Casual</option></select></div><div><label class="text-xs font-bold text-slate-400 uppercase">Props</label><input type="text" id="poseProps" placeholder="Flowers..." class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm"></div></div><div class="flex gap-2 mb-2"><button onclick="fillPose('Shy')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">😳 Shy</button><button onclick="fillPose('Plus')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">❤️ Plus</button></div><div class="relative"><textarea id="poseInput" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white h-24 pr-10" placeholder="Situation..."></textarea><button onclick="startVoiceInput('poseInput', this)" class="absolute right-2 bottom-2 bg-slate-700/80 hover:bg-pink-600 p-2 rounded-full transition text-slate-300 hover:text-white"><i class="ph ph-microphone text-lg"></i></button></div><button onclick="generateAI('pose')" class="w-full bg-pink-600 py-3 rounded text-white font-bold active:scale-95 transition">Generate Poses</button></div><div id="poseResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl"><div id="poseOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div></div></div>`;
-    }
-    function getHistoryHTML() {
-        return `<div class="animate-fade-in space-y-6"><div class="flex justify-between items-center"><h2 class="text-xl md:text-2xl font-bold text-white"><i class="ph ph-clock-counter-clockwise"></i> History</h2><button onclick="clearHistory()" class="text-red-400 text-xs border border-red-900 px-3 py-1 rounded">Clear</button></div><div id="historyListContainer" class="space-y-4 pb-10"></div></div>`;
+        return `<div class="animate-fade-in space-y-6"><h2 class="text-xl md:text-2xl font-bold text-pink-400 flex items-center gap-2"><i class="ph ph-camera"></i> Pose Helper</h2><div class="glass-panel p-4 md:p-5 rounded-xl space-y-4"><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><div><label class="text-xs font-bold text-slate-400 uppercase">Outfit</label><select id="poseOutfit" class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm"><option>Wedding Gown/Suit</option><option>Traditional</option><option>Casual</option></select></div><div><label class="text-xs font-bold text-slate-400 uppercase">Props</label><input type="text" id="poseProps" placeholder="Flowers..." class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm"></div></div><div class="flex gap-2 mb-2"><button onclick="fillPose('Shy')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">😳 Shy</button><button onclick="fillPose('Plus')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">❤️ Plus</button></div><div class="relative"><textarea id="poseInput" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white h-24 pr-10" placeholder="Situation..."></textarea><button onclick="startVoiceInput('poseInput', this)" class="absolute right-2 bottom-2 bg-slate-700/80 hover:bg-pink-600 p-2 rounded-full transition text-slate-300 hover:text-white"><i class="ph ph-microphone text-lg"></i></button></div><button onclick="generateAI('pose')" class="w-full bg-pink-600 py-3 rounded text-white font-bold active:scale-95 transition">Generate Poses</button></div><div id="poseResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl"><div id="poseOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div><div class="text-xs text-green-400 mt-2">✅ Auto-saved</div></div></div>`;
     }
 
     // --- BRAND DATA PERSISTENCE (FIXED) ---
     function saveBrandData() {
-        // Load existing data first to prevent overwriting missing fields
         const currentData = JSON.parse(localStorage.getItem('withYouBrandData') || '{}');
-        
         const ids = ['brandStyle', 'brandClient', 'brandPhone', 'brandViber', 'brandFB', 'brandTT', 'brandAddr', 'brandPackages'];
         
         ids.forEach(id => { 
@@ -544,7 +556,6 @@
         });
         
         localStorage.setItem('withYouBrandData', JSON.stringify(currentData));
-        // Silent save
     }
 
     function loadBrandData() {
@@ -553,7 +564,6 @@
             const el = document.getElementById(key);
             if(el) el.value = value;
         }
-        // Correct Selector: Target inputs inside content-container
         const inputs = document.querySelectorAll('#content-container input, #content-container textarea');
         inputs.forEach(input => {
             input.addEventListener('input', saveBrandData);
@@ -576,7 +586,6 @@
             if(window.innerWidth < 768) setTimeout(() => { document.getElementById(areaId).scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
         }
 
-        // --- FETCH BRAND CONTEXT ---
         const brandData = JSON.parse(localStorage.getItem('withYouBrandData') || '{}');
         const brandStyle = brandData.brandStyle || "Professional";
         const brandPackages = brandData.brandPackages || "Not specified. Ask client for details.";
@@ -585,56 +594,42 @@
         const systemPrompt = `
         ROLE: You are the Senior Sales Manager & Studio Owner of "With You Photo Studio" in Taunggyi.
         YOUR GOAL: Close deals warmly. Be helpful, persuasive, and confident.
-        
-        TONE RULES (CRITICAL):
-        1. Speak Natural Burmese (အပြောစကား). Use "Bya/Khamya" (male).
-        2. Be Empathetic but Sales-Driven. Use the "Sandwich Method" (Value -> Price -> Value).
-        3. Never sound like a robot. Use phrases like "အဆင်ပြေမယ်ဗျ", "စိတ်ချပါ", "ညီမရေ/အစ်ကိုရေ".
-        
-        STUDIO DATA:
-        - Packages: ${brandPackages}
-        - Contact: ${contactInfo}
+        TONE RULES (CRITICAL): Speak Natural Burmese (အပြောစကား). Use "Bya/Khamya" (male). Be Empathetic but Sales-Driven.
+        STUDIO DATA: Packages: ${brandPackages}, Contact: ${contactInfo}.
         `;
 
         let taskPrompt = "";
+        let contextTopic = ""; // For Auto-Save Title
 
         if (type === 'dm_best') {
             const service = document.getElementById('dmService').value;
             const scenario = document.getElementById('dmScenario').value;
             const msg = document.getElementById('dmInput').value;
             const strategy = document.getElementById('dmType').value;
+            contextTopic = `DM: ${service} (${scenario})`;
             
             if(isContinue) {
                 const prev = document.getElementById(outId).innerText;
-                taskPrompt = `CONTEXT: You were writing 3 DM replies. It stopped at: "...${prev.slice(-100)}". TASK: CONTINUE exactly from there. Finish the 3 options.`;
+                taskPrompt = `CONTEXT: Writing 3 DM replies. Stopped at: "...${prev.slice(-100)}". TASK: CONTINUE exactly from there. Finish the options.`;
             } else {
-                taskPrompt = `TASK: Write 3 DISTINCT SALES REPLIES. 
-                Context: ${service}. Status: ${scenario}. Client: "${msg}". Strategy: ${strategy}.
-                OUTPUT: 
-                1. [Warm Reply]
-                2. [Direct/Value Reply]
-                3. [Short/Urgent Reply]
-                MUST include Contact Info in CTA.`;
+                taskPrompt = `TASK: Write 3 DISTINCT SALES REPLIES. Context: ${service}. Status: ${scenario}. Client: "${msg}". Strategy: ${strategy}. OUTPUT: 1. [Warm Reply] 2. [Direct/Value Reply] 3. [Short/Urgent Reply]. MUST include Contact Info in CTA.`;
             }
         } 
         else if (type === 'fbpost') {
             const topic = document.getElementById('fbInput').value;
             const tone = document.getElementById('fbTone').value;
             const len = document.getElementById('fbLength').value;
+            contextTopic = `FB Post: ${topic}`;
             
             if(isContinue) {
                 const prevText = document.getElementById('fbOutput').innerText;
                 const lastChunk = prevText.slice(-300);
-                taskPrompt = `CONTEXT: You are writing a FB post. It stopped at: "...${lastChunk}". 
-                TASK: CONTINUE writing from there. Finish the body, add a strong CTA using ${contactInfo}, and add Hashtags.`;
+                taskPrompt = `CONTEXT: Writing FB post. Stopped at: "...${lastChunk}". TASK: CONTINUE writing from there. Finish body, CTA, Hashtags.`;
             } else {
                 if(len === "Long") {
                     taskPrompt = `TASK: Write ONE detailed, long-form storytelling Facebook Post about "${topic}". Tone: ${tone}. Go deep into emotion. Don't cut off.`;
                 } else {
-                    taskPrompt = `TASK: Write 3 DISTINCT Facebook Post Variations about "${topic}". 
-                    Tone: ${tone}. Length: ${len}. 
-                    FORMAT: Option 1, Option 2, Option 3.
-                    Include CTA with ${contactInfo}.`;
+                    taskPrompt = `TASK: Write 3 DISTINCT Facebook Post Variations about "${topic}". Tone: ${tone}. Length: ${len}. FORMAT: Option 1, Option 2, Option 3. Include CTA with ${contactInfo}.`;
                 }
             }
         }
@@ -644,12 +639,14 @@
             const dress = document.getElementById('tlDress').value;
             const pace = document.getElementById('tlPace').value;
             const sunset = document.getElementById('tlSunset').checked ? "Include Sunset" : "No Sunset";
+            contextTopic = `Timeline: ${place} (${dress})`;
             taskPrompt = `TASK: Create Pre-wedding Timeline. Start: ${start}, Place: ${place}, Outfits: ${dress}, Pace: ${pace}, Sunset: ${sunset}. Output: Clear List.`;
         }
         else if (type.includes('tt_')) {
             const topic = document.getElementById('ttInput').value;
             const style = document.getElementById('ttStyle').value;
             const sub = type==='tt_caption'?'Caption':'Script';
+            contextTopic = `TikTok ${sub}: ${topic}`;
             if(isContinue) {
                 const prev = document.getElementById(outId).innerText;
                 taskPrompt = `CONTEXT: Writing TikTok content. Stopped at: "...${prev.slice(-100)}". TASK: Continue finishing the 3 options.`;
@@ -661,6 +658,7 @@
             const input = document.getElementById('poseInput').value;
             const outfit = document.getElementById('poseOutfit').value;
             const props = document.getElementById('poseProps').value;
+            contextTopic = `Pose: ${outfit}`;
             taskPrompt = `TASK: Suggest 3 Poses. Context: ${input}. Outfit: ${outfit}. Props: ${props}. Give clear Burmese instructions.`;
         }
 
@@ -675,14 +673,20 @@
             const data = await res.json();
             
             if(document.getElementById(outId)) {
+                let finalContent = "";
                 if(isContinue) {
-                    // Append new text
                     document.getElementById(outId).innerText += "\n" + data.result;
+                    finalContent = document.getElementById(outId).innerText; // Get full text for update
                 } else {
                     document.getElementById(outId).innerText = data.result || "Error generating.";
+                    finalContent = data.result;
                 }
                 
-                // Show Continue Button for relevant types
+                // --- AUTO SAVE LOGIC ---
+                if (finalContent && !finalContent.includes("Error")) {
+                    saveToRecents(type, finalContent, contextTopic);
+                }
+
                 if(continueBtnIds[type]) {
                     const btn = document.getElementById(continueBtnIds[type]);
                     if(btn) btn.classList.remove('hidden');
@@ -694,7 +698,7 @@
         }
     }
 
-    // --- ASSISTANT SHORTCUTS (FIXED) ---
+    // --- ASSISTANT SHORTCUTS ---
     async function runAssistant(type) {
         const outputId = 'fbOutput'; // Use FB output box
         const areaId = 'fbResultArea';
@@ -719,17 +723,79 @@
              });
              const data = await res.json();
              document.getElementById(outputId).innerText = data.result;
+             
+             // Auto Save Assistant Results too
+             saveToRecents('Idea/Hook', data.result, "Creative Brainstorm");
+             
         } catch(e) {
             document.getElementById(outputId).innerText = "Error generating.";
         }
     }
 
-    // --- CONTINUE FUNCTION (UNIFIED) ---
+    // --- CONTINUE FUNCTION ---
     function continueAI(type) {
         const outputIds = { 'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'tt_script': 'ttOutput', 'tt_caption': 'ttOutput' };
         const out = document.getElementById(outputIds[type]);
         if(out) out.innerHTML += "<br><br><span class='text-blue-400 text-xs animate-pulse'>... Continuing ...</span>";
         generateAI(type, true);
+    }
+
+    // --- AUTO-SAVE RECENTS LOGIC (NEW) ---
+    function saveToRecents(type, content, topic) {
+        const item = {
+            id: Date.now(),
+            type: type,
+            topic: topic || "Generated Content",
+            content: content,
+            date: new Date().toLocaleString()
+        };
+        
+        const history = JSON.parse(localStorage.getItem('studioHistory') || '[]');
+        
+        // Check if updating last item (for Continue)
+        if (history.length > 0 && history[0].topic === topic && (Date.now() - history[0].id < 300000)) {
+             history[0].content = content; // Update existing recent entry
+        } else {
+             history.unshift(item); // Add new
+        }
+
+        if(history.length > 30) history.pop(); // Limit 30
+        
+        localStorage.setItem('studioHistory', JSON.stringify(history));
+        
+        // Show Badge
+        document.getElementById('recentBadge').classList.remove('hidden');
+    }
+
+    function renderHistoryList() {
+        const l = JSON.parse(localStorage.getItem('studioHistory')||'[]');
+        const c = document.getElementById('historyListContainer');
+        
+        // Hide badge when viewed
+        document.getElementById('recentBadge').classList.add('hidden');
+
+        c.innerHTML = l.length ? l.map(i=>`
+            <div class="glass-panel p-4 rounded-lg border-l-4 border-green-500 mb-2 group relative">
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <span class="font-bold text-white text-sm block">${i.topic}</span>
+                        <span class="text-[10px] text-slate-400 uppercase bg-slate-800 px-1.5 rounded">${i.type}</span>
+                    </div>
+                    <span class="text-[10px] text-slate-500">${i.date}</span>
+                </div>
+                <div class="text-xs text-slate-300 line-clamp-3 bg-slate-900/50 p-2 rounded cursor-pointer hover:bg-slate-900 transition" onclick="toggleExpand(this)">${i.content}</div>
+                <div class="mt-2 text-right flex justify-end gap-2">
+                    <button onclick="navigator.clipboard.writeText(\`${i.content.replace(/`/g,'')}\`);showToast('Copied')" class="text-blue-400 text-xs hover:text-white border border-blue-500/30 px-2 py-1 rounded">Copy</button>
+                </div>
+            </div>`).join('') : "<div class='text-center text-slate-500 py-10'>No recent activity.</div>";
+    }
+    
+    function toggleExpand(el) {
+        if(el.classList.contains('line-clamp-3')) {
+            el.classList.remove('line-clamp-3');
+        } else {
+            el.classList.add('line-clamp-3');
+        }
     }
 
     // --- VOICE INPUT ---
@@ -768,19 +834,7 @@
         const b = new Blob([document.getElementById(id).innerText],{type:'text/plain'});
         const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=n; a.click(); 
     }
-    function saveResult(t, id) {
-        const c = document.getElementById(id).innerText; if(!c) return;
-        const h = JSON.parse(localStorage.getItem('studioHistory')||'[]');
-        h.unshift({type:t, content:c, date:new Date().toLocaleString()});
-        if(h.length>20) h.pop();
-        localStorage.setItem('studioHistory', JSON.stringify(h));
-        showToast("Saved!");
-    }
-    function renderHistoryList() {
-        const l = JSON.parse(localStorage.getItem('studioHistory')||'[]');
-        const c = document.getElementById('historyListContainer');
-        c.innerHTML = l.length ? l.map(i=>`<div class="glass-panel p-4 rounded-lg border-l-4 border-blue-500 mb-2"><div class="flex justify-between text-xs text-slate-400 mb-1"><span class="font-bold text-white bg-slate-700 px-2 rounded">${i.type}</span><span>${i.date}</span></div><div class="text-sm text-slate-300 line-clamp-3">${i.content}</div><button onclick="navigator.clipboard.writeText(\`${i.content.replace(/`/g,'')}\`);showToast('Copied')" class="text-blue-400 text-xs mt-2">Copy</button></div>`).join('') : "<div class='text-center text-slate-500'>No history yet</div>";
-    }
+    function saveResult(t, id) { /* Manual Save is now just an alias for feedback, as auto-save handles it */ showToast("Already Auto-Saved!"); }
     function clearHistory() { if(confirm("Clear?")) { localStorage.removeItem('studioHistory'); renderHistoryList(); } }
   </script>
 </body>
