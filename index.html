@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Sales Master AI v4.5.1</title>
+  <title>With You Studio - Sales Master AI v4.6</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -116,8 +116,9 @@
         <div>
             <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Priority</p>
             <div class="space-y-1">
+                <!-- NEW CREATIVE DIRECTOR TAB -->
                 <button onclick="window.loadView('creative')" id="nav-creative" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                    <i class="ph ph-lightbulb text-lg text-yellow-400"></i> Ideas (What to post?)
+                    <i class="ph ph-lightbulb text-lg text-yellow-400"></i> Ideas
                 </button>
                 <button onclick="window.loadView('dm')" id="nav-dm" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
                     <i class="ph ph-chat-circle-text text-lg text-purple-400"></i> DM Sales Master
@@ -214,12 +215,12 @@
 
   <!-- TEMPLATES -->
   
-  <!-- 0. CREATIVE DIRECTOR TEMPLATE -->
+  <!-- 0. CREATIVE DIRECTOR TEMPLATE (UPDATED: Added Write Post Now Button) -->
   <template id="tpl-creative">
     <div class="animate-fade-in space-y-6">
         <div class="flex items-center justify-between">
             <h2 class="text-xl md:text-2xl font-bold text-yellow-400 flex items-center gap-2"><i class="ph ph-lightbulb"></i> Creative Director</h2>
-            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">v4.5</div>
+            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">v4.6</div>
         </div>
         
         <div class="glass-panel p-6 rounded-xl border border-yellow-500/20 shadow-lg relative overflow-hidden">
@@ -264,16 +265,22 @@
                          </div>
                     </div>
 
-                    <button onclick="window.generateAI('creative_director')" class="w-full mt-4 bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-500 hover:to-orange-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-yellow-900/30 transition active:scale-95 flex items-center justify-center gap-2">
-                        <i class="ph ph-magic-wand text-lg"></i> Tell Me What To Post
-                    </button>
+                    <!-- Dual Action Buttons -->
+                    <div class="grid grid-cols-2 gap-3 mt-4">
+                        <button onclick="window.generateAI('creative_director')" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 font-bold py-3.5 rounded-xl transition active:scale-95 flex items-center justify-center gap-2">
+                            <i class="ph ph-calendar-plus text-lg"></i> 3-Day Plan
+                        </button>
+                        <button onclick="window.generateAI('creative_post')" class="bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-500 hover:to-orange-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-yellow-900/30 transition active:scale-95 flex items-center justify-center gap-2">
+                            <i class="ph ph-pen-nib text-lg"></i> Write Post Now
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Output Area (Desktop) -->
                 <div id="crResultArea" class="hidden md:block h-full">
                      <div class="bg-slate-900/50 rounded-xl border border-slate-700 p-4 h-full flex flex-col">
                         <div class="flex justify-between items-center mb-3">
-                            <span class="text-xs font-bold text-yellow-400 uppercase">3-Day Plan</span>
+                            <span class="text-xs font-bold text-yellow-400 uppercase">Generated Content</span>
                             <button onclick="window.copyText('crOutput')" class="text-xs bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded border border-slate-600 transition">Copy</button>
                         </div>
                         <div id="crOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 overflow-y-auto max-h-[400px] custom-scroll"></div>
@@ -285,7 +292,7 @@
             <div id="crResultAreaMobile" class="md:hidden hidden mt-4">
                  <div class="bg-slate-900/50 rounded-xl border border-slate-700 p-4">
                     <div class="flex justify-between items-center mb-3">
-                        <span class="text-xs font-bold text-yellow-400 uppercase">Your Plan</span>
+                        <span class="text-xs font-bold text-yellow-400 uppercase">Result</span>
                         <button onclick="window.copyText('crOutputMobile')" class="text-xs bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded border border-slate-600 transition">Copy</button>
                     </div>
                     <div id="crOutputMobile" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed"></div>
@@ -589,8 +596,7 @@
     window.setCreativeOption = function(type, value, btn) {
         if(type === 'workload') {
             document.getElementById('crWorkload').value = value;
-            document.querySelectorAll('.creative-btn').forEach(b => b.classList.remove('active')); // Note: Selector might need adjustment if clone
-            // Better: Find siblings
+            document.querySelectorAll('.creative-btn').forEach(b => b.classList.remove('active')); 
             if(btn && btn.parentElement) {
                 Array.from(btn.parentElement.children).forEach(c => c.classList.remove('active'));
                 btn.classList.add('active');
@@ -639,8 +645,8 @@
     }
 
     window.generateAI = async function(type, isContinue = false) {
-        const outputIds = { 'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'timeline': 'tlOutput', 'tt_caption': 'ttOutput', 'tt_script': 'ttOutput', 'pose': 'poseOutput', 'creative_director': 'crOutput' };
-        const areaIds = { 'fbpost': 'fbResultArea', 'dm_best': 'dmResultArea', 'timeline': 'tlResultArea', 'tt_caption': 'ttResultArea', 'tt_script': 'ttResultArea', 'pose': 'poseResultArea', 'creative_director': 'crResultArea' };
+        const outputIds = { 'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'timeline': 'tlOutput', 'tt_caption': 'ttOutput', 'tt_script': 'ttOutput', 'pose': 'poseOutput', 'creative_director': 'crOutput', 'creative_post': 'crOutput' }; // Added creative_post
+        const areaIds = { 'fbpost': 'fbResultArea', 'dm_best': 'dmResultArea', 'timeline': 'tlResultArea', 'tt_caption': 'ttResultArea', 'tt_script': 'ttResultArea', 'pose': 'poseResultArea', 'creative_director': 'crResultArea', 'creative_post': 'crResultArea' }; // Added creative_post
         const continueBtnIds = { 'fbpost': 'fbContinueBtn', 'dm_best': 'dmContinueBtn', 'timeline': 'tlContinueBtn', 'tt_caption': 'ttContinueBtn', 'tt_script': 'ttContinueBtn' };
 
         const outId = outputIds[type];
@@ -652,18 +658,18 @@
         } else {
              if(document.getElementById(areaId)) document.getElementById(areaId).classList.remove('hidden');
              // Special handling for Creative Director Mobile
-             if(type === 'creative_director') {
+             if(type === 'creative_director' || type === 'creative_post') {
                  if(window.innerWidth < 768) document.getElementById('crResultAreaMobile').classList.remove('hidden');
              }
 
              if(!isContinue && document.getElementById(outId)) {
                 document.getElementById(outId).innerHTML = "<span class='animate-pulse text-purple-400'>✨ Senior Sales Manager is thinking...</span>";
-                if(type === 'creative_director' && window.innerWidth < 768) {
+                if((type === 'creative_director' || type === 'creative_post') && window.innerWidth < 768) {
                     document.getElementById('crOutputMobile').innerHTML = "<span class='animate-pulse text-yellow-400'>✨ Creating...</span>";
                 }
                 
                 if(window.innerWidth < 768) {
-                    const scrollTarget = type === 'creative_director' ? document.getElementById('crResultAreaMobile') : document.getElementById(areaId);
+                    const scrollTarget = (type === 'creative_director' || type === 'creative_post') ? document.getElementById('crResultAreaMobile') : document.getElementById(areaId);
                     setTimeout(() => { scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
                 }
             }
@@ -706,6 +712,29 @@
             - Specific Hook & Call to Action for each.
             - Write in Burmese.
             - Keep it realistic for a studio owner.
+            `;
+        }
+        else if (type === 'creative_post') {
+            const focus = getValue('crFocus'); // e.g., Pre-Wedding
+            const fb = document.getElementById('crFB').checked;
+            const tt = document.getElementById('crTT').checked;
+            let platform = "Social Media";
+            if (fb && tt) platform = "Facebook & TikTok";
+            else if (fb) platform = "Facebook";
+            else if (tt) platform = "TikTok";
+
+            contextTopic = `Creative Post: ${focus}`;
+            taskPrompt = `
+            TASK: Write a highly attractive, persuasive ${platform} post about "${focus}".
+            GOAL: Make clients want to book With You Studio immediately.
+            TONE: Emotional, inviting, trustworthy (Studio Brand Voice).
+            STRUCTURE:
+            - Catchy Hook (Stop scrolling!)
+            - Emotional Body (Why this matters?)
+            - Trust Signal (We guide you, don't worry)
+            - Strong Call to Action (Book now)
+            - 5 Relevant Hashtags
+            LANGUAGE: Burmese (Natural, warm, "Bya" ending).
             `;
         }
         else if (type === 'dm_analyze') {
@@ -819,7 +848,7 @@
                 }
                 
                 // Duplicate to Mobile Creative Output
-                if(type === 'creative_director') {
+                if(type === 'creative_director' || type === 'creative_post') {
                     if (document.getElementById('crOutputMobile')) {
                         document.getElementById('crOutputMobile').innerText = finalContent;
                     }
