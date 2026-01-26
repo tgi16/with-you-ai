@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Sales Master AI v4.5</title>
+  <title>With You Studio - Sales Master AI v4.5.1</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -476,7 +476,7 @@
         <h2 class="text-xl md:text-2xl font-bold text-orange-400 flex items-center gap-2"><i class="ph ph-clock"></i> Timeline Generator</h2>
         <div class="glass-panel p-4 md:p-6 rounded-xl">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                <div><label class="text-xs text-slate-400 uppercase font-bold">Start</label><select id="tlStart" class="w-full p-2 mt-1 bg-slate-800 rounded border border-slate-700 text-white"><option>6:00 AM</option><option>8:00 AM</option><option>1:00 PM</option></select></div>
+                <div><label class="text-xs text-slate-400 uppercase font-bold">Start</label><select id="tlStart" class="w-full p-2 mt-1 bg-slate-800 rounded border border-slate-700 text-white"><option>6:00 AM</option><option>7:00 AM</option><option>8:00 AM</option><option>1:00 PM</option></select></div>
                 <div><label class="text-xs text-slate-400 uppercase font-bold">Place</label><select id="tlPlace" class="w-full p-2 mt-1 bg-slate-800 rounded border border-slate-700 text-white"><option>Taunggyi (City)</option><option>Inle Lake</option><option>Kalaw</option></select></div>
                 <div><label class="text-xs text-slate-400 uppercase font-bold">Outfits</label><select id="tlDress" class="w-full p-2 mt-1 bg-slate-800 rounded border border-slate-700 text-white"><option>3 Dresses</option><option>4 Dresses</option><option>5 Dresses</option></select></div>
                 <div><label class="text-xs text-slate-400 uppercase font-bold">Pacing</label><select id="tlPace" class="w-full p-2 mt-1 bg-slate-800 rounded border border-slate-700 text-white"><option>Relaxed</option><option>Packed</option></select></div>
@@ -486,7 +486,6 @@
         </div>
         <div id="tlResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl">
             <div id="tlOutput" class="whitespace-pre-wrap text-sm text-slate-200 font-mono"></div>
-            <button id="tlContinueBtn" onclick="window.continueAI('timeline')" class="hidden w-full mt-2 py-2 bg-slate-800 text-orange-400 text-xs border border-slate-600 rounded">⚠️ Continue Writing</button>
             <div class="mt-4 flex gap-2">
                 <button onclick="window.downloadFile('Schedule.txt', 'tlOutput')" class="text-xs text-blue-400 border border-blue-900 p-2 rounded">⬇️ Download</button>
                 <button onclick="window.copyText('tlOutput')" class="text-xs text-slate-400 border border-slate-700 p-2 rounded">📋 Copy</button>
@@ -665,7 +664,7 @@
                 
                 if(window.innerWidth < 768) {
                     const scrollTarget = type === 'creative_director' ? document.getElementById('crResultAreaMobile') : document.getElementById(areaId);
-                    setTimeout(() => scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+                    setTimeout(() => { scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
                 }
             }
         }
@@ -850,8 +849,11 @@
         let prompt = "";
         if(type === 'fb_ideas') prompt = "Generate 5 Creative Facebook Post Ideas for a photography studio.";
         if(type === 'fb_hooks') prompt = "Write 5 catchy hooks (first sentences) in Burmese to stop scrolling.";
+        
+        const maleInstruction = "IMPORTANT: Write as a MALE speaker using 'Bya' (ဗျ). Do NOT use 'Shin'. ";
+
         try {
-             const res = await fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt: "Context: Myanmar Photo Studio. " + prompt }) });
+             const res = await fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt: "Context: Myanmar Photo Studio. " + maleInstruction + prompt }) });
              const data = await res.json();
              document.getElementById(outputId).innerText = data.result;
              saveToRecents('Idea/Hook', data.result, "Creative Brainstorm");
