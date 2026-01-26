@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Sales Master AI v4.2</title>
+  <title>With You Studio - Sales Master AI v4.3</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -11,33 +11,41 @@
   <style>
     body { font-family: 'Padauk', sans-serif; }
     /* Custom Scrollbar */
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
     ::-webkit-scrollbar-track { background: #0f172a; }
-    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 2px; }
     
     .glass-panel {
-        background: rgba(30, 41, 59, 0.6);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        background: rgba(30, 41, 59, 0.75);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     }
     
-    .nav-item.active, .mobile-nav-item.active {
-        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    /* Navigation Active States */
+    .nav-item.active {
+        background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
         color: white;
         box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .mobile-nav-item.active {
+        background: #2563eb;
+        color: white;
+        border-color: #3b82f6;
     }
 
+    /* Buttons */
     .tactic-btn.active, .creative-btn.active {
         background-color: #7e22ce; 
         border-color: #a855f7;
         color: white;
         font-weight: bold;
-        box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
+        box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
     }
 
+    /* Sidebar Transition */
     #sidebar { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     .sidebar-open { transform: translateX(0) !important; }
     .sidebar-closed { transform: translateX(-100%); }
@@ -46,6 +54,7 @@
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+    /* Animations */
     .listening-ring {
         box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
         animation: pulse-red 1.5s infinite cubic-bezier(0.66, 0, 0, 1);
@@ -53,18 +62,26 @@
     }
     @keyframes pulse-red { to { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } }
     
-    /* Toast Animation */
+    .animate-fade-in { animation: fadeIn 0.4s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Toast */
     .toast { visibility: hidden; min-width: 250px; background-color: #1e293b; color: #fff; text-align: center; border-radius: 50px; padding: 12px 24px; position: fixed; z-index: 100; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; opacity: 0; }
     .toast.show { visibility: visible; bottom: 40px; opacity: 1; }
+
+    /* Mobile Text Size Fix */
+    @media screen and (max-width: 768px) {
+        input, select, textarea { font-size: 16px !important; } /* Prevents iOS zoom */
+    }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-200 h-screen h-[100dvh] flex overflow-hidden selection:bg-blue-500/30">
+<body class="bg-slate-950 text-slate-200 h-[100dvh] flex overflow-hidden selection:bg-blue-500/30">
 
   <!-- LOGIN OVERLAY -->
-  <div id="loginOverlay" class="fixed inset-0 z-[60] bg-slate-950/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 transition-opacity duration-300">
+  <div id="loginOverlay" class="fixed inset-0 z-[60] bg-slate-950/98 backdrop-blur-md flex flex-col items-center justify-center p-6 transition-opacity duration-300">
     <div class="glass-panel p-8 rounded-3xl w-full max-w-sm border border-slate-700/50 shadow-2xl flex flex-col items-center space-y-6">
         <div class="text-center">
-            <div class="w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/20 rotate-3">
+            <div class="w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/20">
                 <i class="ph ph-camera text-4xl text-white"></i>
             </div>
             <h2 class="text-2xl font-bold text-white tracking-tight">With You Studio</h2>
@@ -74,40 +91,31 @@
         <div class="w-full space-y-4">
             <div class="space-y-1">
                 <label class="text-xs font-bold text-slate-400 uppercase ml-1">Email</label>
-                <div class="relative group">
-                    <i class="ph ph-envelope absolute left-3 top-3.5 text-slate-500 text-lg group-focus-within:text-blue-400 transition"></i>
-                    <input type="email" id="loginEmail" placeholder="admin@studio.com" class="w-full bg-slate-900/50 border border-slate-700 rounded-xl p-3 pl-10 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 outline-none transition placeholder-slate-600">
-                </div>
+                <input type="email" id="loginEmail" placeholder="admin@studio.com" class="w-full bg-slate-900/50 border border-slate-700 rounded-xl p-3 text-white focus:border-blue-500 outline-none">
             </div>
             <div class="space-y-1">
                 <label class="text-xs font-bold text-slate-400 uppercase ml-1">Password</label>
-                <div class="relative group">
-                    <i class="ph ph-key absolute left-3 top-3.5 text-slate-500 text-lg group-focus-within:text-blue-400 transition"></i>
-                    <input type="password" id="loginPass" placeholder="••••••••" class="w-full bg-slate-900/50 border border-slate-700 rounded-xl p-3 pl-10 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 outline-none transition placeholder-slate-600">
-                </div>
+                <input type="password" id="loginPass" placeholder="••••••••" class="w-full bg-slate-900/50 border border-slate-700 rounded-xl p-3 text-white focus:border-blue-500 outline-none">
             </div>
-            <button onclick="window.handleLogin()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-600/20 transition active:scale-95 flex justify-center gap-2 items-center mt-2">
-                <span>Sign In</span>
-                <i class="ph ph-arrow-right-bold"></i>
+            <button onclick="window.handleLogin()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3.5 rounded-xl shadow-lg transition active:scale-95 flex justify-center gap-2 items-center mt-2">
+                <span>Log In</span>
+                <i class="ph ph-sign-in"></i>
             </button>
         </div>
         
-        <p id="loginError" class="text-red-400 text-xs text-center hidden bg-red-900/20 p-3 rounded-lg w-full border border-red-900/30 flex items-center justify-center gap-2">
-            <i class="ph ph-warning-circle"></i> <span id="loginErrorText">Error</span>
-        </p>
+        <p id="loginError" class="text-red-400 text-xs text-center hidden bg-red-900/20 p-3 rounded-lg w-full border border-red-900/30"></p>
     </div>
   </div>
 
   <!-- OVERLAY for Mobile Sidebar -->
   <div id="overlay" onclick="window.toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden backdrop-blur-sm transition-all"></div>
 
-  <!-- SIDEBAR NAVIGATION -->
+  <!-- SIDEBAR NAVIGATION (Desktop) -->
   <aside id="sidebar" class="sidebar-closed fixed inset-y-0 left-0 z-50 w-72 bg-slate-900/95 border-r border-slate-800 flex flex-col transition-transform duration-300 md:relative md:translate-x-0 shadow-2xl backdrop-blur-xl">
-    <div class="p-6 border-b border-slate-800/50 flex items-center justify-between bg-slate-900/50">
+    <div class="p-6 border-b border-slate-800/50 flex items-center justify-between">
         <div>
             <h1 class="text-xl font-bold text-white tracking-tight flex items-center gap-2">
-                <span class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white"><i class="ph ph-camera-fill"></i></span>
-                With You
+                <i class="ph ph-camera text-blue-500"></i> With You
             </h1>
             <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1.5 flex items-center gap-1.5 pl-1">
                 <span id="connectionStatus" class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span> Offline
@@ -118,16 +126,16 @@
 
     <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-8 custom-scroll">
         <div>
-            <p class="px-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3">Core Strategy</p>
+            <p class="px-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3">Core</p>
             <div class="space-y-1">
                 <button onclick="window.loadView('creative')" id="nav-creative" class="nav-item w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-800/80 hover:text-white transition group">
-                    <i class="ph ph-lightbulb text-xl text-yellow-400 group-hover:scale-110 transition"></i> Ideas
+                    <i class="ph ph-lightbulb text-xl text-yellow-400 group-hover:scale-110"></i> Ideas
                 </button>
                 <button onclick="window.loadView('dm')" id="nav-dm" class="nav-item w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-800/80 hover:text-white transition group">
-                    <i class="ph ph-chat-circle-text text-xl text-purple-400 group-hover:scale-110 transition"></i> Sales DM
+                    <i class="ph ph-chat-circle-text text-xl text-purple-400 group-hover:scale-110"></i> Sales DM
                 </button>
                 <button onclick="window.loadView('brand')" id="nav-brand" class="nav-item w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-800/80 hover:text-white transition group">
-                    <i class="ph ph-brain text-xl text-blue-400 group-hover:scale-110 transition"></i> Brand Brain
+                    <i class="ph ph-brain text-xl text-blue-400 group-hover:scale-110"></i> Brand Brain
                 </button>
             </div>
         </div>
@@ -135,10 +143,10 @@
             <p class="px-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3">Content</p>
             <div class="space-y-1">
                 <button onclick="window.loadView('fbpost')" id="nav-fbpost" class="nav-item w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-800/80 hover:text-white transition group">
-                    <i class="ph ph-facebook-logo text-xl text-blue-500 group-hover:scale-110 transition"></i> Facebook
+                    <i class="ph ph-facebook-logo text-xl text-blue-500 group-hover:scale-110"></i> Facebook
                 </button>
                 <button onclick="window.loadView('tiktok')" id="nav-tiktok" class="nav-item w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-800/80 hover:text-white transition group">
-                    <i class="ph ph-tiktok-logo text-xl text-teal-400 group-hover:scale-110 transition"></i> TikTok
+                    <i class="ph ph-tiktok-logo text-xl text-teal-400 group-hover:scale-110"></i> TikTok
                 </button>
             </div>
         </div>
@@ -146,14 +154,13 @@
             <p class="px-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3">Tools</p>
             <div class="space-y-1">
                 <button onclick="window.loadView('timeline')" id="nav-timeline" class="nav-item w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-800/80 hover:text-white transition group">
-                    <i class="ph ph-clock text-xl text-orange-400 group-hover:scale-110 transition"></i> Timeline
+                    <i class="ph ph-clock text-xl text-orange-400 group-hover:scale-110"></i> Timeline
                 </button>
                 <button onclick="window.loadView('pose')" id="nav-pose" class="nav-item w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-800/80 hover:text-white transition group">
-                    <i class="ph ph-camera text-xl text-pink-400 group-hover:scale-110 transition"></i> Pose
+                    <i class="ph ph-camera text-xl text-pink-400 group-hover:scale-110"></i> Pose
                 </button>
                 <button onclick="window.loadView('recent')" id="nav-recent" class="nav-item w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-800/80 hover:text-white transition group relative">
-                    <i class="ph ph-clock-counter-clockwise text-xl text-green-400 group-hover:scale-110 transition"></i> 
-                    History
+                    <i class="ph ph-clock-counter-clockwise text-xl text-green-400 group-hover:scale-110"></i> History
                     <span id="recentBadge" class="hidden absolute right-3 top-4 w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                 </button>
             </div>
@@ -161,103 +168,111 @@
     </nav>
 
     <div class="p-4 border-t border-slate-800/50 bg-slate-900/50">
-        <div id="userEmailDisplay" class="text-[10px] text-slate-500 mb-3 truncate text-center font-mono bg-slate-950/50 py-1 rounded">...</div>
+        <div id="userEmailDisplay" class="text-[10px] text-slate-500 mb-3 truncate text-center font-mono">...</div>
         <button onclick="window.handleLogout()" class="w-full py-2.5 border border-red-500/20 bg-red-500/5 rounded-xl text-red-400 hover:bg-red-500/10 hover:border-red-500/30 transition flex items-center justify-center gap-2 text-xs font-bold">
             <i class="ph ph-sign-out text-lg"></i> Sign Out
         </button>
     </div>
   </aside>
 
-  <!-- MAIN CONTENT AREA (RIGHT) -->
+  <!-- MAIN CONTENT AREA -->
   <div class="flex-1 flex flex-col h-full relative w-full bg-slate-950">
-    <header class="md:hidden h-16 bg-slate-900/80 border-b border-slate-800 flex items-center justify-between px-4 z-30 shrink-0 backdrop-blur-md sticky top-0">
-        <button onclick="window.toggleSidebar()" class="text-white p-2 hover:bg-slate-800 rounded-lg transition"><i class="ph ph-list text-2xl"></i></button>
-        <span class="font-bold text-white text-lg tracking-tight">With You Studio</span>
-        <div class="w-10"></div>
-    </header>
+    
+    <!-- Mobile Header & Nav -->
+    <div class="md:hidden z-30 bg-slate-950/95 border-b border-slate-800 sticky top-0 backdrop-blur-md">
+        <header class="h-14 flex items-center justify-between px-4">
+            <button onclick="window.toggleSidebar()" class="text-white p-2 hover:bg-slate-800 rounded-lg"><i class="ph ph-list text-2xl"></i></button>
+            <span class="font-bold text-white text-lg tracking-tight">With You Studio</span>
+            <div class="w-10"></div>
+        </header>
 
-    <!-- MOBILE QUICK NAV -->
-    <div class="md:hidden bg-slate-950/95 border-b border-slate-800 overflow-x-auto no-scrollbar py-3 px-4 flex gap-3 shrink-0 backdrop-blur-md z-20">
-        <button onclick="window.loadView('creative')" id="mob-creative" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-900">
-            <i class="ph ph-lightbulb text-yellow-400"></i> Ideas
-        </button>
-        <button onclick="window.loadView('dm')" id="mob-dm" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-900">
-            <i class="ph ph-chat-circle-text text-purple-400"></i> DM
-        </button>
-        <button onclick="window.loadView('fbpost')" id="mob-fbpost" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-900">
-            <i class="ph ph-facebook-logo"></i> Post
-        </button>
-        <button onclick="window.loadView('tiktok')" id="mob-tiktok" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-900">
-            <i class="ph ph-tiktok-logo"></i> TikTok
-        </button>
-        <button onclick="window.loadView('timeline')" id="mob-timeline" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-900">
-            <i class="ph ph-clock"></i> Timeline
-        </button>
-        <button onclick="window.loadView('pose')" id="mob-pose" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-900">
-            <i class="ph ph-camera"></i> Pose
-        </button>
-        <button onclick="window.loadView('recent')" id="mob-recent" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-900">
-            <i class="ph ph-clock-counter-clockwise text-green-400"></i> Recent
-        </button>
+        <!-- Horizontal Scroll Nav -->
+        <div class="overflow-x-auto no-scrollbar py-2 px-3 flex gap-2">
+            <button onclick="window.loadView('creative')" id="mob-creative" class="mobile-nav-item flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 bg-slate-900 whitespace-nowrap">
+                <i class="ph ph-lightbulb text-yellow-400"></i> Ideas
+            </button>
+            <button onclick="window.loadView('dm')" id="mob-dm" class="mobile-nav-item flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 bg-slate-900 whitespace-nowrap">
+                <i class="ph ph-chat-circle-text text-purple-400"></i> DM
+            </button>
+            <button onclick="window.loadView('fbpost')" id="mob-fbpost" class="mobile-nav-item flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 bg-slate-900 whitespace-nowrap">
+                <i class="ph ph-facebook-logo"></i> Post
+            </button>
+            <button onclick="window.loadView('tiktok')" id="mob-tiktok" class="mobile-nav-item flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 bg-slate-900 whitespace-nowrap">
+                <i class="ph ph-tiktok-logo"></i> TikTok
+            </button>
+            <button onclick="window.loadView('brand')" id="mob-brand" class="mobile-nav-item flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 bg-slate-900 whitespace-nowrap">
+                <i class="ph ph-brain"></i> Brain
+            </button>
+            <button onclick="window.loadView('timeline')" id="mob-timeline" class="mobile-nav-item flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 bg-slate-900 whitespace-nowrap">
+                <i class="ph ph-clock"></i> Timeline
+            </button>
+            <button onclick="window.loadView('pose')" id="mob-pose" class="mobile-nav-item flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 bg-slate-900 whitespace-nowrap">
+                <i class="ph ph-camera"></i> Pose
+            </button>
+            <button onclick="window.loadView('recent')" id="mob-recent" class="mobile-nav-item flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 bg-slate-900 whitespace-nowrap">
+                <i class="ph ph-clock-counter-clockwise text-green-400"></i> History
+            </button>
+        </div>
     </div>
 
-    <!-- Dynamic Content Container -->
-    <div id="content-container" class="flex-1 overflow-y-auto p-4 md:p-8 max-w-5xl mx-auto w-full pb-24 scroll-smooth">
-        <!-- Content injects here via JS -->
-    </div>
+    <!-- Content -->
+    <div id="content-container" class="flex-1 overflow-y-auto p-4 md:p-8 max-w-5xl mx-auto w-full pb-24 scroll-smooth custom-scroll"></div>
   </div>
 
-  <div id="toast" class="toast"></div>
+  <div id="toast" class="toast">Action Complete</div>
 
   <!-- TEMPLATES -->
-
-  <!-- TIMELINE TEMPLATE (RESTORED) -->
-  <template id="tpl-timeline">
+  
+  <!-- BRAND BRAIN (RESTORED FULLY) -->
+  <template id="tpl-brand">
     <div class="animate-fade-in space-y-6">
-        <div class="flex items-center justify-between">
-             <h2 class="text-xl md:text-2xl font-bold text-orange-400 flex items-center gap-2"><i class="ph ph-clock"></i> Timeline Generator</h2>
-             <div class="text-[10px] text-slate-400 bg-slate-800/50 border border-slate-700 px-3 py-1 rounded-full">v4.2</div>
-        </div>
-        <div class="glass-panel p-4 md:p-6 rounded-xl border border-orange-500/20 shadow-lg">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                <div><label class="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1 block">Start</label><select id="tlStart" class="w-full bg-slate-800/50 border border-slate-600 rounded-xl p-2.5 text-white text-sm outline-none"><option>6:00 AM</option><option>7:00 AM</option><option>8:00 AM</option><option>1:00 PM</option></select></div>
-                <div><label class="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1 block">Place</label><select id="tlPlace" class="w-full bg-slate-800/50 border border-slate-600 rounded-xl p-2.5 text-white text-sm outline-none"><option>Taunggyi (City)</option><option>Inle Lake</option><option>Kalaw</option><option>Kakku</option><option>Ayetharyar</option></select></div>
-                <div><label class="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1 block">Outfits</label><select id="tlDress" class="w-full bg-slate-800/50 border border-slate-600 rounded-xl p-2.5 text-white text-sm outline-none"><option>3 Dresses</option><option>4 Dresses</option><option>5 Dresses</option><option>2 Dresses (Mini)</option></select></div>
-                <div><label class="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1 block">Pacing</label><select id="tlPace" class="w-full bg-slate-800/50 border border-slate-600 rounded-xl p-2.5 text-white text-sm outline-none"><option value="Relaxed">Relaxed (အေးဆေး)</option><option value="Packed">Packed (ရိုက်ကွက်များ)</option></select></div>
+        <div class="bg-gradient-to-br from-slate-800 to-slate-900 p-6 md:p-8 rounded-3xl border border-slate-700 relative overflow-hidden shadow-2xl">
+            <h2 class="text-xl md:text-3xl font-bold text-white mb-2 flex items-center gap-3"><i class="ph ph-database text-blue-400"></i> Studio Brain (Cloud)</h2>
+            <p class="text-sm text-slate-400 mb-6">Teaching AI your business context.</p>
+            
+            <div class="space-y-6 text-left relative z-10">
+                <div class="bg-slate-950/50 p-5 rounded-2xl border border-slate-700">
+                    <label class="text-xs font-bold text-yellow-400 uppercase mb-3 block flex items-center gap-2"><i class="ph ph-package"></i> Packages & Pricing</label>
+                    <textarea id="brandPackages" placeholder="Example: Silver Package: 3 Lakhs (2 dresses, 20 photos)..." class="w-full bg-slate-900 border border-slate-600 rounded-xl p-4 text-sm text-white h-32 resize-none focus:border-yellow-500"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="text-xs font-bold text-blue-400 uppercase mb-2 block">Studio Vibe</label>
+                        <input type="text" id="brandStyle" placeholder="e.g. Moody, Cinematic" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-blue-400 uppercase mb-2 block">Target Audience</label>
+                        <input type="text" id="brandClient" placeholder="e.g. Young Couples" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white">
+                    </div>
+                </div>
+                
+                <div class="bg-slate-950/30 p-5 rounded-2xl border border-slate-700">
+                    <label class="text-xs font-bold text-slate-300 uppercase mb-3 block flex items-center gap-2"><i class="ph ph-address-book"></i> Contact Details (For Auto-CTA)</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <input type="text" id="brandPhone" placeholder="Phone Number" class="bg-slate-950 border border-slate-700 rounded-xl p-3 text-white text-sm">
+                        <input type="text" id="brandViber" placeholder="Viber Number" class="bg-slate-950 border border-slate-700 rounded-xl p-3 text-white text-sm">
+                        <input type="text" id="brandFB" placeholder="Facebook Page Link" class="bg-slate-950 border border-slate-700 rounded-xl p-3 text-white text-sm">
+                        <input type="text" id="brandTT" placeholder="TikTok Link" class="bg-slate-950 border border-slate-700 rounded-xl p-3 text-white text-sm">
+                    </div>
+                    <input type="text" id="brandAddr" placeholder="Studio Address" class="mt-4 w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white text-sm">
+                </div>
+
+                <div class="pt-4 flex flex-col items-center gap-2">
+                    <button onclick="window.saveBrandData()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2 transition active:scale-95"><i class="ph ph-floppy-disk text-xl"></i> Save Changes</button>
+                    <div id="saveStatus" class="text-xs text-slate-500 text-center">Sync ready.</div>
+                </div>
             </div>
-            <div class="flex items-center gap-2 mb-4 p-3 bg-slate-800/30 rounded-xl border border-slate-700/50"><input type="checkbox" id="tlSunset" class="w-4 h-4 rounded bg-slate-800 border-slate-700 text-orange-500 focus:ring-0"><label for="tlSunset" class="text-sm text-slate-300 select-none">Include Sunset Shot (နေဝင်ချိန်)</label></div>
-            <button onclick="window.generateAI('timeline')" class="w-full bg-orange-600 hover:bg-orange-500 py-3.5 rounded-xl text-white font-bold active:scale-95 transition shadow-lg shadow-orange-900/20">Generate Schedule</button>
-        </div>
-        <div id="tlResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl border border-orange-500/20">
-            <div class="flex justify-between items-center mb-3"><span class="text-xs font-bold text-orange-400 uppercase">Schedule</span><div class="flex gap-2"><button onclick="window.downloadFile('Schedule.txt', 'tlOutput')" class="text-xs text-blue-400 hover:text-white">⬇️ File</button><button onclick="window.copyText('tlOutput')" class="text-xs text-orange-400 hover:text-white">Copy</button></div></div>
-            <div id="tlOutput" class="whitespace-pre-wrap text-sm text-slate-200 font-mono leading-relaxed custom-scroll max-h-[500px] overflow-y-auto"></div>
-            <button id="tlContinueBtn" onclick="window.continueAI('timeline')" class="hidden w-full mt-3 py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-orange-400 text-sm font-bold flex items-center justify-center gap-2"><span>⚠️ Continue Writing</span></button>
         </div>
     </div>
   </template>
 
-  <!-- POSE TEMPLATE (RESTORED) -->
-  <!-- Note: We are using getPoseHTML() function in JS instead of template tag for Pose to show both methods, 
-       but for consistency with fix request, I will ensure getPoseHTML generates valid HTML -->
-
-  <!-- RECENT TEMPLATE -->
-  <template id="tpl-recent">
-    <div class="animate-fade-in space-y-6">
-        <div class="flex justify-between items-center">
-            <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2"><i class="ph ph-clock-counter-clockwise text-green-400"></i> Cloud History</h2>
-            <button onclick="window.clearHistory()" class="text-red-400 text-xs border border-red-900/50 px-3 py-1.5 rounded hover:bg-red-900/20 transition">Clear All</button>
-        </div>
-        <p class="text-xs text-slate-500 mb-4 bg-slate-900/50 p-2 rounded-lg inline-block border border-slate-800">Saved securely on Firebase.</p>
-        <div id="historyListContainer" class="space-y-4 pb-20"></div>
-    </div>
-  </template>
-
-  <!-- CREATIVE & DM & FB & BRAND TEMPLATES (Same as before) -->
+  <!-- CREATIVE DIRECTOR -->
   <template id="tpl-creative">
     <div class="animate-fade-in space-y-6">
         <h2 class="text-xl md:text-3xl font-bold text-yellow-400 flex items-center gap-3"><i class="ph ph-lightbulb"></i> Creative Director</h2>
-        <div class="glass-panel p-6 rounded-2xl border border-yellow-500/20 shadow-xl relative overflow-hidden">
-             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+        <div class="glass-panel p-6 rounded-2xl border border-yellow-500/20 shadow-xl">
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="space-y-5">
                     <div>
                         <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Today's Workload</label>
@@ -274,13 +289,14 @@
                     </div>
                     <button onclick="window.generateAI('creative_director')" class="w-full mt-4 bg-gradient-to-r from-yellow-600 to-orange-600 text-white font-bold py-4 rounded-xl shadow-lg transition active:scale-95">Create Plan</button>
                 </div>
-                <div id="crResultArea" class="hidden md:block h-full"><div class="bg-slate-950/40 rounded-xl border border-slate-700 p-5 h-full flex flex-col"><div id="crOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 overflow-y-auto max-h-[400px]"></div></div></div>
+                <div id="crResultArea" class="hidden md:block h-full"><div class="bg-slate-950/40 rounded-xl border border-slate-700 p-5 h-full flex flex-col"><div id="crOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 overflow-y-auto max-h-[400px] custom-scroll"></div></div></div>
             </div>
              <div id="crResultAreaMobile" class="md:hidden hidden mt-6"><div class="bg-slate-950/40 rounded-xl border border-slate-700 p-5"><div id="crOutputMobile" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed"></div></div></div>
         </div>
     </div>
   </template>
 
+  <!-- DM -->
   <template id="tpl-dm">
     <div class="animate-fade-in space-y-6">
         <h2 class="text-xl md:text-3xl font-bold text-purple-400 flex items-center gap-3"><i class="ph ph-chat-circle-text"></i> DM Sales Master</h2>
@@ -295,35 +311,47 @@
                     <button onclick="window.generateAI('dm_best')" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-4 rounded-xl shadow-xl transition active:scale-95">Generate 3 Replies</button>
                 </div>
             </div>
-            <div id="dmResultArea" class="hidden h-full"><div class="glass-panel p-6 rounded-2xl border-purple-500/30 h-full flex flex-col"><div id="dmOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 overflow-y-auto max-h-[600px]"></div><button id="dmContinueBtn" onclick="window.continueAI('dm_best')" class="hidden w-full mt-4 py-3 bg-slate-800 rounded-xl text-purple-300 text-sm font-bold border border-slate-600">⚠️ Continue</button></div></div>
+            <div id="dmResultArea" class="hidden h-full"><div class="glass-panel p-6 rounded-2xl border-purple-500/30 h-full flex flex-col"><div id="dmOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 overflow-y-auto max-h-[600px] custom-scroll"></div><button id="dmContinueBtn" onclick="window.continueAI('dm_best')" class="hidden w-full mt-4 py-3 bg-slate-800 rounded-xl text-purple-300 text-sm font-bold border border-slate-600">⚠️ Continue</button></div></div>
         </div>
     </div>
   </template>
 
-  <template id="tpl-brand">
-    <div class="animate-fade-in max-w-2xl mx-auto space-y-6">
-        <h2 class="text-xl md:text-3xl font-bold text-white mb-2 flex items-center gap-3"><i class="ph ph-database text-blue-400"></i> Studio Brain</h2>
-        <div class="glass-panel p-6 rounded-2xl border border-slate-700">
-             <div class="space-y-6">
-                <div><label class="text-xs font-bold text-yellow-400 uppercase mb-2 block">Packages</label><textarea id="brandPackages" class="w-full bg-slate-900 border border-slate-600 rounded-xl p-4 text-sm text-white h-32"></textarea></div>
-                <div class="grid grid-cols-2 gap-4"><input type="text" id="brandPhone" placeholder="Phone" class="bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white"><input type="text" id="brandViber" placeholder="Viber" class="bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white"></div>
-                <button onclick="window.saveBrandData()" class="w-full bg-green-600 text-white font-bold py-3 rounded-xl shadow-lg mt-4">Save Changes</button>
-                <div id="saveStatus" class="text-xs text-slate-500 text-center">Sync ready.</div>
-             </div>
-        </div>
-    </div>
-  </template>
-
+  <!-- FB POST -->
   <template id="tpl-fbpost">
      <div class="animate-fade-in space-y-6">
         <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2"><i class="ph ph-facebook-logo text-blue-500"></i> Facebook Post</h2>
         <div class="glass-panel p-6 rounded-2xl space-y-5">
-            <input type="text" id="fbInput" class="w-full bg-slate-800 border border-slate-600 rounded-xl p-3 text-white" placeholder="Topic...">
+            <div class="flex gap-2"><input type="text" id="fbInput" class="flex-1 w-full bg-slate-800 border border-slate-600 rounded-xl p-3 text-white" placeholder="Topic..."><button onclick="window.startVoiceInput('fbInput', this)" class="bg-slate-800 border border-slate-600 rounded-xl px-4"><i class="ph ph-microphone text-xl text-blue-400"></i></button></div>
             <div class="grid grid-cols-2 gap-4"><select id="fbTone" class="bg-slate-800 border border-slate-600 rounded-xl p-3 text-white"><option>Professional</option><option>Friendly</option></select><select id="fbLength" class="bg-slate-800 border border-slate-600 rounded-xl p-3 text-white"><option>Medium</option><option>Long</option></select></div>
             <button onclick="window.generateAI('fbpost')" class="w-full bg-blue-600 hover:bg-blue-500 py-3.5 rounded-xl font-bold text-white shadow-lg active:scale-95 transition">Write Post</button>
         </div>
         <div id="fbResultArea" class="hidden glass-panel p-6 rounded-2xl"><div id="fbOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div><button id="fbContinueBtn" onclick="window.continueAI('fbpost')" class="hidden w-full mt-4 py-3 bg-slate-800 rounded-xl text-blue-400 text-sm font-bold border border-slate-600">⚠️ Continue</button></div>
      </div>
+  </template>
+
+  <!-- TIMELINE -->
+  <template id="tpl-timeline">
+    <div class="animate-fade-in space-y-6">
+        <h2 class="text-xl md:text-2xl font-bold text-orange-400 flex items-center gap-2"><i class="ph ph-clock"></i> Timeline Generator</h2>
+        <div class="glass-panel p-4 md:p-6 rounded-xl border border-orange-500/20">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                <div><label class="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1 block">Start</label><select id="tlStart" class="w-full bg-slate-800/50 border border-slate-600 rounded-xl p-2.5 text-white text-sm outline-none"><option>6:00 AM</option><option>8:00 AM</option><option>1:00 PM</option></select></div>
+                <div><label class="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1 block">Place</label><select id="tlPlace" class="w-full bg-slate-800/50 border border-slate-600 rounded-xl p-2.5 text-white text-sm outline-none"><option>Taunggyi (City)</option><option>Inle Lake</option><option>Kalaw</option></select></div>
+                <div><label class="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1 block">Outfits</label><select id="tlDress" class="w-full bg-slate-800/50 border border-slate-600 rounded-xl p-2.5 text-white text-sm outline-none"><option>3 Dresses</option><option>4 Dresses</option><option>5 Dresses</option></select></div>
+                <div><label class="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1 block">Pacing</label><select id="tlPace" class="w-full bg-slate-800/50 border border-slate-600 rounded-xl p-2.5 text-white text-sm outline-none"><option value="Relaxed">Relaxed</option><option value="Packed">Packed</option></select></div>
+            </div>
+            <div class="flex items-center gap-2 mb-4 p-3 bg-slate-800/30 rounded-xl"><input type="checkbox" id="tlSunset" class="w-4 h-4 rounded bg-slate-800 border-slate-700 text-orange-500"><label for="tlSunset" class="text-sm text-slate-300">Include Sunset Shot</label></div>
+            <button onclick="window.generateAI('timeline')" class="w-full bg-orange-600 hover:bg-orange-500 py-3.5 rounded-xl text-white font-bold active:scale-95 transition">Generate Schedule</button>
+        </div>
+        <div id="tlResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl border border-orange-500/20"><div id="tlOutput" class="whitespace-pre-wrap text-sm text-slate-200 font-mono leading-relaxed custom-scroll"></div><button id="tlContinueBtn" onclick="window.continueAI('timeline')" class="hidden w-full mt-3 py-3 bg-slate-800 border border-slate-600 rounded-lg text-orange-400 text-sm font-bold">⚠️ Continue</button></div>
+    </div>
+  </template>
+
+  <template id="tpl-recent">
+    <div class="animate-fade-in space-y-6">
+        <div class="flex justify-between items-center"><h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2"><i class="ph ph-clock-counter-clockwise text-green-400"></i> Cloud History</h2><button onclick="window.clearHistory()" class="text-red-400 text-xs border border-red-900/50 px-3 py-1.5 rounded hover:bg-red-900/20 transition">Clear All</button></div>
+        <div id="historyListContainer" class="space-y-4 pb-20"></div>
+    </div>
   </template>
 
   <script type="module">
@@ -341,10 +369,7 @@
     const getValue = (id) => { const el = document.getElementById(id); return el ? el.value : ""; };
     
     // Auth
-    window.handleLogin = async () => {
-        try { await signInWithEmailAndPassword(auth, getValue('loginEmail'), getValue('loginPass')); } 
-        catch(e) { const err = document.getElementById('loginError'); err.classList.remove('hidden'); document.getElementById('loginErrorText').innerText = e.message; }
-    };
+    window.handleLogin = async () => { try { await signInWithEmailAndPassword(auth, getValue('loginEmail'), getValue('loginPass')); } catch(e) { const err = document.getElementById('loginError'); err.classList.remove('hidden'); document.getElementById('loginErrorText').innerText = e.message; } };
     window.handleLogout = async () => { await signOut(auth); window.location.reload(); };
 
     onAuthStateChanged(auth, (user) => {
@@ -378,16 +403,12 @@
 
         const container = document.getElementById('content-container');
         const tpl = document.getElementById('tpl-' + viewId);
-        
         container.innerHTML = '';
         
         if(viewId === 'tiktok') container.innerHTML = getTikTokHTML();
         else if(viewId === 'pose') container.innerHTML = getPoseHTML();
         else if(viewId === 'recent') { const t = document.getElementById('tpl-recent'); if(t) container.appendChild(t.content.cloneNode(true)); renderHistoryList(); }
-        else if(tpl) {
-            container.appendChild(tpl.content.cloneNode(true));
-            if(viewId === 'brand') loadBrandData();
-        }
+        else if(tpl) { container.appendChild(tpl.content.cloneNode(true)); if(viewId === 'brand') loadBrandData(); }
     };
 
     window.toggleSidebar = () => {
@@ -395,14 +416,9 @@
         sb.classList.toggle('sidebar-closed'); sb.classList.toggle('sidebar-open'); ov.classList.toggle('hidden');
     };
 
-    // HTML Generators (Restored & Fixed)
-    function getTikTokHTML() {
-        return `<div class="animate-fade-in space-y-6"><h2 class="text-xl md:text-2xl font-bold text-teal-400 flex items-center gap-2"><i class="ph ph-tiktok-logo"></i> TikTok Script</h2><div class="glass-panel p-4 md:p-5 rounded-xl space-y-4"><div class="flex gap-2"><input type="text" id="ttInput" placeholder="Topic..." class="flex-1 bg-slate-800 border border-slate-700 rounded p-3 text-white"><button onclick="window.startVoiceInput('ttInput', this)" class="bg-slate-800 border border-slate-700 rounded px-4 text-teal-400"><i class="ph ph-microphone text-xl"></i></button></div><select id="ttStyle" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white"><option>Trending</option><option>Vlog</option><option>Cinematic</option></select><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><button onclick="window.generateAI('tt_caption')" class="bg-slate-700 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Get 3 Captions</button><button onclick="window.generateAI('tt_script')" class="bg-teal-600 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Write 3 Scripts</button></div></div><div id="ttResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl"><div id="ttOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div><button id="ttContinueBtn" onclick="window.continueAI('tt_script')" class="hidden w-full mt-2 py-2 bg-slate-800 text-teal-400 text-xs border border-slate-600 rounded">⚠️ Continue</button><div class="text-xs text-green-400 mt-2">✅ Auto-saved</div></div></div>`;
-    }
-    
-    function getPoseHTML() {
-        return `<div class="animate-fade-in space-y-6"><h2 class="text-xl md:text-2xl font-bold text-pink-400 flex items-center gap-2"><i class="ph ph-camera"></i> Pose Helper</h2><div class="glass-panel p-4 md:p-5 rounded-xl space-y-4"><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><div><label class="text-xs font-bold text-slate-400 uppercase">Outfit</label><select id="poseOutfit" class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm"><option>Wedding Gown</option><option>Traditional</option><option>Casual</option></select></div><div><label class="text-xs font-bold text-slate-400 uppercase">Props</label><input type="text" id="poseProps" placeholder="Flowers..." class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm"></div></div><div class="flex gap-2 mb-2"><button onclick="window.fillPose('Shy')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">😳 Shy</button><button onclick="window.fillPose('Plus')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">❤️ Plus</button></div><div class="relative"><textarea id="poseInput" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white h-24 pr-10" placeholder="Situation..."></textarea><button onclick="window.startVoiceInput('poseInput', this)" class="absolute right-2 bottom-2 bg-slate-700/80 hover:bg-pink-600 p-2 rounded-full transition text-slate-300 hover:text-white"><i class="ph ph-microphone text-lg"></i></button></div><button onclick="window.generateAI('pose')" class="w-full bg-pink-600 py-3 rounded text-white font-bold active:scale-95 transition">Generate Poses</button></div><div id="poseResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl"><div id="poseOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div><div class="text-xs text-green-400 mt-2">✅ Auto-saved</div></div></div>`;
-    }
+    // HTML Generators
+    function getTikTokHTML() { return `<div class="animate-fade-in space-y-6"><h2 class="text-xl md:text-2xl font-bold text-teal-400 flex items-center gap-2"><i class="ph ph-tiktok-logo"></i> TikTok Script</h2><div class="glass-panel p-6 rounded-2xl space-y-5"><div class="flex gap-2"><input type="text" id="ttInput" placeholder="Topic..." class="flex-1 bg-slate-800 border border-slate-600 rounded-xl p-3 text-white"><button onclick="window.startVoiceInput('ttInput', this)" class="bg-slate-800 border border-slate-600 rounded-xl px-4 text-teal-400"><i class="ph ph-microphone text-xl"></i></button></div><select id="ttStyle" class="w-full bg-slate-800 border border-slate-600 rounded-xl p-3 text-white"><option>Trending</option><option>Vlog</option><option>Cinematic</option></select><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><button onclick="window.generateAI('tt_caption')" class="bg-slate-700 py-3 rounded-xl text-white font-bold active:scale-95 transition">Get 3 Captions</button><button onclick="window.generateAI('tt_script')" class="bg-teal-600 py-3 rounded-xl text-white font-bold active:scale-95 transition">Write 3 Scripts</button></div></div><div id="ttResultArea" class="hidden glass-panel p-6 rounded-2xl"><div id="ttOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div><button id="ttContinueBtn" onclick="window.continueAI('tt_script')" class="hidden w-full mt-4 py-3 bg-slate-800 text-teal-400 text-xs border border-slate-600 rounded-xl">⚠️ Continue</button><div class="text-xs text-green-400 mt-2">✅ Auto-saved</div></div></div>`; }
+    function getPoseHTML() { return `<div class="animate-fade-in space-y-6"><h2 class="text-xl md:text-2xl font-bold text-pink-400 flex items-center gap-2"><i class="ph ph-camera"></i> Pose Helper</h2><div class="glass-panel p-6 rounded-2xl space-y-5"><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><div><label class="text-xs font-bold text-slate-400 uppercase">Outfit</label><select id="poseOutfit" class="w-full mt-1 bg-slate-800 border border-slate-600 rounded-xl p-3 text-white text-sm"><option>Wedding Gown</option><option>Traditional</option><option>Casual</option></select></div><div><label class="text-xs font-bold text-slate-400 uppercase">Props</label><input type="text" id="poseProps" placeholder="Flowers..." class="w-full mt-1 bg-slate-800 border border-slate-600 rounded-xl p-3 text-white text-sm"></div></div><div class="flex gap-2 mb-2"><button onclick="window.fillPose('Shy')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">😳 Shy</button><button onclick="window.fillPose('Plus')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">❤️ Plus</button></div><div class="relative"><textarea id="poseInput" class="w-full bg-slate-800 border border-slate-600 rounded-xl p-4 text-white h-24 pr-10" placeholder="Situation..."></textarea><button onclick="window.startVoiceInput('poseInput', this)" class="absolute right-3 bottom-3 bg-slate-700/80 p-2 rounded-full transition text-slate-300 hover:text-white"><i class="ph ph-microphone text-lg"></i></button></div><button onclick="window.generateAI('pose')" class="w-full bg-pink-600 py-3.5 rounded-xl text-white font-bold active:scale-95 transition">Generate Poses</button></div><div id="poseResultArea" class="hidden glass-panel p-6 rounded-2xl"><div id="poseOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div></div></div>`; }
 
     // Brand Data
     window.saveBrandData = async () => {
@@ -439,22 +455,17 @@
         const outId = outputIds[type];
         const areaId = areaIds[type];
 
-        if(type !== 'dm_analyze') {
-            document.getElementById(areaId).classList.remove('hidden');
-            if(!isContinue) {
-                document.getElementById(outId).innerHTML = "<span class='animate-pulse text-purple-400'>✨ Thinking...</span>";
-                if(type === 'creative_director' && window.innerWidth < 768) {
-                    document.getElementById('crResultAreaMobile').classList.remove('hidden');
-                    document.getElementById('crOutputMobile').innerHTML = "<span class='animate-pulse text-yellow-400'>✨ Creating...</span>";
-                }
-                if(window.innerWidth < 768) {
-                    const scrollTarget = type === 'creative_director' ? document.getElementById('crResultAreaMobile') : document.getElementById(areaId);
-                    setTimeout(() => scrollTarget.scrollIntoView({behavior:'smooth'}), 100);
-                }
+        document.getElementById(areaId).classList.remove('hidden');
+        if(!isContinue) {
+            document.getElementById(outId).innerHTML = "<span class='animate-pulse text-purple-400'>✨ Thinking...</span>";
+            if(type === 'creative_director' && window.innerWidth < 768) {
+                document.getElementById('crResultAreaMobile').classList.remove('hidden');
+                document.getElementById('crOutputMobile').innerHTML = "<span class='animate-pulse text-yellow-400'>✨ Creating...</span>";
             }
-        } else {
-             const panel = document.getElementById('dmAnalysisPanel');
-             if(panel) { panel.classList.remove('hidden'); document.getElementById('dmAnalysisContent').innerHTML = "<span class='animate-pulse text-indigo-400'>🔍 Analyzing...</span>"; }
+            if(window.innerWidth < 768) {
+                const scrollTarget = type === 'creative_director' ? document.getElementById('crResultAreaMobile') : document.getElementById(areaId);
+                setTimeout(() => scrollTarget.scrollIntoView({behavior:'smooth'}), 100);
+            }
         }
 
         let brand = {};
@@ -497,22 +508,17 @@
             });
             const d = await res.json();
             
-            if(type === 'dm_analyze') {
-                const html = `<div class='text-slate-300'>${d.result.replace(/\n/g, '<br>')}</div>`;
-                document.getElementById('dmAnalysisContent').innerHTML = html;
-            } else {
-                if(isContinue) document.getElementById(outId).innerText += "\n" + d.result;
-                else document.getElementById(outId).innerText = d.result;
-                
-                if(type === 'creative_director' && document.getElementById('crOutputMobile')) {
-                    document.getElementById('crOutputMobile').innerText = document.getElementById(outId).innerText;
-                }
-                
-                if(continueBtnIds[type]) document.getElementById(continueBtnIds[type]).classList.remove('hidden');
-                
-                if(d.result && !d.result.includes("Error") && !d.result.includes("Connection")) {
-                     saveToRecents(type, document.getElementById(outId).innerText, contextTopic);
-                }
+            if(isContinue) document.getElementById(outId).innerText += "\n" + d.result;
+            else document.getElementById(outId).innerText = d.result;
+            
+            if(type === 'creative_director' && document.getElementById('crOutputMobile')) {
+                document.getElementById('crOutputMobile').innerText = document.getElementById(outId).innerText;
+            }
+            
+            if(continueBtnIds[type]) document.getElementById(continueBtnIds[type]).classList.remove('hidden');
+            
+            if(d.result && !d.result.includes("Error") && !d.result.includes("Connection")) {
+                 saveToRecents(type, document.getElementById(outId).innerText, contextTopic);
             }
         } catch(e) { console.error(e); }
     };
