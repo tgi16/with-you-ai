@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Pro Human AI v2.5</title>
+  <title>With You Studio - Pro Human AI v2.6</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -129,7 +129,7 @@
 
     <!-- Footer -->
     <div class="p-4 border-t border-slate-800 text-xs text-slate-600 text-center">
-        <span class="inline-block px-2 py-1 rounded bg-slate-800 border border-slate-700 text-blue-400 font-mono">v2.5 (Human Voice)</span>
+        <span class="inline-block px-2 py-1 rounded bg-slate-800 border border-slate-700 text-blue-400 font-mono">v2.6 (3-Options)</span>
     </div>
   </aside>
 
@@ -219,7 +219,7 @@
                         </div>
                     </div>
                     <button onclick="generateAI('fbpost')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-blue-600/30 transition flex justify-center items-center gap-2 active:scale-95">
-                        <i class="ph ph-pen-nib"></i> Write Post
+                        <i class="ph ph-pen-nib"></i> Write Post (3 Options)
                     </button>
                 </div>
 
@@ -251,7 +251,7 @@
     </div>
   </template>
 
-  <!-- 2. DM TEMPLATE (Fully Restored & Upgraded) -->
+  <!-- 2. DM TEMPLATE -->
   <template id="tpl-dm">
     <div class="animate-fade-in space-y-6">
         <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2"><i class="ph ph-chat-circle-text text-purple-500"></i> DM Sales Master</h2>
@@ -322,7 +322,7 @@
     </div>
   </template>
 
-  <!-- 3. BRAND BRAIN TEMPLATE -->
+  <!-- 3. BRAND BRAIN TEMPLATE (UPDATED with Contact) -->
   <template id="tpl-brand">
     <div class="animate-fade-in max-w-2xl mx-auto space-y-6">
         <div class="bg-gradient-to-r from-slate-800 to-slate-900 p-6 md:p-8 rounded-2xl border border-slate-700 text-center relative overflow-hidden">
@@ -330,14 +330,43 @@
             <h2 class="text-xl md:text-2xl font-bold text-white mb-2">Studio Identity</h2>
             <p class="text-sm text-slate-400 mb-6">AI will remember these details to write like you.</p>
             <div class="space-y-4 text-left">
-                <div>
-                    <label class="text-xs font-bold text-blue-400 uppercase">Studio Vibe</label>
-                    <input type="text" id="brandStyle" value="Moody, Cinematic, Emotional" class="w-full mt-1 bg-slate-950 border border-slate-700 rounded p-3 text-white">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs font-bold text-blue-400 uppercase">Studio Vibe</label>
+                        <input type="text" id="brandStyle" value="Moody, Cinematic, Emotional" class="w-full mt-1 bg-slate-950 border border-slate-700 rounded p-3 text-white">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-blue-400 uppercase">Target Audience</label>
+                        <input type="text" id="brandClient" value="Luxury Couples, Young Professionals" class="w-full mt-1 bg-slate-950 border border-slate-700 rounded p-3 text-white">
+                    </div>
+                </div>
+                
+                <hr class="border-slate-800 my-2">
+                <h3 class="text-sm font-bold text-slate-300">Contact Information (for Auto CTA)</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs font-bold text-slate-500 uppercase">Phone Number</label>
+                        <input type="text" id="brandPhone" placeholder="09xxxxxxxxx" class="w-full mt-1 bg-slate-950 border border-slate-700 rounded p-3 text-white text-sm">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-500 uppercase">Viber Number</label>
+                        <input type="text" id="brandViber" placeholder="09xxxxxxxxx" class="w-full mt-1 bg-slate-950 border border-slate-700 rounded p-3 text-white text-sm">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-500 uppercase">Facebook Page Link</label>
+                        <input type="text" id="brandFB" placeholder="fb.com/..." class="w-full mt-1 bg-slate-950 border border-slate-700 rounded p-3 text-white text-sm">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-500 uppercase">TikTok Link</label>
+                        <input type="text" id="brandTT" placeholder="tiktok.com/@..." class="w-full mt-1 bg-slate-950 border border-slate-700 rounded p-3 text-white text-sm">
+                    </div>
                 </div>
                 <div>
-                    <label class="text-xs font-bold text-blue-400 uppercase">Target Audience</label>
-                    <input type="text" id="brandClient" value="Luxury Couples, Young Professionals" class="w-full mt-1 bg-slate-950 border border-slate-700 rounded p-3 text-white">
+                    <label class="text-xs font-bold text-slate-500 uppercase">Address</label>
+                    <input type="text" id="brandAddr" placeholder="No.123, Bogyoke St, Taunggyi" class="w-full mt-1 bg-slate-950 border border-slate-700 rounded p-3 text-white text-sm">
                 </div>
+
                 <div class="pt-4">
                     <div class="flex items-center gap-2 text-green-400 text-xs justify-center bg-green-900/20 py-3 rounded">
                         <i class="ph ph-check-circle"></i> Auto-Saved. Applied to all AI tasks.
@@ -348,7 +377,7 @@
     </div>
   </template>
 
-  <!-- 4. TIMELINE TEMPLATE (Fully Restored) -->
+  <!-- 4. TIMELINE TEMPLATE -->
   <template id="tpl-timeline">
     <div class="animate-fade-in space-y-6">
         <h2 class="text-xl md:text-2xl font-bold text-orange-400 flex items-center gap-2"><i class="ph ph-clock"></i> Timeline Generator</h2>
@@ -469,8 +498,8 @@
                 </div>
                 <select id="ttStyle" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white"><option>Trending & Fast</option><option>Vlog / Behind Scenes</option><option>Cinematic Mood</option></select>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <button onclick="generateAI('tt_caption')" class="bg-slate-700 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Get Caption</button>
-                    <button onclick="generateAI('tt_script')" class="bg-teal-600 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Write Script</button>
+                    <button onclick="generateAI('tt_caption')" class="bg-slate-700 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Get 3 Captions</button>
+                    <button onclick="generateAI('tt_script')" class="bg-teal-600 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Write 3 Scripts</button>
                 </div>
             </div>
             <div id="ttResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl">
@@ -588,7 +617,22 @@
         }
 
         let prompt = "";
+        
+        // --- FETCH CONTACT INFO ---
         const brandStyle = document.getElementById('brandStyle') ? document.getElementById('brandStyle').value : "Professional";
+        const brandPhone = document.getElementById('brandPhone') ? document.getElementById('brandPhone').value : "";
+        const brandViber = document.getElementById('brandViber') ? document.getElementById('brandViber').value : "";
+        const brandFB = document.getElementById('brandFB') ? document.getElementById('brandFB').value : "";
+        const brandTT = document.getElementById('brandTT') ? document.getElementById('brandTT').value : "";
+        const brandAddr = document.getElementById('brandAddr') ? document.getElementById('brandAddr').value : "";
+
+        const contactInfo = `
+        - Contact Phone: ${brandPhone}
+        - Viber: ${brandViber}
+        - Facebook: ${brandFB}
+        - TikTok: ${brandTT}
+        - Address: ${brandAddr}
+        `;
         
         // --- CRITICAL UPDATE: HUMAN VOICE INSTRUCTION ---
         const burmeseInstruction = `
@@ -598,17 +642,26 @@
         - Write EXACTLY like a real Burmese person talking. 
         - Use "Bya" (ဗျ) or "Khamya" (ခင်ဗျာ) for the male speaker ending.
         - Be warm, welcoming, and professional but NOT robotic.
-        - Use natural filler words or soft particles (e.g., "နော်", "လေး", "ပါ") where appropriate to sound friendly.
-        - Avoid formal "Written Burmese" (စာစကား); use "Spoken Burmese" (အပြောစကား).
         - Context: Photography Services.
         - Brand Style: ${brandStyle}.
+        - STUDIO INFO (Include in CTA where relevant): ${contactInfo}
         `;
 
         if (type === 'fbpost') {
             const topic = document.getElementById('fbInput').value;
             const tone = document.getElementById('fbTone').value;
             const len = document.getElementById('fbLength').value;
-            prompt = `Task: Write Facebook Post. Topic: ${topic}. Tone: ${tone}. Length: ${len}. Include Hook, Body, Value, CTA, Hashtags. Make it sound engaging and human.`;
+            prompt = `Task: Write 3 DISTINCT Facebook Post Options. 
+            Topic: ${topic}. Tone: ${tone}. Length: ${len}. 
+            
+            OUTPUT FORMAT:
+            Option 1: [Hook + Body + CTA + Hashtags]
+            ---
+            Option 2: [Different Angle Hook + Body + CTA + Hashtags]
+            ---
+            Option 3: [Storytelling Style + Body + CTA + Hashtags]
+            
+            Ensure contact info is included naturally in CTA.`;
         } 
         else if (type === 'dm_best') {
             const service = document.getElementById('dmService').value;
@@ -623,11 +676,11 @@
             Closing Strategy (CTA): ${cta}.
             
             OUTPUT FORMAT:
-            Option 1: [Professional & Detailed - Good for first inquiry]
-            Option 2: [Friendly & Warm - Good for building rapport]
-            Option 3: [Short & Urgent/Persuasive - Good for closing]
+            Option 1: [Professional & Detailed]
+            Option 2: [Friendly & Warm]
+            Option 3: [Short & Urgent/Persuasive]
             
-            Ensure all 3 options sound like a real person, not a bot.`;
+            Sound human. Include phone/viber if closing the sale.`;
         }
         else if (type === 'timeline') {
             const start = document.getElementById('tlStart').value;
@@ -642,12 +695,21 @@
             Outfits: ${dress}.
             Pacing: ${pace}.
             Sunset Requirement: ${sunset}.
-            Language: Burmese. Format: Clear List with times. Add helpful tips for the couple (e.g., bring snacks, water).`;
+            Language: Burmese. Format: Clear List with times.`;
         }
         else if (type.includes('tt_')) {
             const topic = document.getElementById('ttInput').value;
             const style = document.getElementById('ttStyle').value;
-            prompt = `Task: Write TikTok ${type==='tt_caption'?'Caption':'Script'}. Topic: ${topic}. Style: ${style}. Keep it trendy and short.`;
+            const subType = type==='tt_caption'?'Caption':'Script';
+            prompt = `Task: Write 3 Options for TikTok ${subType}. 
+            Topic: ${topic}. Style: ${style}. 
+            
+            OUTPUT FORMAT:
+            Option 1: [Style A]
+            ---
+            Option 2: [Style B]
+            ---
+            Option 3: [Style C]`;
         }
         else if (type === 'pose') {
             const input = document.getElementById('poseInput').value;
