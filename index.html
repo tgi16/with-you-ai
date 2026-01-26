@@ -28,7 +28,7 @@
   <!-- MAIN CONTENT -->
   <main class="flex-1 p-4 space-y-6 max-w-3xl mx-auto w-full">
 
-    <!-- TAB BUTTONS (Updated to 4 cols) -->
+    <!-- TAB BUTTONS -->
     <div class="grid grid-cols-4 gap-2 bg-slate-900 p-1 rounded-lg overflow-x-auto">
       <button onclick="switchTab('pose')" id="btn-pose" class="tab-btn bg-slate-800 py-2 rounded text-xs md:text-sm whitespace-nowrap transition-all hover:bg-slate-700">🎨 Poses</button>
       <button onclick="switchTab('fbpost')" id="btn-fbpost" class="tab-btn bg-blue-600 py-2 rounded text-xs md:text-sm font-bold shadow-lg shadow-blue-900/50">📝 FB Post</button>
@@ -71,7 +71,9 @@
         </button>
       </div>
 
-      <div id="poseOutput" class="bg-slate-900 p-4 rounded-lg border border-slate-800 text-sm whitespace-pre-wrap hidden animate-fade-in"></div>
+      <div id="poseOutputWrapper" class="hidden space-y-2">
+          <div id="poseOutput" class="bg-slate-900 p-4 rounded-lg border border-slate-800 text-sm whitespace-pre-wrap animate-fade-in"></div>
+      </div>
     </section>
 
 
@@ -113,6 +115,8 @@
 
       <!-- Result Area for FB Post -->
       <div id="fbOutputArea" class="hidden space-y-4 animate-fade-in">
+        
+        <!-- Code Block View -->
         <div id="fbCodeBlock" class="hidden">
             <div class="flex justify-between items-center mb-2">
                 <span class="text-xs text-green-400 font-mono">GENERATED PROMPT CODE</span>
@@ -120,11 +124,21 @@
             </div>
             <pre class="bg-black/50 p-4 rounded border border-slate-700 overflow-x-auto text-xs font-mono text-gray-300"><code id="codeContent"></code></pre>
         </div>
-        <div id="fbAiResult" class="hidden bg-slate-900 p-5 rounded-lg border border-slate-800 whitespace-pre-wrap leading-relaxed text-gray-100"></div>
+
+        <!-- AI Text Result View -->
+        <div id="fbResultWrapper" class="hidden flex flex-col gap-2">
+            <div id="fbAiResult" class="bg-slate-900 p-5 rounded-lg border border-slate-800 whitespace-pre-wrap leading-relaxed text-gray-100"></div>
+            <!-- Continue Button -->
+            <button id="fbContinueBtn" onclick="continueFbPost()" class="hidden w-full py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded text-blue-300 text-sm font-bold flex items-center justify-center gap-2">
+                <span>⚠️ မပြီးသေးရင် နှိပ်ပါ (Continue Writing)</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+        </div>
+
       </div>
     </section>
 
-    <!-- 3. TIKTOK CREATOR TAB (NEW) -->
+    <!-- 3. TIKTOK CREATOR TAB -->
     <section id="tiktok" class="space-y-4 hidden">
       <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-800">
         <h2 class="text-lg font-bold text-teal-400 flex items-center gap-2">
@@ -169,7 +183,14 @@
             </div>
             <pre class="bg-black/50 p-4 rounded border border-slate-700 overflow-x-auto text-xs font-mono text-gray-300"><code id="ttCodeContent"></code></pre>
         </div>
-        <div id="ttAiResult" class="hidden bg-slate-900 p-5 rounded-lg border border-slate-800 whitespace-pre-wrap leading-relaxed text-gray-100"></div>
+        
+        <div id="ttResultWrapper" class="hidden flex flex-col gap-2">
+            <div id="ttAiResult" class="bg-slate-900 p-5 rounded-lg border border-slate-800 whitespace-pre-wrap leading-relaxed text-gray-100"></div>
+            <button id="ttContinueBtn" onclick="continueTikTok()" class="hidden w-full py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded text-teal-300 text-sm font-bold flex items-center justify-center gap-2">
+                <span>⚠️ မပြီးသေးရင် နှိပ်ပါ (Continue Script)</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+        </div>
       </div>
     </section>
 
@@ -201,17 +222,14 @@
   <script>
     // --- TAB SYSTEM ---
     function switchTab(tab) {
-      // Hide all sections
       ['pose','fbpost','tiktok','dm'].forEach(id => {
         document.getElementById(id).classList.add('hidden');
         document.getElementById('btn-' + id).classList.remove('bg-pink-600', 'bg-blue-600', 'bg-teal-600', 'bg-purple-600', 'font-bold', 'shadow-lg');
         document.getElementById('btn-' + id).classList.add('bg-slate-800');
       });
 
-      // Show selected section
       document.getElementById(tab).classList.remove('hidden');
       
-      // Update button style
       const btn = document.getElementById('btn-' + tab);
       btn.classList.remove('bg-slate-800');
       btn.classList.add('font-bold', 'shadow-lg');
@@ -222,8 +240,36 @@
       if(tab === 'dm') btn.classList.add('bg-purple-600');
     }
 
-    // Set default tab styling
-    switchTab('fbpost'); // Default to FB Post based on user context
+    switchTab('fbpost'); 
+
+
+    // --- AI CALL HANDLER (UPDATED for Append Logic) ---
+    async function callAI(promptText, outputElement, isAppend = false) {
+        try {
+            const res = await fetch("/api/generate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ prompt: promptText })
+            });
+
+            const data = await res.json();
+            if (data.result) {
+                if(isAppend) {
+                    // Remove loading indicator from append
+                    const loadingSpans = outputElement.querySelectorAll('.loading-indicator');
+                    loadingSpans.forEach(el => el.remove());
+                    outputElement.innerHTML += " " + data.result;
+                } else {
+                    outputElement.innerText = data.result;
+                }
+            } else {
+                if(!isAppend) outputElement.innerText = "Error: No result returned.";
+            }
+        } catch (e) {
+            console.error(e);
+            if(!isAppend) outputElement.innerText = "Error connecting to AI service.";
+        }
+    }
 
 
     // --- 1. POSE GENERATION ---
@@ -231,9 +277,11 @@
       const mood = document.getElementById("mood").value;
       const scene = document.getElementById("scene").value;
       const input = document.getElementById("poseInput").value;
+      
+      const outputWrapper = document.getElementById("poseOutputWrapper");
       const output = document.getElementById("poseOutput");
 
-      output.classList.remove("hidden");
+      outputWrapper.classList.remove("hidden");
       output.innerHTML = "<span class='animate-pulse'>⏳ Generating pose ideas...</span>";
 
       const prompt = `
@@ -242,50 +290,25 @@
         Scene: ${scene}
         Mood: ${mood}
         Context: ${input}
-        Output: 3 Clear Pose Ideas with direct Burmese instructions for the couple.
+        Output: 3 Clear Pose Ideas with direct Burmese instructions.
       `;
 
       await callAI(prompt, output);
     }
 
 
-    // --- 2. FB POST PROMPT LOGIC ---
+    // --- 2. FB POST LOGIC ---
     function getFbMasterPrompt() {
         const topic = document.getElementById('fbInput').value || "General Service";
         const tone = document.getElementById('fbTone').value;
-        
-        return `
-prompt = \`
-Role: Senior Social Media Copywriter for With You Photo Studio (Taunggyi).
-
-TASK:
-Write ONE complete Facebook post in Burmese.
-DO NOT stop until the post is fully finished.
-
-MANDATORY INSTRUCTIONS:
-1. **CONTINUITY**: Do NOT cut off mid-sentence. Keep generating until [HASHTAGS] are done.
-2. **GENDER**: Use "Bya" (ဗျ) / "Khamya" (ခင်ဗျာ). NO "Shin" (ရှင်).
-3. **VISUAL**: Output text must be clear.
-
-STRUCTURE:
-[HOOK]
-[BODY]
-[VALUE]
-[CTA]
-[HASHTAGS]
-
-Topic: ${topic}
-Tone: ${tone}
-
-Start writing now.
-\`;`;
+        return `prompt = \`\nRole: Senior Social Media Copywriter (With You Studio).\nTASK: Write ONE complete Facebook post in Burmese.\nRULES:\n- Use "Bya" (ဗျ) / "Khamya". NO "Shin".\n- DO NOT stop until finished.\n- Structure: HOOK, BODY, VALUE, CTA, HASHTAGS.\n\nTopic: ${topic}\nTone: ${tone}\n\``;
     }
 
     function generateFbPromptCode() {
         const code = getFbMasterPrompt();
         document.getElementById('fbOutputArea').classList.remove('hidden');
         document.getElementById('fbCodeBlock').classList.remove('hidden');
-        document.getElementById('fbAiResult').classList.add('hidden');
+        document.getElementById('fbResultWrapper').classList.add('hidden');
         document.getElementById('codeContent').innerText = code;
     }
 
@@ -293,10 +316,12 @@ Start writing now.
         const topic = document.getElementById('fbInput').value;
         const tone = document.getElementById('fbTone').value;
         const output = document.getElementById('fbAiResult');
-
+        
         document.getElementById('fbOutputArea').classList.remove('hidden');
         document.getElementById('fbCodeBlock').classList.add('hidden');
-        output.classList.remove("hidden");
+        document.getElementById('fbResultWrapper').classList.remove('hidden');
+        document.getElementById('fbContinueBtn').classList.add('hidden'); // Hide until loaded
+
         output.innerHTML = "<span class='animate-pulse text-blue-400'>⏳ AI is writing your post (Male voice, Continuous)...</span>";
 
         const prompt = `
@@ -304,47 +329,43 @@ Start writing now.
           Topic: ${topic}
           Tone: ${tone}
           TASK: Write ONE complete Facebook post in Burmese.
-          RULES: Use "Bya" (ဗျ). Do NOT stop until finished. Make it engaging.
+          RULES: Use "Bya" (ဗျ). Do NOT stop until finished. Structure: Hook -> Body -> Value -> CTA -> Hashtags.
         `;
 
         await callAI(prompt, output);
+        
+        // Show continue button after first generation
+        document.getElementById('fbContinueBtn').classList.remove('hidden');
     }
 
-    // --- 3. TIKTOK LOGIC (NEW) ---
+    async function continueFbPost() {
+        const output = document.getElementById('fbAiResult');
+        // Add visual indicator
+        output.innerHTML += "<br><br><span class='loading-indicator animate-pulse text-blue-400'>... ဆက်ရေးနေသည် ...</span>";
+
+        const prompt = `
+            Role: Copywriter. 
+            Instruction: The previous Burmese Facebook post was cut off.
+            TASK: CONTINUE writing explicitly from where it stopped. Finish the [CTA] and [HASHTAGS] if missing.
+            Language: Burmese.
+        `;
+        
+        await callAI(prompt, output, true);
+    }
+
+
+    // --- 3. TIKTOK LOGIC ---
     function getTikTokPrompt() {
         const topic = document.getElementById('ttInput').value || "General";
         const style = document.getElementById('ttStyle').value;
-        
-        return `
-prompt = \`
-Role: Creative Content Creator for With You Photo Studio (Taunggyi).
-Platform: TikTok / Reels
-
-TASK:
-Write a TikTok Script in Burmese.
-
-RULES:
-- Use "Bya" (ဗျ) for Male Speaker voiceover.
-- Keep it under 60 seconds (approx 150 words).
-- Format: [Scene] + [Audio/Voiceover].
-
-STRUCTURE:
-1. HOOK (0-3s): Visual or Audio hook to stop scrolling.
-2. BODY: 3-4 Scenes showing the "${topic}".
-3. CTA: Call to action (Booking/Follow).
-
-Topic: ${topic}
-Style: ${style}
-
-Start script now.
-\`;`;
+        return `prompt = \`\nRole: TikTok Creator (With You Studio).\nTASK: Write Script in Burmese (Male Voice).\nTopic: ${topic}\nStyle: ${style}\n\``;
     }
 
     function generateTTPromptCode() {
         const code = getTikTokPrompt();
         document.getElementById('ttOutputArea').classList.remove('hidden');
         document.getElementById('ttCodeBlock').classList.remove('hidden');
-        document.getElementById('ttAiResult').classList.add('hidden');
+        document.getElementById('ttResultWrapper').classList.add('hidden');
         document.getElementById('ttCodeContent').innerText = code;
     }
 
@@ -355,7 +376,9 @@ Start script now.
 
         document.getElementById('ttOutputArea').classList.remove('hidden');
         document.getElementById('ttCodeBlock').classList.add('hidden');
-        output.classList.remove("hidden");
+        document.getElementById('ttResultWrapper').classList.remove('hidden');
+        document.getElementById('ttContinueBtn').classList.add('hidden');
+
         output.innerHTML = "<span class='animate-pulse text-teal-400'>⏳ Writing TikTok Script...</span>";
 
         const prompt = `
@@ -366,6 +389,17 @@ Start script now.
         `;
 
         await callAI(prompt, output);
+        document.getElementById('ttContinueBtn').classList.remove('hidden');
+    }
+
+    async function continueTikTok() {
+        const output = document.getElementById('ttAiResult');
+        output.innerHTML += "<br><br><span class='loading-indicator animate-pulse text-teal-400'>... ဆက်ရေးနေသည် ...</span>";
+        const prompt = `
+            Role: Scriptwriter.
+            Instruction: Continue the previous TikTok script exactly where it stopped. Finish the CTA.
+        `;
+        await callAI(prompt, output, true);
     }
 
 
@@ -381,8 +415,8 @@ Start script now.
           Role: Studio Manager (With You Studio).
           Task: Reply to client message in Burmese.
           Client said: "${input}"
-          Tone: Professional, Empathetic. Use "Bya" (Male speaker).
-          Goal: Close the sale or keep conversation alive.
+          Tone: Professional, Empathetic. Use "Bya".
+          Goal: Close the sale.
         `;
 
         await callAI(prompt, output);
@@ -395,27 +429,6 @@ Start script now.
         navigator.clipboard.writeText(code);
         alert("Copied to clipboard!");
     }
-
-    async function callAI(promptText, outputElement) {
-        try {
-            const res = await fetch("/api/generate", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ prompt: promptText })
-            });
-
-            const data = await res.json();
-            if (data.result) {
-                outputElement.innerText = data.result;
-            } else {
-                outputElement.innerText = "Error: No result returned.";
-            }
-        } catch (e) {
-            console.error(e);
-            outputElement.innerText = "Error connecting to AI service.\n(Note: This requires a running backend at /api/generate)";
-        }
-    }
-
   </script>
 </body>
 </html>
