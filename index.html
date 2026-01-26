@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>With You Photo Studio – AI Assistant</title>
+  <title>With You Photo Studio – AI Pro Assistant</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <style>
@@ -17,35 +17,49 @@
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-    /* Animation */
+    /* Animations */
     .animate-fade-in { animation: fadeIn 0.5s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Toast Notification */
+    .toast { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 100; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+    .toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+    @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+    @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
   </style>
 </head>
-<body class="bg-slate-950 text-white min-h-screen flex flex-col">
+<body class="bg-slate-950 text-white min-h-screen flex flex-col" onload="loadHistory()">
 
   <!-- HEADER -->
-  <header class="px-4 py-4 bg-slate-900 border-b border-white/10 flex justify-between items-center sticky top-0 z-50 shadow-lg">
+  <header class="px-4 py-4 bg-slate-900 border-b border-white/10 flex justify-between items-center sticky top-0 z-50 shadow-lg backdrop-blur-md bg-opacity-90">
     <div>
-      <h1 class="text-xl font-bold text-blue-400 tracking-tight">With You Photo Studio</h1>
-      <p class="text-xs text-slate-400">AI Daily Assistant (Pro)</p>
+      <h1 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 tracking-tight">With You Photo Studio</h1>
+      <p class="text-[10px] text-slate-400 uppercase tracking-widest">AI Daily Assistant (Pro)</p>
     </div>
-    <div onclick="switchTab('brand')" class="cursor-pointer text-xs bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700 text-slate-300 flex items-center gap-1 hover:bg-slate-700 hover:text-white transition">
-        <span>🧠</span> Brand Brain
+    <div class="flex gap-2">
+        <button onclick="switchTab('brand')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-full border border-slate-700 text-slate-300 flex items-center gap-1 transition">
+            <span>🧠</span> Brain
+        </button>
+        <button onclick="switchTab('history')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-full border border-slate-700 text-slate-300 flex items-center gap-1 transition relative">
+            <span>📅</span> Calendar
+            <span id="historyCount" class="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] px-1 rounded-full hidden">0</span>
+        </button>
     </div>
   </header>
 
   <!-- MAIN CONTENT -->
-  <main class="flex-1 p-4 space-y-6 max-w-3xl mx-auto w-full">
+  <main class="flex-1 p-4 space-y-6 max-w-3xl mx-auto w-full pb-20">
 
-    <!-- SCROLLABLE TAB BUTTONS -->
-    <div class="flex gap-2 overflow-x-auto no-scrollbar bg-slate-900 p-1.5 rounded-xl border border-slate-800 sticky top-[70px] z-40 backdrop-blur-md bg-opacity-90">
-      <button onclick="switchTab('brand')" id="btn-brand" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:bg-slate-800">🧠 Brand Brain</button>
-      <button onclick="switchTab('timeline')" id="btn-timeline" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:bg-slate-800">⏳ Timeline</button>
-      <button onclick="switchTab('pose')" id="btn-pose" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:bg-slate-800">🎨 Poses</button>
-      <button onclick="switchTab('fbpost')" id="btn-fbpost" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:bg-slate-800">📝 FB Post</button>
-      <button onclick="switchTab('tiktok')" id="btn-tiktok" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:bg-slate-800">🎵 TikTok</button>
-      <button onclick="switchTab('dm')" id="btn-dm" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:bg-slate-800">💬 DM</button>
+    <!-- SCROLLABLE TAB BUTTONS (Updated: History Unhidden) -->
+    <div class="flex gap-2 overflow-x-auto no-scrollbar bg-slate-900/80 p-1.5 rounded-xl border border-slate-800 sticky top-[70px] z-40 backdrop-blur-md">
+      <button onclick="switchTab('brand')" id="btn-brand" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all hover:bg-slate-800 text-slate-400">🧠 Brand Brain</button>
+      <button onclick="switchTab('timeline')" id="btn-timeline" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all hover:bg-slate-800 text-slate-400">⏳ Timeline</button>
+      <button onclick="switchTab('pose')" id="btn-pose" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all hover:bg-slate-800 text-slate-400">🎨 Poses</button>
+      <button onclick="switchTab('fbpost')" id="btn-fbpost" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all hover:bg-slate-800 text-slate-400">📝 FB Post</button>
+      <button onclick="switchTab('tiktok')" id="btn-tiktok" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all hover:bg-slate-800 text-slate-400">🎵 TikTok</button>
+      <button onclick="switchTab('dm')" id="btn-dm" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all hover:bg-slate-800 text-slate-400">💬 DM</button>
+      <!-- Unhidden History Button -->
+      <button onclick="switchTab('history')" id="btn-history" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all hover:bg-slate-800 text-slate-400">📅 History</button>
     </div>
 
     <!-- 0. BRAND BRAIN TAB -->
@@ -55,7 +69,7 @@
             <h2 class="text-lg font-bold text-blue-300 flex items-center gap-2 mb-2">
                 Brand Brain (စတူဒီယို ဦးနှောက်)
             </h2>
-            <p class="text-xs text-slate-400 mb-6">ဒီမှာ ဖြည့်ထားတဲ့ အချက်တွေကို AI က မှတ်ထားပြီး Post ရေးတဲ့အခါ၊ DM ပြန်တဲ့အခါ ထည့်သုံးပေးသွားပါမယ်။</p>
+            <p class="text-xs text-slate-400 mb-6">ဒီမှာ ဖြည့်ထားတဲ့ အချက်တွေကို AI က မှတ်ထားပြီး Post ရေးတဲ့အခါ ထည့်သုံးပေးသွားပါမယ်။</p>
 
             <div class="space-y-4">
                 <div>
@@ -82,14 +96,12 @@
         </div>
     </section>
 
-    <!-- 1. TIMELINE HELPER TAB (UPGRADED) -->
+    <!-- 1. TIMELINE HELPER TAB -->
     <section id="timeline" class="space-y-4 hidden animate-fade-in">
         <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 shadow-sm">
             <h2 class="text-lg font-bold text-orange-400 flex items-center gap-2 mb-4">
               <span>⏳</span> Pre-Wedding Timeline Generator
             </h2>
-            <p class="text-xs text-slate-400 mb-4">နေရာ (Location) နှင့် ဝတ်စုံအရေအတွက်အလိုက် အချိန်ဇယားဆွဲပေးပါမည်။</p>
-    
             <div class="space-y-3 mb-4">
                 <div class="grid grid-cols-2 gap-3">
                     <div>
@@ -117,13 +129,13 @@
                 <div>
                     <label class="text-xs text-slate-400 uppercase font-bold">Outfits (ဝတ်စုံအရေအတွက်)</label>
                     <select id="tlDress" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 text-sm outline-none">
-                        <option value="2 Dresses">👗 2 Dresses (စတူဒီယိုဝတ်စုံ)</option>
-                        <option value="3 Dresses">👗 3 Dresses (စတူဒီယိုဝတ်စုံ)</option>
-                        <option value="4 Dresses">👗 4 Dresses (စတူဒီယိုဝတ်စုံ)</option>
-                        <option value="5 Dresses">👗 5 Dresses (စတူဒီယိုဝတ်စုံ)</option>
-                        <option value="2 Dresses + 1 Own">👗 2 Dresses + 1 Own Outfit</option>
-                        <option value="3 Dresses + 1 Own">👗 3 Dresses + 1 Own Outfit</option>
-                        <option value="4 Dresses + 1 Own">👗 4 Dresses + 1 Own Outfit</option>
+                        <option value="2 Dresses">👗 2 Dresses</option>
+                        <option value="3 Dresses">👗 3 Dresses</option>
+                        <option value="4 Dresses">👗 4 Dresses</option>
+                        <option value="5 Dresses">👗 5 Dresses</option>
+                        <option value="2 Dresses + 1 Own">👗 2 Dresses + 1 Own</option>
+                        <option value="3 Dresses + 1 Own">👗 3 Dresses + 1 Own</option>
+                        <option value="4 Dresses + 1 Own">👗 4 Dresses + 1 Own</option>
                     </select>
                 </div>
             </div>
@@ -132,11 +144,13 @@
                 🗓️ Generate Schedule
             </button>
         </div>
-
         <div id="tlOutputArea" class="hidden animate-fade-in">
              <div class="flex justify-between items-end px-1 mb-2">
                 <span class="text-xs font-bold text-slate-400 uppercase">Suggested Schedule</span>
-                <button onclick="copyText('tlOutput')" class="text-xs text-orange-400 hover:text-orange-300">Copy</button>
+                <div class="flex gap-2">
+                    <button onclick="downloadText('tlOutput', 'Timeline_Schedule')" class="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">⬇️ File</button>
+                    <button onclick="copyText('tlOutput')" class="text-xs text-orange-400 hover:text-orange-300">📋 Copy</button>
+                </div>
             </div>
             <div id="tlOutput" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 whitespace-pre-wrap leading-relaxed text-slate-200 shadow-inner text-sm font-mono"></div>
         </div>
@@ -165,47 +179,44 @@
             </select>
           </div>
 
-          <!-- CLIENT TYPE PRESETS -->
           <div class="flex flex-wrap gap-2">
             <span class="text-xs font-bold text-slate-500 uppercase self-center mr-1">Presets:</span>
-            <button onclick="setPosePreset('Shy Couple')" class="px-3 py-1 bg-slate-800 hover:bg-pink-900/50 border border-slate-700 rounded-full text-xs text-pink-200 transition">😳 Shy Couple</button>
-            <button onclick="setPosePreset('Stiff Groom')" class="px-3 py-1 bg-slate-800 hover:bg-pink-900/50 border border-slate-700 rounded-full text-xs text-pink-200 transition">🤖 Stiff Groom</button>
-            <button onclick="setPosePreset('Plus Size Couple')" class="px-3 py-1 bg-slate-800 hover:bg-pink-900/50 border border-slate-700 rounded-full text-xs text-pink-200 transition">❤️ Plus Size</button>
+            <button onclick="setPosePreset('Shy Couple')" class="px-3 py-1 bg-slate-800 hover:bg-pink-900/50 border border-slate-700 rounded-full text-xs text-pink-200 transition">😳 Shy</button>
+            <button onclick="setPosePreset('Stiff Groom')" class="px-3 py-1 bg-slate-800 hover:bg-pink-900/50 border border-slate-700 rounded-full text-xs text-pink-200 transition">🤖 Stiff</button>
+            <button onclick="setPosePreset('Plus Size Couple')" class="px-3 py-1 bg-slate-800 hover:bg-pink-900/50 border border-slate-700 rounded-full text-xs text-pink-200 transition">❤️ Plus</button>
           </div>
 
-          <textarea
-            id="poseInput"
-            placeholder="Client အခြေအနေ (ဥပမာ - သတို့သားက ရှက်တတ်တယ်...)"
-            class="w-full p-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-pink-500 outline-none h-24 text-sm resize-none"
-          ></textarea>
-        
+          <!-- Added Mic Icon for Pro feel -->
+          <div class="relative">
+              <textarea id="poseInput" placeholder="Client အခြေအနေ..." class="w-full p-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-pink-500 outline-none h-24 text-sm resize-none"></textarea>
+              <div class="absolute bottom-2 right-2 text-slate-500 hover:text-pink-400 cursor-pointer" title="Voice Input (Coming Soon)">🎤</div>
+          </div>
+          
           <button onclick="generatePose()" class="w-full bg-gradient-to-r from-pink-600 to-pink-500 hover:from-pink-500 hover:to-pink-400 text-white py-3 rounded-xl font-bold shadow-lg shadow-pink-900/30 transition-all transform active:scale-95">
             ✨ Generate Pose Ideas
           </button>
         </div>
       </div>
-
       <div id="poseOutputWrapper" class="hidden space-y-2">
           <div id="poseOutput" class="bg-slate-900 p-5 rounded-2xl border border-slate-800 text-sm whitespace-pre-wrap leading-relaxed animate-fade-in text-slate-200"></div>
       </div>
     </section>
 
-
-    <!-- 3. FB POST CREATOR TAB (PRO UPGRADE) -->
+    <!-- 3. FB POST CREATOR TAB (PRO) -->
     <section id="fbpost" class="space-y-6 hidden animate-fade-in">
-      
       <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 shadow-sm">
         <h2 class="text-lg font-bold text-blue-400 flex items-center gap-2 mb-4">
           <span>📝</span> Facebook Post Creator (Pro)
         </h2>
-
         <div class="space-y-4">
           <div>
             <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Topic</label>
-            <input type="text" id="fbInput" placeholder="ဥပမာ - Pre-wedding package အသစ် Promotion" 
-              class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-blue-500 outline-none text-sm transition-colors">
+            <div class="relative">
+                <input type="text" id="fbInput" placeholder="ဥပမာ - Pre-wedding package အသစ် Promotion" 
+                  class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-blue-500 outline-none text-sm transition-colors">
+                <div class="absolute top-1/2 right-3 -translate-y-1/2 text-slate-500 hover:text-blue-400 cursor-pointer" title="Voice Input">🎤</div>
+            </div>
           </div>
-          
           <div class="grid grid-cols-2 gap-3">
               <div>
                 <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Tone</label>
@@ -225,40 +236,38 @@
                 </select>
               </div>
           </div>
-
           <button onclick="generateFbPostAI()" class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white py-3 rounded-xl font-bold shadow-lg shadow-blue-900/30 transition-all transform active:scale-95 flex justify-center items-center gap-2">
             <span>🤖</span> Post အပြည့်အစုံ ရေးခိုင်းမည်
           </button>
         </div>
       </div>
 
-      <!-- Creative Assistant -->
-      <div class="bg-slate-900/30 p-5 rounded-2xl border border-blue-500/20">
-        <h3 class="text-sm font-bold text-blue-300 mb-3 uppercase tracking-wider flex items-center gap-2">
-          ✨ Creative Assistant
-        </h3>
-        <p class="text-xs text-slate-500 mb-4">Post တစ်ခုလုံး မရေးချင်ဘူး၊ အိုင်ဒီယာပဲ လိုချင်ရင် သုံးပါ</p>
-        
-        <div class="grid grid-cols-2 gap-3">
-          <button onclick="fbAssistIdeas()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1">
-            <span class="text-xl">💡</span> Content Ideas
-          </button>
-          <button onclick="fbAssistHooks()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1">
-            <span class="text-xl">🎣</span> Catchy Hooks
-          </button>
-        </div>
-      </div>
-
+      <!-- Result Area -->
       <div id="fbOutputArea" class="hidden space-y-4 animate-fade-in">
         <div id="fbResultWrapper" class="flex flex-col gap-2">
-             <div class="flex justify-between items-end px-1">
-                <span class="text-xs font-bold text-slate-400 uppercase">Result</span>
-                <button onclick="copyText('fbAiResult')" class="text-xs text-blue-400 hover:text-blue-300">Copy Text</button>
-            </div>
             <div id="fbAiResult" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 whitespace-pre-wrap leading-relaxed text-slate-200 shadow-inner"></div>
-            <button id="fbContinueBtn" onclick="continueFbPost()" class="hidden w-full py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl text-blue-300 text-sm font-bold flex items-center justify-center gap-2 transition-colors">
-                <span>⚠️ မပြီးသေးရင် နှိပ်ပါ (Smart Continue)</span>
-            </button>
+            
+            <!-- Save/Schedule & Continue -->
+            <div class="grid grid-cols-2 gap-2">
+                <button id="fbContinueBtn" onclick="continueFbPost()" class="hidden py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl text-blue-300 text-sm font-bold flex items-center justify-center gap-2">
+                   ⚠️ Continue
+                </button>
+                <div class="flex gap-1">
+                    <input type="date" id="fbDate" class="bg-slate-800 border border-slate-700 text-xs rounded-lg px-2 text-white outline-none">
+                    <button onclick="saveToHistory('FB Post', 'fbAiResult', 'fbDate')" class="flex-1 bg-green-700 hover:bg-green-600 rounded-lg text-xs font-bold text-white flex flex-col items-center justify-center">
+                        <span>💾 Save</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+      </div>
+      
+      <!-- Creative Assistant -->
+      <div class="bg-slate-900/30 p-5 rounded-2xl border border-blue-500/20">
+        <h3 class="text-sm font-bold text-blue-300 mb-3 uppercase tracking-wider flex items-center gap-2">✨ Creative Assistant</h3>
+        <div class="grid grid-cols-2 gap-3">
+          <button onclick="fbAssistIdeas()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1"><span class="text-xl">💡</span> Content Ideas</button>
+          <button onclick="fbAssistHooks()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1"><span class="text-xl">🎣</span> Catchy Hooks</button>
         </div>
       </div>
     </section>
@@ -266,15 +275,14 @@
     <!-- 4. TIKTOK CREATOR TAB -->
     <section id="tiktok" class="space-y-6 hidden animate-fade-in">
       <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 shadow-sm">
-        <h2 class="text-lg font-bold text-teal-400 flex items-center gap-2 mb-4">
-          <span>🎵</span> TikTok Script Creator
-        </h2>
-
+        <h2 class="text-lg font-bold text-teal-400 flex items-center gap-2 mb-4"><span>🎵</span> TikTok Script Creator</h2>
         <div class="space-y-4">
           <div>
             <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Video Idea / Topic</label>
-            <input type="text" id="ttInput" placeholder="ဥပမာ - Studio ဖွင့်ချိန် Vlog" 
-              class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-teal-500 outline-none text-sm transition-colors">
+            <div class="relative">
+                <input type="text" id="ttInput" placeholder="ဥပမာ - Studio ဖွင့်ချိန် Vlog" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-teal-500 outline-none text-sm transition-colors">
+                <div class="absolute top-1/2 right-3 -translate-y-1/2 text-slate-500 hover:text-teal-400 cursor-pointer" title="Voice Input">🎤</div>
+            </div>
           </div>
           <div>
             <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Video Style</label>
@@ -292,37 +300,40 @@
         </div>
       </div>
 
+       <div id="ttOutputArea" class="hidden space-y-4 animate-fade-in">
+        <div id="ttResultWrapper" class="flex flex-col gap-2">
+            <div id="ttAiResult" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 whitespace-pre-wrap leading-relaxed text-slate-200 shadow-inner"></div>
+            <!-- Save/Schedule & Continue -->
+            <div class="grid grid-cols-2 gap-2">
+                <button id="ttContinueBtn" onclick="continueTikTok()" class="hidden py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl text-teal-300 text-sm font-bold flex items-center justify-center gap-2">
+                   ⚠️ Continue
+                </button>
+                <div class="flex gap-1">
+                    <input type="date" id="ttDate" class="bg-slate-800 border border-slate-700 text-xs rounded-lg px-2 text-white outline-none">
+                    <button onclick="saveToHistory('TikTok', 'ttAiResult', 'ttDate')" class="flex-1 bg-green-700 hover:bg-green-600 rounded-lg text-xs font-bold text-white flex flex-col items-center justify-center">
+                        <span>💾 Save</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+      </div>
+      
       <!-- Creative Assistant -->
       <div class="bg-slate-900/30 p-5 rounded-2xl border border-teal-500/20">
         <h3 class="text-sm font-bold text-teal-300 mb-3 uppercase tracking-wider flex items-center gap-2">✨ Creative Assistant</h3>
-        <p class="text-xs text-slate-500 mb-4">Trending ဖြစ်မယ့် အကြံဉာဏ်များ ရယူပါ</p>
         <div class="grid grid-cols-2 gap-3">
           <button onclick="ttAssistIdeas()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1"><span class="text-xl">💡</span> Video Ideas</button>
           <button onclick="ttAssistHooks()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1"><span class="text-xl">⚡</span> Visual Hooks</button>
         </div>
       </div>
-
-       <div id="ttOutputArea" class="hidden space-y-4 animate-fade-in">
-        <div id="ttResultWrapper" class="flex flex-col gap-2">
-            <div class="flex justify-between items-end px-1">
-                <span id="ttResultLabel" class="text-xs font-bold text-slate-400 uppercase">Result</span>
-                <button onclick="copyText('ttAiResult')" class="text-xs text-teal-400 hover:text-teal-300">Copy Text</button>
-            </div>
-            <div id="ttAiResult" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 whitespace-pre-wrap leading-relaxed text-slate-200 shadow-inner"></div>
-            <button id="ttContinueBtn" onclick="continueTikTok()" class="hidden w-full py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl text-teal-300 text-sm font-bold flex items-center justify-center gap-2 transition-colors">
-                <span>⚠️ မပြီးသေးရင် နှိပ်ပါ (Continue)</span>
-            </button>
-        </div>
-      </div>
     </section>
 
-    <!-- 5. DM HELPER TAB -->
+    <!-- 5. DM HELPER TAB (SUPER CHARGED) -->
     <section id="dm" class="space-y-6 hidden animate-fade-in">
       <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 shadow-sm">
         <h2 class="text-lg font-bold text-purple-400 flex items-center gap-2 mb-4">
           <span>💬</span> Client DM Sales Master
         </h2>
-
         <div class="space-y-4">
             <div>
                 <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Client Situation</label>
@@ -335,85 +346,80 @@
                     <option value="Complaint">⚠️ Complaint Handling</option>
                 </select>
             </div>
-
-             <!-- CLIENT TYPE PRESETS -->
-             <div class="flex flex-wrap gap-2">
-                <span class="text-xs font-bold text-slate-500 uppercase self-center mr-1">Presets:</span>
-                <button onclick="setDmPreset('Price Sensitive')" class="px-3 py-1 bg-slate-800 hover:bg-purple-900/50 border border-slate-700 rounded-full text-xs text-purple-200 transition">💰 Budget</button>
-                <button onclick="setDmPreset('Vip Client')" class="px-3 py-1 bg-slate-800 hover:bg-purple-900/50 border border-slate-700 rounded-full text-xs text-purple-200 transition">👑 VIP</button>
-                <button onclick="setDmPreset('Rude Client')" class="px-3 py-1 bg-slate-800 hover:bg-purple-900/50 border border-slate-700 rounded-full text-xs text-purple-200 transition">😤 Rude</button>
-              </div>
-
             <div>
-                 <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Client's Message (Optional)</label>
-                <textarea
-                    id="dmInput"
-                    placeholder="Client ပို့လိုက်တဲ့ စာ (သို့) အခြေအနေအကျဉ်းချုပ်..."
-                    class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-purple-500 outline-none h-24 text-sm resize-none"
-                ></textarea>
+                 <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Client's Message</label>
+                 <div class="relative">
+                    <textarea id="dmInput" placeholder="Client ပို့လိုက်တဲ့ စာ..." class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-purple-500 outline-none h-24 text-sm resize-none"></textarea>
+                    <div class="absolute bottom-2 right-2 text-slate-500 hover:text-purple-400 cursor-pointer" title="Voice Input">🎤</div>
+                 </div>
             </div>
-            <div>
-                 <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Tone</label>
-                <select id="dmTone" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-purple-500 outline-none text-sm text-slate-200">
-                    <option value="Professional & Polite">👔 Professional</option>
-                    <option value="Warm & Friendly">😊 Friendly</option>
-                    <option value="Persuasive & Confident">🔥 Persuasive</option>
-                    <option value="Apologetic & Solution-oriented">🙏 Apologetic</option>
-                </select>
+
+            <!-- CTA BOOSTER -->
+            <div class="bg-slate-800/50 p-3 rounded-xl border border-purple-500/20">
+                <label class="text-[10px] text-purple-300 uppercase font-bold tracking-wider">🚀 Booking CTA Booster</label>
+                <div class="flex gap-2 mt-2">
+                    <button onclick="setCTA('Soft')" class="flex-1 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-xs border border-slate-600 transition">🍃 Soft<br><span class="text-[9px] text-slate-400">မေးမြန်း</span></button>
+                    <button onclick="setCTA('Medium')" class="flex-1 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-xs border border-slate-600 transition">🔥 Medium<br><span class="text-[9px] text-slate-400">ဖိတ်ခေါ်</span></button>
+                    <button onclick="setCTA('Strong')" class="flex-1 py-2 bg-purple-900 hover:bg-purple-800 rounded-lg text-xs border border-purple-700 transition font-bold text-white">💥 Strong<br><span class="text-[9px] text-purple-200">အခုယူမယ်</span></button>
+                </div>
+                <input type="hidden" id="dmCTA" value="Medium">
             </div>
-            <button onclick="generateDmReply()" class="w-full bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white py-3 rounded-xl font-bold shadow-lg shadow-purple-900/30 transition-all transform active:scale-95 flex justify-center items-center gap-2">
-                <span>⚡</span> Generate Reply
+
+            <button onclick="generateDmBestReplies()" class="w-full bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white py-3 rounded-xl font-bold shadow-lg shadow-purple-900/30 transition-all transform active:scale-95 flex justify-center items-center gap-2">
+                <span>⚡</span> Generate 3 Best Replies
             </button>
-        </div>
-      </div>
-
-      <!-- Quick Strategies -->
-      <div class="bg-slate-900/30 p-5 rounded-2xl border border-purple-500/20">
-        <h3 class="text-sm font-bold text-purple-300 mb-3 uppercase tracking-wider flex items-center gap-2">✨ Quick Strategies</h3>
-        <p class="text-xs text-slate-500 mb-4">အရောင်းပိတ်ဖို့အတွက် အထောက်အကူပြု နည်းဗျူဟာများ</p>
-        <div class="grid grid-cols-2 gap-3">
-          <button onclick="dmAssistFollowUp()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1"><span class="text-xl">📅</span> Smart Follow-up</button>
-          <button onclick="dmAssistDiscount()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1"><span class="text-xl">🎁</span> Discount Offer</button>
         </div>
       </div>
 
       <div id="dmOutputArea" class="hidden space-y-4 animate-fade-in">
         <div class="flex flex-col gap-2">
-            <div class="flex justify-between items-end px-1">
-                <span class="text-xs font-bold text-slate-400 uppercase">Suggested Reply</span>
-                <button onclick="copyText('dmOutput')" class="text-xs text-purple-400 hover:text-purple-300">Copy Text</button>
-            </div>
             <div id="dmOutput" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 whitespace-pre-wrap leading-relaxed text-slate-200 shadow-inner"></div>
-            <button id="dmContinueBtn" onclick="continueDmReply()" class="hidden w-full py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl text-purple-300 text-sm font-bold flex items-center justify-center gap-2 transition-colors">
-                <span>⚠️ မပြီးသေးရင် နှိပ်ပါ (Continue)</span>
-            </button>
         </div>
       </div>
     </section>
 
+    <!-- 6. CALENDAR / HISTORY TAB (NEW) -->
+    <section id="history" class="space-y-6 hidden animate-fade-in">
+        <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 shadow-sm">
+            <h2 class="text-lg font-bold text-white flex items-center gap-2 mb-1">
+              <span>📅</span> Calendar & Saved History
+            </h2>
+            <p class="text-xs text-slate-400 mb-4">Saved results are auto-deleted after 48 hours.</p>
+            
+            <div id="historyList" class="space-y-3">
+                <!-- Javascript will populate this -->
+                <div class="text-center text-slate-500 py-10 text-sm">No saved items yet.</div>
+            </div>
+            
+            <button onclick="clearAllHistory()" class="w-full mt-4 text-xs text-red-400 hover:text-red-300 py-2 border border-red-900/30 rounded-lg">Clear All History</button>
+        </div>
+    </section>
+
   </main>
+  
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="toast">Text Copied!</div>
 
   <!-- JAVASCRIPT -->
   <script>
     // --- TAB SYSTEM ---
     function switchTab(tab) {
-      ['brand','timeline','pose','fbpost','tiktok','dm'].forEach(id => {
+      ['brand','timeline','pose','fbpost','tiktok','dm','history'].forEach(id => {
         const el = document.getElementById(id);
         if(el) el.classList.add('hidden');
         
         const btn = document.getElementById('btn-' + id);
         if(btn) {
              btn.classList.remove('bg-pink-600', 'bg-blue-600', 'bg-teal-600', 'bg-purple-600', 'bg-orange-600', 'text-white', 'shadow-lg', 'bg-slate-800');
-             btn.classList.add('bg-transparent', 'text-slate-400', 'hover:bg-slate-800');
+             btn.classList.add('text-slate-400', 'hover:bg-slate-800');
         }
       });
 
       document.getElementById(tab).classList.remove('hidden');
       
       const btn = document.getElementById('btn-' + tab);
-      btn.classList.remove('bg-transparent', 'text-slate-400', 'hover:bg-slate-800');
+      btn.classList.remove('text-slate-400', 'hover:bg-slate-800');
       
-      // Active styles based on tab
       btn.classList.add('text-white', 'shadow-lg');
       if(tab === 'brand') btn.classList.add('bg-slate-700');
       if(tab === 'timeline') btn.classList.add('bg-orange-600');
@@ -421,72 +427,143 @@
       if(tab === 'fbpost') btn.classList.add('bg-blue-600');
       if(tab === 'tiktok') btn.classList.add('bg-teal-600');
       if(tab === 'dm') btn.classList.add('bg-purple-600');
+      if(tab === 'history') { btn.classList.add('bg-slate-700'); loadHistory(); }
     }
 
     // Init
     switchTab('fbpost'); 
 
-    // --- UTILS: PRESETS & HELPERS ---
+    // --- TOAST ---
+    function showToast(msg) {
+        var x = document.getElementById("toast");
+        x.innerText = msg;
+        x.className = "toast show";
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    }
+
+    function copyText(elementIdOrText) {
+        let text = "";
+        if(document.getElementById(elementIdOrText)) {
+            text = document.getElementById(elementIdOrText).innerText;
+        } else {
+            text = elementIdOrText;
+        }
+        navigator.clipboard.writeText(text);
+        showToast("Text Copied!");
+    }
+
+    function downloadText(elementId, filename) {
+        const text = document.getElementById(elementId).innerText;
+        const blob = new Blob([text], { type: 'text/plain' });
+        const anchor = document.createElement('a');
+        anchor.download = filename + ".txt";
+        anchor.href = window.URL.createObjectURL(blob);
+        anchor.target = "_blank";
+        anchor.style.display = "none"; 
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
+        showToast("Downloaded!");
+    }
+
+    // --- HISTORY & CALENDAR LOGIC ---
+    function saveToHistory(type, elementId, dateInputId) {
+        const content = document.getElementById(elementId).innerText;
+        if(!content) return;
+        
+        const dateVal = document.getElementById(dateInputId) ? document.getElementById(dateInputId).value : "";
+        const historyItem = {
+            id: Date.now(),
+            type: type,
+            content: content,
+            scheduledDate: dateVal,
+            timestamp: Date.now()
+        };
+
+        const history = JSON.parse(localStorage.getItem('appHistory') || '[]');
+        history.unshift(historyItem);
+        localStorage.setItem('appHistory', JSON.stringify(history));
+        
+        showToast(dateVal ? "Scheduled & Saved!" : "Saved to History!");
+        updateHistoryCount();
+    }
+
+    function loadHistory() {
+        const history = JSON.parse(localStorage.getItem('appHistory') || '[]');
+        const container = document.getElementById('historyList');
+        
+        // Auto Delete > 2 days (48 hours)
+        const twoDaysAgo = Date.now() - (48 * 60 * 60 * 1000);
+        const filteredHistory = history.filter(item => item.timestamp > twoDaysAgo);
+        
+        if(history.length !== filteredHistory.length) {
+            localStorage.setItem('appHistory', JSON.stringify(filteredHistory));
+        }
+
+        if(filteredHistory.length === 0) {
+            container.innerHTML = `<div class="text-center text-slate-500 py-10 text-sm">No items yet.</div>`;
+            return;
+        }
+
+        container.innerHTML = filteredHistory.map(item => {
+            const dateDisplay = item.scheduledDate ? `<span class="bg-blue-900 text-blue-200 text-[10px] px-2 py-0.5 rounded border border-blue-700">🗓️ ${item.scheduledDate}</span>` : `<span class="text-slate-500 text-[10px]">Just Saved</span>`;
+            return `
+            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 relative group">
+                <div class="flex justify-between items-center mb-2">
+                    <div class="flex gap-2 items-center">
+                        <span class="text-xs font-bold text-white bg-slate-700 px-2 py-1 rounded">${item.type}</span>
+                        ${dateDisplay}
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="copyText(this.getAttribute('data-text'))" data-text="${item.content.replace(/"/g, '&quot;')}" class="text-xs text-slate-400 hover:text-white">📋 Copy</button>
+                        <button onclick="deleteHistoryItem(${item.id})" class="text-xs text-red-400 hover:text-red-300">🗑️</button>
+                    </div>
+                </div>
+                <div class="text-xs text-slate-300 whitespace-pre-wrap max-h-24 overflow-hidden text-ellipsis leading-relaxed">${item.content.substring(0, 150)}...</div>
+            </div>
+            `;
+        }).join('');
+        
+        updateHistoryCount();
+    }
+
+    function deleteHistoryItem(id) {
+        const history = JSON.parse(localStorage.getItem('appHistory') || '[]');
+        const newHistory = history.filter(item => item.id !== id);
+        localStorage.setItem('appHistory', JSON.stringify(newHistory));
+        loadHistory();
+    }
+
+    function clearAllHistory() {
+        if(confirm("Delete all history?")) {
+            localStorage.removeItem('appHistory');
+            loadHistory();
+        }
+    }
+
+    function updateHistoryCount() {
+        const history = JSON.parse(localStorage.getItem('appHistory') || '[]');
+        const badge = document.getElementById('historyCount');
+        if(history.length > 0) {
+            badge.innerText = history.length;
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+        }
+    }
     
-    function setPosePreset(type) {
-        let text = "";
-        if(type === 'Shy Couple') text = "သတို့သားနဲ့ သတို့သမီးက အရမ်းရှက်တတ်တယ်။ Camera ကို မကြည့်ရဲဘူး။ သဘာဝကျကျ ရယ်မောနေတဲ့ ပုံစံလိုချင်တယ်။";
-        if(type === 'Stiff Groom') text = "သတို့သားက Pose လုံးဝမပေးတတ်ဘူး။ ကျောက်ရုပ်လို ဖြစ်နေတယ်။ သူ့ကို သက်သောင့်သက်သာဖြစ်အောင် ဘယ်လိုလုပ်ရမလဲ။";
-        if(type === 'Plus Size Couple') text = "ဝတဲ့ အတွဲဖြစ်လို့ ပိန်တဲ့ထောင့် (Angle) နဲ့ ယုံကြည်မှုရှိတဲ့ ပုံစံမျိုး လိုချင်တယ်။";
-        
-        document.getElementById('poseInput').value = text;
-    }
-
-    function setDmPreset(type) {
-        let text = "";
-        if(type === 'Price Sensitive') text = "ဈေးအရမ်းကြီးတယ်၊ လျှော့ပေးပါလားလို့ မေးနေတယ်။";
-        if(type === 'Vip Client') text = "ငွေကြေးပြဿနာမရှိဘူး။ အကောင်းဆုံး Quality နဲ့ အမြန်ဆုံး လိုချင်တဲ့ VIP client။";
-        if(type === 'Rude Client') text = "စကားပြောတာ နည်းနည်း ရိုင်းသလိုပဲ။ ဘာမှ မဟုတ်တာနဲ့ စိတ်ဆိုးနေတယ်။";
-        
-        document.getElementById('dmInput').value = text;
-    }
-
-    function getBrandContext() {
-        const style = document.getElementById('brandStyle').value;
-        const client = document.getElementById('brandClient').value;
-        const motto = document.getElementById('brandMotto').value;
-        return `\n[BRAND BRAIN CONTEXT]\nStudio Style: ${style}\nTarget Audience: ${client}\nMotto: ${motto}\nKeep this identity in mind.\n`;
-    }
-
-    // --- TIMELINE GENERATOR (UPDATED) ---
-    async function generateTimeline() {
-        const start = document.getElementById('tlStart').value;
-        const place = document.getElementById('tlPlace').value;
-        const dress = document.getElementById('tlDress').value;
-        const output = document.getElementById('tlOutput');
-        
-        document.getElementById('tlOutputArea').classList.remove('hidden');
-        output.innerHTML = "<span class='animate-pulse text-orange-400'>⏳ Calculating best schedule...</span>";
-
-        const prompt = `
-            Role: Experienced Wedding Planner for With You Photo Studio (Taunggyi).
-            Task: Create a detailed Pre-wedding Photography Timeline.
-            
-            Inputs:
-            - Start Time: ${start}
-            - Location: ${place} (Assume travel time from Taunggyi city if needed).
-            - Outfits: ${dress} (Calculate changing time approx 20-30 mins per outfit).
-            
-            Requirements:
-            - Include Travel time, Makeup touch-ups, Outfit changes, and Lunch break.
-            - Language: Burmese.
-            - Format: Clear List with timestamps.
-        `;
-        
-        await callAI(prompt, output);
-    }
+    // Run on load
+    updateHistoryCount();
 
 
-    // --- AI CALL HANDLER (MODIFIED TO RETURN DATA) ---
+    // --- AI CALL HANDLER ---
     async function callAI(promptText, outputElement, isAppend = false) {
         try {
             // INJECT BRAND BRAIN
-            const fullPrompt = getBrandContext() + promptText;
+            const style = document.getElementById('brandStyle') ? document.getElementById('brandStyle').value : "";
+            const client = document.getElementById('brandClient') ? document.getElementById('brandClient').value : "";
+            const motto = document.getElementById('brandMotto') ? document.getElementById('brandMotto').value : "";
+            const fullPrompt = `\n[BRAND CONTEXT: Style=${style}, Audience=${client}, Motto=${motto}]\n${promptText}`;
 
             const res = await fetch("/api/generate", {
                 method: "POST",
@@ -503,7 +580,7 @@
                 } else {
                     outputElement.innerText = data.result;
                 }
-                return data.result; // Return for storage
+                return data.result; 
             } else {
                 if(!isAppend) outputElement.innerText = "Error: No result returned.";
             }
@@ -513,7 +590,29 @@
         }
     }
 
-    // --- 1. POSE ---
+    // --- TIMELINE ---
+    async function generateTimeline() {
+        const start = document.getElementById('tlStart').value;
+        const place = document.getElementById('tlPlace').value;
+        const dress = document.getElementById('tlDress').value;
+        const output = document.getElementById('tlOutput');
+        
+        document.getElementById('tlOutputArea').classList.remove('hidden');
+        output.innerHTML = "<span class='animate-pulse text-orange-400'>⏳ Calculating best schedule...</span>";
+
+        const prompt = `Role: Wedding Planner. Task: Create Pre-wedding Timeline. Inputs: Start=${start}, Loc=${place}, Outfits=${dress}. Language: Burmese. Format: List.`;
+        await callAI(prompt, output);
+    }
+
+    // --- POSE ---
+    function setPosePreset(type) {
+        let text = "";
+        if(type === 'Shy Couple') text = "သတို့သားနဲ့ သတို့သမီးက အရမ်းရှက်တတ်တယ်။ Camera ကို မကြည့်ရဲဘူး။ သဘာဝကျကျ ရယ်မောနေတဲ့ ပုံစံလိုချင်တယ်။";
+        if(type === 'Stiff Groom') text = "သတို့သားက Pose လုံးဝမပေးတတ်ဘူး။ ကျောက်ရုပ်လို ဖြစ်နေတယ်။ သူ့ကို သက်သောင့်သက်သာဖြစ်အောင် ဘယ်လိုလုပ်ရမလဲ။";
+        if(type === 'Plus Size Couple') text = "ဝတဲ့ အတွဲဖြစ်လို့ ပိန်တဲ့ထောင့် (Angle) နဲ့ ယုံကြည်မှုရှိတဲ့ ပုံစံမျိုး လိုချင်တယ်။";
+        document.getElementById('poseInput').value = text;
+    }
+    
     async function generatePose() {
       const mood = document.getElementById("mood").value;
       const scene = document.getElementById("scene").value;
@@ -524,65 +623,41 @@
       outputWrapper.classList.remove("hidden");
       output.innerHTML = "<span class='animate-pulse text-pink-400'>⏳ Generating pose ideas...</span>";
 
-      const prompt = `Role: Photographer (With You Studio). Task: Give 3 pose ideas in Burmese. Scene: ${scene}, Mood: ${mood}, Context: ${input}.`;
+      const prompt = `Role: Photographer. Task: 3 pose ideas in Burmese. Scene: ${scene}, Mood: ${mood}, Context: ${input}.`;
       await callAI(prompt, output);
     }
 
-
-    // --- 2. FB POST (UPDATED PRO) ---
+    // --- FB POST ---
     async function generateFbPostAI() {
         const topic = document.getElementById('fbInput').value;
         const tone = document.getElementById('fbTone').value;
-        const length = document.getElementById('fbLength').value; // New Length Input
+        const length = document.getElementById('fbLength').value; 
         const output = document.getElementById('fbAiResult');
         
         document.getElementById('fbOutputArea').classList.remove('hidden');
         document.getElementById('fbContinueBtn').classList.add('hidden'); 
 
-        output.innerHTML = "<span class='animate-pulse text-blue-400'>⏳ AI is writing your post (Male voice, Continuous)...</span>";
+        output.innerHTML = "<span class='animate-pulse text-blue-400'>⏳ AI is writing (Male voice)...</span>";
 
         let lengthInstruction = "";
         if (length === "Short") lengthInstruction = "Keep it short, punchy, under 100 words. Good for quick captions.";
         if (length === "Medium") lengthInstruction = "Write a standard length Facebook post.";
         if (length === "Long") lengthInstruction = "Write a Long-Form Storytelling post. Go deep into details. Do NOT cut off. You MUST finish with [CTA] and [HASHTAGS].";
 
-        const prompt = `
-          Role: Senior Social Media Copywriter for With You Photo Studio (Taunggyi).
-          Topic: ${topic}
-          Tone: ${tone}
-          Length: ${length}
-          Instruction: ${lengthInstruction}
-          
-          TASK: Write ONE complete Facebook post in Burmese.
-          RULES: Use "Bya" (ဗျ). Structure: Hook -> Body -> Value -> CTA -> Hashtags.
-        `;
-        
-        // Save prompt context
-        sessionStorage.setItem('lastFbPrompt', prompt);
+        const prompt = `Role: Copywriter. Topic: ${topic}, Tone: ${tone}, Length: ${length}. Instruction: ${lengthInstruction}. TASK: Write Facebook post in Burmese. RULES: Use "Bya". Structure: Hook -> Body -> Value -> CTA -> Hashtags.`;
         
         await callAI(prompt, output);
         
-        // Save result for continue logic
         sessionStorage.setItem('lastFbResult', output.innerText);
-        
         document.getElementById('fbContinueBtn').classList.remove('hidden');
     }
 
-    // FB ASSISTANT FUNCTIONS
     async function fbAssistIdeas() {
         const topic = document.getElementById('fbInput').value || "Photography";
         const output = document.getElementById('fbAiResult');
         document.getElementById('fbOutputArea').classList.remove('hidden');
-        document.getElementById('fbContinueBtn').classList.add('hidden');
-        
         output.innerHTML = "<span class='animate-pulse text-blue-400'>💡 Brainstorming Ideas...</span>";
-        
-        const prompt = `
-            Role: Creative Director.
-            Task: Give 5 Creative Facebook Post Ideas for With You Photo Studio related to: "${topic}".
-            Language: Burmese (Male voice 'Bya').
-            Format: Bullet points.
-        `;
+        const prompt = `Role: Creative Director. Task: 5 Creative Facebook Post Ideas for: "${topic}". Language: Burmese (Male voice). Format: Bullet points.`;
         await callAI(prompt, output);
     }
 
@@ -590,50 +665,25 @@
         const topic = document.getElementById('fbInput').value || "Photography";
         const output = document.getElementById('fbAiResult');
         document.getElementById('fbOutputArea').classList.remove('hidden');
-        document.getElementById('fbContinueBtn').classList.add('hidden');
-        
         output.innerHTML = "<span class='animate-pulse text-blue-400'>🎣 Writing Hooks...</span>";
-        
-        const prompt = `
-            Role: Copywriter.
-            Task: Write 5 Catchy First Lines (Hooks) for a post about: "${topic}".
-            Goal: Stop people from scrolling.
-            Language: Burmese (Male voice 'Bya').
-        `;
+        const prompt = `Role: Copywriter. Task: 5 Catchy Hooks for: "${topic}". Language: Burmese (Male voice).`;
         await callAI(prompt, output);
     }
 
-    // SMART CONTINUE LOGIC
     async function continueFbPost() {
         const output = document.getElementById('fbAiResult');
         const currentText = output.innerText;
-        const lastChunk = currentText.slice(-300); // Get context
-
         output.innerHTML += "<br><br><span class='loading-indicator animate-pulse text-blue-400'>... ဆက်ရေးနေသည် ...</span>";
-        
-        const prompt = `
-            Role: Copywriter.
-            Context: You are writing a Burmese Facebook post.
-            The post stopped at: "...${lastChunk}"
-            
-            TASK: CONTINUE writing explicitly from where it stopped. 
-            MANDATORY: You MUST finish the [CTA] and [HASHTAGS] sections if they are missing.
-            Language: Burmese.
-        `;
+        const prompt = `Role: Copywriter. Context: Burmese FB post stopped at: "...${currentText.slice(-300)}". TASK: CONTINUE writing. Finish CTA + Hashtags.`;
         await callAI(prompt, output, true);
     }
 
-
-    // --- 3. TIKTOK ---
+    // --- TIKTOK ---
     async function generateTTCaption() {
         const topic = document.getElementById('ttInput').value;
         const style = document.getElementById('ttStyle').value;
         const output = document.getElementById('ttAiResult');
-
         document.getElementById('ttOutputArea').classList.remove('hidden');
-        document.getElementById('ttContinueBtn').classList.add('hidden');
-        document.getElementById('ttResultLabel').innerText = "TIKTOK POST CAPTION";
-
         output.innerHTML = "<span class='animate-pulse text-indigo-400'>⏳ Creating TikTok Caption...</span>";
         const prompt = `Role: Social Media Manager. Task: Write TikTok Caption in Burmese (Male voice). Topic: ${topic}, Style: ${style}.`;
         await callAI(prompt, output);
@@ -643,26 +693,20 @@
         const topic = document.getElementById('ttInput').value;
         const style = document.getElementById('ttStyle').value;
         const output = document.getElementById('ttAiResult');
-
         document.getElementById('ttOutputArea').classList.remove('hidden');
         document.getElementById('ttContinueBtn').classList.add('hidden');
-        document.getElementById('ttResultLabel').innerText = "TIKTOK SCRIPT";
-
         output.innerHTML = "<span class='animate-pulse text-teal-400'>⏳ Writing TikTok Script...</span>";
         const prompt = `Role: TikTok Creator. Task: Write script for "${topic}" in Burmese (Male voice). Structure: Scene, Audio.`;
         await callAI(prompt, output);
         document.getElementById('ttContinueBtn').classList.remove('hidden');
     }
-
-    // TIKTOK ASSISTANT FUNCTIONS
+    
     async function ttAssistIdeas() {
         const topic = document.getElementById('ttInput').value || "Photography";
         const output = document.getElementById('ttAiResult');
         document.getElementById('ttOutputArea').classList.remove('hidden');
-        document.getElementById('ttResultLabel').innerText = "VIDEO IDEAS";
-        
-        output.innerHTML = "<span class='animate-pulse text-teal-400'>💡 Brainstorming Video Ideas...</span>";
-        const prompt = `Role: TikTok Strategist. Task: Give 5 Viral Video Ideas for: "${topic}". Language: Burmese (Male voice).`;
+        output.innerHTML = "<span class='animate-pulse text-teal-400'>💡 Brainstorming...</span>";
+        const prompt = `Role: TikTok Strategist. Task: 5 Viral Video Ideas for: "${topic}". Language: Burmese.`;
         await callAI(prompt, output);
     }
 
@@ -670,10 +714,8 @@
         const topic = document.getElementById('ttInput').value || "Photography";
         const output = document.getElementById('ttAiResult');
         document.getElementById('ttOutputArea').classList.remove('hidden');
-        document.getElementById('ttResultLabel').innerText = "VISUAL HOOKS";
-        
         output.innerHTML = "<span class='animate-pulse text-teal-400'>⚡ Creating Hooks...</span>";
-        const prompt = `Role: TikTok Strategist. Task: Give 5 Visual Hook ideas (first 3 seconds) for a video about: "${topic}". Language: Burmese.`;
+        const prompt = `Role: TikTok Strategist. Task: 5 Visual Hooks for: "${topic}". Language: Burmese.`;
         await callAI(prompt, output);
     }
 
@@ -681,64 +723,37 @@
         const output = document.getElementById('ttAiResult');
         const currentText = output.innerText;
         output.innerHTML += "<br><br><span class='loading-indicator animate-pulse text-teal-400'>... ဆက်ရေးနေသည် ...</span>";
-        const prompt = `Role: Scriptwriter. Instruction: Continue the previous Burmese script from: "...${currentText.slice(-100)}".`;
+        const prompt = `Role: Scriptwriter. Instruction: Continue Burmese script from: "...${currentText.slice(-100)}".`;
         await callAI(prompt, output, true);
     }
 
+    // --- DM HELPER (SUPER CHARGED) ---
+    function setCTA(strength) {
+        document.getElementById('dmCTA').value = strength;
+        showToast("CTA set to: " + strength);
+    }
 
-    // --- 4. DM HELPER (UPGRADED) ---
-    async function generateDmReply() {
+    async function generateDmBestReplies() {
         const scenario = document.getElementById('dmScenario').value;
-        const input = document.getElementById('dmInput').value || "No specific text";
-        const tone = document.getElementById('dmTone').value;
+        const input = document.getElementById('dmInput').value || "General Inquiry";
+        const ctaStrength = document.getElementById('dmCTA').value;
         const output = document.getElementById('dmOutput');
         
         document.getElementById('dmOutputArea').classList.remove('hidden');
-        document.getElementById('dmContinueBtn').classList.add('hidden');
-        output.innerHTML = "<span class='animate-pulse text-purple-400'>⏳ Analyzing & Drafting Reply...</span>";
+        output.innerHTML = "<span class='animate-pulse text-purple-400'>⏳ Generating 3 Best Options...</span>";
 
         const prompt = `
-          Role: Senior Sales Manager for With You Photo Studio (Taunggyi).
-          Task: Write a reply to a client in Burmese (Male voice 'Bya').
-          Context: Scenario='${scenario}', Client Msg='${input}', Tone='${tone}'.
-          Strategy: Be professional, handle objections if any, and try to move towards a booking.
+          Role: Senior Sales Manager.
+          Task: Write 3 Distinct DM Replies in Burmese (Male 'Bya').
+          Context: Client said: "${input}". Scenario: ${scenario}.
+          CTA Level: ${ctaStrength} (Soft=Ask Q, Medium=Invite, Strong=Book Now).
+          
+          Output Format:
+          Option 1: [Professional & Detailed]
+          Option 2: [Friendly & Warm]
+          Option 3: [Short & Urgent/Persuasive]
         `;
         await callAI(prompt, output);
-        document.getElementById('dmContinueBtn').classList.remove('hidden');
-    }
-
-    async function dmAssistFollowUp() {
-        const output = document.getElementById('dmOutput');
-        document.getElementById('dmOutputArea').classList.remove('hidden');
-        document.getElementById('dmContinueBtn').classList.add('hidden');
-        output.innerHTML = "<span class='animate-pulse text-purple-400'>⏳ Generating Follow-up Templates...</span>";
-        
-        const prompt = `Role: Sales Expert. Task: Write 3 follow-up messages (Casual, Value, Urgency) in Burmese (Male voice) for a photography client.`;
-        await callAI(prompt, output);
-    }
-
-    async function dmAssistDiscount() {
-        const output = document.getElementById('dmOutput');
-        document.getElementById('dmOutputArea').classList.remove('hidden');
-        document.getElementById('dmContinueBtn').classList.add('hidden');
-        output.innerHTML = "<span class='animate-pulse text-purple-400'>⏳ Generating Offer...</span>";
-        
-        const prompt = `Role: Sales Expert. Task: Write a special discount offer message in Burmese (Male voice) to close a deal today.`;
-        await callAI(prompt, output);
-    }
-
-    async function continueDmReply() {
-        const output = document.getElementById('dmOutput');
-        output.innerHTML += "<br><br><span class='loading-indicator animate-pulse text-purple-400'>... ဆက်ရေးနေသည် ...</span>";
-        const prompt = `Role: Sales Manager. Instruction: Continue the previous Burmese reply.`;
-        await callAI(prompt, output, true);
-    }
-
-    // UTILS
-    function copyText(elementId) {
-        const text = document.getElementById(elementId).innerText;
-        navigator.clipboard.writeText(text);
-        alert("Text copied!");
     }
   </script>
 </body>
