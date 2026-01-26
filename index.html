@@ -137,7 +137,7 @@
                     <i class="ph ph-clock text-lg"></i> Timeline
                 </button>
                 <button onclick="window.loadView('pose')" id="nav-pose" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                    <i class="ph ph-person-simple-walk text-lg"></i> Pose Helper
+                    <i class="ph ph-camera"></i> Pose Helper
                 </button>
             </div>
         </div>
@@ -544,7 +544,7 @@
                 const prev = document.getElementById(outId).innerText;
                 taskPrompt = `CONTEXT: Writing 3 DM replies. Stopped at: "...${prev.slice(-100)}". TASK: CONTINUE exactly from there. Finish the options. Add a closing.`;
             } else {
-                taskPrompt = `TASK: Write 3 DISTINCT SALES REPLIES (Numbered 1, 2, 3). Context: ${service}. Status: ${scenario}. Client: "${msg}". Strategy: ${strategy}. OUTPUT: 1. [Warm Reply] 2. [Direct/Value Reply] 3. [Short/Urgent Reply]. MUST include Contact Info in CTA. Ensure full text.`;
+                taskPrompt = `TASK: Write 3 DISTINCT SALES REPLIES (Numbered 1, 2, 3). Keep them concise to ensure all 3 display fully. Context: ${service}. Status: ${scenario}. Client: "${msg}". Strategy: ${strategy}. OUTPUT: 1. [Warm Reply] 2. [Direct/Value Reply] 3. [Short/Urgent Reply]. MUST include Contact Info in CTA. Ensure full text.`;
             }
         } 
         else if (type === 'fbpost') {
@@ -559,9 +559,9 @@
                 taskPrompt = `CONTEXT: You are writing a FB post. It stopped at: "...${lastChunk}". TASK: CONTINUE writing from there. Finish the body, add a strong CTA using ${contactInfo}, and add Hashtags. End with "--- End of Post ---".`;
             } else {
                 if(len === "Long") {
-                    taskPrompt = `TASK: Write ONE detailed, long-form storytelling Facebook Post about "${topic}". Tone: ${tone}. Go deep into emotion. Don't cut off.`;
+                    taskPrompt = `TASK: Write ONE detailed Facebook Post about "${topic}". Tone: ${tone}. Focus on storytelling but ensure you reach the CTA and Hashtags before the token limit.`;
                 } else {
-                    taskPrompt = `TASK: Write 3 DISTINCT Facebook Post Variations about "${topic}". Tone: ${tone}. Length: ${len}. FORMAT: Option 1, Option 2, Option 3. Include CTA with ${contactInfo}. Ensure all 3 options are fully written out.`;
+                    taskPrompt = `TASK: Write 3 DISTINCT Facebook Post Variations about "${topic}". Tone: ${tone}. Length: ${len}. Keep them concise. FORMAT: Option 1, Option 2, Option 3. Include CTA with ${contactInfo}. Ensure all 3 options are fully written out.`;
                 }
             }
         }
