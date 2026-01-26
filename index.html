@@ -28,11 +28,12 @@
   <!-- MAIN CONTENT -->
   <main class="flex-1 p-4 space-y-6 max-w-3xl mx-auto w-full">
 
-    <!-- TAB BUTTONS -->
-    <div class="grid grid-cols-3 gap-2 bg-slate-900 p-1 rounded-lg">
-      <button onclick="switchTab('pose')" id="btn-pose" class="tab-btn bg-slate-800 py-2 rounded text-sm transition-all hover:bg-slate-700">🎨 Poses</button>
-      <button onclick="switchTab('fbpost')" id="btn-fbpost" class="tab-btn bg-blue-600 py-2 rounded text-sm font-bold shadow-lg shadow-blue-900/50">📝 FB Post</button>
-      <button onclick="switchTab('dm')" id="btn-dm" class="tab-btn bg-slate-800 py-2 rounded text-sm transition-all hover:bg-slate-700">💬 DM</button>
+    <!-- TAB BUTTONS (Updated to 4 cols) -->
+    <div class="grid grid-cols-4 gap-2 bg-slate-900 p-1 rounded-lg overflow-x-auto">
+      <button onclick="switchTab('pose')" id="btn-pose" class="tab-btn bg-slate-800 py-2 rounded text-xs md:text-sm whitespace-nowrap transition-all hover:bg-slate-700">🎨 Poses</button>
+      <button onclick="switchTab('fbpost')" id="btn-fbpost" class="tab-btn bg-blue-600 py-2 rounded text-xs md:text-sm font-bold shadow-lg shadow-blue-900/50">📝 FB Post</button>
+      <button onclick="switchTab('tiktok')" id="btn-tiktok" class="tab-btn bg-slate-800 py-2 rounded text-xs md:text-sm whitespace-nowrap transition-all hover:bg-slate-700">🎵 TikTok</button>
+      <button onclick="switchTab('dm')" id="btn-dm" class="tab-btn bg-slate-800 py-2 rounded text-xs md:text-sm whitespace-nowrap transition-all hover:bg-slate-700">💬 DM</button>
     </div>
 
     <!-- 1. POSE HELPER TAB -->
@@ -74,7 +75,7 @@
     </section>
 
 
-    <!-- 2. FB POST PROMPT BUILDER TAB (New Integration) -->
+    <!-- 2. FB POST PROMPT BUILDER TAB -->
     <section id="fbpost" class="space-y-4">
       <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-800">
         <h2 class="text-lg font-bold text-blue-400 flex items-center gap-2">
@@ -112,24 +113,68 @@
 
       <!-- Result Area for FB Post -->
       <div id="fbOutputArea" class="hidden space-y-4 animate-fade-in">
-        
-        <!-- Code Block View -->
         <div id="fbCodeBlock" class="hidden">
             <div class="flex justify-between items-center mb-2">
                 <span class="text-xs text-green-400 font-mono">GENERATED PROMPT CODE</span>
-                <button onclick="copyCode()" class="text-xs bg-slate-700 px-2 py-1 rounded">Copy</button>
+                <button onclick="copyCode('codeContent')" class="text-xs bg-slate-700 px-2 py-1 rounded">Copy</button>
             </div>
             <pre class="bg-black/50 p-4 rounded border border-slate-700 overflow-x-auto text-xs font-mono text-gray-300"><code id="codeContent"></code></pre>
         </div>
-
-        <!-- AI Text Result View -->
         <div id="fbAiResult" class="hidden bg-slate-900 p-5 rounded-lg border border-slate-800 whitespace-pre-wrap leading-relaxed text-gray-100"></div>
-      
+      </div>
+    </section>
+
+    <!-- 3. TIKTOK CREATOR TAB (NEW) -->
+    <section id="tiktok" class="space-y-4 hidden">
+      <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-800">
+        <h2 class="text-lg font-bold text-teal-400 flex items-center gap-2">
+          <span>🎵</span> TikTok Script Creator
+        </h2>
+        <p class="text-sm text-slate-400 mb-4">Video Script (Visuals + Audio) for Trends & Education</p>
+
+        <div class="space-y-3">
+          <div>
+            <label class="text-xs text-slate-400 uppercase font-bold">Video Idea / Topic</label>
+            <input type="text" id="ttInput" placeholder="ဥပမာ - Studio ဖွင့်ချိန် Vlog / မိုးရာသီ Pre-wedding tips" 
+              class="w-full p-3 mt-1 rounded bg-slate-800 border border-slate-700 focus:border-teal-500 outline-none">
+          </div>
+          
+          <div>
+            <label class="text-xs text-slate-400 uppercase font-bold">Video Style</label>
+            <select id="ttStyle" class="w-full p-3 mt-1 rounded bg-slate-800 border border-slate-700 focus:border-teal-500 outline-none">
+              <option value="Trending & Fast">⚡ Trending & Fast Paced</option>
+              <option value="Vlog Style">📹 Vlog / Behind the Scenes</option>
+              <option value="Educational">🎓 Tips & Educational</option>
+              <option value="Cinematic Mood">🎬 Cinematic Mood</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 mt-4">
+          <button onclick="generateTTPromptCode()" class="bg-slate-700 hover:bg-slate-600 py-3 rounded font-bold text-sm border border-slate-600">
+            📋 Get Prompt Code
+          </button>
+          <button onclick="generateTTAI()" class="bg-teal-600 hover:bg-teal-500 py-3 rounded font-bold text-sm shadow-lg shadow-teal-900/30">
+            🤖 Write Script
+          </button>
+        </div>
+      </div>
+
+       <!-- Result Area for TikTok -->
+       <div id="ttOutputArea" class="hidden space-y-4 animate-fade-in">
+        <div id="ttCodeBlock" class="hidden">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-xs text-green-400 font-mono">TIKTOK PROMPT CODE</span>
+                <button onclick="copyCode('ttCodeContent')" class="text-xs bg-slate-700 px-2 py-1 rounded">Copy</button>
+            </div>
+            <pre class="bg-black/50 p-4 rounded border border-slate-700 overflow-x-auto text-xs font-mono text-gray-300"><code id="ttCodeContent"></code></pre>
+        </div>
+        <div id="ttAiResult" class="hidden bg-slate-900 p-5 rounded-lg border border-slate-800 whitespace-pre-wrap leading-relaxed text-gray-100"></div>
       </div>
     </section>
 
 
-    <!-- 3. DM HELPER TAB -->
+    <!-- 4. DM HELPER TAB -->
     <section id="dm" class="space-y-4 hidden">
       <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-800">
         <h2 class="text-lg font-bold text-purple-400 flex items-center gap-2">
@@ -157,9 +202,9 @@
     // --- TAB SYSTEM ---
     function switchTab(tab) {
       // Hide all sections
-      ['pose','fbpost','dm'].forEach(id => {
+      ['pose','fbpost','tiktok','dm'].forEach(id => {
         document.getElementById(id).classList.add('hidden');
-        document.getElementById('btn-' + id).classList.remove('bg-pink-600', 'bg-blue-600', 'bg-purple-600', 'font-bold', 'shadow-lg');
+        document.getElementById('btn-' + id).classList.remove('bg-pink-600', 'bg-blue-600', 'bg-teal-600', 'bg-purple-600', 'font-bold', 'shadow-lg');
         document.getElementById('btn-' + id).classList.add('bg-slate-800');
       });
 
@@ -173,6 +218,7 @@
 
       if(tab === 'pose') btn.classList.add('bg-pink-600');
       if(tab === 'fbpost') btn.classList.add('bg-blue-600');
+      if(tab === 'tiktok') btn.classList.add('bg-teal-600');
       if(tab === 'dm') btn.classList.add('bg-purple-600');
     }
 
@@ -204,9 +250,7 @@
 
 
     // --- 2. FB POST PROMPT LOGIC ---
-    
-    // Construct the Master Prompt String
-    function getMasterPrompt() {
+    function getFbMasterPrompt() {
         const topic = document.getElementById('fbInput').value || "General Service";
         const tone = document.getElementById('fbTone').value;
         
@@ -221,7 +265,7 @@ DO NOT stop until the post is fully finished.
 MANDATORY INSTRUCTIONS:
 1. **CONTINUITY**: Do NOT cut off mid-sentence. Keep generating until [HASHTAGS] are done.
 2. **GENDER**: Use "Bya" (ဗျ) / "Khamya" (ခင်ဗျာ). NO "Shin" (ရှင်).
-3. **VISUAL**: Output text must be clear (White text preference).
+3. **VISUAL**: Output text must be clear.
 
 STRUCTURE:
 [HOOK]
@@ -237,22 +281,14 @@ Start writing now.
 \`;`;
     }
 
-    // Option A: Show Code
     function generateFbPromptCode() {
-        const code = getMasterPrompt();
+        const code = getFbMasterPrompt();
         document.getElementById('fbOutputArea').classList.remove('hidden');
         document.getElementById('fbCodeBlock').classList.remove('hidden');
         document.getElementById('fbAiResult').classList.add('hidden');
         document.getElementById('codeContent').innerText = code;
     }
 
-    function copyCode() {
-        const code = document.getElementById('codeContent').innerText;
-        navigator.clipboard.writeText(code);
-        alert("Prompt copied!");
-    }
-
-    // Option B: AI Write
     async function generateFbPostAI() {
         const topic = document.getElementById('fbInput').value;
         const tone = document.getElementById('fbTone').value;
@@ -263,25 +299,77 @@ Start writing now.
         output.classList.remove("hidden");
         output.innerHTML = "<span class='animate-pulse text-blue-400'>⏳ AI is writing your post (Male voice, Continuous)...</span>";
 
-        // Simplified prompt for direct API consumption (removing the 'prompt = `' wrapper)
         const prompt = `
           Role: Senior Social Media Copywriter for With You Photo Studio (Taunggyi).
           Topic: ${topic}
           Tone: ${tone}
-          
           TASK: Write ONE complete Facebook post in Burmese.
-          RULES:
-          1. Use "Bya" (ဗျ) only. No "Shin".
-          2. Do NOT stop until finished.
-          3. Structure: Hook -> Body -> Value -> CTA -> Hashtags.
-          4. Make it engaging.
+          RULES: Use "Bya" (ဗျ). Do NOT stop until finished. Make it engaging.
+        `;
+
+        await callAI(prompt, output);
+    }
+
+    // --- 3. TIKTOK LOGIC (NEW) ---
+    function getTikTokPrompt() {
+        const topic = document.getElementById('ttInput').value || "General";
+        const style = document.getElementById('ttStyle').value;
+        
+        return `
+prompt = \`
+Role: Creative Content Creator for With You Photo Studio (Taunggyi).
+Platform: TikTok / Reels
+
+TASK:
+Write a TikTok Script in Burmese.
+
+RULES:
+- Use "Bya" (ဗျ) for Male Speaker voiceover.
+- Keep it under 60 seconds (approx 150 words).
+- Format: [Scene] + [Audio/Voiceover].
+
+STRUCTURE:
+1. HOOK (0-3s): Visual or Audio hook to stop scrolling.
+2. BODY: 3-4 Scenes showing the "${topic}".
+3. CTA: Call to action (Booking/Follow).
+
+Topic: ${topic}
+Style: ${style}
+
+Start script now.
+\`;`;
+    }
+
+    function generateTTPromptCode() {
+        const code = getTikTokPrompt();
+        document.getElementById('ttOutputArea').classList.remove('hidden');
+        document.getElementById('ttCodeBlock').classList.remove('hidden');
+        document.getElementById('ttAiResult').classList.add('hidden');
+        document.getElementById('ttCodeContent').innerText = code;
+    }
+
+    async function generateTTAI() {
+        const topic = document.getElementById('ttInput').value;
+        const style = document.getElementById('ttStyle').value;
+        const output = document.getElementById('ttAiResult');
+
+        document.getElementById('ttOutputArea').classList.remove('hidden');
+        document.getElementById('ttCodeBlock').classList.add('hidden');
+        output.classList.remove("hidden");
+        output.innerHTML = "<span class='animate-pulse text-teal-400'>⏳ Writing TikTok Script...</span>";
+
+        const prompt = `
+          Role: TikTok Creator for With You Photo Studio.
+          Task: Write a script for "${topic}" in style "${style}".
+          Language: Burmese (Male voice 'Bya').
+          Format: Scene breakdown with Voiceover text.
         `;
 
         await callAI(prompt, output);
     }
 
 
-    // --- 3. DM GENERATION ---
+    // --- 4. DM GENERATION ---
     async function generateDmReply() {
         const input = document.getElementById('dmInput').value;
         const output = document.getElementById('dmOutput');
@@ -293,7 +381,7 @@ Start writing now.
           Role: Studio Manager (With You Studio).
           Task: Reply to client message in Burmese.
           Client said: "${input}"
-          Tone: Professional, Empathetic, Persuasive but polite. Use "Bya" (Male speaker).
+          Tone: Professional, Empathetic. Use "Bya" (Male speaker).
           Goal: Close the sale or keep conversation alive.
         `;
 
@@ -301,11 +389,15 @@ Start writing now.
     }
 
 
-    // --- SHARED AI CALLER ---
+    // --- SHARED UTILS ---
+    function copyCode(elementId) {
+        const code = document.getElementById(elementId).innerText;
+        navigator.clipboard.writeText(code);
+        alert("Copied to clipboard!");
+    }
+
     async function callAI(promptText, outputElement) {
         try {
-            // NOTE: In a real environment, this calls the backend. 
-            // For this preview, we simulate or use the provided API path.
             const res = await fetch("/api/generate", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
