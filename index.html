@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Sales Master AI v3.9.1</title>
+  <title>With You Studio - Sales Master AI v4.0</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -116,11 +116,15 @@
         <div>
             <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Priority</p>
             <div class="space-y-1">
+                <!-- NEW CREATIVE DIRECTOR TAB -->
+                <button onclick="window.loadView('creative')" id="nav-creative" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i class="ph ph-lightbulb text-lg text-yellow-400"></i> What to Post Today?
+                </button>
                 <button onclick="window.loadView('dm')" id="nav-dm" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
                     <i class="ph ph-chat-circle-text text-lg text-purple-400"></i> DM Sales Master
                 </button>
                 <button onclick="window.loadView('brand')" id="nav-brand" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                    <i class="ph ph-brain text-lg text-yellow-400"></i> Brand Brain
+                    <i class="ph ph-brain text-lg text-blue-400"></i> Brand Brain
                 </button>
             </div>
         </div>
@@ -175,8 +179,12 @@
 
     <!-- MOBILE QUICK NAV -->
     <div class="md:hidden bg-slate-900/90 border-b border-slate-800 overflow-x-auto no-scrollbar py-2 px-3 flex gap-2 shrink-0 backdrop-blur-sm z-20 sticky top-0">
+        <!-- New Creative Tab for Mobile -->
+        <button onclick="window.loadView('creative')" id="mob-creative" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
+            <i class="ph ph-lightbulb text-yellow-400"></i> Ideas
+        </button>
         <button onclick="window.loadView('dm')" id="mob-dm" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
-            <i class="ph ph-chat-circle-text text-purple-400"></i> DM Sales
+            <i class="ph ph-chat-circle-text text-purple-400"></i> DM
         </button>
         <button onclick="window.loadView('fbpost')" id="mob-fbpost" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
             <i class="ph ph-facebook-logo"></i> Post
@@ -208,6 +216,92 @@
 
   <!-- TEMPLATES -->
   
+  <!-- 0. CREATIVE DIRECTOR TEMPLATE (NEW) -->
+  <template id="tpl-creative">
+    <div class="animate-fade-in space-y-6">
+        <div class="flex items-center justify-between">
+            <h2 class="text-xl md:text-2xl font-bold text-yellow-400 flex items-center gap-2"><i class="ph ph-lightbulb"></i> Creative Director</h2>
+            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">Idea Generator</div>
+        </div>
+        
+        <div class="glass-panel p-6 rounded-xl border border-yellow-500/20 shadow-lg relative overflow-hidden">
+            <i class="ph ph-sparkle absolute -top-4 -right-4 text-9xl text-yellow-500 opacity-10"></i>
+            
+            <p class="text-sm text-slate-300 mb-6 relative z-10">
+                "ဒီနေ့ ဘာတင်ရမလဲ?" လို့ စဉ်းစားရခက်နေလား။ ကိုစိုင်းရဲ့ Brand Brain ကိုသုံးပြီး ၃ ရက်စာ Plan ဆွဲပေးပါမယ်။
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
+                <!-- Inputs -->
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Today's Workload (အလုပ်ရှုပ်လား)</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="setCreativeOption('workload', 'Busy', this)" class="creative-btn p-3 rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-center transition">Busy<br>🥵</button>
+                            <button onclick="setCreativeOption('workload', 'Normal', this)" class="creative-btn active p-3 rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-center transition">Normal<br>😐</button>
+                            <button onclick="setCreativeOption('workload', 'Free', this)" class="creative-btn p-3 rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-center transition">Motivated<br>🤩</button>
+                        </div>
+                        <input type="hidden" id="crWorkload" value="Normal">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Focus Area (ဘာအကြောင်းတင်ချင်လဲ)</label>
+                        <select id="crFocus" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white focus:border-yellow-500 outline-none">
+                            <option value="Anything">🎲 Anything (Best Choice)</option>
+                            <option value="Pre-Wedding">💍 Pre-Wedding Focus</option>
+                            <option value="Wedding Day">👰 Wedding Day</option>
+                            <option value="Studio Branding">🏢 Studio Branding</option>
+                            <option value="Family Portrait">👨‍👩‍👧‍👦 Family / Portrait</option>
+                        </select>
+                    </div>
+
+                    <div class="pt-2">
+                         <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Platforms</label>
+                         <div class="flex gap-4">
+                             <label class="flex items-center gap-2 cursor-pointer">
+                                 <input type="checkbox" id="crFB" checked class="w-4 h-4 rounded bg-slate-700 border-slate-600 text-blue-500 focus:ring-0">
+                                 <span class="text-sm text-slate-300">Facebook</span>
+                             </label>
+                             <label class="flex items-center gap-2 cursor-pointer">
+                                 <input type="checkbox" id="crTT" checked class="w-4 h-4 rounded bg-slate-700 border-slate-600 text-teal-500 focus:ring-0">
+                                 <span class="text-sm text-slate-300">TikTok</span>
+                             </label>
+                         </div>
+                    </div>
+
+                    <button onclick="window.generateAI('creative_director')" class="w-full mt-2 bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-500 hover:to-orange-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-yellow-900/30 transition active:scale-95 flex items-center justify-center gap-2">
+                        <i class="ph ph-magic-wand text-lg"></i> Tell Me What To Post
+                    </button>
+                </div>
+
+                <!-- Output Area -->
+                <div id="crResultArea" class="hidden md:block h-full">
+                     <div class="bg-slate-900/50 rounded-xl border border-slate-700 p-4 h-full flex flex-col">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold text-yellow-400 uppercase">3-Day Plan</span>
+                            <button onclick="window.copyText('crOutput')" class="text-[10px] bg-slate-800 px-2 py-1 rounded border border-slate-600 hover:bg-slate-700 transition">Copy</button>
+                        </div>
+                        <div id="crOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 overflow-y-auto max-h-[400px] custom-scroll"></div>
+                     </div>
+                </div>
+            </div>
+            
+            <!-- Mobile Output (Only visible on small screens after gen) -->
+            <div id="crResultAreaMobile" class="md:hidden hidden mt-6">
+                <div class="bg-slate-900/50 rounded-xl border border-slate-700 p-4">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-yellow-400 uppercase">Your Plan</span>
+                        <button onclick="window.copyText('crOutputMobile')" class="text-[10px] bg-slate-800 px-2 py-1 rounded border border-slate-600">Copy</button>
+                    </div>
+                    <div id="crOutputMobile" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+  </template>
+
+  <!-- 1. DM SALES MASTER TEMPLATE -->
   <template id="tpl-dm">
     <div class="animate-fade-in space-y-6">
         <div class="flex items-center justify-between">
@@ -216,6 +310,7 @@
         </div>
         
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Left Column: Strategy & Input -->
             <div class="space-y-4">
                 <div class="glass-panel p-4 md:p-5 rounded-xl space-y-4 border border-purple-500/20 shadow-lg shadow-purple-900/10">
                     <div class="grid grid-cols-2 gap-3">
@@ -377,7 +472,6 @@
         </div>
         <div id="tlResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl">
             <div id="tlOutput" class="whitespace-pre-wrap text-sm text-slate-200 font-mono"></div>
-            <button id="tlContinueBtn" onclick="window.continueAI('timeline')" class="hidden w-full mt-2 py-2 bg-slate-800 text-orange-400 text-xs border border-slate-600 rounded">⚠️ Continue Writing</button>
             <div class="mt-4 flex gap-2">
                 <button onclick="window.downloadFile('Schedule.txt', 'tlOutput')" class="text-xs text-blue-400 border border-blue-900 p-2 rounded">⬇️ Download</button>
                 <button onclick="window.copyText('tlOutput')" class="text-xs text-slate-400 border border-slate-700 p-2 rounded">📋 Copy</button>
@@ -468,6 +562,7 @@
         let templateId = 'tpl-' + viewId;
         if(viewId === 'tiktok') container.innerHTML = getTikTokHTML();
         else if(viewId === 'pose') container.innerHTML = getPoseHTML();
+        else if(viewId === 'creative') { const tpl = document.getElementById('tpl-creative'); if(tpl) container.appendChild(tpl.content.cloneNode(true)); } // ADDED HANDLER
         else if(viewId === 'recent') { const tpl = document.getElementById('tpl-recent'); if(tpl) container.appendChild(tpl.content.cloneNode(true)); renderHistoryList(); }
         else { const tpl = document.getElementById(templateId); if(tpl) { container.appendChild(tpl.content.cloneNode(true)); if(viewId === 'brand') loadBrandData(); } }
         window.currentView = viewId;
@@ -475,6 +570,19 @@
 
     function getTikTokHTML() { return `<div class="animate-fade-in space-y-6"><h2 class="text-xl md:text-2xl font-bold text-teal-400 flex items-center gap-2"><i class="ph ph-tiktok-logo"></i> TikTok Script</h2><div class="glass-panel p-4 md:p-5 rounded-xl space-y-4"><div class="flex gap-2"><input type="text" id="ttInput" placeholder="Video Topic..." class="flex-1 bg-slate-800 border border-slate-700 rounded p-3 text-white"><button onclick="window.startVoiceInput('ttInput', this)" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded px-4 text-teal-400"><i class="ph ph-microphone text-xl"></i></button></div><select id="ttStyle" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white"><option>Trending & Fast</option><option>Vlog / Behind Scenes</option><option>Cinematic Mood</option></select><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><button onclick="window.generateAI('tt_caption')" class="bg-slate-700 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Get 3 Captions</button><button onclick="window.generateAI('tt_script')" class="bg-teal-600 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Write 3 Scripts</button></div></div><div id="ttResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl"><div id="ttOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div><button id="ttContinueBtn" onclick="window.continueAI('tt_script')" class="hidden w-full mt-2 py-2 bg-slate-800 text-teal-400 text-xs border border-slate-600 rounded">⚠️ Continue Writing</button><div class="text-xs text-green-400 mt-2">✅ Auto-saved to Cloud</div></div></div>`; }
     function getPoseHTML() { return `<div class="animate-fade-in space-y-6"><h2 class="text-xl md:text-2xl font-bold text-pink-400 flex items-center gap-2"><i class="ph ph-camera"></i> Pose Helper</h2><div class="glass-panel p-4 md:p-5 rounded-xl space-y-4"><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><div><label class="text-xs font-bold text-slate-400 uppercase">Outfit</label><select id="poseOutfit" class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm"><option>Wedding Gown/Suit</option><option>Traditional</option><option>Casual</option></select></div><div><label class="text-xs font-bold text-slate-400 uppercase">Props</label><input type="text" id="poseProps" placeholder="Flowers..." class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm"></div></div><div class="flex gap-2 mb-2"><button onclick="window.fillPose('Shy')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">😳 Shy</button><button onclick="window.fillPose('Plus')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">❤️ Plus</button></div><div class="relative"><textarea id="poseInput" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white h-24 pr-10" placeholder="Situation..."></textarea><button onclick="window.startVoiceInput('poseInput', this)" class="absolute right-2 bottom-2 bg-slate-700/80 hover:bg-pink-600 p-2 rounded-full transition text-slate-300 hover:text-white"><i class="ph ph-microphone text-lg"></i></button></div><button onclick="window.generateAI('pose')" class="w-full bg-pink-600 py-3 rounded text-white font-bold active:scale-95 transition">Generate Poses</button></div><div id="poseResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl"><div id="poseOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div><div class="text-xs text-green-400 mt-2">✅ Auto-saved to Cloud</div></div></div>`; }
+
+    // --- NEW: CREATIVE DIRECTOR HELPERS ---
+    window.setCreativeOption = function(type, value, btn) {
+        if(type === 'workload') {
+            document.getElementById('crWorkload').value = value;
+            document.querySelectorAll('#tpl-creative .creative-btn').forEach(b => b.classList.remove('active')); // Note: Selector might need adjustment if clone
+            // Better: Find siblings
+            if(btn && btn.parentElement) {
+                Array.from(btn.parentElement.children).forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+            }
+        }
+    };
 
     // --- UPDATED SAVE FUNCTION WITH STATUS ---
     window.saveBrandData = async function() {
@@ -517,10 +625,12 @@
     }
 
     window.generateAI = async function(type, isContinue = false) {
-        const outputIds = { 'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'timeline': 'tlOutput', 'tt_caption': 'ttOutput', 'tt_script': 'ttOutput', 'pose': 'poseOutput' };
-        const areaIds = { 'fbpost': 'fbResultArea', 'dm_best': 'dmResultArea', 'timeline': 'tlResultArea', 'tt_caption': 'ttResultArea', 'tt_script': 'ttResultArea', 'pose': 'poseResultArea' };
-        const continueBtnIds = { 'fbpost': 'fbContinueBtn', 'dm_best': 'dmContinueBtn', 'timeline': 'tlContinueBtn', 'tt_caption': 'ttContinueBtn', 'tt_script': 'ttContinueBtn' };
-
+        const outputIds = { 'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'timeline': 'tlOutput', 'tt_caption': 'ttOutput', 'tt_script': 'ttOutput', 'pose': 'poseOutput', 'creative_director': 'crOutput' }; // Added creative
+        const areaIds = { 'fbpost': 'fbResultArea', 'dm_best': 'dmResultArea', 'timeline': 'tlResultArea', 'tt_caption': 'ttResultArea', 'tt_script': 'ttResultArea', 'pose': 'poseResultArea', 'creative_director': 'crResultArea' }; // Added creative
+        
+        // Handle Mobile Creative output separately if needed, but basic mapping works for desktop layout. 
+        // For mobile, we might need to show crResultAreaMobile.
+        
         const outId = outputIds[type];
         const areaId = areaIds[type];
         
@@ -529,9 +639,21 @@
              if(panel) { panel.classList.remove('hidden'); panel.innerHTML = "<div class='text-center text-indigo-400 text-sm animate-pulse'>🔍 Analyzing Sales Status...</div>"; }
         } else {
              if(document.getElementById(areaId)) document.getElementById(areaId).classList.remove('hidden');
+             // Special handling for Creative Director Mobile
+             if(type === 'creative_director') {
+                 if(window.innerWidth < 768) document.getElementById('crResultAreaMobile').classList.remove('hidden');
+             }
+
              if(!isContinue && document.getElementById(outId)) {
                 document.getElementById(outId).innerHTML = "<span class='animate-pulse text-purple-400'>✨ Senior Sales Manager is thinking...</span>";
-                if(window.innerWidth < 768) setTimeout(() => { document.getElementById(areaId).scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+                if(type === 'creative_director' && window.innerWidth < 768) {
+                    document.getElementById('crOutputMobile').innerHTML = "<span class='animate-pulse text-yellow-400'>✨ Creating Plan...</span>";
+                }
+                
+                if(window.innerWidth < 768) setTimeout(() => { 
+                    if(type === 'creative_director') document.getElementById('crResultAreaMobile').scrollIntoView({ behavior: 'smooth' });
+                    else document.getElementById(areaId).scrollIntoView({ behavior: 'smooth', block: 'start' }); 
+                }, 100);
             }
         }
 
@@ -542,6 +664,7 @@
         const brandPackages = brandData.brandPackages || "Not specified.";
         const contactInfo = `Phone: ${brandData.brandPhone || ''}, Viber: ${brandData.brandViber || ''}, Facebook: ${brandData.brandFB || ''}, TikTok: ${brandData.brandTT || ''}`;
 
+        // CORE SYSTEM PROMPT
         const systemPrompt = `
         ROLE: Senior Sales Manager & Studio Owner of "With You Photo Studio" in Taunggyi.
         GOAL: Close deals warmly. Be helpful, persuasive, and confident.
@@ -554,7 +677,26 @@
         let taskPrompt = "";
         let contextTopic = "";
 
-        if (type === 'dm_analyze') {
+        if (type === 'creative_director') {
+            const workload = getValue('crWorkload');
+            const focus = getValue('crFocus');
+            const fbChecked = document.getElementById('crFB').checked ? "Facebook" : "";
+            const ttChecked = document.getElementById('crTT').checked ? "TikTok" : "";
+            const platforms = [fbChecked, ttChecked].filter(Boolean).join(" & ");
+            
+            contextTopic = `Creative Plan: ${focus}`;
+            taskPrompt = `
+            ROLE: Creative Director for With You Photo Studio.
+            TASK: Create a 3-Day Mini Content Plan.
+            INPUTS: Workload=${workload}, Focus=${focus}, Platforms=${platforms}.
+            OUTPUT RULES:
+            - Day 1, 2, 3 format.
+            - Specific Hook & Call to Action for each.
+            - Write in Burmese.
+            - Keep it realistic for a studio owner.
+            `;
+        }
+        else if (type === 'dm_analyze') {
             const msg = getValue('dmInput');
             taskPrompt = `ROLE: Senior Sales Strategist. TASK: Analyze message: "${msg}". RETURN FORMAT: Status: READY|THINKING|NOT_READY. Reason: ... NextAction: ... Tone: ... DO NOT write full reply.`;
         }
@@ -660,6 +802,12 @@
                     document.getElementById(outId).innerText = data.result || "Error generating.";
                     finalContent = data.result;
                 }
+                
+                // Duplicate to Mobile Creative Output
+                if(type === 'creative_director') {
+                    document.getElementById('crOutputMobile').innerText = finalContent;
+                }
+
                 if (finalContent && !finalContent.includes("Error")) { saveToRecents(type, finalContent, contextTopic); }
                 if(continueBtnIds[type]) { const btn = document.getElementById(continueBtnIds[type]); if(btn) btn.classList.remove('hidden'); }
             }
