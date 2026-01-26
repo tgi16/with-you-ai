@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Pro Human AI v2.6</title>
+  <title>With You Studio - Sales Master AI v3.0</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -28,12 +28,13 @@
         border-color: transparent;
     }
 
-    /* CTA Selection Active State */
-    .cta-btn.active {
-        background-color: #7e22ce; /* purple-700 */
+    /* Sales Tactic Active State */
+    .tactic-btn.active {
+        background-color: #7e22ce; 
         border-color: #a855f7;
         color: white;
         font-weight: bold;
+        box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
     }
 
     /* Mobile Sidebar Transition */
@@ -69,7 +70,7 @@
             <h1 class="text-xl font-bold text-white tracking-tight flex items-center gap-2">
                 <i class="ph ph-camera text-blue-400"></i> With You
             </h1>
-            <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">AI Studio Manager</p>
+            <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">AI Sales Manager</p>
         </div>
         <button onclick="toggleSidebar()" class="md:hidden text-slate-400"><i class="ph ph-x text-xl"></i></button>
     </div>
@@ -77,9 +78,22 @@
     <!-- Menu Items -->
     <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-6">
         
-        <!-- Group 1: Marketing -->
+        <!-- Group 1: Priority -->
         <div>
-            <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Marketing</p>
+            <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Priority</p>
+            <div class="space-y-1">
+                <button onclick="loadView('dm')" id="nav-dm" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i class="ph ph-chat-circle-text text-lg text-purple-400"></i> DM Sales Master
+                </button>
+                <button onclick="loadView('brand')" id="nav-brand" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i class="ph ph-brain text-lg text-yellow-400"></i> Brand Brain
+                </button>
+            </div>
+        </div>
+
+        <!-- Group 2: Content -->
+        <div>
+            <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Content Marketing</p>
             <div class="space-y-1">
                 <button onclick="loadView('fbpost')" id="nav-fbpost" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
                     <i class="ph ph-facebook-logo text-lg"></i> Facebook Post
@@ -90,28 +104,15 @@
             </div>
         </div>
 
-        <!-- Group 2: Clients -->
+        <!-- Group 3: Operation -->
         <div>
-            <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Clients</p>
+            <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Studio Ops</p>
             <div class="space-y-1">
-                <button onclick="loadView('dm')" id="nav-dm" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                    <i class="ph ph-chat-circle-text text-lg"></i> DM Response
-                </button>
                 <button onclick="loadView('timeline')" id="nav-timeline" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
                     <i class="ph ph-clock text-lg"></i> Timeline
                 </button>
-            </div>
-        </div>
-
-        <!-- Group 3: Studio -->
-        <div>
-            <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Studio</p>
-            <div class="space-y-1">
                 <button onclick="loadView('pose')" id="nav-pose" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
                     <i class="ph ph-person-simple-walk text-lg"></i> Pose Helper
-                </button>
-                <button onclick="loadView('brand')" id="nav-brand" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                    <i class="ph ph-brain text-lg"></i> Brand Brain
                 </button>
             </div>
         </div>
@@ -120,7 +121,7 @@
         <div>
             <div class="space-y-1 border-t border-slate-800 pt-4">
                 <button onclick="loadView('history')" id="nav-history" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                    <i class="ph ph-calendar-check text-lg"></i> History
+                    <i class="ph ph-calendar-check text-lg"></i> Saved History
                 </button>
             </div>
         </div>
@@ -129,7 +130,7 @@
 
     <!-- Footer -->
     <div class="p-4 border-t border-slate-800 text-xs text-slate-600 text-center">
-        <span class="inline-block px-2 py-1 rounded bg-slate-800 border border-slate-700 text-blue-400 font-mono">v2.6 (3-Options)</span>
+        <span class="inline-block px-2 py-1 rounded bg-slate-800 border border-slate-700 text-purple-400 font-mono">v3.0 (Sales Master)</span>
     </div>
   </aside>
 
@@ -146,14 +147,17 @@
 
     <!-- MOBILE QUICK NAV (Horizontal Scroll) -->
     <div class="md:hidden bg-slate-900/90 border-b border-slate-800 overflow-x-auto no-scrollbar py-2 px-3 flex gap-2 shrink-0 backdrop-blur-sm z-20 sticky top-0">
+        <button onclick="loadView('dm')" id="mob-dm" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
+            <i class="ph ph-chat-circle-text text-purple-400"></i> DM Sales
+        </button>
         <button onclick="loadView('fbpost')" id="mob-fbpost" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
             <i class="ph ph-facebook-logo"></i> Post
         </button>
         <button onclick="loadView('tiktok')" id="mob-tiktok" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
             <i class="ph ph-tiktok-logo"></i> TikTok
         </button>
-        <button onclick="loadView('dm')" id="mob-dm" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
-            <i class="ph ph-chat-circle-text"></i> DM
+        <button onclick="loadView('brand')" id="mob-brand" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
+            <i class="ph ph-brain"></i> Brain
         </button>
         <button onclick="loadView('timeline')" id="mob-timeline" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
             <i class="ph ph-clock"></i> Timeline
@@ -179,12 +183,158 @@
 
   <!-- TEMPLATES -->
   
-  <!-- 1. FACEBOOK POST TEMPLATE -->
+  <!-- 1. DM SALES MASTER TEMPLATE (MAJOR UPGRADE) -->
+  <template id="tpl-dm">
+    <div class="animate-fade-in space-y-6">
+        <div class="flex items-center justify-between">
+            <h2 class="text-xl md:text-2xl font-bold text-purple-400 flex items-center gap-2"><i class="ph ph-chat-circle-text"></i> DM Sales Master</h2>
+            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">v3.0</div>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Left Column: Strategy & Input -->
+            <div class="space-y-4">
+                <div class="glass-panel p-4 md:p-5 rounded-xl space-y-4 border border-purple-500/20 shadow-lg shadow-purple-900/10">
+                    
+                    <!-- Context Section -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Topic</label>
+                            <select id="dmService" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-purple-500">
+                                <option value="Pre-wedding Package">💍 Pre-wedding</option>
+                                <option value="Wedding Actual Day">👰 Wedding Day</option>
+                                <option value="Family Photoshoot">👨‍👩‍👧‍👦 Family</option>
+                                <option value="Graduation Photo">🎓 Graduation</option>
+                                <option value="General Inquiry">❓ General</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Status</label>
+                            <select id="dmScenario" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-purple-500">
+                                <option value="New Inquiry">New Inquiry</option>
+                                <option value="Price Objection">Expensive (ဈေးကြီး)</option>
+                                <option value="Ghosting">Seen (စာမပြန်)</option>
+                                <option value="Comparing">Comparing (ယှဉ်နေ)</option>
+                                <option value="Closing">Ready to Book</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Message Input -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Client Message / Context</label>
+                        <div class="relative">
+                            <textarea id="dmInput" placeholder="Client မေးတဲ့စာ (သို့) အခြေအနေ..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm h-24 text-white resize-none focus:border-purple-500 pr-10 shadow-inner"></textarea>
+                            <button onclick="startVoiceInput('dmInput', this)" class="absolute right-2 bottom-2 bg-slate-700/80 hover:bg-purple-600 p-2 rounded-full transition text-slate-300 hover:text-white" title="Speak">
+                                <i class="ph ph-microphone text-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- POWER TOOLS (TACTICS) -->
+                    <div>
+                        <label class="block text-xs font-bold text-purple-300 uppercase mb-2 flex items-center gap-1"><i class="ph ph-lightning"></i> Sales Power Tools (Strategy)</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="setDmType('Value First', this)" class="tactic-btn p-2 border border-slate-600 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-left transition flex items-center gap-2">
+                                <i class="ph ph-diamond text-blue-400"></i> Value Stack<br><span class="text-[9px] opacity-50 block">Highlight Benefits</span>
+                            </button>
+                            <button onclick="setDmType('Price Defense', this)" class="tactic-btn p-2 border border-slate-600 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-left transition flex items-center gap-2">
+                                <i class="ph ph-shield-check text-green-400"></i> Price Defense<br><span class="text-[9px] opacity-50 block">It's worth it</span>
+                            </button>
+                            <button onclick="setDmType('Urgency', this)" class="tactic-btn p-2 border border-slate-600 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-left transition flex items-center gap-2">
+                                <i class="ph ph-timer text-orange-400"></i> Create Urgency<br><span class="text-[9px] opacity-50 block">Limited Slots</span>
+                            </button>
+                            <button onclick="setDmType('Soft Close', this)" class="tactic-btn active p-2 border border-slate-600 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-left transition flex items-center gap-2">
+                                <i class="ph ph-handshake text-purple-400"></i> Soft Close<br><span class="text-[9px] opacity-50 block">Guidance</span>
+                            </button>
+                        </div>
+                        <input type="hidden" id="dmType" value="Soft Close">
+                    </div>
+
+                    <button onclick="generateAI('dm_best')" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-purple-900/40 transition active:scale-95 flex items-center justify-center gap-2">
+                        <i class="ph ph-magic-wand text-lg"></i> Generate Sales Replies
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Column: Output -->
+            <div id="dmResultArea" class="hidden h-full">
+                <div class="glass-panel p-4 md:p-6 rounded-xl border-purple-500/30 h-full flex flex-col relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10"><i class="ph ph-robot text-6xl text-purple-500"></i></div>
+                    
+                    <div class="flex justify-between items-center mb-3 z-10">
+                        <span class="text-xs font-bold text-purple-400 uppercase flex items-center gap-1"><i class="ph ph-check-circle"></i> Suggested Options</span>
+                        <div class="flex gap-2">
+                            <button onclick="saveResult('DM Reply', 'dmOutput')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded text-white border border-slate-600">Save</button>
+                            <button onclick="copyText('dmOutput')" class="text-xs bg-purple-900/50 hover:bg-purple-800 px-3 py-1.5 rounded text-purple-200 border border-purple-700">Copy All</button>
+                        </div>
+                    </div>
+                    
+                    <div id="dmOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 overflow-y-auto max-h-[600px] z-10 pr-2 custom-scroll"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </template>
+
+  <!-- 2. BRAND BRAIN TEMPLATE (UPDATED with Package Info) -->
+  <template id="tpl-brand">
+    <div class="animate-fade-in max-w-2xl mx-auto space-y-6">
+        <div class="bg-gradient-to-br from-slate-800 to-slate-900 p-6 md:p-8 rounded-2xl border border-slate-700 relative overflow-hidden shadow-2xl">
+            <i class="ph ph-brain absolute top-4 right-4 text-8xl text-slate-700 opacity-20"></i>
+            <h2 class="text-xl md:text-2xl font-bold text-white mb-2 flex items-center gap-2"><i class="ph ph-database"></i> Studio Brain</h2>
+            <p class="text-sm text-slate-400 mb-6">Teach AI about your business once, and it will sell for you forever.</p>
+            
+            <div class="space-y-6 text-left relative z-10">
+                
+                <!-- Packages Section (NEW) -->
+                <div class="bg-slate-950/50 p-4 rounded-xl border border-slate-700">
+                    <label class="text-xs font-bold text-yellow-400 uppercase mb-2 block flex items-center gap-1"><i class="ph ph-package"></i> Packages & Pricing (Important)</label>
+                    <textarea id="brandPackages" placeholder="Example:
+- Silver Package: 3 Lakhs (1 Location, 2 Dresses, 20 Photos)
+- Gold Package: 5 Lakhs (2 Locations, 4 Dresses, 40 Photos, Free Frame)
+- Diamond: 8 Lakhs (All inclusive)" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 text-sm text-white h-32 resize-none focus:border-yellow-500"></textarea>
+                    <p class="text-[10px] text-slate-500 mt-1">* AI will use this to answer price questions accurately.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs font-bold text-blue-400 uppercase">Studio Vibe</label>
+                        <input type="text" id="brandStyle" value="Moody, Cinematic, Emotional" class="w-full mt-1 bg-slate-950 border border-slate-700 rounded p-3 text-white">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-blue-400 uppercase">Target Audience</label>
+                        <input type="text" id="brandClient" value="Luxury Couples, Young Professionals" class="w-full mt-1 bg-slate-950 border border-slate-700 rounded p-3 text-white">
+                    </div>
+                </div>
+                
+                <!-- Contact Info -->
+                <div>
+                    <label class="text-xs font-bold text-slate-300 uppercase mb-2 block">Contact Details (Auto CTA)</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="text" id="brandPhone" placeholder="Phone (09...)" class="bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white">
+                        <input type="text" id="brandViber" placeholder="Viber No." class="bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white">
+                        <input type="text" id="brandFB" placeholder="Facebook Link" class="bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white">
+                        <input type="text" id="brandAddr" placeholder="Address (Taunggyi)" class="bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white">
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <div class="flex items-center gap-2 text-green-400 text-xs justify-center bg-green-900/20 py-3 rounded border border-green-900/30">
+                        <i class="ph ph-check-circle-fill"></i> Changes Auto-Saved to AI Brain.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </template>
+
+  <!-- 3. FACEBOOK POST TEMPLATE -->
   <template id="tpl-fbpost">
     <div class="animate-fade-in space-y-6">
         <div class="flex items-center justify-between">
             <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2"><i class="ph ph-facebook-logo text-blue-500"></i> Facebook Post</h2>
-            <span class="bg-blue-900/30 text-blue-400 text-[10px] md:text-xs px-2 py-1 rounded border border-blue-500/30">Pro Mode</span>
+            <span class="bg-blue-900/30 text-blue-400 text-[10px] md:text-xs px-2 py-1 rounded border border-blue-500/30">3 Options</span>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -251,132 +401,6 @@
     </div>
   </template>
 
-  <!-- 2. DM TEMPLATE -->
-  <template id="tpl-dm">
-    <div class="animate-fade-in space-y-6">
-        <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2"><i class="ph ph-chat-circle-text text-purple-500"></i> DM Sales Master</h2>
-        
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div class="space-y-4">
-                <div class="glass-panel p-4 md:p-5 rounded-xl space-y-4">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Service Type</label>
-                            <select id="dmService" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white">
-                                <option value="Pre-wedding">💍 Pre-wedding</option>
-                                <option value="Wedding Day">👰 Wedding Day</option>
-                                <option value="Family/Group">👨‍👩‍👧‍👦 Family/Group</option>
-                                <option value="Graduation">🎓 Graduation</option>
-                                <option value="General">❓ General</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Situation</label>
-                            <select id="dmScenario" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white">
-                                <option>Inquiry (Rate Card)</option>
-                                <option>Price Objection (Expensive)</option>
-                                <option>Ghosting (Seen no reply)</option>
-                                <option>Closing (Booking)</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Client Message</label>
-                        <div class="relative">
-                            <textarea id="dmInput" placeholder="Client မေးတဲ့စာ (သို့) Package နာမည်..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm h-24 text-white resize-none focus:border-purple-500 pr-10"></textarea>
-                            <button onclick="startVoiceInput('dmInput', this)" class="absolute right-2 bottom-2 bg-slate-700/80 hover:bg-purple-600 p-2 rounded-full transition text-slate-300 hover:text-white" title="Speak">
-                                <i class="ph ph-microphone text-lg"></i>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- CTA Buttons (Interactive) -->
-                    <div>
-                        <label class="block text-xs font-bold text-purple-300 uppercase mb-1">Closing Strategy (CTA)</label>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button onclick="setDmType('Soft', this)" class="cta-btn p-2 border border-slate-600 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-center transition">🍃 Soft<br><span class="text-[9px] opacity-50">Ask Question</span></button>
-                            <button onclick="setDmType('Medium', this)" class="cta-btn active p-2 border border-slate-600 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-center border-purple-500/50 transition">🔥 Medium<br><span class="text-[9px] opacity-50">Invite Visit</span></button>
-                            <button onclick="setDmType('Strong', this)" class="cta-btn p-2 border border-slate-600 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-center transition">💥 Strong<br><span class="text-[9px] opacity-50">Book Now</span></button>
-                        </div>
-                        <input type="hidden" id="dmType" value="Medium">
-                    </div>
-
-                    <button onclick="generateAI('dm_best')" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-purple-600/30 transition active:scale-95">
-                        ⚡ Generate 3 Replies
-                    </button>
-                </div>
-            </div>
-
-            <!-- Output -->
-            <div id="dmResultArea" class="hidden">
-                <div class="glass-panel p-4 md:p-6 rounded-xl border-purple-500/30 h-full flex flex-col">
-                    <div class="flex justify-between mb-2">
-                        <span class="text-xs font-bold text-purple-400 uppercase">Suggested Replies (3 Options)</span>
-                        <button onclick="copyText('dmOutput')" class="text-xs text-slate-400 hover:text-white bg-slate-800 px-2 py-1 rounded">Copy All</button>
-                    </div>
-                    <div id="dmOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 overflow-y-auto max-h-[400px]"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-  </template>
-
-  <!-- 3. BRAND BRAIN TEMPLATE (UPDATED with Contact) -->
-  <template id="tpl-brand">
-    <div class="animate-fade-in max-w-2xl mx-auto space-y-6">
-        <div class="bg-gradient-to-r from-slate-800 to-slate-900 p-6 md:p-8 rounded-2xl border border-slate-700 text-center relative overflow-hidden">
-            <i class="ph ph-brain absolute top-4 right-4 text-6xl text-slate-800 opacity-50"></i>
-            <h2 class="text-xl md:text-2xl font-bold text-white mb-2">Studio Identity</h2>
-            <p class="text-sm text-slate-400 mb-6">AI will remember these details to write like you.</p>
-            <div class="space-y-4 text-left">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-xs font-bold text-blue-400 uppercase">Studio Vibe</label>
-                        <input type="text" id="brandStyle" value="Moody, Cinematic, Emotional" class="w-full mt-1 bg-slate-950 border border-slate-700 rounded p-3 text-white">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-blue-400 uppercase">Target Audience</label>
-                        <input type="text" id="brandClient" value="Luxury Couples, Young Professionals" class="w-full mt-1 bg-slate-950 border border-slate-700 rounded p-3 text-white">
-                    </div>
-                </div>
-                
-                <hr class="border-slate-800 my-2">
-                <h3 class="text-sm font-bold text-slate-300">Contact Information (for Auto CTA)</h3>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-xs font-bold text-slate-500 uppercase">Phone Number</label>
-                        <input type="text" id="brandPhone" placeholder="09xxxxxxxxx" class="w-full mt-1 bg-slate-950 border border-slate-700 rounded p-3 text-white text-sm">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-slate-500 uppercase">Viber Number</label>
-                        <input type="text" id="brandViber" placeholder="09xxxxxxxxx" class="w-full mt-1 bg-slate-950 border border-slate-700 rounded p-3 text-white text-sm">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-slate-500 uppercase">Facebook Page Link</label>
-                        <input type="text" id="brandFB" placeholder="fb.com/..." class="w-full mt-1 bg-slate-950 border border-slate-700 rounded p-3 text-white text-sm">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-slate-500 uppercase">TikTok Link</label>
-                        <input type="text" id="brandTT" placeholder="tiktok.com/@..." class="w-full mt-1 bg-slate-950 border border-slate-700 rounded p-3 text-white text-sm">
-                    </div>
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-slate-500 uppercase">Address</label>
-                    <input type="text" id="brandAddr" placeholder="No.123, Bogyoke St, Taunggyi" class="w-full mt-1 bg-slate-950 border border-slate-700 rounded p-3 text-white text-sm">
-                </div>
-
-                <div class="pt-4">
-                    <div class="flex items-center gap-2 text-green-400 text-xs justify-center bg-green-900/20 py-3 rounded">
-                        <i class="ph ph-check-circle"></i> Auto-Saved. Applied to all AI tasks.
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-  </template>
-
   <!-- 4. TIMELINE TEMPLATE -->
   <template id="tpl-timeline">
     <div class="animate-fade-in space-y-6">
@@ -416,22 +440,22 @@
     </div>
   </template>
 
+  <!-- 5. TIKTOK & POSE (HTML Strings in JS to save space) -->
+  
   <!-- JAVASCRIPT LOGIC -->
   <script>
-    // --- GLOBAL STATE ---
-    let currentView = 'fbpost';
+    let currentView = 'dm'; // Start with DM
 
-    // --- INIT ---
     document.addEventListener('DOMContentLoaded', () => {
-        loadView('fbpost'); 
-        loadHistoryData();
+        loadView('dm'); // Prioritize DM on load
+        // Restore Brand Data if exists
+        setTimeout(loadBrandData, 500); 
     });
 
-    // --- NAVIGATION ---
+    // --- NAVIGATION & UI ---
     function toggleSidebar() {
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
-        
         if (sidebar.classList.contains('sidebar-closed')) {
             sidebar.classList.remove('sidebar-closed');
             sidebar.classList.add('sidebar-open');
@@ -470,17 +494,14 @@
 
         let templateId = 'tpl-' + viewId;
         
-        if(viewId === 'tiktok') {
-            container.innerHTML = getTikTokHTML();
-        } else if(viewId === 'pose') {
-            container.innerHTML = getPoseHTML();
-        } else if(viewId === 'history') {
-            container.innerHTML = getHistoryHTML();
-            renderHistoryList();
-        } else {
+        if(viewId === 'tiktok') container.innerHTML = getTikTokHTML();
+        else if(viewId === 'pose') container.innerHTML = getPoseHTML();
+        else if(viewId === 'history') { container.innerHTML = getHistoryHTML(); renderHistoryList(); }
+        else {
             const tpl = document.getElementById(templateId);
             if(tpl) {
                 container.appendChild(tpl.content.cloneNode(true));
+                if(viewId === 'brand') loadBrandData(); // Populate inputs
             }
         }
         currentView = viewId;
@@ -488,248 +509,132 @@
 
     // --- HTML GENERATORS ---
     function getTikTokHTML() {
-        return `
-        <div class="animate-fade-in space-y-6">
-            <h2 class="text-xl md:text-2xl font-bold text-teal-400 flex items-center gap-2"><i class="ph ph-tiktok-logo"></i> TikTok Script</h2>
-            <div class="glass-panel p-4 md:p-5 rounded-xl space-y-4">
-                <div class="flex gap-2">
-                    <input type="text" id="ttInput" placeholder="Video Topic..." class="flex-1 bg-slate-800 border border-slate-700 rounded p-3 text-white">
-                    <button onclick="startVoiceInput('ttInput', this)" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded px-4 text-teal-400"><i class="ph ph-microphone text-xl"></i></button>
-                </div>
-                <select id="ttStyle" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white"><option>Trending & Fast</option><option>Vlog / Behind Scenes</option><option>Cinematic Mood</option></select>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <button onclick="generateAI('tt_caption')" class="bg-slate-700 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Get 3 Captions</button>
-                    <button onclick="generateAI('tt_script')" class="bg-teal-600 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Write 3 Scripts</button>
-                </div>
-            </div>
-            <div id="ttResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl">
-                <div id="ttOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div>
-                <button onclick="saveResult('TikTok', 'ttOutput')" class="mt-4 bg-slate-800 text-xs py-2 px-4 rounded border border-slate-700">💾 Save to History</button>
-            </div>
-        </div>`;
+        return `<div class="animate-fade-in space-y-6"><h2 class="text-xl md:text-2xl font-bold text-teal-400 flex items-center gap-2"><i class="ph ph-tiktok-logo"></i> TikTok Script</h2><div class="glass-panel p-4 md:p-5 rounded-xl space-y-4"><div class="flex gap-2"><input type="text" id="ttInput" placeholder="Video Topic..." class="flex-1 bg-slate-800 border border-slate-700 rounded p-3 text-white"><button onclick="startVoiceInput('ttInput', this)" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded px-4 text-teal-400"><i class="ph ph-microphone text-xl"></i></button></div><select id="ttStyle" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white"><option>Trending & Fast</option><option>Vlog / Behind Scenes</option><option>Cinematic Mood</option></select><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><button onclick="generateAI('tt_caption')" class="bg-slate-700 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Get 3 Captions</button><button onclick="generateAI('tt_script')" class="bg-teal-600 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Write 3 Scripts</button></div></div><div id="ttResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl"><div id="ttOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div><button onclick="saveResult('TikTok', 'ttOutput')" class="mt-4 bg-slate-800 text-xs py-2 px-4 rounded border border-slate-700">💾 Save</button></div></div>`;
     }
-
     function getPoseHTML() {
-        return `
-        <div class="animate-fade-in space-y-6">
-            <h2 class="text-xl md:text-2xl font-bold text-pink-400 flex items-center gap-2"><i class="ph ph-camera"></i> Pose Helper</h2>
-            <div class="glass-panel p-4 md:p-5 rounded-xl space-y-4">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="text-xs font-bold text-slate-400 uppercase">Outfit Style</label>
-                        <select id="poseOutfit" class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm"><option>Wedding Gown/Suit</option><option>Myanmar Traditional</option><option>Casual Wear</option></select>
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-slate-400 uppercase">Props</label>
-                        <input type="text" id="poseProps" placeholder="Flowers..." class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm">
-                    </div>
-                </div>
-                <div class="flex gap-2 mb-2 overflow-x-auto no-scrollbar pb-1">
-                    <button onclick="fillPose('Shy Couple')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30 whitespace-nowrap">😳 Shy</button>
-                    <button onclick="fillPose('Plus Size')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30 whitespace-nowrap">❤️ Plus Size</button>
-                </div>
-                <div class="relative">
-                    <textarea id="poseInput" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white h-24 pr-10" placeholder="Client situation/mood..."></textarea>
-                    <button onclick="startVoiceInput('poseInput', this)" class="absolute right-2 bottom-2 bg-slate-700/80 hover:bg-pink-600 p-2 rounded-full transition text-slate-300 hover:text-white"><i class="ph ph-microphone text-lg"></i></button>
-                </div>
-                <button onclick="generateAI('pose')" class="w-full bg-pink-600 py-3 rounded text-white font-bold active:scale-95 transition">Generate Poses</button>
-            </div>
-            <div id="poseResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl">
-                <div id="poseOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div>
-            </div>
-        </div>`;
+        return `<div class="animate-fade-in space-y-6"><h2 class="text-xl md:text-2xl font-bold text-pink-400 flex items-center gap-2"><i class="ph ph-camera"></i> Pose Helper</h2><div class="glass-panel p-4 md:p-5 rounded-xl space-y-4"><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><div><label class="text-xs font-bold text-slate-400 uppercase">Outfit</label><select id="poseOutfit" class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm"><option>Wedding Gown/Suit</option><option>Traditional</option><option>Casual</option></select></div><div><label class="text-xs font-bold text-slate-400 uppercase">Props</label><input type="text" id="poseProps" placeholder="Flowers..." class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm"></div></div><div class="flex gap-2 mb-2"><button onclick="fillPose('Shy')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">😳 Shy</button><button onclick="fillPose('Plus')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">❤️ Plus</button></div><div class="relative"><textarea id="poseInput" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white h-24 pr-10" placeholder="Situation..."></textarea><button onclick="startVoiceInput('poseInput', this)" class="absolute right-2 bottom-2 bg-slate-700/80 hover:bg-pink-600 p-2 rounded-full transition text-slate-300 hover:text-white"><i class="ph ph-microphone text-lg"></i></button></div><button onclick="generateAI('pose')" class="w-full bg-pink-600 py-3 rounded text-white font-bold active:scale-95 transition">Generate Poses</button></div><div id="poseResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl"><div id="poseOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div></div></div>`;
     }
-
     function getHistoryHTML() {
-        return `
-        <div class="animate-fade-in space-y-6">
-            <div class="flex justify-between items-center">
-                <h2 class="text-xl md:text-2xl font-bold text-white"><i class="ph ph-clock-counter-clockwise"></i> Saved History</h2>
-                <button onclick="clearHistory()" class="text-red-400 text-xs border border-red-900 px-3 py-1 rounded">Clear All</button>
-            </div>
-            <div id="historyListContainer" class="space-y-4 pb-10"></div>
-        </div>`;
+        return `<div class="animate-fade-in space-y-6"><div class="flex justify-between items-center"><h2 class="text-xl md:text-2xl font-bold text-white"><i class="ph ph-clock-counter-clockwise"></i> History</h2><button onclick="clearHistory()" class="text-red-400 text-xs border border-red-900 px-3 py-1 rounded">Clear</button></div><div id="historyListContainer" class="space-y-4 pb-10"></div></div>`;
     }
 
-    // --- VOICE INPUT FUNCTION ---
-    function startVoiceInput(elementId, btn) {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-        if (!SpeechRecognition) {
-            showToast("❌ Voice input ကို ဒီ browser မှာ မထောက်ပံ့ပါဘူး");
-            return;
-        }
-
-        const recognition = new SpeechRecognition();
-        recognition.lang = 'my-MM';
-        recognition.interimResults = false;
-        recognition.maxAlternatives = 1;
-
-        if (btn) btn.classList.add('listening-ring');
-        showToast("🎤 နားထောင်နေပါတယ်… ပြောပါ");
-
-        try {
-            recognition.start();
-        } catch (e) {
-            showToast("⚠️ Voice already started");
-            if (btn) btn.classList.remove('listening-ring');
-            return;
-        }
-
-        recognition.onresult = function(event) {
-            const text = event.results[0][0].transcript;
-            const el = document.getElementById(elementId);
-            if (el) el.value = el.value ? el.value + " " + text : text;
-            showToast("✅ အသံကို စာအဖြစ် ပြောင်းပြီးပါပြီ");
-        };
-
-        recognition.onerror = function(e) {
-            showToast("❌ Voice error: " + e.error);
-            if (btn) btn.classList.remove('listening-ring');
-        };
-
-        recognition.onend = function() {
-            showToast("🎤 Voice input ပြီးပါပြီ");
-            if (btn) btn.classList.remove('listening-ring');
-        };
+    // --- BRAND DATA PERSISTENCE ---
+    function saveBrandData() {
+        const ids = ['brandStyle', 'brandClient', 'brandPhone', 'brandViber', 'brandFB', 'brandTT', 'brandAddr', 'brandPackages'];
+        const data = {};
+        ids.forEach(id => { 
+            const el = document.getElementById(id);
+            if(el) data[id] = el.value; 
+        });
+        localStorage.setItem('withYouBrandData', JSON.stringify(data));
+        showToast("Brand Data Saved!");
     }
 
-    // --- AI LOGIC (HUMAN VOICE UPDATE) ---
+    function loadBrandData() {
+        const data = JSON.parse(localStorage.getItem('withYouBrandData') || '{}');
+        for (const [key, value] of Object.entries(data)) {
+            const el = document.getElementById(key);
+            if(el) el.value = value;
+        }
+        // Auto-save listener
+        const inputs = document.querySelectorAll('#brand input, #brand textarea');
+        inputs.forEach(input => input.addEventListener('change', saveBrandData));
+    }
+
+    // --- AI LOGIC (SALES MASTER ENGINE) ---
     async function generateAI(type) {
-        const outputIds = {
-            'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'timeline': 'tlOutput', 
-            'tt_caption': 'ttOutput', 'tt_script': 'ttOutput', 'pose': 'poseOutput'
-        };
-        const areaIds = {
-            'fbpost': 'fbResultArea', 'dm_best': 'dmResultArea', 'timeline': 'tlResultArea',
-            'tt_caption': 'ttResultArea', 'tt_script': 'ttResultArea', 'pose': 'poseResultArea'
-        };
+        const outputIds = { 'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'timeline': 'tlOutput', 'tt_caption': 'ttOutput', 'tt_script': 'ttOutput', 'pose': 'poseOutput' };
+        const areaIds = { 'fbpost': 'fbResultArea', 'dm_best': 'dmResultArea', 'timeline': 'tlResultArea', 'tt_caption': 'ttResultArea', 'tt_script': 'ttResultArea', 'pose': 'poseResultArea' };
 
         const outId = outputIds[type];
         const areaId = areaIds[type];
         
         if(document.getElementById(areaId)) document.getElementById(areaId).classList.remove('hidden');
         if(document.getElementById(outId)) {
-            document.getElementById(outId).innerHTML = "<span class='animate-pulse text-blue-400'>✨ AI is thinking in Burmese...</span>";
-            if(window.innerWidth < 768) {
-                setTimeout(() => { document.getElementById(areaId).scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
-            }
+            document.getElementById(outId).innerHTML = "<span class='animate-pulse text-purple-400'>✨ Senior Sales Manager is thinking...</span>";
+            if(window.innerWidth < 768) setTimeout(() => { document.getElementById(areaId).scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
         }
 
-        let prompt = "";
-        
-        // --- FETCH CONTACT INFO ---
-        const brandStyle = document.getElementById('brandStyle') ? document.getElementById('brandStyle').value : "Professional";
-        const brandPhone = document.getElementById('brandPhone') ? document.getElementById('brandPhone').value : "";
-        const brandViber = document.getElementById('brandViber') ? document.getElementById('brandViber').value : "";
-        const brandFB = document.getElementById('brandFB') ? document.getElementById('brandFB').value : "";
-        const brandTT = document.getElementById('brandTT') ? document.getElementById('brandTT').value : "";
-        const brandAddr = document.getElementById('brandAddr') ? document.getElementById('brandAddr').value : "";
+        // --- FETCH BRAND CONTEXT (Hidden in storage if not on brand tab) ---
+        const brandData = JSON.parse(localStorage.getItem('withYouBrandData') || '{}');
+        const brandStyle = brandData.brandStyle || "Professional";
+        const brandPackages = brandData.brandPackages || "Not specified. Ask client for details.";
+        const contactInfo = `Phone: ${brandData.brandPhone || ''}, Viber: ${brandData.brandViber || ''}, Address: ${brandData.brandAddr || ''}`;
 
-        const contactInfo = `
-        - Contact Phone: ${brandPhone}
-        - Viber: ${brandViber}
-        - Facebook: ${brandFB}
-        - TikTok: ${brandTT}
-        - Address: ${brandAddr}
-        `;
+        // --- CORE PROMPT SYSTEM ---
+        const systemPrompt = `
+        ROLE: You are the Senior Sales Manager & Studio Owner of "With You Photo Studio" in Taunggyi.
+        YOUR GOAL: Close deals warmly. Be helpful, persuasive, and confident.
         
-        // --- CRITICAL UPDATE: HUMAN VOICE INSTRUCTION ---
-        const burmeseInstruction = `
-        IMPORTANT ROLE: You are the owner of "With You Photo Studio" in Taunggyi, Myanmar.
+        TONE RULES (CRITICAL):
+        1. Speak Natural Burmese (အပြောစကား). Use "Bya/Khamya" (male).
+        2. Be Empathetic but Sales-Driven. Use the "Sandwich Method" (Value -> Price -> Value).
+        3. Never sound like a robot. Use phrases like "အဆင်ပြေမယ်ဗျ", "စိတ်ချပါ", "ညီမရေ/အစ်ကိုရေ".
         
-        TONE & VOICE:
-        - Write EXACTLY like a real Burmese person talking. 
-        - Use "Bya" (ဗျ) or "Khamya" (ခင်ဗျာ) for the male speaker ending.
-        - Be warm, welcoming, and professional but NOT robotic.
-        - Context: Photography Services.
-        - Brand Style: ${brandStyle}.
-        - STUDIO INFO (Include in CTA where relevant): ${contactInfo}
+        STUDIO DATA:
+        - Packages: ${brandPackages}
+        - Contact: ${contactInfo}
         `;
 
-        if (type === 'fbpost') {
-            const topic = document.getElementById('fbInput').value;
-            const tone = document.getElementById('fbTone').value;
-            const len = document.getElementById('fbLength').value;
-            prompt = `Task: Write 3 DISTINCT Facebook Post Options. 
-            Topic: ${topic}. Tone: ${tone}. Length: ${len}. 
-            
-            OUTPUT FORMAT:
-            Option 1: [Hook + Body + CTA + Hashtags]
-            ---
-            Option 2: [Different Angle Hook + Body + CTA + Hashtags]
-            ---
-            Option 3: [Storytelling Style + Body + CTA + Hashtags]
-            
-            Ensure contact info is included naturally in CTA.`;
-        } 
-        else if (type === 'dm_best') {
+        let taskPrompt = "";
+
+        if (type === 'dm_best') {
             const service = document.getElementById('dmService').value;
             const scenario = document.getElementById('dmScenario').value;
             const msg = document.getElementById('dmInput').value;
-            const cta = document.getElementById('dmType').value;
+            const strategy = document.getElementById('dmType').value;
             
-            prompt = `Task: Write 3 DISTINCT DM Replies for a client.
-            Service Interest: ${service}.
-            Scenario: ${scenario}.
-            Client Said: "${msg}".
-            Closing Strategy (CTA): ${cta}.
+            taskPrompt = `
+            TASK: Write 3 SALES REPLIES for a DM.
+            - Context: Client asks about ${service}.
+            - Status: ${scenario}.
+            - Client Message: "${msg}".
+            - Strategy Selected: ${strategy}.
             
-            OUTPUT FORMAT:
-            Option 1: [Professional & Detailed]
-            Option 2: [Friendly & Warm]
-            Option 3: [Short & Urgent/Persuasive]
+            IF Strategy is "Price Defense": Explain WHY it's worth it (Quality, Service, Memories).
+            IF Strategy is "Urgency": Mention limited slots for the month.
+            IF Strategy is "Value First": List what they get BEFORE mentioning price.
             
-            Sound human. Include phone/viber if closing the sale.`;
+            OUTPUT:
+            Option 1: [Warm & Detailed Response]
+            Option 2: [Short & Punchy Response]
+            Option 3: [Question-Based Response to keep convo alive]
+            `;
+        } 
+        else if (type === 'fbpost') {
+            const topic = document.getElementById('fbInput').value;
+            const tone = document.getElementById('fbTone').value;
+            const len = document.getElementById('fbLength').value;
+            taskPrompt = `TASK: Write 3 Facebook Post Variations about "${topic}". Tone: ${tone}. Length: ${len}. Include CTA with ${contactInfo}.`;
         }
         else if (type === 'timeline') {
             const start = document.getElementById('tlStart').value;
             const place = document.getElementById('tlPlace').value;
             const dress = document.getElementById('tlDress').value;
             const pace = document.getElementById('tlPace').value;
-            const sunset = document.getElementById('tlSunset').checked ? "Yes, include sunset shot." : "No sunset needed.";
-            
-            prompt = `Task: Create a detailed Pre-wedding Timeline Schedule.
-            Start Time: ${start}.
-            Location: ${place}.
-            Outfits: ${dress}.
-            Pacing: ${pace}.
-            Sunset Requirement: ${sunset}.
-            Language: Burmese. Format: Clear List with times.`;
+            const sunset = document.getElementById('tlSunset').checked ? "Include Sunset" : "No Sunset";
+            taskPrompt = `TASK: Create Pre-wedding Timeline. Start: ${start}, Place: ${place}, Outfits: ${dress}, Pace: ${pace}, Sunset: ${sunset}. Output: Clear List.`;
         }
         else if (type.includes('tt_')) {
             const topic = document.getElementById('ttInput').value;
             const style = document.getElementById('ttStyle').value;
-            const subType = type==='tt_caption'?'Caption':'Script';
-            prompt = `Task: Write 3 Options for TikTok ${subType}. 
-            Topic: ${topic}. Style: ${style}. 
-            
-            OUTPUT FORMAT:
-            Option 1: [Style A]
-            ---
-            Option 2: [Style B]
-            ---
-            Option 3: [Style C]`;
+            const sub = type==='tt_caption'?'Caption':'Script';
+            taskPrompt = `TASK: Write 3 TikTok ${sub} options for "${topic}". Style: ${style}. Keep it viral & trendy.`;
         }
         else if (type === 'pose') {
             const input = document.getElementById('poseInput').value;
             const outfit = document.getElementById('poseOutfit').value;
             const props = document.getElementById('poseProps').value;
-            
-            prompt = `Task: Suggest 3 creative poses for pre-wedding.
-            Couple's Context: ${input}.
-            Outfit Style: ${outfit}.
-            Props Available: ${props}.
-            Explain pose instructions in Burmese clearly so the photographer can direct them easily.`;
+            taskPrompt = `TASK: Suggest 3 Poses. Context: ${input}. Outfit: ${outfit}. Props: ${props}. Give clear Burmese instructions.`;
         }
 
-        const finalPrompt = burmeseInstruction + "\n\n" + prompt;
+        const fullPrompt = systemPrompt + "\n\n" + taskPrompt;
 
         try {
             const res = await fetch("/api/generate", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ prompt: finalPrompt })
+                body: JSON.stringify({ prompt: fullPrompt })
             });
             const data = await res.json();
             if(document.getElementById(outId)) {
@@ -741,118 +646,57 @@
         }
     }
 
-    // --- ASSISTANT SHORTCUTS ---
-    async function runAssistant(type) {
-        document.getElementById('fbResultArea').classList.remove('hidden');
-        document.getElementById('fbOutput').innerHTML = "<span class='animate-pulse text-yellow-400'>💡 Brainstorming...</span>";
-        if(window.innerWidth < 768) {
-             document.getElementById('fbResultArea').scrollIntoView({ behavior: 'smooth' });
-        }
+    // --- VOICE INPUT ---
+    function startVoiceInput(elementId, btn) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) { showToast("❌ Browser not supported"); return; }
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'my-MM';
+        recognition.interimResults = false;
         
-        let prompt = "Generate 5 ideas in Burmese for a photo studio.";
-        if(type === 'fb_hooks') prompt = "Write 5 catchy hooks in Burmese for a photo studio post.";
+        if(btn) btn.classList.add('listening-ring');
+        showToast("🎤 Speaking...");
         
-        try {
-             // Reusing generate logic simply
-             const res = await fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt: prompt + " Use Native Burmese." }) });
-             const data = await res.json();
-             document.getElementById('fbOutput').innerText = data.result;
-        } catch(e) {}
+        recognition.start();
+        recognition.onresult = (e) => {
+            const text = e.results[0][0].transcript;
+            const el = document.getElementById(elementId);
+            if(el) el.value = el.value ? el.value + " " + text : text;
+            showToast("✅ Added!");
+        };
+        recognition.onend = () => { if(btn) btn.classList.remove('listening-ring'); };
+        recognition.onerror = () => { if(btn) btn.classList.remove('listening-ring'); showToast("❌ Error"); };
     }
 
     // --- UTILS ---
-    function setDmType(strength, btnElement) {
+    function setDmType(strength, btn) {
         document.getElementById('dmType').value = strength;
-        
-        // Update visual state of buttons
-        document.querySelectorAll('.cta-btn').forEach(btn => btn.classList.remove('active'));
-        if(btnElement) btnElement.classList.add('active');
-        
-        showToast("CTA set to: " + strength);
+        document.querySelectorAll('.tactic-btn').forEach(b => b.classList.remove('active'));
+        if(btn) btn.classList.add('active');
+        showToast("Strategy: " + strength);
     }
-    
-    function fillPose(txt) {
-        const map = {
-            'Shy Couple': "သတို့သားနဲ့ သတို့သမီးက အရမ်းရှက်တတ်တယ်။",
-            'Plus Size': "ဝတဲ့ အတွဲဖြစ်လို့ ပိန်တဲ့ထောင့် (Angle) လိုချင်တယ်။"
-        };
-        document.getElementById('poseInput').value = map[txt] || txt;
+    function fillPose(t) { document.getElementById('poseInput').value = t === 'Shy' ? "အရမ်းရှက်တတ်တယ်" : "ဝတဲ့အတွဲ"; }
+    function showToast(m) { const t=document.getElementById('toast'); t.innerText=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
+    function copyText(id) { navigator.clipboard.writeText(document.getElementById(id).innerText); showToast("Copied!"); }
+    function downloadFile(n, id) { 
+        const b = new Blob([document.getElementById(id).innerText],{type:'text/plain'});
+        const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=n; a.click(); 
     }
-
-    function showToast(msg) {
-        const t = document.getElementById('toast');
-        t.innerText = msg;
-        t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 3000);
+    function saveResult(t, id) {
+        const c = document.getElementById(id).innerText; if(!c) return;
+        const h = JSON.parse(localStorage.getItem('studioHistory')||'[]');
+        h.unshift({type:t, content:c, date:new Date().toLocaleString()});
+        if(h.length>20) h.pop();
+        localStorage.setItem('studioHistory', JSON.stringify(h));
+        showToast("Saved!");
     }
-
-    function copyText(id) {
-        const txt = document.getElementById(id).innerText;
-        navigator.clipboard.writeText(txt);
-        showToast("Copied to Clipboard!");
-    }
-
-    function downloadFile(filename, id) {
-        const txt = document.getElementById(id).innerText;
-        const blob = new Blob([txt], { type: 'text/plain' });
-        const a = document.createElement('a');
-        a.href = window.URL.createObjectURL(blob);
-        a.download = filename;
-        a.click();
-    }
-
-    // --- HISTORY SYSTEM ---
-    function saveResult(type, outputId) {
-        const content = document.getElementById(outputId).innerText;
-        if(!content) return;
-        
-        const item = {
-            id: Date.now(),
-            type: type,
-            content: content,
-            date: new Date().toLocaleDateString()
-        };
-        
-        const history = JSON.parse(localStorage.getItem('studioHistory') || '[]');
-        history.unshift(item);
-        if(history.length > 20) history.pop();
-        
-        localStorage.setItem('studioHistory', JSON.stringify(history));
-        showToast("Saved to History");
-    }
-
-    function loadHistoryData() { }
-
     function renderHistoryList() {
-        const list = JSON.parse(localStorage.getItem('studioHistory') || '[]');
-        const container = document.getElementById('historyListContainer');
-        
-        if(list.length === 0) {
-            container.innerHTML = "<div class='text-center text-slate-500 py-10'>No history yet.</div>";
-            return;
-        }
-
-        container.innerHTML = list.map(item => `
-            <div class="glass-panel p-4 rounded-lg border-l-4 border-blue-500">
-                <div class="flex justify-between text-xs text-slate-400 mb-2">
-                    <span class="font-bold text-white bg-slate-700 px-2 py-0.5 rounded">${item.type}</span>
-                    <span>${item.date}</span>
-                </div>
-                <div class="text-sm text-slate-300 line-clamp-3">${item.content}</div>
-                <div class="mt-2 text-right">
-                    <button onclick="navigator.clipboard.writeText(\`${item.content.replace(/`/g, '')}\`);showToast('Copied')" class="text-blue-400 text-xs hover:underline">Copy</button>
-                </div>
-            </div>
-        `).join('');
+        const l = JSON.parse(localStorage.getItem('studioHistory')||'[]');
+        const c = document.getElementById('historyListContainer');
+        c.innerHTML = l.length ? l.map(i=>`<div class="glass-panel p-4 rounded-lg border-l-4 border-blue-500 mb-2"><div class="flex justify-between text-xs text-slate-400 mb-1"><span class="font-bold text-white bg-slate-700 px-2 rounded">${i.type}</span><span>${i.date}</span></div><div class="text-sm text-slate-300 line-clamp-3">${i.content}</div><button onclick="navigator.clipboard.writeText(\`${i.content.replace(/`/g,'')}\`);showToast('Copied')" class="text-blue-400 text-xs mt-2">Copy</button></div>`).join('') : "<div class='text-center text-slate-500'>No history yet</div>";
     }
-
-    function clearHistory() {
-        if(confirm("Clear all?")) {
-            localStorage.removeItem('studioHistory');
-            renderHistoryList();
-        }
-    }
-
+    function clearHistory() { if(confirm("Clear?")) { localStorage.removeItem('studioHistory'); renderHistoryList(); } }
+    async function runAssistant(type) { /* Short logic reusing generateAI core or simpler prompt */ }
   </script>
 </body>
 </html>
