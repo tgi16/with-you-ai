@@ -28,7 +28,7 @@
   <header class="px-4 py-4 bg-slate-900 border-b border-white/10 flex justify-between items-center sticky top-0 z-50 shadow-lg">
     <div>
       <h1 class="text-xl font-bold text-blue-400 tracking-tight">With You Photo Studio</h1>
-      <p class="text-xs text-slate-400">AI Daily Assistant</p>
+      <p class="text-xs text-slate-400">AI Daily Assistant (Pro)</p>
     </div>
     <div onclick="switchTab('brand')" class="cursor-pointer text-xs bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700 text-slate-300 flex items-center gap-1 hover:bg-slate-700 hover:text-white transition">
         <span>🧠</span> Brand Brain
@@ -48,7 +48,7 @@
       <button onclick="switchTab('dm')" id="btn-dm" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:bg-slate-800">💬 DM</button>
     </div>
 
-    <!-- 0. BRAND BRAIN TAB (NEW) -->
+    <!-- 0. BRAND BRAIN TAB -->
     <section id="brand" class="space-y-4 hidden animate-fade-in">
         <div class="bg-gradient-to-br from-slate-900 to-slate-800 p-6 rounded-2xl border border-blue-500/30 shadow-lg relative overflow-hidden">
             <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">🧠</div>
@@ -82,7 +82,7 @@
         </div>
     </section>
 
-    <!-- 1. TIMELINE HELPER TAB (NEW) -->
+    <!-- 1. TIMELINE HELPER TAB -->
     <section id="timeline" class="space-y-4 hidden animate-fade-in">
         <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 shadow-sm">
             <h2 class="text-lg font-bold text-orange-400 flex items-center gap-2 mb-4">
@@ -173,12 +173,12 @@
     </section>
 
 
-    <!-- 3. FB POST CREATOR TAB -->
+    <!-- 3. FB POST CREATOR TAB (PRO UPGRADE) -->
     <section id="fbpost" class="space-y-6 hidden animate-fade-in">
       
       <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 shadow-sm">
         <h2 class="text-lg font-bold text-blue-400 flex items-center gap-2 mb-4">
-          <span>📝</span> Facebook Post Creator
+          <span>📝</span> Facebook Post Creator (Pro)
         </h2>
 
         <div class="space-y-4">
@@ -188,14 +188,24 @@
               class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-blue-500 outline-none text-sm transition-colors">
           </div>
           
-          <div>
-            <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Tone</label>
-            <select id="fbTone" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-blue-500 outline-none text-sm">
-              <option value="Professional & Warm">Professional & Warm</option>
-              <option value="Friendly & Exciting">Friendly & Exciting</option>
-              <option value="Emotional & Touching">Emotional & Touching</option>
-              <option value="Casual & Fun">Casual & Fun</option>
-            </select>
+          <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Tone</label>
+                <select id="fbTone" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-blue-500 outline-none text-sm">
+                  <option value="Professional & Warm">Professional</option>
+                  <option value="Friendly & Exciting">Friendly</option>
+                  <option value="Emotional & Touching">Emotional</option>
+                  <option value="Casual & Fun">Casual</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Length</label>
+                <select id="fbLength" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-blue-500 outline-none text-sm">
+                  <option value="Medium">Medium (Standard)</option>
+                  <option value="Short">Short (Caption/Reel)</option>
+                  <option value="Long">Long (Storytelling)</option>
+                </select>
+              </div>
           </div>
 
           <button onclick="generateFbPostAI()" class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white py-3 rounded-xl font-bold shadow-lg shadow-blue-900/30 transition-all transform active:scale-95 flex justify-center items-center gap-2">
@@ -229,7 +239,7 @@
             </div>
             <div id="fbAiResult" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 whitespace-pre-wrap leading-relaxed text-slate-200 shadow-inner"></div>
             <button id="fbContinueBtn" onclick="continueFbPost()" class="hidden w-full py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl text-blue-300 text-sm font-bold flex items-center justify-center gap-2 transition-colors">
-                <span>⚠️ မပြီးသေးရင် နှိပ်ပါ (Continue)</span>
+                <span>⚠️ မပြီးသေးရင် နှိပ်ပါ (Smart Continue)</span>
             </button>
         </div>
       </div>
@@ -447,7 +457,7 @@
     }
 
 
-    // --- AI CALL HANDLER ---
+    // --- AI CALL HANDLER (MODIFIED TO RETURN DATA) ---
     async function callAI(promptText, outputElement, isAppend = false) {
         try {
             // INJECT BRAND BRAIN
@@ -468,6 +478,7 @@
                 } else {
                     outputElement.innerText = data.result;
                 }
+                return data.result; // Return for storage
             } else {
                 if(!isAppend) outputElement.innerText = "Error: No result returned.";
             }
@@ -493,10 +504,11 @@
     }
 
 
-    // --- 2. FB POST ---
+    // --- 2. FB POST (UPDATED PRO) ---
     async function generateFbPostAI() {
         const topic = document.getElementById('fbInput').value;
         const tone = document.getElementById('fbTone').value;
+        const length = document.getElementById('fbLength').value; // New Length Input
         const output = document.getElementById('fbAiResult');
         
         document.getElementById('fbOutputArea').classList.remove('hidden');
@@ -504,14 +516,30 @@
 
         output.innerHTML = "<span class='animate-pulse text-blue-400'>⏳ AI is writing your post (Male voice, Continuous)...</span>";
 
+        let lengthInstruction = "";
+        if (length === "Short") lengthInstruction = "Keep it short, punchy, under 100 words. Good for quick captions.";
+        if (length === "Medium") lengthInstruction = "Write a standard length Facebook post.";
+        if (length === "Long") lengthInstruction = "Write a Long-Form Storytelling post. Go deep into details. Do NOT cut off. You MUST finish with [CTA] and [HASHTAGS].";
+
         const prompt = `
           Role: Senior Social Media Copywriter for With You Photo Studio (Taunggyi).
           Topic: ${topic}
           Tone: ${tone}
+          Length: ${length}
+          Instruction: ${lengthInstruction}
+          
           TASK: Write ONE complete Facebook post in Burmese.
-          RULES: Use "Bya" (ဗျ). Do NOT stop until finished. Structure: Hook -> Body -> Value -> CTA -> Hashtags.
+          RULES: Use "Bya" (ဗျ). Structure: Hook -> Body -> Value -> CTA -> Hashtags.
         `;
+        
+        // Save prompt context
+        sessionStorage.setItem('lastFbPrompt', prompt);
+        
         await callAI(prompt, output);
+        
+        // Save result for continue logic
+        sessionStorage.setItem('lastFbResult', output.innerText);
+        
         document.getElementById('fbContinueBtn').classList.remove('hidden');
     }
 
@@ -550,10 +578,23 @@
         await callAI(prompt, output);
     }
 
+    // SMART CONTINUE LOGIC
     async function continueFbPost() {
         const output = document.getElementById('fbAiResult');
+        const currentText = output.innerText;
+        const lastChunk = currentText.slice(-300); // Get context
+
         output.innerHTML += "<br><br><span class='loading-indicator animate-pulse text-blue-400'>... ဆက်ရေးနေသည် ...</span>";
-        const prompt = `Role: Copywriter. Instruction: Continue the previous Burmese post. Language: Burmese.`;
+        
+        const prompt = `
+            Role: Copywriter.
+            Context: You are writing a Burmese Facebook post.
+            The post stopped at: "...${lastChunk}"
+            
+            TASK: CONTINUE writing explicitly from where it stopped. 
+            MANDATORY: You MUST finish the [CTA] and [HASHTAGS] sections if they are missing.
+            Language: Burmese.
+        `;
         await callAI(prompt, output, true);
     }
 
@@ -613,8 +654,9 @@
 
     async function continueTikTok() {
         const output = document.getElementById('ttAiResult');
+        const currentText = output.innerText;
         output.innerHTML += "<br><br><span class='loading-indicator animate-pulse text-teal-400'>... ဆက်ရေးနေသည် ...</span>";
-        const prompt = `Role: Scriptwriter. Instruction: Continue the previous Burmese script.`;
+        const prompt = `Role: Scriptwriter. Instruction: Continue the previous Burmese script from: "...${currentText.slice(-100)}".`;
         await callAI(prompt, output, true);
     }
 
