@@ -2,8 +2,8 @@
 <html lang="my">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>With You Studio - Pro Dashboard v2.1</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>With You Studio - Pro Dashboard v2.2</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -11,7 +11,7 @@
   <style>
     body { font-family: 'Padauk', sans-serif; }
     /* Custom Scrollbar */
-    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: #0f172a; }
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
     
@@ -21,10 +21,11 @@
         border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
-    .nav-item.active {
+    .nav-item.active, .mobile-nav-item.active {
         background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
         color: white;
         box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        border-color: transparent;
     }
 
     /* Mobile Sidebar Transition */
@@ -32,14 +33,18 @@
     .sidebar-open { transform: translateX(0) !important; }
     .sidebar-closed { transform: translateX(-100%); }
     @media (min-width: 768px) { .sidebar-closed { transform: translateX(0); } }
+
+    /* Hide scrollbar for tab container */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-200 h-screen flex overflow-hidden">
+<body class="bg-slate-950 text-slate-200 h-screen h-[100dvh] flex overflow-hidden">
 
   <!-- OVERLAY for Mobile -->
   <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden glass-panel"></div>
 
-  <!-- SIDEBAR NAVIGATION (LEFT) -->
+  <!-- SIDEBAR NAVIGATION (Desktop Left) -->
   <aside id="sidebar" class="sidebar-closed fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 border-r border-slate-800 flex flex-col transition-transform duration-300 md:relative md:translate-x-0 shadow-2xl">
     
     <!-- Logo Area -->
@@ -58,7 +63,7 @@
         
         <!-- Group 1: Marketing -->
         <div>
-            <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Marketing & Content</p>
+            <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Marketing</p>
             <div class="space-y-1">
                 <button onclick="loadView('fbpost')" id="nav-fbpost" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
                     <i class="ph ph-facebook-logo text-lg"></i> Facebook Post
@@ -71,7 +76,7 @@
 
         <!-- Group 2: Clients -->
         <div>
-            <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Client Management</p>
+            <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Clients</p>
             <div class="space-y-1">
                 <button onclick="loadView('dm')" id="nav-dm" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
                     <i class="ph ph-chat-circle-text text-lg"></i> DM Response
@@ -84,7 +89,7 @@
 
         <!-- Group 3: Studio -->
         <div>
-            <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Studio Tools</p>
+            <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Studio</p>
             <div class="space-y-1">
                 <button onclick="loadView('pose')" id="nav-pose" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
                     <i class="ph ph-person-simple-walk text-lg"></i> Pose Helper
@@ -99,7 +104,7 @@
         <div>
             <div class="space-y-1 border-t border-slate-800 pt-4">
                 <button onclick="loadView('history')" id="nav-history" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                    <i class="ph ph-calendar-check text-lg"></i> Saved History
+                    <i class="ph ph-calendar-check text-lg"></i> History
                 </button>
             </div>
         </div>
@@ -108,24 +113,45 @@
 
     <!-- Footer -->
     <div class="p-4 border-t border-slate-800 text-xs text-slate-600 text-center">
-        <span class="inline-block px-2 py-1 rounded bg-slate-800 border border-slate-700 text-blue-400 font-mono">v2.1 (Stable)</span>
-        <div class="mt-1 opacity-50">With You Studio AI</div>
+        <span class="inline-block px-2 py-1 rounded bg-slate-800 border border-slate-700 text-blue-400 font-mono">v2.2 (Mobile Fix)</span>
     </div>
   </aside>
 
 
   <!-- MAIN CONTENT AREA (RIGHT) -->
-  <div class="flex-1 flex flex-col h-full relative">
+  <div class="flex-1 flex flex-col h-full relative w-full">
     
     <!-- Mobile Header -->
-    <header class="md:hidden h-16 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-4 z-30">
-        <button onclick="toggleSidebar()" class="text-white"><i class="ph ph-list text-2xl"></i></button>
-        <span class="font-bold text-blue-400">With You Studio</span>
-        <div class="w-6"></div> <!-- Spacer -->
+    <header class="md:hidden h-14 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-4 z-30 shrink-0">
+        <button onclick="toggleSidebar()" class="text-white p-2"><i class="ph ph-list text-2xl"></i></button>
+        <span class="font-bold text-blue-400 text-lg">With You Studio</span>
+        <div class="w-8"></div>
     </header>
 
+    <!-- MOBILE QUICK NAV (Horizontal Scroll) -->
+    <div class="md:hidden bg-slate-900/90 border-b border-slate-800 overflow-x-auto no-scrollbar py-2 px-3 flex gap-2 shrink-0 backdrop-blur-sm z-20 sticky top-0">
+        <button onclick="loadView('fbpost')" id="mob-fbpost" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
+            <i class="ph ph-facebook-logo"></i> Post
+        </button>
+        <button onclick="loadView('tiktok')" id="mob-tiktok" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
+            <i class="ph ph-tiktok-logo"></i> TikTok
+        </button>
+        <button onclick="loadView('dm')" id="mob-dm" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
+            <i class="ph ph-chat-circle-text"></i> DM
+        </button>
+        <button onclick="loadView('timeline')" id="mob-timeline" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
+            <i class="ph ph-clock"></i> Timeline
+        </button>
+        <button onclick="loadView('pose')" id="mob-pose" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
+            <i class="ph ph-camera"></i> Pose
+        </button>
+        <button onclick="loadView('history')" id="mob-history" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
+            <i class="ph ph-calendar"></i> History
+        </button>
+    </div>
+
     <!-- Dynamic Content Container -->
-    <div id="content-container" class="flex-1 overflow-y-auto p-4 md:p-8 max-w-4xl mx-auto w-full">
+    <div id="content-container" class="flex-1 overflow-y-auto p-4 md:p-8 max-w-4xl mx-auto w-full pb-20 scroll-smooth">
         <!-- Content injects here via JS -->
     </div>
 
@@ -135,20 +161,20 @@
   <div id="toast" class="toast">Action Complete</div>
 
 
-  <!-- TEMPLATES (Hidden HTML structures to clone) -->
+  <!-- TEMPLATES (Updated for Mobile Grid Stacking) -->
   
   <!-- 1. FACEBOOK POST TEMPLATE -->
   <template id="tpl-fbpost">
     <div class="animate-fade-in space-y-6">
         <div class="flex items-center justify-between">
-            <h2 class="text-2xl font-bold text-white flex items-center gap-2"><i class="ph ph-facebook-logo text-blue-500"></i> Facebook Post</h2>
-            <span class="bg-blue-900/30 text-blue-400 text-xs px-2 py-1 rounded border border-blue-500/30">Pro Mode</span>
+            <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2"><i class="ph ph-facebook-logo text-blue-500"></i> Facebook Post</h2>
+            <span class="bg-blue-900/30 text-blue-400 text-[10px] md:text-xs px-2 py-1 rounded border border-blue-500/30">Pro Mode</span>
         </div>
 
-        <div class="grid lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Left: Inputs -->
             <div class="lg:col-span-2 space-y-4">
-                <div class="glass-panel p-5 rounded-xl space-y-4">
+                <div class="glass-panel p-4 md:p-5 rounded-xl space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Topic</label>
                         <div class="relative">
@@ -156,7 +182,7 @@
                             <i class="ph ph-microphone absolute right-3 top-3 text-slate-500 hover:text-white cursor-pointer" title="Voice Input"></i>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Tone</label>
                             <select id="fbTone" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm outline-none text-white">
@@ -175,19 +201,19 @@
                             </select>
                         </div>
                     </div>
-                    <button onclick="generateAI('fbpost')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-blue-600/30 transition flex justify-center items-center gap-2">
+                    <button onclick="generateAI('fbpost')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-blue-600/30 transition flex justify-center items-center gap-2 active:scale-95">
                         <i class="ph ph-pen-nib"></i> Write Post
                     </button>
                 </div>
 
                 <!-- Result Box -->
                 <div id="fbResultArea" class="hidden space-y-2">
-                    <div class="glass-panel p-6 rounded-xl border-blue-500/30">
+                    <div class="glass-panel p-4 md:p-6 rounded-xl border-blue-500/30">
                         <div id="fbOutput" class="whitespace-pre-wrap leading-relaxed text-sm text-slate-200"></div>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="saveResult('Facebook', 'fbOutput')" class="flex-1 bg-slate-800 hover:bg-slate-700 py-2 rounded-lg text-xs font-bold border border-slate-700">💾 Save</button>
-                        <button onclick="copyText('fbOutput')" class="flex-1 bg-slate-800 hover:bg-slate-700 py-2 rounded-lg text-xs font-bold border border-slate-700">📋 Copy</button>
+                        <button onclick="saveResult('Facebook', 'fbOutput')" class="flex-1 bg-slate-800 hover:bg-slate-700 py-3 rounded-lg text-xs font-bold border border-slate-700">💾 Save</button>
+                        <button onclick="copyText('fbOutput')" class="flex-1 bg-slate-800 hover:bg-slate-700 py-3 rounded-lg text-xs font-bold border border-slate-700">📋 Copy</button>
                     </div>
                 </div>
             </div>
@@ -210,15 +236,15 @@
     </div>
   </template>
 
-  <!-- 2. DM TEMPLATE (UPGRADED) -->
+  <!-- 2. DM TEMPLATE (UPGRADED for Mobile) -->
   <template id="tpl-dm">
     <div class="animate-fade-in space-y-6">
-        <h2 class="text-2xl font-bold text-white flex items-center gap-2"><i class="ph ph-chat-circle-text text-purple-500"></i> DM Sales Master</h2>
+        <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2"><i class="ph ph-chat-circle-text text-purple-500"></i> DM Sales Master</h2>
         
-        <div class="grid lg:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div class="space-y-4">
-                <div class="glass-panel p-5 rounded-xl space-y-4">
-                    <div class="grid grid-cols-2 gap-3">
+                <div class="glass-panel p-4 md:p-5 rounded-xl space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Service Type</label>
                             <select id="dmService" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white">
@@ -241,7 +267,7 @@
                     </div>
                     
                     <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Client Message / Package Name</label>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Client Message</label>
                         <textarea id="dmInput" placeholder="Client မေးတဲ့စာ (သို့) Package နာမည်..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm h-24 text-white resize-none focus:border-purple-500"></textarea>
                     </div>
                     
@@ -253,18 +279,18 @@
                     </div>
                     <input type="hidden" id="dmType" value="Medium">
 
-                    <button onclick="generateAI('dm_best')" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-purple-600/30 transition">
-                        ⚡ Generate 3 Best Replies
+                    <button onclick="generateAI('dm_best')" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-purple-600/30 transition active:scale-95">
+                        ⚡ Generate 3 Replies
                     </button>
                 </div>
             </div>
 
             <!-- Output -->
             <div id="dmResultArea" class="hidden">
-                <div class="glass-panel p-6 rounded-xl border-purple-500/30 h-full flex flex-col">
+                <div class="glass-panel p-4 md:p-6 rounded-xl border-purple-500/30 h-full flex flex-col">
                     <div class="flex justify-between mb-2">
                         <span class="text-xs font-bold text-purple-400 uppercase">Suggested Replies</span>
-                        <button onclick="copyText('dmOutput')" class="text-xs text-slate-400 hover:text-white">Copy</button>
+                        <button onclick="copyText('dmOutput')" class="text-xs text-slate-400 hover:text-white bg-slate-800 px-2 py-1 rounded">Copy</button>
                     </div>
                     <div id="dmOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 overflow-y-auto max-h-[400px]"></div>
                 </div>
@@ -276,9 +302,9 @@
   <!-- 3. BRAND BRAIN TEMPLATE -->
   <template id="tpl-brand">
     <div class="animate-fade-in max-w-2xl mx-auto space-y-6">
-        <div class="bg-gradient-to-r from-slate-800 to-slate-900 p-8 rounded-2xl border border-slate-700 text-center relative overflow-hidden">
-            <i class="ph ph-brain absolute top-4 right-4 text-6xl text-slate-800"></i>
-            <h2 class="text-2xl font-bold text-white mb-2">Studio Identity</h2>
+        <div class="bg-gradient-to-r from-slate-800 to-slate-900 p-6 md:p-8 rounded-2xl border border-slate-700 text-center relative overflow-hidden">
+            <i class="ph ph-brain absolute top-4 right-4 text-6xl text-slate-800 opacity-50"></i>
+            <h2 class="text-xl md:text-2xl font-bold text-white mb-2">Studio Identity</h2>
             <p class="text-sm text-slate-400 mb-6">AI will remember these details to write like you.</p>
             
             <div class="space-y-4 text-left">
@@ -291,7 +317,7 @@
                     <input type="text" id="brandClient" value="Luxury Couples, Young Professionals" class="w-full mt-1 bg-slate-950 border border-slate-700 rounded p-3 text-white">
                 </div>
                 <div class="pt-4">
-                    <div class="flex items-center gap-2 text-green-400 text-xs justify-center bg-green-900/20 py-2 rounded">
+                    <div class="flex items-center gap-2 text-green-400 text-xs justify-center bg-green-900/20 py-3 rounded">
                         <i class="ph ph-check-circle"></i> Auto-Saved. Applied to all AI tasks.
                     </div>
                 </div>
@@ -300,12 +326,12 @@
     </div>
   </template>
 
-  <!-- 4. TIMELINE TEMPLATE (UPGRADED) -->
+  <!-- 4. TIMELINE TEMPLATE (Mobile Grid Fix) -->
   <template id="tpl-timeline">
     <div class="animate-fade-in space-y-6">
-        <h2 class="text-2xl font-bold text-orange-400 flex items-center gap-2"><i class="ph ph-clock"></i> Timeline Generator</h2>
-        <div class="glass-panel p-6 rounded-xl">
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        <h2 class="text-xl md:text-2xl font-bold text-orange-400 flex items-center gap-2"><i class="ph ph-clock"></i> Timeline Generator</h2>
+        <div class="glass-panel p-4 md:p-6 rounded-xl">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                 <div>
                     <label class="text-xs text-slate-400 uppercase font-bold">Start</label>
                     <select id="tlStart" class="w-full p-2 mt-1 bg-slate-800 rounded border border-slate-700 text-white"><option>6:00 AM</option><option>7:00 AM</option><option>8:00 AM</option><option>1:00 PM</option></select>
@@ -324,17 +350,17 @@
                 </div>
             </div>
             
-            <div class="flex items-center gap-2 mb-4">
+            <div class="flex items-center gap-2 mb-4 p-2 bg-slate-800/50 rounded">
                 <input type="checkbox" id="tlSunset" class="w-4 h-4 rounded bg-slate-800 border-slate-700 text-orange-500">
                 <label for="tlSunset" class="text-sm text-slate-300">Include Sunset Shot (နေဝင်ချိန်)</label>
             </div>
 
-            <button onclick="generateAI('timeline')" class="w-full bg-orange-600 hover:bg-orange-500 py-3 rounded text-white font-bold">Generate Schedule</button>
+            <button onclick="generateAI('timeline')" class="w-full bg-orange-600 hover:bg-orange-500 py-3 rounded text-white font-bold active:scale-95 transition">Generate Schedule</button>
         </div>
-        <div id="tlResultArea" class="hidden glass-panel p-6 rounded-xl">
+        <div id="tlResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl">
             <div id="tlOutput" class="whitespace-pre-wrap text-sm text-slate-200 font-mono"></div>
             <div class="mt-4 flex gap-2">
-                <button onclick="downloadFile('Schedule.txt', 'tlOutput')" class="text-xs text-blue-400 border border-blue-900 p-2 rounded">⬇️ Download File</button>
+                <button onclick="downloadFile('Schedule.txt', 'tlOutput')" class="text-xs text-blue-400 border border-blue-900 p-2 rounded flex items-center gap-1">⬇️ Download</button>
             </div>
         </div>
     </div>
@@ -347,7 +373,7 @@
 
     // --- INIT ---
     document.addEventListener('DOMContentLoaded', () => {
-        loadView('fbpost'); // Default
+        loadView('fbpost'); 
         loadHistoryData();
     });
 
@@ -368,24 +394,36 @@
     }
 
     function loadView(viewId) {
-        // Highlight Nav
+        // Highlight Nav (Desktop)
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         const navBtn = document.getElementById('nav-' + viewId);
         if(navBtn) navBtn.classList.add('active');
 
-        // Close Sidebar on mobile
+        // Highlight Nav (Mobile)
+        document.querySelectorAll('.mobile-nav-item').forEach(el => {
+            el.classList.remove('active', 'border-blue-500', 'text-white');
+            el.classList.add('border-slate-700', 'text-slate-300');
+        });
+        const mobBtn = document.getElementById('mob-' + viewId);
+        if(mobBtn) {
+            mobBtn.classList.add('active', 'border-blue-500', 'text-white');
+            mobBtn.classList.remove('border-slate-700', 'text-slate-300');
+            // Scroll to active mobile button
+            mobBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+
+        // Close Sidebar on mobile if open
         if(window.innerWidth < 768) {
             document.getElementById('sidebar').classList.add('sidebar-closed');
+            document.getElementById('sidebar').classList.remove('sidebar-open');
             document.getElementById('overlay').classList.add('hidden');
         }
 
         const container = document.getElementById('content-container');
-        container.innerHTML = ''; // Clear current
+        container.innerHTML = ''; 
 
-        // Load Template Content
         let templateId = 'tpl-' + viewId;
         
-        // Handle special cases without specific template blocks in HTML
         if(viewId === 'tiktok') {
             container.innerHTML = getTikTokHTML();
         } else if(viewId === 'pose') {
@@ -402,20 +440,20 @@
         currentView = viewId;
     }
 
-    // --- HTML GENERATORS FOR REMAINING TABS ---
+    // --- HTML GENERATORS FOR REMAINING TABS (Updated for Mobile) ---
     function getTikTokHTML() {
         return `
         <div class="animate-fade-in space-y-6">
-            <h2 class="text-2xl font-bold text-teal-400 flex items-center gap-2"><i class="ph ph-tiktok-logo"></i> TikTok Script</h2>
-            <div class="glass-panel p-5 rounded-xl space-y-4">
+            <h2 class="text-xl md:text-2xl font-bold text-teal-400 flex items-center gap-2"><i class="ph ph-tiktok-logo"></i> TikTok Script</h2>
+            <div class="glass-panel p-4 md:p-5 rounded-xl space-y-4">
                 <input type="text" id="ttInput" placeholder="Video Topic (e.g., Studio Vlog)..." class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white">
                 <select id="ttStyle" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white"><option>Trending & Fast</option><option>Vlog / Behind Scenes</option><option>Cinematic Mood</option></select>
-                <div class="grid grid-cols-2 gap-3">
-                    <button onclick="generateAI('tt_caption')" class="bg-slate-700 py-3 rounded text-white text-sm font-bold">Get Caption</button>
-                    <button onclick="generateAI('tt_script')" class="bg-teal-600 py-3 rounded text-white text-sm font-bold">Write Script</button>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button onclick="generateAI('tt_caption')" class="bg-slate-700 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Get Caption</button>
+                    <button onclick="generateAI('tt_script')" class="bg-teal-600 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Write Script</button>
                 </div>
             </div>
-            <div id="ttResultArea" class="hidden glass-panel p-6 rounded-xl">
+            <div id="ttResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl">
                 <div id="ttOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div>
                 <button onclick="saveResult('TikTok', 'ttOutput')" class="mt-4 bg-slate-800 text-xs py-2 px-4 rounded border border-slate-700">💾 Save to History</button>
             </div>
@@ -425,9 +463,9 @@
     function getPoseHTML() {
         return `
         <div class="animate-fade-in space-y-6">
-            <h2 class="text-2xl font-bold text-pink-400 flex items-center gap-2"><i class="ph ph-camera"></i> Pose Helper</h2>
-            <div class="glass-panel p-5 rounded-xl space-y-4">
-                <div class="grid grid-cols-2 gap-3">
+            <h2 class="text-xl md:text-2xl font-bold text-pink-400 flex items-center gap-2"><i class="ph ph-camera"></i> Pose Helper</h2>
+            <div class="glass-panel p-4 md:p-5 rounded-xl space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <label class="text-xs font-bold text-slate-400 uppercase">Outfit Style</label>
                         <select id="poseOutfit" class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm">
@@ -442,14 +480,14 @@
                     </div>
                 </div>
                 
-                <div class="flex gap-2 mb-2">
-                    <button onclick="fillPose('Shy Couple')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">😳 Shy</button>
-                    <button onclick="fillPose('Plus Size')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">❤️ Plus Size</button>
+                <div class="flex gap-2 mb-2 overflow-x-auto no-scrollbar pb-1">
+                    <button onclick="fillPose('Shy Couple')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30 whitespace-nowrap">😳 Shy</button>
+                    <button onclick="fillPose('Plus Size')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30 whitespace-nowrap">❤️ Plus Size</button>
                 </div>
                 <textarea id="poseInput" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white h-24" placeholder="Client situation/mood..."></textarea>
-                <button onclick="generateAI('pose')" class="w-full bg-pink-600 py-3 rounded text-white font-bold">Generate Poses</button>
+                <button onclick="generateAI('pose')" class="w-full bg-pink-600 py-3 rounded text-white font-bold active:scale-95 transition">Generate Poses</button>
             </div>
-            <div id="poseResultArea" class="hidden glass-panel p-6 rounded-xl">
+            <div id="poseResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl">
                 <div id="poseOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div>
             </div>
         </div>`;
@@ -459,16 +497,15 @@
         return `
         <div class="animate-fade-in space-y-6">
             <div class="flex justify-between items-center">
-                <h2 class="text-2xl font-bold text-white"><i class="ph ph-clock-counter-clockwise"></i> Saved History</h2>
-                <button onclick="clearHistory()" class="text-red-400 text-xs">Clear All</button>
+                <h2 class="text-xl md:text-2xl font-bold text-white"><i class="ph ph-clock-counter-clockwise"></i> Saved History</h2>
+                <button onclick="clearHistory()" class="text-red-400 text-xs border border-red-900 px-3 py-1 rounded">Clear All</button>
             </div>
-            <div id="historyListContainer" class="space-y-4"></div>
+            <div id="historyListContainer" class="space-y-4 pb-10"></div>
         </div>`;
     }
 
-    // --- AI LOGIC (CENTRALIZED & UPGRADED) ---
+    // --- AI LOGIC (Same as v2.1) ---
     async function generateAI(type) {
-        // UI Helpers
         const outputIds = {
             'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'timeline': 'tlOutput', 
             'tt_caption': 'ttOutput', 'tt_script': 'ttOutput', 'pose': 'poseOutput'
@@ -482,12 +519,18 @@
         const areaId = areaIds[type];
         
         if(document.getElementById(areaId)) document.getElementById(areaId).classList.remove('hidden');
-        if(document.getElementById(outId)) document.getElementById(outId).innerHTML = "<span class='animate-pulse text-blue-400'>✨ AI is thinking in Burmese...</span>";
+        if(document.getElementById(outId)) {
+            document.getElementById(outId).innerHTML = "<span class='animate-pulse text-blue-400'>✨ AI is thinking in Burmese...</span>";
+            // Scroll to result on mobile
+            if(window.innerWidth < 768) {
+                setTimeout(() => {
+                    document.getElementById(areaId).scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+        }
 
         // Build Prompt
         let prompt = "";
-        
-        // 1. Get Brand Context
         const brandStyle = document.getElementById('brandStyle') ? document.getElementById('brandStyle').value : "Professional";
         const burmeseInstruction = `
         IMPORTANT SYSTEM INSTRUCTION:
@@ -549,10 +592,8 @@
             Explain pose instructions in Burmese clearly.`;
         }
 
-        // Final Prompt Payload
         const finalPrompt = burmeseInstruction + "\n\n" + prompt;
 
-        // Call API
         try {
             const res = await fetch("/api/generate", {
                 method: "POST",
@@ -574,6 +615,9 @@
     async function runAssistant(type) {
         document.getElementById('fbResultArea').classList.remove('hidden');
         document.getElementById('fbOutput').innerHTML = "<span class='animate-pulse text-yellow-400'>💡 Brainstorming...</span>";
+        if(window.innerWidth < 768) {
+             document.getElementById('fbResultArea').scrollIntoView({ behavior: 'smooth' });
+        }
         
         let prompt = "Generate 5 ideas in Burmese for a photo studio.";
         if(type === 'fb_hooks') prompt = "Write 5 catchy hooks in Burmese for a photo studio post.";
@@ -635,7 +679,6 @@
         
         const history = JSON.parse(localStorage.getItem('studioHistory') || '[]');
         history.unshift(item);
-        
         if(history.length > 20) history.pop();
         
         localStorage.setItem('studioHistory', JSON.stringify(history));
