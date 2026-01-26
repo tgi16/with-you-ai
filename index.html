@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Pro Dashboard v2.4</title>
+  <title>With You Studio - Pro Human AI v2.5</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -28,6 +28,14 @@
         border-color: transparent;
     }
 
+    /* CTA Selection Active State */
+    .cta-btn.active {
+        background-color: #7e22ce; /* purple-700 */
+        border-color: #a855f7;
+        color: white;
+        font-weight: bold;
+    }
+
     /* Mobile Sidebar Transition */
     #sidebar { transition: transform 0.3s ease-in-out; }
     .sidebar-open { transform: translateX(0) !important; }
@@ -42,12 +50,9 @@
     .listening-ring {
         box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
         animation: pulse-red 1.5s infinite cubic-bezier(0.66, 0, 0, 1);
-        border-color: #ef4444 !important; /* Red border */
-        color: #ef4444 !important; /* Red icon */
+        border-color: #ef4444 !important; color: #ef4444 !important;
     }
-    @keyframes pulse-red {
-        to { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-    }
+    @keyframes pulse-red { to { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-200 h-screen h-[100dvh] flex overflow-hidden">
@@ -124,7 +129,7 @@
 
     <!-- Footer -->
     <div class="p-4 border-t border-slate-800 text-xs text-slate-600 text-center">
-        <span class="inline-block px-2 py-1 rounded bg-slate-800 border border-slate-700 text-blue-400 font-mono">v2.4 (Voice Pro)</span>
+        <span class="inline-block px-2 py-1 rounded bg-slate-800 border border-slate-700 text-blue-400 font-mono">v2.5 (Human Voice)</span>
     </div>
   </aside>
 
@@ -172,7 +177,7 @@
   <div id="toast" class="toast">Action Complete</div>
 
 
-  <!-- TEMPLATES (Updated with Voice Buttons passing 'this') -->
+  <!-- TEMPLATES -->
   
   <!-- 1. FACEBOOK POST TEMPLATE -->
   <template id="tpl-fbpost">
@@ -187,7 +192,6 @@
                 <div class="glass-panel p-4 md:p-5 rounded-xl space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Topic</label>
-                        <!-- Voice Button Logic -->
                         <div class="flex gap-2">
                             <input type="text" id="fbInput" placeholder="ဥပမာ - Pre-wedding package အသစ်..." class="flex-1 w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm focus:border-blue-500 outline-none text-white">
                             <button onclick="startVoiceInput('fbInput', this)" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg px-4 flex items-center justify-center transition active:scale-95" title="Speak to Type">
@@ -201,8 +205,8 @@
                             <select id="fbTone" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm outline-none text-white">
                                 <option>Professional & Warm</option>
                                 <option>Friendly & Exciting</option>
-                                <option>Emotional</option>
-                                <option>Casual</option>
+                                <option>Emotional & Touching</option>
+                                <option>Casual & Fun</option>
                             </select>
                         </div>
                         <div>
@@ -247,7 +251,7 @@
     </div>
   </template>
 
-  <!-- 2. DM TEMPLATE (Voice Added) -->
+  <!-- 2. DM TEMPLATE (Fully Restored & Upgraded) -->
   <template id="tpl-dm">
     <div class="animate-fade-in space-y-6">
         <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2"><i class="ph ph-chat-circle-text text-purple-500"></i> DM Sales Master</h2>
@@ -287,13 +291,16 @@
                         </div>
                     </div>
                     
-                    <!-- CTA Buttons -->
-                    <div class="grid grid-cols-3 gap-2">
-                        <button onclick="setDmType('Soft')" class="p-2 border border-slate-600 rounded bg-slate-800 hover:bg-slate-700 text-xs text-center">🍃 Soft</button>
-                        <button onclick="setDmType('Medium')" class="p-2 border border-slate-600 rounded bg-slate-800 hover:bg-slate-700 text-xs text-center border-purple-500/50">🔥 Medium</button>
-                        <button onclick="setDmType('Strong')" class="p-2 border border-slate-600 rounded bg-slate-800 hover:bg-slate-700 text-xs text-center">💥 Strong</button>
+                    <!-- CTA Buttons (Interactive) -->
+                    <div>
+                        <label class="block text-xs font-bold text-purple-300 uppercase mb-1">Closing Strategy (CTA)</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="setDmType('Soft', this)" class="cta-btn p-2 border border-slate-600 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-center transition">🍃 Soft<br><span class="text-[9px] opacity-50">Ask Question</span></button>
+                            <button onclick="setDmType('Medium', this)" class="cta-btn active p-2 border border-slate-600 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-center border-purple-500/50 transition">🔥 Medium<br><span class="text-[9px] opacity-50">Invite Visit</span></button>
+                            <button onclick="setDmType('Strong', this)" class="cta-btn p-2 border border-slate-600 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-center transition">💥 Strong<br><span class="text-[9px] opacity-50">Book Now</span></button>
+                        </div>
+                        <input type="hidden" id="dmType" value="Medium">
                     </div>
-                    <input type="hidden" id="dmType" value="Medium">
 
                     <button onclick="generateAI('dm_best')" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-purple-600/30 transition active:scale-95">
                         ⚡ Generate 3 Replies
@@ -305,8 +312,8 @@
             <div id="dmResultArea" class="hidden">
                 <div class="glass-panel p-4 md:p-6 rounded-xl border-purple-500/30 h-full flex flex-col">
                     <div class="flex justify-between mb-2">
-                        <span class="text-xs font-bold text-purple-400 uppercase">Suggested Replies</span>
-                        <button onclick="copyText('dmOutput')" class="text-xs text-slate-400 hover:text-white bg-slate-800 px-2 py-1 rounded">Copy</button>
+                        <span class="text-xs font-bold text-purple-400 uppercase">Suggested Replies (3 Options)</span>
+                        <button onclick="copyText('dmOutput')" class="text-xs text-slate-400 hover:text-white bg-slate-800 px-2 py-1 rounded">Copy All</button>
                     </div>
                     <div id="dmOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 overflow-y-auto max-h-[400px]"></div>
                 </div>
@@ -341,7 +348,7 @@
     </div>
   </template>
 
-  <!-- 4. TIMELINE TEMPLATE -->
+  <!-- 4. TIMELINE TEMPLATE (Fully Restored) -->
   <template id="tpl-timeline">
     <div class="animate-fade-in space-y-6">
         <h2 class="text-xl md:text-2xl font-bold text-orange-400 flex items-center gap-2"><i class="ph ph-clock"></i> Timeline Generator</h2>
@@ -374,6 +381,7 @@
             <div id="tlOutput" class="whitespace-pre-wrap text-sm text-slate-200 font-mono"></div>
             <div class="mt-4 flex gap-2">
                 <button onclick="downloadFile('Schedule.txt', 'tlOutput')" class="text-xs text-blue-400 border border-blue-900 p-2 rounded flex items-center gap-1">⬇️ Download</button>
+                <button onclick="copyText('tlOutput')" class="text-xs text-slate-400 border border-slate-700 p-2 rounded flex items-center gap-1">📋 Copy</button>
             </div>
         </div>
     </div>
@@ -449,7 +457,7 @@
         currentView = viewId;
     }
 
-    // --- HTML GENERATORS (Updated for Mobile & Voice) ---
+    // --- HTML GENERATORS ---
     function getTikTokHTML() {
         return `
         <div class="animate-fade-in space-y-6">
@@ -557,7 +565,7 @@
         };
     }
 
-    // --- AI LOGIC ---
+    // --- AI LOGIC (HUMAN VOICE UPDATE) ---
     async function generateAI(type) {
         const outputIds = {
             'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'timeline': 'tlOutput', 
@@ -581,12 +589,18 @@
 
         let prompt = "";
         const brandStyle = document.getElementById('brandStyle') ? document.getElementById('brandStyle').value : "Professional";
+        
+        // --- CRITICAL UPDATE: HUMAN VOICE INSTRUCTION ---
         const burmeseInstruction = `
-        IMPORTANT SYSTEM INSTRUCTION:
-        - You are a native Burmese speaker (Myanmar).
-        - Use "Bya" (ဗျ) for male speaker ending.
-        - Write naturally, warm, and professional. Avoid "Google Translate" style.
-        - Context: With You Photo Studio in Taunggyi.
+        IMPORTANT ROLE: You are the owner of "With You Photo Studio" in Taunggyi, Myanmar.
+        
+        TONE & VOICE:
+        - Write EXACTLY like a real Burmese person talking. 
+        - Use "Bya" (ဗျ) or "Khamya" (ခင်ဗျာ) for the male speaker ending.
+        - Be warm, welcoming, and professional but NOT robotic.
+        - Use natural filler words or soft particles (e.g., "နော်", "လေး", "ပါ") where appropriate to sound friendly.
+        - Avoid formal "Written Burmese" (စာစကား); use "Spoken Burmese" (အပြောစကား).
+        - Context: Photography Services.
         - Brand Style: ${brandStyle}.
         `;
 
@@ -594,33 +608,57 @@
             const topic = document.getElementById('fbInput').value;
             const tone = document.getElementById('fbTone').value;
             const len = document.getElementById('fbLength').value;
-            prompt = `Task: Write Facebook Post. Topic: ${topic}. Tone: ${tone}. Length: ${len}. Include Hook, Body, Value, CTA, Hashtags.`;
+            prompt = `Task: Write Facebook Post. Topic: ${topic}. Tone: ${tone}. Length: ${len}. Include Hook, Body, Value, CTA, Hashtags. Make it sound engaging and human.`;
         } 
         else if (type === 'dm_best') {
             const service = document.getElementById('dmService').value;
             const scenario = document.getElementById('dmScenario').value;
             const msg = document.getElementById('dmInput').value;
             const cta = document.getElementById('dmType').value;
-            prompt = `Task: Write 3 BEST replies for DM. Service: ${service}. Scenario: ${scenario}. Client Msg: "${msg}". CTA Strength: ${cta}. Output: 3 distinct options (Professional, Friendly, Persuasive) in Burmese.`;
+            
+            prompt = `Task: Write 3 DISTINCT DM Replies for a client.
+            Service Interest: ${service}.
+            Scenario: ${scenario}.
+            Client Said: "${msg}".
+            Closing Strategy (CTA): ${cta}.
+            
+            OUTPUT FORMAT:
+            Option 1: [Professional & Detailed - Good for first inquiry]
+            Option 2: [Friendly & Warm - Good for building rapport]
+            Option 3: [Short & Urgent/Persuasive - Good for closing]
+            
+            Ensure all 3 options sound like a real person, not a bot.`;
         }
         else if (type === 'timeline') {
             const start = document.getElementById('tlStart').value;
             const place = document.getElementById('tlPlace').value;
             const dress = document.getElementById('tlDress').value;
             const pace = document.getElementById('tlPace').value;
-            const sunset = document.getElementById('tlSunset').checked ? "Yes, include sunset shot." : "No specific sunset shot needed.";
-            prompt = `Task: Create Pre-wedding Timeline. Start: ${start}. Location: ${place}. Outfits: ${dress}. Pacing: ${pace}. Sunset: ${sunset}. Language: Burmese. Format: Clear List with times.`;
+            const sunset = document.getElementById('tlSunset').checked ? "Yes, include sunset shot." : "No sunset needed.";
+            
+            prompt = `Task: Create a detailed Pre-wedding Timeline Schedule.
+            Start Time: ${start}.
+            Location: ${place}.
+            Outfits: ${dress}.
+            Pacing: ${pace}.
+            Sunset Requirement: ${sunset}.
+            Language: Burmese. Format: Clear List with times. Add helpful tips for the couple (e.g., bring snacks, water).`;
         }
         else if (type.includes('tt_')) {
             const topic = document.getElementById('ttInput').value;
             const style = document.getElementById('ttStyle').value;
-            prompt = `Task: Write TikTok ${type==='tt_caption'?'Caption':'Script'}. Topic: ${topic}. Style: ${style}.`;
+            prompt = `Task: Write TikTok ${type==='tt_caption'?'Caption':'Script'}. Topic: ${topic}. Style: ${style}. Keep it trendy and short.`;
         }
         else if (type === 'pose') {
             const input = document.getElementById('poseInput').value;
             const outfit = document.getElementById('poseOutfit').value;
             const props = document.getElementById('poseProps').value;
-            prompt = `Task: Suggest 3 poses for pre-wedding. Couple's Context: ${input}. Outfit Style: ${outfit}. Props Available: ${props}. Explain pose instructions in Burmese clearly.`;
+            
+            prompt = `Task: Suggest 3 creative poses for pre-wedding.
+            Couple's Context: ${input}.
+            Outfit Style: ${outfit}.
+            Props Available: ${props}.
+            Explain pose instructions in Burmese clearly so the photographer can direct them easily.`;
         }
 
         const finalPrompt = burmeseInstruction + "\n\n" + prompt;
@@ -653,6 +691,7 @@
         if(type === 'fb_hooks') prompt = "Write 5 catchy hooks in Burmese for a photo studio post.";
         
         try {
+             // Reusing generate logic simply
              const res = await fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt: prompt + " Use Native Burmese." }) });
              const data = await res.json();
              document.getElementById('fbOutput').innerText = data.result;
@@ -660,9 +699,14 @@
     }
 
     // --- UTILS ---
-    function setDmType(type) {
-        document.getElementById('dmType').value = type;
-        showToast("CTA set to " + type);
+    function setDmType(strength, btnElement) {
+        document.getElementById('dmType').value = strength;
+        
+        // Update visual state of buttons
+        document.querySelectorAll('.cta-btn').forEach(btn => btn.classList.remove('active'));
+        if(btnElement) btnElement.classList.add('active');
+        
+        showToast("CTA set to: " + strength);
     }
     
     function fillPose(txt) {
