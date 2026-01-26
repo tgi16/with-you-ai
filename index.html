@@ -3,758 +3,679 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>With You Photo Studio – AI Pro Assistant</title>
+  <title>With You Studio - Pro Dashboard v2.1</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <style>
-    body { font-family: Padauk, sans-serif; }
+    body { font-family: 'Padauk', sans-serif; }
     /* Custom Scrollbar */
-    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: #0f172a; }
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
     
-    /* Hide scrollbar for tab container */
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-    /* Animations */
-    .animate-fade-in { animation: fadeIn 0.5s ease-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* Toast Notification */
-    .toast { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 100; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-    .toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
-    @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
-    @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
-  </style>
-</head>
-<body class="bg-slate-950 text-white min-h-screen flex flex-col" onload="loadHistory()">
-
-  <!-- HEADER -->
-  <header class="px-4 py-4 bg-slate-900 border-b border-white/10 flex justify-between items-center sticky top-0 z-50 shadow-lg backdrop-blur-md bg-opacity-90">
-    <div>
-      <h1 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 tracking-tight">With You Photo Studio</h1>
-      <p class="text-[10px] text-slate-400 uppercase tracking-widest">AI Daily Assistant (Pro)</p>
-    </div>
-    <div class="flex gap-2">
-        <button onclick="switchTab('brand')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-full border border-slate-700 text-slate-300 flex items-center gap-1 transition">
-            <span>🧠</span> Brain
-        </button>
-        <button onclick="switchTab('history')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-full border border-slate-700 text-slate-300 flex items-center gap-1 transition relative">
-            <span>📅</span> Calendar
-            <span id="historyCount" class="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] px-1 rounded-full hidden">0</span>
-        </button>
-    </div>
-  </header>
-
-  <!-- MAIN CONTENT -->
-  <main class="flex-1 p-4 space-y-6 max-w-3xl mx-auto w-full pb-20">
-
-    <!-- SCROLLABLE TAB BUTTONS (Updated: History Unhidden) -->
-    <div class="flex gap-2 overflow-x-auto no-scrollbar bg-slate-900/80 p-1.5 rounded-xl border border-slate-800 sticky top-[70px] z-40 backdrop-blur-md">
-      <button onclick="switchTab('brand')" id="btn-brand" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all hover:bg-slate-800 text-slate-400">🧠 Brand Brain</button>
-      <button onclick="switchTab('timeline')" id="btn-timeline" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all hover:bg-slate-800 text-slate-400">⏳ Timeline</button>
-      <button onclick="switchTab('pose')" id="btn-pose" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all hover:bg-slate-800 text-slate-400">🎨 Poses</button>
-      <button onclick="switchTab('fbpost')" id="btn-fbpost" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all hover:bg-slate-800 text-slate-400">📝 FB Post</button>
-      <button onclick="switchTab('tiktok')" id="btn-tiktok" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all hover:bg-slate-800 text-slate-400">🎵 TikTok</button>
-      <button onclick="switchTab('dm')" id="btn-dm" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all hover:bg-slate-800 text-slate-400">💬 DM</button>
-      <!-- Unhidden History Button -->
-      <button onclick="switchTab('history')" id="btn-history" class="tab-btn px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap transition-all hover:bg-slate-800 text-slate-400">📅 History</button>
-    </div>
-
-    <!-- 0. BRAND BRAIN TAB -->
-    <section id="brand" class="space-y-4 hidden animate-fade-in">
-        <div class="bg-gradient-to-br from-slate-900 to-slate-800 p-6 rounded-2xl border border-blue-500/30 shadow-lg relative overflow-hidden">
-            <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">🧠</div>
-            <h2 class="text-lg font-bold text-blue-300 flex items-center gap-2 mb-2">
-                Brand Brain (စတူဒီယို ဦးနှောက်)
-            </h2>
-            <p class="text-xs text-slate-400 mb-6">ဒီမှာ ဖြည့်ထားတဲ့ အချက်တွေကို AI က မှတ်ထားပြီး Post ရေးတဲ့အခါ ထည့်သုံးပေးသွားပါမယ်။</p>
-
-            <div class="space-y-4">
-                <div>
-                    <label class="text-xs font-bold text-slate-400 uppercase">Studio Vibe / Style</label>
-                    <input type="text" id="brandStyle" value="Moody, Cinematic, Emotional" 
-                        class="w-full p-3 mt-1 rounded-lg bg-slate-950 border border-slate-700 text-sm text-white focus:border-blue-500 outline-none">
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-slate-400 uppercase">Target Client</label>
-                    <input type="text" id="brandClient" value="Luxury Couples, Young Professionals" 
-                        class="w-full p-3 mt-1 rounded-lg bg-slate-950 border border-slate-700 text-sm text-white focus:border-blue-500 outline-none">
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-slate-400 uppercase">Signature Phrase / Motto</label>
-                    <input type="text" id="brandMotto" value="Memories that last forever" 
-                        class="w-full p-3 mt-1 rounded-lg bg-slate-950 border border-slate-700 text-sm text-white focus:border-blue-500 outline-none">
-                </div>
-            </div>
-            
-            <div class="mt-6 flex items-center gap-2 text-xs text-green-400 bg-green-900/20 p-3 rounded-lg border border-green-900/50">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                <span>Auto-saved! AI will use this context automatically.</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- 1. TIMELINE HELPER TAB -->
-    <section id="timeline" class="space-y-4 hidden animate-fade-in">
-        <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 shadow-sm">
-            <h2 class="text-lg font-bold text-orange-400 flex items-center gap-2 mb-4">
-              <span>⏳</span> Pre-Wedding Timeline Generator
-            </h2>
-            <div class="space-y-3 mb-4">
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="text-xs text-slate-400 uppercase font-bold">Start Time</label>
-                        <select id="tlStart" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 text-sm outline-none">
-                            <option value="6:00 AM">🌅 6:00 AM</option>
-                            <option value="7:00 AM">☀️ 7:00 AM</option>
-                            <option value="8:00 AM">☀️ 8:00 AM</option>
-                            <option value="9:00 AM">☀️ 9:00 AM</option>
-                            <option value="1:00 PM">🌤️ 1:00 PM</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs text-slate-400 uppercase font-bold">Location (နေရာ)</label>
-                        <select id="tlPlace" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 text-sm outline-none">
-                            <option value="Taunggyi City">🏙️ Taunggyi (မြို့တွင်း)</option>
-                            <option value="Inle Lake">🛶 Inle Lake (အင်းလေး)</option>
-                            <option value="Kalaw">🌲 Kalaw (ကလော)</option>
-                            <option value="Kakku">🛕 Kakku (မွေတော်ကက္ကူ)</option>
-                            <option value="Ayetharyar">🍇 Ayetharyar (အေးသာယာ)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="text-xs text-slate-400 uppercase font-bold">Outfits (ဝတ်စုံအရေအတွက်)</label>
-                    <select id="tlDress" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 text-sm outline-none">
-                        <option value="2 Dresses">👗 2 Dresses</option>
-                        <option value="3 Dresses">👗 3 Dresses</option>
-                        <option value="4 Dresses">👗 4 Dresses</option>
-                        <option value="5 Dresses">👗 5 Dresses</option>
-                        <option value="2 Dresses + 1 Own">👗 2 Dresses + 1 Own</option>
-                        <option value="3 Dresses + 1 Own">👗 3 Dresses + 1 Own</option>
-                        <option value="4 Dresses + 1 Own">👗 4 Dresses + 1 Own</option>
-                    </select>
-                </div>
-            </div>
-            
-            <button onclick="generateTimeline()" class="w-full bg-orange-600 hover:bg-orange-500 text-white py-3 rounded-xl font-bold shadow-lg shadow-orange-900/30 transition-all">
-                🗓️ Generate Schedule
-            </button>
-        </div>
-        <div id="tlOutputArea" class="hidden animate-fade-in">
-             <div class="flex justify-between items-end px-1 mb-2">
-                <span class="text-xs font-bold text-slate-400 uppercase">Suggested Schedule</span>
-                <div class="flex gap-2">
-                    <button onclick="downloadText('tlOutput', 'Timeline_Schedule')" class="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">⬇️ File</button>
-                    <button onclick="copyText('tlOutput')" class="text-xs text-orange-400 hover:text-orange-300">📋 Copy</button>
-                </div>
-            </div>
-            <div id="tlOutput" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 whitespace-pre-wrap leading-relaxed text-slate-200 shadow-inner text-sm font-mono"></div>
-        </div>
-    </section>
-
-    <!-- 2. POSE HELPER TAB -->
-    <section id="pose" class="space-y-4 hidden animate-fade-in">
-      <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 shadow-sm">
-        <h2 class="text-lg font-bold text-pink-400 flex items-center gap-2 mb-4">
-          <span>📸</span> Pre-Wedding Pose Helper
-        </h2>
-
-        <div class="space-y-4">
-          <div class="grid grid-cols-2 gap-3">
-             <select id="scene" class="w-full p-3 rounded-lg bg-slate-800 border border-slate-700 focus:border-pink-500 outline-none text-sm">
-              <option value="Outdoor">🌿 Outdoor</option>
-              <option value="Studio">💡 In-Studio</option>
-              <option value="Cafe">☕ Cafe</option>
-              <option value="Colonial">🏛️ Colonial</option>
-            </select>
-            <select id="mood" class="w-full p-3 rounded-lg bg-slate-800 border border-slate-700 focus:border-pink-500 outline-none text-sm">
-              <option value="Romantic">💞 Romantic</option>
-              <option value="Natural">🌸 Natural</option>
-              <option value="Cinematic">🎬 Cinematic</option>
-              <option value="Fun">😂 Fun</option>
-            </select>
-          </div>
-
-          <div class="flex flex-wrap gap-2">
-            <span class="text-xs font-bold text-slate-500 uppercase self-center mr-1">Presets:</span>
-            <button onclick="setPosePreset('Shy Couple')" class="px-3 py-1 bg-slate-800 hover:bg-pink-900/50 border border-slate-700 rounded-full text-xs text-pink-200 transition">😳 Shy</button>
-            <button onclick="setPosePreset('Stiff Groom')" class="px-3 py-1 bg-slate-800 hover:bg-pink-900/50 border border-slate-700 rounded-full text-xs text-pink-200 transition">🤖 Stiff</button>
-            <button onclick="setPosePreset('Plus Size Couple')" class="px-3 py-1 bg-slate-800 hover:bg-pink-900/50 border border-slate-700 rounded-full text-xs text-pink-200 transition">❤️ Plus</button>
-          </div>
-
-          <!-- Added Mic Icon for Pro feel -->
-          <div class="relative">
-              <textarea id="poseInput" placeholder="Client အခြေအနေ..." class="w-full p-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-pink-500 outline-none h-24 text-sm resize-none"></textarea>
-              <div class="absolute bottom-2 right-2 text-slate-500 hover:text-pink-400 cursor-pointer" title="Voice Input (Coming Soon)">🎤</div>
-          </div>
-          
-          <button onclick="generatePose()" class="w-full bg-gradient-to-r from-pink-600 to-pink-500 hover:from-pink-500 hover:to-pink-400 text-white py-3 rounded-xl font-bold shadow-lg shadow-pink-900/30 transition-all transform active:scale-95">
-            ✨ Generate Pose Ideas
-          </button>
-        </div>
-      </div>
-      <div id="poseOutputWrapper" class="hidden space-y-2">
-          <div id="poseOutput" class="bg-slate-900 p-5 rounded-2xl border border-slate-800 text-sm whitespace-pre-wrap leading-relaxed animate-fade-in text-slate-200"></div>
-      </div>
-    </section>
-
-    <!-- 3. FB POST CREATOR TAB (PRO) -->
-    <section id="fbpost" class="space-y-6 hidden animate-fade-in">
-      <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 shadow-sm">
-        <h2 class="text-lg font-bold text-blue-400 flex items-center gap-2 mb-4">
-          <span>📝</span> Facebook Post Creator (Pro)
-        </h2>
-        <div class="space-y-4">
-          <div>
-            <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Topic</label>
-            <div class="relative">
-                <input type="text" id="fbInput" placeholder="ဥပမာ - Pre-wedding package အသစ် Promotion" 
-                  class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-blue-500 outline-none text-sm transition-colors">
-                <div class="absolute top-1/2 right-3 -translate-y-1/2 text-slate-500 hover:text-blue-400 cursor-pointer" title="Voice Input">🎤</div>
-            </div>
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Tone</label>
-                <select id="fbTone" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-blue-500 outline-none text-sm">
-                  <option value="Professional & Warm">Professional</option>
-                  <option value="Friendly & Exciting">Friendly</option>
-                  <option value="Emotional & Touching">Emotional</option>
-                  <option value="Casual & Fun">Casual</option>
-                </select>
-              </div>
-              <div>
-                <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Length</label>
-                <select id="fbLength" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-blue-500 outline-none text-sm">
-                  <option value="Medium">Medium (Standard)</option>
-                  <option value="Short">Short (Caption/Reel)</option>
-                  <option value="Long">Long (Storytelling)</option>
-                </select>
-              </div>
-          </div>
-          <button onclick="generateFbPostAI()" class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white py-3 rounded-xl font-bold shadow-lg shadow-blue-900/30 transition-all transform active:scale-95 flex justify-center items-center gap-2">
-            <span>🤖</span> Post အပြည့်အစုံ ရေးခိုင်းမည်
-          </button>
-        </div>
-      </div>
-
-      <!-- Result Area -->
-      <div id="fbOutputArea" class="hidden space-y-4 animate-fade-in">
-        <div id="fbResultWrapper" class="flex flex-col gap-2">
-            <div id="fbAiResult" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 whitespace-pre-wrap leading-relaxed text-slate-200 shadow-inner"></div>
-            
-            <!-- Save/Schedule & Continue -->
-            <div class="grid grid-cols-2 gap-2">
-                <button id="fbContinueBtn" onclick="continueFbPost()" class="hidden py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl text-blue-300 text-sm font-bold flex items-center justify-center gap-2">
-                   ⚠️ Continue
-                </button>
-                <div class="flex gap-1">
-                    <input type="date" id="fbDate" class="bg-slate-800 border border-slate-700 text-xs rounded-lg px-2 text-white outline-none">
-                    <button onclick="saveToHistory('FB Post', 'fbAiResult', 'fbDate')" class="flex-1 bg-green-700 hover:bg-green-600 rounded-lg text-xs font-bold text-white flex flex-col items-center justify-center">
-                        <span>💾 Save</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-      </div>
-      
-      <!-- Creative Assistant -->
-      <div class="bg-slate-900/30 p-5 rounded-2xl border border-blue-500/20">
-        <h3 class="text-sm font-bold text-blue-300 mb-3 uppercase tracking-wider flex items-center gap-2">✨ Creative Assistant</h3>
-        <div class="grid grid-cols-2 gap-3">
-          <button onclick="fbAssistIdeas()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1"><span class="text-xl">💡</span> Content Ideas</button>
-          <button onclick="fbAssistHooks()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1"><span class="text-xl">🎣</span> Catchy Hooks</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- 4. TIKTOK CREATOR TAB -->
-    <section id="tiktok" class="space-y-6 hidden animate-fade-in">
-      <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 shadow-sm">
-        <h2 class="text-lg font-bold text-teal-400 flex items-center gap-2 mb-4"><span>🎵</span> TikTok Script Creator</h2>
-        <div class="space-y-4">
-          <div>
-            <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Video Idea / Topic</label>
-            <div class="relative">
-                <input type="text" id="ttInput" placeholder="ဥပမာ - Studio ဖွင့်ချိန် Vlog" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-teal-500 outline-none text-sm transition-colors">
-                <div class="absolute top-1/2 right-3 -translate-y-1/2 text-slate-500 hover:text-teal-400 cursor-pointer" title="Voice Input">🎤</div>
-            </div>
-          </div>
-          <div>
-            <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Video Style</label>
-            <select id="ttStyle" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-teal-500 outline-none text-sm">
-              <option value="Trending & Fast">⚡ Trending</option>
-              <option value="Vlog Style">📹 Vlog</option>
-              <option value="Educational">🎓 Tips</option>
-              <option value="Cinematic Mood">🎬 Cinematic</option>
-            </select>
-          </div>
-          <div class="grid grid-cols-2 gap-3 pt-2">
-            <button onclick="generateTTCaption()" class="bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-slate-700 py-3 rounded-xl font-bold text-sm transition-all">📝 Get Caption</button>
-            <button onclick="generateTTAI()" class="bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 text-white py-3 rounded-xl font-bold text-sm shadow-lg shadow-teal-900/30">🤖 Write Script</button>
-          </div>
-        </div>
-      </div>
-
-       <div id="ttOutputArea" class="hidden space-y-4 animate-fade-in">
-        <div id="ttResultWrapper" class="flex flex-col gap-2">
-            <div id="ttAiResult" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 whitespace-pre-wrap leading-relaxed text-slate-200 shadow-inner"></div>
-            <!-- Save/Schedule & Continue -->
-            <div class="grid grid-cols-2 gap-2">
-                <button id="ttContinueBtn" onclick="continueTikTok()" class="hidden py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl text-teal-300 text-sm font-bold flex items-center justify-center gap-2">
-                   ⚠️ Continue
-                </button>
-                <div class="flex gap-1">
-                    <input type="date" id="ttDate" class="bg-slate-800 border border-slate-700 text-xs rounded-lg px-2 text-white outline-none">
-                    <button onclick="saveToHistory('TikTok', 'ttAiResult', 'ttDate')" class="flex-1 bg-green-700 hover:bg-green-600 rounded-lg text-xs font-bold text-white flex flex-col items-center justify-center">
-                        <span>💾 Save</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-      </div>
-      
-      <!-- Creative Assistant -->
-      <div class="bg-slate-900/30 p-5 rounded-2xl border border-teal-500/20">
-        <h3 class="text-sm font-bold text-teal-300 mb-3 uppercase tracking-wider flex items-center gap-2">✨ Creative Assistant</h3>
-        <div class="grid grid-cols-2 gap-3">
-          <button onclick="ttAssistIdeas()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1"><span class="text-xl">💡</span> Video Ideas</button>
-          <button onclick="ttAssistHooks()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1"><span class="text-xl">⚡</span> Visual Hooks</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- 5. DM HELPER TAB (SUPER CHARGED) -->
-    <section id="dm" class="space-y-6 hidden animate-fade-in">
-      <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 shadow-sm">
-        <h2 class="text-lg font-bold text-purple-400 flex items-center gap-2 mb-4">
-          <span>💬</span> Client DM Sales Master
-        </h2>
-        <div class="space-y-4">
-            <div>
-                <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Client Situation</label>
-                <select id="dmScenario" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-purple-500 outline-none text-sm text-slate-200">
-                    <option value="General Inquiry">❓ General Inquiry</option>
-                    <option value="Price Objection">💸 Price Objection</option>
-                    <option value="Ghosting">👻 Ghosting</option>
-                    <option value="Closing">🤝 Closing</option>
-                    <option value="Availability">📅 Date Availability</option>
-                    <option value="Complaint">⚠️ Complaint Handling</option>
-                </select>
-            </div>
-            <div>
-                 <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Client's Message</label>
-                 <div class="relative">
-                    <textarea id="dmInput" placeholder="Client ပို့လိုက်တဲ့ စာ..." class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-purple-500 outline-none h-24 text-sm resize-none"></textarea>
-                    <div class="absolute bottom-2 right-2 text-slate-500 hover:text-purple-400 cursor-pointer" title="Voice Input">🎤</div>
-                 </div>
-            </div>
-
-            <!-- CTA BOOSTER -->
-            <div class="bg-slate-800/50 p-3 rounded-xl border border-purple-500/20">
-                <label class="text-[10px] text-purple-300 uppercase font-bold tracking-wider">🚀 Booking CTA Booster</label>
-                <div class="flex gap-2 mt-2">
-                    <button onclick="setCTA('Soft')" class="flex-1 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-xs border border-slate-600 transition">🍃 Soft<br><span class="text-[9px] text-slate-400">မေးမြန်း</span></button>
-                    <button onclick="setCTA('Medium')" class="flex-1 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-xs border border-slate-600 transition">🔥 Medium<br><span class="text-[9px] text-slate-400">ဖိတ်ခေါ်</span></button>
-                    <button onclick="setCTA('Strong')" class="flex-1 py-2 bg-purple-900 hover:bg-purple-800 rounded-lg text-xs border border-purple-700 transition font-bold text-white">💥 Strong<br><span class="text-[9px] text-purple-200">အခုယူမယ်</span></button>
-                </div>
-                <input type="hidden" id="dmCTA" value="Medium">
-            </div>
-
-            <button onclick="generateDmBestReplies()" class="w-full bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white py-3 rounded-xl font-bold shadow-lg shadow-purple-900/30 transition-all transform active:scale-95 flex justify-center items-center gap-2">
-                <span>⚡</span> Generate 3 Best Replies
-            </button>
-        </div>
-      </div>
-
-      <div id="dmOutputArea" class="hidden space-y-4 animate-fade-in">
-        <div class="flex flex-col gap-2">
-            <div id="dmOutput" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 whitespace-pre-wrap leading-relaxed text-slate-200 shadow-inner"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 6. CALENDAR / HISTORY TAB (NEW) -->
-    <section id="history" class="space-y-6 hidden animate-fade-in">
-        <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 shadow-sm">
-            <h2 class="text-lg font-bold text-white flex items-center gap-2 mb-1">
-              <span>📅</span> Calendar & Saved History
-            </h2>
-            <p class="text-xs text-slate-400 mb-4">Saved results are auto-deleted after 48 hours.</p>
-            
-            <div id="historyList" class="space-y-3">
-                <!-- Javascript will populate this -->
-                <div class="text-center text-slate-500 py-10 text-sm">No saved items yet.</div>
-            </div>
-            
-            <button onclick="clearAllHistory()" class="w-full mt-4 text-xs text-red-400 hover:text-red-300 py-2 border border-red-900/30 rounded-lg">Clear All History</button>
-        </div>
-    </section>
-
-  </main>
-  
-  <!-- TOAST NOTIFICATION -->
-  <div id="toast" class="toast">Text Copied!</div>
-
-  <!-- JAVASCRIPT -->
-  <script>
-    // --- TAB SYSTEM ---
-    function switchTab(tab) {
-      ['brand','timeline','pose','fbpost','tiktok','dm','history'].forEach(id => {
-        const el = document.getElementById(id);
-        if(el) el.classList.add('hidden');
-        
-        const btn = document.getElementById('btn-' + id);
-        if(btn) {
-             btn.classList.remove('bg-pink-600', 'bg-blue-600', 'bg-teal-600', 'bg-purple-600', 'bg-orange-600', 'text-white', 'shadow-lg', 'bg-slate-800');
-             btn.classList.add('text-slate-400', 'hover:bg-slate-800');
-        }
-      });
-
-      document.getElementById(tab).classList.remove('hidden');
-      
-      const btn = document.getElementById('btn-' + tab);
-      btn.classList.remove('text-slate-400', 'hover:bg-slate-800');
-      
-      btn.classList.add('text-white', 'shadow-lg');
-      if(tab === 'brand') btn.classList.add('bg-slate-700');
-      if(tab === 'timeline') btn.classList.add('bg-orange-600');
-      if(tab === 'pose') btn.classList.add('bg-pink-600');
-      if(tab === 'fbpost') btn.classList.add('bg-blue-600');
-      if(tab === 'tiktok') btn.classList.add('bg-teal-600');
-      if(tab === 'dm') btn.classList.add('bg-purple-600');
-      if(tab === 'history') { btn.classList.add('bg-slate-700'); loadHistory(); }
-    }
-
-    // Init
-    switchTab('fbpost'); 
-
-    // --- TOAST ---
-    function showToast(msg) {
-        var x = document.getElementById("toast");
-        x.innerText = msg;
-        x.className = "toast show";
-        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-    }
-
-    function copyText(elementIdOrText) {
-        let text = "";
-        if(document.getElementById(elementIdOrText)) {
-            text = document.getElementById(elementIdOrText).innerText;
-        } else {
-            text = elementIdOrText;
-        }
-        navigator.clipboard.writeText(text);
-        showToast("Text Copied!");
-    }
-
-    function downloadText(elementId, filename) {
-        const text = document.getElementById(elementId).innerText;
-        const blob = new Blob([text], { type: 'text/plain' });
-        const anchor = document.createElement('a');
-        anchor.download = filename + ".txt";
-        anchor.href = window.URL.createObjectURL(blob);
-        anchor.target = "_blank";
-        anchor.style.display = "none"; 
-        document.body.appendChild(anchor);
-        anchor.click();
-        document.body.removeChild(anchor);
-        showToast("Downloaded!");
-    }
-
-    // --- HISTORY & CALENDAR LOGIC ---
-    function saveToHistory(type, elementId, dateInputId) {
-        const content = document.getElementById(elementId).innerText;
-        if(!content) return;
-        
-        const dateVal = document.getElementById(dateInputId) ? document.getElementById(dateInputId).value : "";
-        const historyItem = {
-            id: Date.now(),
-            type: type,
-            content: content,
-            scheduledDate: dateVal,
-            timestamp: Date.now()
-        };
-
-        const history = JSON.parse(localStorage.getItem('appHistory') || '[]');
-        history.unshift(historyItem);
-        localStorage.setItem('appHistory', JSON.stringify(history));
-        
-        showToast(dateVal ? "Scheduled & Saved!" : "Saved to History!");
-        updateHistoryCount();
-    }
-
-    function loadHistory() {
-        const history = JSON.parse(localStorage.getItem('appHistory') || '[]');
-        const container = document.getElementById('historyList');
-        
-        // Auto Delete > 2 days (48 hours)
-        const twoDaysAgo = Date.now() - (48 * 60 * 60 * 1000);
-        const filteredHistory = history.filter(item => item.timestamp > twoDaysAgo);
-        
-        if(history.length !== filteredHistory.length) {
-            localStorage.setItem('appHistory', JSON.stringify(filteredHistory));
-        }
-
-        if(filteredHistory.length === 0) {
-            container.innerHTML = `<div class="text-center text-slate-500 py-10 text-sm">No items yet.</div>`;
-            return;
-        }
-
-        container.innerHTML = filteredHistory.map(item => {
-            const dateDisplay = item.scheduledDate ? `<span class="bg-blue-900 text-blue-200 text-[10px] px-2 py-0.5 rounded border border-blue-700">🗓️ ${item.scheduledDate}</span>` : `<span class="text-slate-500 text-[10px]">Just Saved</span>`;
-            return `
-            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 relative group">
-                <div class="flex justify-between items-center mb-2">
-                    <div class="flex gap-2 items-center">
-                        <span class="text-xs font-bold text-white bg-slate-700 px-2 py-1 rounded">${item.type}</span>
-                        ${dateDisplay}
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="copyText(this.getAttribute('data-text'))" data-text="${item.content.replace(/"/g, '&quot;')}" class="text-xs text-slate-400 hover:text-white">📋 Copy</button>
-                        <button onclick="deleteHistoryItem(${item.id})" class="text-xs text-red-400 hover:text-red-300">🗑️</button>
-                    </div>
-                </div>
-                <div class="text-xs text-slate-300 whitespace-pre-wrap max-h-24 overflow-hidden text-ellipsis leading-relaxed">${item.content.substring(0, 150)}...</div>
-            </div>
-            `;
-        }).join('');
-        
-        updateHistoryCount();
-    }
-
-    function deleteHistoryItem(id) {
-        const history = JSON.parse(localStorage.getItem('appHistory') || '[]');
-        const newHistory = history.filter(item => item.id !== id);
-        localStorage.setItem('appHistory', JSON.stringify(newHistory));
-        loadHistory();
-    }
-
-    function clearAllHistory() {
-        if(confirm("Delete all history?")) {
-            localStorage.removeItem('appHistory');
-            loadHistory();
-        }
-    }
-
-    function updateHistoryCount() {
-        const history = JSON.parse(localStorage.getItem('appHistory') || '[]');
-        const badge = document.getElementById('historyCount');
-        if(history.length > 0) {
-            badge.innerText = history.length;
-            badge.classList.remove('hidden');
-        } else {
-            badge.classList.add('hidden');
-        }
+    .glass-panel {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
-    // Run on load
-    updateHistoryCount();
+    .nav-item.active {
+        background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    /* Mobile Sidebar Transition */
+    #sidebar { transition: transform 0.3s ease-in-out; }
+    .sidebar-open { transform: translateX(0) !important; }
+    .sidebar-closed { transform: translateX(-100%); }
+    @media (min-width: 768px) { .sidebar-closed { transform: translateX(0); } }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-200 h-screen flex overflow-hidden">
+
+  <!-- OVERLAY for Mobile -->
+  <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden glass-panel"></div>
+
+  <!-- SIDEBAR NAVIGATION (LEFT) -->
+  <aside id="sidebar" class="sidebar-closed fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 border-r border-slate-800 flex flex-col transition-transform duration-300 md:relative md:translate-x-0 shadow-2xl">
+    
+    <!-- Logo Area -->
+    <div class="p-6 border-b border-slate-800 flex items-center justify-between">
+        <div>
+            <h1 class="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+                <i class="ph ph-camera text-blue-400"></i> With You
+            </h1>
+            <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">AI Studio Manager</p>
+        </div>
+        <button onclick="toggleSidebar()" class="md:hidden text-slate-400"><i class="ph ph-x text-xl"></i></button>
+    </div>
+
+    <!-- Menu Items -->
+    <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-6">
+        
+        <!-- Group 1: Marketing -->
+        <div>
+            <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Marketing & Content</p>
+            <div class="space-y-1">
+                <button onclick="loadView('fbpost')" id="nav-fbpost" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i class="ph ph-facebook-logo text-lg"></i> Facebook Post
+                </button>
+                <button onclick="loadView('tiktok')" id="nav-tiktok" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i class="ph ph-tiktok-logo text-lg"></i> TikTok Script
+                </button>
+            </div>
+        </div>
+
+        <!-- Group 2: Clients -->
+        <div>
+            <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Client Management</p>
+            <div class="space-y-1">
+                <button onclick="loadView('dm')" id="nav-dm" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i class="ph ph-chat-circle-text text-lg"></i> DM Response
+                </button>
+                <button onclick="loadView('timeline')" id="nav-timeline" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i class="ph ph-clock text-lg"></i> Timeline
+                </button>
+            </div>
+        </div>
+
+        <!-- Group 3: Studio -->
+        <div>
+            <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Studio Tools</p>
+            <div class="space-y-1">
+                <button onclick="loadView('pose')" id="nav-pose" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i class="ph ph-person-simple-walk text-lg"></i> Pose Helper
+                </button>
+                <button onclick="loadView('brand')" id="nav-brand" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i class="ph ph-brain text-lg"></i> Brand Brain
+                </button>
+            </div>
+        </div>
+
+        <!-- Group 4: Archive -->
+        <div>
+            <div class="space-y-1 border-t border-slate-800 pt-4">
+                <button onclick="loadView('history')" id="nav-history" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i class="ph ph-calendar-check text-lg"></i> Saved History
+                </button>
+            </div>
+        </div>
+
+    </nav>
+
+    <!-- Footer -->
+    <div class="p-4 border-t border-slate-800 text-xs text-slate-600 text-center">
+        <span class="inline-block px-2 py-1 rounded bg-slate-800 border border-slate-700 text-blue-400 font-mono">v2.1 (Stable)</span>
+        <div class="mt-1 opacity-50">With You Studio AI</div>
+    </div>
+  </aside>
 
 
-    // --- AI CALL HANDLER ---
-    async function callAI(promptText, outputElement, isAppend = false) {
+  <!-- MAIN CONTENT AREA (RIGHT) -->
+  <div class="flex-1 flex flex-col h-full relative">
+    
+    <!-- Mobile Header -->
+    <header class="md:hidden h-16 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-4 z-30">
+        <button onclick="toggleSidebar()" class="text-white"><i class="ph ph-list text-2xl"></i></button>
+        <span class="font-bold text-blue-400">With You Studio</span>
+        <div class="w-6"></div> <!-- Spacer -->
+    </header>
+
+    <!-- Dynamic Content Container -->
+    <div id="content-container" class="flex-1 overflow-y-auto p-4 md:p-8 max-w-4xl mx-auto w-full">
+        <!-- Content injects here via JS -->
+    </div>
+
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="toast">Action Complete</div>
+
+
+  <!-- TEMPLATES (Hidden HTML structures to clone) -->
+  
+  <!-- 1. FACEBOOK POST TEMPLATE -->
+  <template id="tpl-fbpost">
+    <div class="animate-fade-in space-y-6">
+        <div class="flex items-center justify-between">
+            <h2 class="text-2xl font-bold text-white flex items-center gap-2"><i class="ph ph-facebook-logo text-blue-500"></i> Facebook Post</h2>
+            <span class="bg-blue-900/30 text-blue-400 text-xs px-2 py-1 rounded border border-blue-500/30">Pro Mode</span>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-6">
+            <!-- Left: Inputs -->
+            <div class="lg:col-span-2 space-y-4">
+                <div class="glass-panel p-5 rounded-xl space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Topic</label>
+                        <div class="relative">
+                            <input type="text" id="fbInput" placeholder="ဥပမာ - Pre-wedding package အသစ်..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm focus:border-blue-500 outline-none text-white">
+                            <i class="ph ph-microphone absolute right-3 top-3 text-slate-500 hover:text-white cursor-pointer" title="Voice Input"></i>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Tone</label>
+                            <select id="fbTone" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm outline-none text-white">
+                                <option>Professional & Warm</option>
+                                <option>Friendly & Exciting</option>
+                                <option>Emotional</option>
+                                <option>Casual</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Length</label>
+                            <select id="fbLength" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm outline-none text-white">
+                                <option value="Medium">Medium (Standard)</option>
+                                <option value="Long">Long (Storytelling)</option>
+                                <option value="Short">Short (Caption)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="generateAI('fbpost')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-blue-600/30 transition flex justify-center items-center gap-2">
+                        <i class="ph ph-pen-nib"></i> Write Post
+                    </button>
+                </div>
+
+                <!-- Result Box -->
+                <div id="fbResultArea" class="hidden space-y-2">
+                    <div class="glass-panel p-6 rounded-xl border-blue-500/30">
+                        <div id="fbOutput" class="whitespace-pre-wrap leading-relaxed text-sm text-slate-200"></div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="saveResult('Facebook', 'fbOutput')" class="flex-1 bg-slate-800 hover:bg-slate-700 py-2 rounded-lg text-xs font-bold border border-slate-700">💾 Save</button>
+                        <button onclick="copyText('fbOutput')" class="flex-1 bg-slate-800 hover:bg-slate-700 py-2 rounded-lg text-xs font-bold border border-slate-700">📋 Copy</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Assistant -->
+            <div class="space-y-4">
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
+                    <h3 class="text-sm font-bold text-blue-300 mb-3 flex items-center gap-2"><i class="ph ph-sparkle"></i> Creative Assistant</h3>
+                    <div class="space-y-2">
+                        <button onclick="runAssistant('fb_ideas')" class="w-full text-left p-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 border border-slate-700 transition">
+                            💡 Get 5 Post Ideas
+                        </button>
+                        <button onclick="runAssistant('fb_hooks')" class="w-full text-left p-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 border border-slate-700 transition">
+                            🎣 Generate Catchy Hooks
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </template>
+
+  <!-- 2. DM TEMPLATE (UPGRADED) -->
+  <template id="tpl-dm">
+    <div class="animate-fade-in space-y-6">
+        <h2 class="text-2xl font-bold text-white flex items-center gap-2"><i class="ph ph-chat-circle-text text-purple-500"></i> DM Sales Master</h2>
+        
+        <div class="grid lg:grid-cols-2 gap-6">
+            <div class="space-y-4">
+                <div class="glass-panel p-5 rounded-xl space-y-4">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Service Type</label>
+                            <select id="dmService" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white">
+                                <option value="Pre-wedding">💍 Pre-wedding</option>
+                                <option value="Wedding Day">👰 Wedding Day</option>
+                                <option value="Family/Group">👨‍👩‍👧‍👦 Family/Group</option>
+                                <option value="Graduation">🎓 Graduation</option>
+                                <option value="General">❓ General</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Situation</label>
+                            <select id="dmScenario" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white">
+                                <option>Inquiry (Rate Card)</option>
+                                <option>Price Objection (Expensive)</option>
+                                <option>Ghosting (Seen no reply)</option>
+                                <option>Closing (Booking)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Client Message / Package Name</label>
+                        <textarea id="dmInput" placeholder="Client မေးတဲ့စာ (သို့) Package နာမည်..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm h-24 text-white resize-none focus:border-purple-500"></textarea>
+                    </div>
+                    
+                    <!-- CTA Buttons -->
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="setDmType('Soft')" class="p-2 border border-slate-600 rounded bg-slate-800 hover:bg-slate-700 text-xs text-center">🍃 Soft</button>
+                        <button onclick="setDmType('Medium')" class="p-2 border border-slate-600 rounded bg-slate-800 hover:bg-slate-700 text-xs text-center border-purple-500/50">🔥 Medium</button>
+                        <button onclick="setDmType('Strong')" class="p-2 border border-slate-600 rounded bg-slate-800 hover:bg-slate-700 text-xs text-center">💥 Strong</button>
+                    </div>
+                    <input type="hidden" id="dmType" value="Medium">
+
+                    <button onclick="generateAI('dm_best')" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-purple-600/30 transition">
+                        ⚡ Generate 3 Best Replies
+                    </button>
+                </div>
+            </div>
+
+            <!-- Output -->
+            <div id="dmResultArea" class="hidden">
+                <div class="glass-panel p-6 rounded-xl border-purple-500/30 h-full flex flex-col">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-xs font-bold text-purple-400 uppercase">Suggested Replies</span>
+                        <button onclick="copyText('dmOutput')" class="text-xs text-slate-400 hover:text-white">Copy</button>
+                    </div>
+                    <div id="dmOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 overflow-y-auto max-h-[400px]"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </template>
+
+  <!-- 3. BRAND BRAIN TEMPLATE -->
+  <template id="tpl-brand">
+    <div class="animate-fade-in max-w-2xl mx-auto space-y-6">
+        <div class="bg-gradient-to-r from-slate-800 to-slate-900 p-8 rounded-2xl border border-slate-700 text-center relative overflow-hidden">
+            <i class="ph ph-brain absolute top-4 right-4 text-6xl text-slate-800"></i>
+            <h2 class="text-2xl font-bold text-white mb-2">Studio Identity</h2>
+            <p class="text-sm text-slate-400 mb-6">AI will remember these details to write like you.</p>
+            
+            <div class="space-y-4 text-left">
+                <div>
+                    <label class="text-xs font-bold text-blue-400 uppercase">Studio Vibe</label>
+                    <input type="text" id="brandStyle" value="Moody, Cinematic, Emotional" class="w-full mt-1 bg-slate-950 border border-slate-700 rounded p-3 text-white">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-blue-400 uppercase">Target Audience</label>
+                    <input type="text" id="brandClient" value="Luxury Couples, Young Professionals" class="w-full mt-1 bg-slate-950 border border-slate-700 rounded p-3 text-white">
+                </div>
+                <div class="pt-4">
+                    <div class="flex items-center gap-2 text-green-400 text-xs justify-center bg-green-900/20 py-2 rounded">
+                        <i class="ph ph-check-circle"></i> Auto-Saved. Applied to all AI tasks.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </template>
+
+  <!-- 4. TIMELINE TEMPLATE (UPGRADED) -->
+  <template id="tpl-timeline">
+    <div class="animate-fade-in space-y-6">
+        <h2 class="text-2xl font-bold text-orange-400 flex items-center gap-2"><i class="ph ph-clock"></i> Timeline Generator</h2>
+        <div class="glass-panel p-6 rounded-xl">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                <div>
+                    <label class="text-xs text-slate-400 uppercase font-bold">Start</label>
+                    <select id="tlStart" class="w-full p-2 mt-1 bg-slate-800 rounded border border-slate-700 text-white"><option>6:00 AM</option><option>7:00 AM</option><option>8:00 AM</option><option>1:00 PM</option></select>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 uppercase font-bold">Place</label>
+                    <select id="tlPlace" class="w-full p-2 mt-1 bg-slate-800 rounded border border-slate-700 text-white"><option>Taunggyi (City)</option><option>Inle Lake</option><option>Kalaw</option><option>Kakku</option><option>Ayetharyar</option></select>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 uppercase font-bold">Outfits</label>
+                    <select id="tlDress" class="w-full p-2 mt-1 bg-slate-800 rounded border border-slate-700 text-white"><option>3 Dresses</option><option>4 Dresses</option><option>5 Dresses</option><option>2 Dresses (Mini)</option></select>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 uppercase font-bold">Pacing</label>
+                    <select id="tlPace" class="w-full p-2 mt-1 bg-slate-800 rounded border border-slate-700 text-white"><option value="Relaxed">Relaxed (အေးဆေး)</option><option value="Packed">Packed (ရိုက်ကွက်များများ)</option></select>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2 mb-4">
+                <input type="checkbox" id="tlSunset" class="w-4 h-4 rounded bg-slate-800 border-slate-700 text-orange-500">
+                <label for="tlSunset" class="text-sm text-slate-300">Include Sunset Shot (နေဝင်ချိန်)</label>
+            </div>
+
+            <button onclick="generateAI('timeline')" class="w-full bg-orange-600 hover:bg-orange-500 py-3 rounded text-white font-bold">Generate Schedule</button>
+        </div>
+        <div id="tlResultArea" class="hidden glass-panel p-6 rounded-xl">
+            <div id="tlOutput" class="whitespace-pre-wrap text-sm text-slate-200 font-mono"></div>
+            <div class="mt-4 flex gap-2">
+                <button onclick="downloadFile('Schedule.txt', 'tlOutput')" class="text-xs text-blue-400 border border-blue-900 p-2 rounded">⬇️ Download File</button>
+            </div>
+        </div>
+    </div>
+  </template>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // --- GLOBAL STATE ---
+    let currentView = 'fbpost';
+
+    // --- INIT ---
+    document.addEventListener('DOMContentLoaded', () => {
+        loadView('fbpost'); // Default
+        loadHistoryData();
+    });
+
+    // --- NAVIGATION ---
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        
+        if (sidebar.classList.contains('sidebar-closed')) {
+            sidebar.classList.remove('sidebar-closed');
+            sidebar.classList.add('sidebar-open');
+            overlay.classList.remove('hidden');
+        } else {
+            sidebar.classList.add('sidebar-closed');
+            sidebar.classList.remove('sidebar-open');
+            overlay.classList.add('hidden');
+        }
+    }
+
+    function loadView(viewId) {
+        // Highlight Nav
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        const navBtn = document.getElementById('nav-' + viewId);
+        if(navBtn) navBtn.classList.add('active');
+
+        // Close Sidebar on mobile
+        if(window.innerWidth < 768) {
+            document.getElementById('sidebar').classList.add('sidebar-closed');
+            document.getElementById('overlay').classList.add('hidden');
+        }
+
+        const container = document.getElementById('content-container');
+        container.innerHTML = ''; // Clear current
+
+        // Load Template Content
+        let templateId = 'tpl-' + viewId;
+        
+        // Handle special cases without specific template blocks in HTML
+        if(viewId === 'tiktok') {
+            container.innerHTML = getTikTokHTML();
+        } else if(viewId === 'pose') {
+            container.innerHTML = getPoseHTML();
+        } else if(viewId === 'history') {
+            container.innerHTML = getHistoryHTML();
+            renderHistoryList();
+        } else {
+            const tpl = document.getElementById(templateId);
+            if(tpl) {
+                container.appendChild(tpl.content.cloneNode(true));
+            }
+        }
+        currentView = viewId;
+    }
+
+    // --- HTML GENERATORS FOR REMAINING TABS ---
+    function getTikTokHTML() {
+        return `
+        <div class="animate-fade-in space-y-6">
+            <h2 class="text-2xl font-bold text-teal-400 flex items-center gap-2"><i class="ph ph-tiktok-logo"></i> TikTok Script</h2>
+            <div class="glass-panel p-5 rounded-xl space-y-4">
+                <input type="text" id="ttInput" placeholder="Video Topic (e.g., Studio Vlog)..." class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white">
+                <select id="ttStyle" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white"><option>Trending & Fast</option><option>Vlog / Behind Scenes</option><option>Cinematic Mood</option></select>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="generateAI('tt_caption')" class="bg-slate-700 py-3 rounded text-white text-sm font-bold">Get Caption</button>
+                    <button onclick="generateAI('tt_script')" class="bg-teal-600 py-3 rounded text-white text-sm font-bold">Write Script</button>
+                </div>
+            </div>
+            <div id="ttResultArea" class="hidden glass-panel p-6 rounded-xl">
+                <div id="ttOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div>
+                <button onclick="saveResult('TikTok', 'ttOutput')" class="mt-4 bg-slate-800 text-xs py-2 px-4 rounded border border-slate-700">💾 Save to History</button>
+            </div>
+        </div>`;
+    }
+
+    function getPoseHTML() {
+        return `
+        <div class="animate-fade-in space-y-6">
+            <h2 class="text-2xl font-bold text-pink-400 flex items-center gap-2"><i class="ph ph-camera"></i> Pose Helper</h2>
+            <div class="glass-panel p-5 rounded-xl space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase">Outfit Style</label>
+                        <select id="poseOutfit" class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm">
+                            <option>Wedding Gown/Suit</option>
+                            <option>Myanmar Traditional</option>
+                            <option>Casual Wear</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase">Props</label>
+                        <input type="text" id="poseProps" placeholder="Flowers, Umbrella..." class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm">
+                    </div>
+                </div>
+                
+                <div class="flex gap-2 mb-2">
+                    <button onclick="fillPose('Shy Couple')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">😳 Shy</button>
+                    <button onclick="fillPose('Plus Size')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">❤️ Plus Size</button>
+                </div>
+                <textarea id="poseInput" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white h-24" placeholder="Client situation/mood..."></textarea>
+                <button onclick="generateAI('pose')" class="w-full bg-pink-600 py-3 rounded text-white font-bold">Generate Poses</button>
+            </div>
+            <div id="poseResultArea" class="hidden glass-panel p-6 rounded-xl">
+                <div id="poseOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div>
+            </div>
+        </div>`;
+    }
+
+    function getHistoryHTML() {
+        return `
+        <div class="animate-fade-in space-y-6">
+            <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-white"><i class="ph ph-clock-counter-clockwise"></i> Saved History</h2>
+                <button onclick="clearHistory()" class="text-red-400 text-xs">Clear All</button>
+            </div>
+            <div id="historyListContainer" class="space-y-4"></div>
+        </div>`;
+    }
+
+    // --- AI LOGIC (CENTRALIZED & UPGRADED) ---
+    async function generateAI(type) {
+        // UI Helpers
+        const outputIds = {
+            'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'timeline': 'tlOutput', 
+            'tt_caption': 'ttOutput', 'tt_script': 'ttOutput', 'pose': 'poseOutput'
+        };
+        const areaIds = {
+            'fbpost': 'fbResultArea', 'dm_best': 'dmResultArea', 'timeline': 'tlResultArea',
+            'tt_caption': 'ttResultArea', 'tt_script': 'ttResultArea', 'pose': 'poseResultArea'
+        };
+
+        const outId = outputIds[type];
+        const areaId = areaIds[type];
+        
+        if(document.getElementById(areaId)) document.getElementById(areaId).classList.remove('hidden');
+        if(document.getElementById(outId)) document.getElementById(outId).innerHTML = "<span class='animate-pulse text-blue-400'>✨ AI is thinking in Burmese...</span>";
+
+        // Build Prompt
+        let prompt = "";
+        
+        // 1. Get Brand Context
+        const brandStyle = document.getElementById('brandStyle') ? document.getElementById('brandStyle').value : "Professional";
+        const burmeseInstruction = `
+        IMPORTANT SYSTEM INSTRUCTION:
+        - You are a native Burmese speaker (Myanmar).
+        - Use "Bya" (ဗျ) for male speaker ending.
+        - Write naturally, warm, and professional. Avoid "Google Translate" style.
+        - Context: With You Photo Studio in Taunggyi.
+        - Brand Style: ${brandStyle}.
+        `;
+
+        if (type === 'fbpost') {
+            const topic = document.getElementById('fbInput').value;
+            const tone = document.getElementById('fbTone').value;
+            const len = document.getElementById('fbLength').value;
+            prompt = `Task: Write Facebook Post. Topic: ${topic}. Tone: ${tone}. Length: ${len}. Include Hook, Body, Value, CTA, Hashtags.`;
+        } 
+        else if (type === 'dm_best') {
+            const service = document.getElementById('dmService').value;
+            const scenario = document.getElementById('dmScenario').value;
+            const msg = document.getElementById('dmInput').value;
+            const cta = document.getElementById('dmType').value;
+            
+            prompt = `Task: Write 3 BEST replies for DM.
+            Service Interest: ${service}.
+            Scenario: ${scenario}.
+            Client Message/Context: "${msg}".
+            CTA Strength: ${cta}.
+            Output: 3 distinct options (Professional, Friendly, Persuasive) in Burmese.`;
+        }
+        else if (type === 'timeline') {
+            const start = document.getElementById('tlStart').value;
+            const place = document.getElementById('tlPlace').value;
+            const dress = document.getElementById('tlDress').value;
+            const pace = document.getElementById('tlPace').value;
+            const sunset = document.getElementById('tlSunset').checked ? "Yes, include sunset shot." : "No specific sunset shot needed.";
+            
+            prompt = `Task: Create detailed Pre-wedding Timeline.
+            Start Time: ${start}.
+            Location: ${place}.
+            Outfits: ${dress}.
+            Pacing: ${pace}.
+            Sunset Requirement: ${sunset}.
+            Language: Burmese. Format: Clear List with times.`;
+        }
+        else if (type.includes('tt_')) {
+            const topic = document.getElementById('ttInput').value;
+            const style = document.getElementById('ttStyle').value;
+            prompt = `Task: Write TikTok ${type==='tt_caption'?'Caption':'Script'}. Topic: ${topic}. Style: ${style}.`;
+        }
+        else if (type === 'pose') {
+            const input = document.getElementById('poseInput').value;
+            const outfit = document.getElementById('poseOutfit').value;
+            const props = document.getElementById('poseProps').value;
+            
+            prompt = `Task: Suggest 3 poses for pre-wedding.
+            Couple's Context: ${input}.
+            Outfit Style: ${outfit}.
+            Props Available: ${props}.
+            Explain pose instructions in Burmese clearly.`;
+        }
+
+        // Final Prompt Payload
+        const finalPrompt = burmeseInstruction + "\n\n" + prompt;
+
+        // Call API
         try {
-            // INJECT BRAND BRAIN
-            const style = document.getElementById('brandStyle') ? document.getElementById('brandStyle').value : "";
-            const client = document.getElementById('brandClient') ? document.getElementById('brandClient').value : "";
-            const motto = document.getElementById('brandMotto') ? document.getElementById('brandMotto').value : "";
-            const fullPrompt = `\n[BRAND CONTEXT: Style=${style}, Audience=${client}, Motto=${motto}]\n${promptText}`;
-
             const res = await fetch("/api/generate", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ prompt: fullPrompt })
+                body: JSON.stringify({ prompt: finalPrompt })
             });
-
             const data = await res.json();
-            if (data.result) {
-                if(isAppend) {
-                    const loadingSpans = outputElement.querySelectorAll('.loading-indicator');
-                    loadingSpans.forEach(el => el.remove());
-                    outputElement.innerHTML += " " + data.result;
-                } else {
-                    outputElement.innerText = data.result;
-                }
-                return data.result; 
-            } else {
-                if(!isAppend) outputElement.innerText = "Error: No result returned.";
+            
+            if(document.getElementById(outId)) {
+                document.getElementById(outId).innerText = data.result || "Error generating.";
             }
-        } catch (e) {
+        } catch(e) {
             console.error(e);
-            if(!isAppend) outputElement.innerText = "Error connecting to AI service.";
+            if(document.getElementById(outId)) document.getElementById(outId).innerText = "Connection Error.";
         }
     }
 
-    // --- TIMELINE ---
-    async function generateTimeline() {
-        const start = document.getElementById('tlStart').value;
-        const place = document.getElementById('tlPlace').value;
-        const dress = document.getElementById('tlDress').value;
-        const output = document.getElementById('tlOutput');
+    // --- ASSISTANT SHORTCUTS ---
+    async function runAssistant(type) {
+        document.getElementById('fbResultArea').classList.remove('hidden');
+        document.getElementById('fbOutput').innerHTML = "<span class='animate-pulse text-yellow-400'>💡 Brainstorming...</span>";
         
-        document.getElementById('tlOutputArea').classList.remove('hidden');
-        output.innerHTML = "<span class='animate-pulse text-orange-400'>⏳ Calculating best schedule...</span>";
-
-        const prompt = `Role: Wedding Planner. Task: Create Pre-wedding Timeline. Inputs: Start=${start}, Loc=${place}, Outfits=${dress}. Language: Burmese. Format: List.`;
-        await callAI(prompt, output);
+        let prompt = "Generate 5 ideas in Burmese for a photo studio.";
+        if(type === 'fb_hooks') prompt = "Write 5 catchy hooks in Burmese for a photo studio post.";
+        
+        try {
+             const res = await fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt: prompt + " Use Native Burmese." }) });
+             const data = await res.json();
+             document.getElementById('fbOutput').innerText = data.result;
+        } catch(e) {}
     }
 
-    // --- POSE ---
-    function setPosePreset(type) {
-        let text = "";
-        if(type === 'Shy Couple') text = "သတို့သားနဲ့ သတို့သမီးက အရမ်းရှက်တတ်တယ်။ Camera ကို မကြည့်ရဲဘူး။ သဘာဝကျကျ ရယ်မောနေတဲ့ ပုံစံလိုချင်တယ်။";
-        if(type === 'Stiff Groom') text = "သတို့သားက Pose လုံးဝမပေးတတ်ဘူး။ ကျောက်ရုပ်လို ဖြစ်နေတယ်။ သူ့ကို သက်သောင့်သက်သာဖြစ်အောင် ဘယ်လိုလုပ်ရမလဲ။";
-        if(type === 'Plus Size Couple') text = "ဝတဲ့ အတွဲဖြစ်လို့ ပိန်တဲ့ထောင့် (Angle) နဲ့ ယုံကြည်မှုရှိတဲ့ ပုံစံမျိုး လိုချင်တယ်။";
-        document.getElementById('poseInput').value = text;
+    // --- UTILS ---
+    function setDmType(type) {
+        document.getElementById('dmType').value = type;
+        showToast("CTA set to " + type);
     }
     
-    async function generatePose() {
-      const mood = document.getElementById("mood").value;
-      const scene = document.getElementById("scene").value;
-      const input = document.getElementById("poseInput").value;
-      const outputWrapper = document.getElementById("poseOutputWrapper");
-      const output = document.getElementById("poseOutput");
-
-      outputWrapper.classList.remove("hidden");
-      output.innerHTML = "<span class='animate-pulse text-pink-400'>⏳ Generating pose ideas...</span>";
-
-      const prompt = `Role: Photographer. Task: 3 pose ideas in Burmese. Scene: ${scene}, Mood: ${mood}, Context: ${input}.`;
-      await callAI(prompt, output);
+    function fillPose(txt) {
+        const map = {
+            'Shy Couple': "သတို့သားနဲ့ သတို့သမီးက အရမ်းရှက်တတ်တယ်။",
+            'Plus Size': "ဝတဲ့ အတွဲဖြစ်လို့ ပိန်တဲ့ထောင့် (Angle) လိုချင်တယ်။"
+        };
+        document.getElementById('poseInput').value = map[txt] || txt;
     }
 
-    // --- FB POST ---
-    async function generateFbPostAI() {
-        const topic = document.getElementById('fbInput').value;
-        const tone = document.getElementById('fbTone').value;
-        const length = document.getElementById('fbLength').value; 
-        const output = document.getElementById('fbAiResult');
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.innerText = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    function copyText(id) {
+        const txt = document.getElementById(id).innerText;
+        navigator.clipboard.writeText(txt);
+        showToast("Copied to Clipboard!");
+    }
+
+    function downloadFile(filename, id) {
+        const txt = document.getElementById(id).innerText;
+        const blob = new Blob([txt], { type: 'text/plain' });
+        const a = document.createElement('a');
+        a.href = window.URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+    }
+
+    // --- HISTORY SYSTEM ---
+    function saveResult(type, outputId) {
+        const content = document.getElementById(outputId).innerText;
+        if(!content) return;
         
-        document.getElementById('fbOutputArea').classList.remove('hidden');
-        document.getElementById('fbContinueBtn').classList.add('hidden'); 
-
-        output.innerHTML = "<span class='animate-pulse text-blue-400'>⏳ AI is writing (Male voice)...</span>";
-
-        let lengthInstruction = "";
-        if (length === "Short") lengthInstruction = "Keep it short, punchy, under 100 words. Good for quick captions.";
-        if (length === "Medium") lengthInstruction = "Write a standard length Facebook post.";
-        if (length === "Long") lengthInstruction = "Write a Long-Form Storytelling post. Go deep into details. Do NOT cut off. You MUST finish with [CTA] and [HASHTAGS].";
-
-        const prompt = `Role: Copywriter. Topic: ${topic}, Tone: ${tone}, Length: ${length}. Instruction: ${lengthInstruction}. TASK: Write Facebook post in Burmese. RULES: Use "Bya". Structure: Hook -> Body -> Value -> CTA -> Hashtags.`;
+        const item = {
+            id: Date.now(),
+            type: type,
+            content: content,
+            date: new Date().toLocaleDateString()
+        };
         
-        await callAI(prompt, output);
+        const history = JSON.parse(localStorage.getItem('studioHistory') || '[]');
+        history.unshift(item);
         
-        sessionStorage.setItem('lastFbResult', output.innerText);
-        document.getElementById('fbContinueBtn').classList.remove('hidden');
-    }
-
-    async function fbAssistIdeas() {
-        const topic = document.getElementById('fbInput').value || "Photography";
-        const output = document.getElementById('fbAiResult');
-        document.getElementById('fbOutputArea').classList.remove('hidden');
-        output.innerHTML = "<span class='animate-pulse text-blue-400'>💡 Brainstorming Ideas...</span>";
-        const prompt = `Role: Creative Director. Task: 5 Creative Facebook Post Ideas for: "${topic}". Language: Burmese (Male voice). Format: Bullet points.`;
-        await callAI(prompt, output);
-    }
-
-    async function fbAssistHooks() {
-        const topic = document.getElementById('fbInput').value || "Photography";
-        const output = document.getElementById('fbAiResult');
-        document.getElementById('fbOutputArea').classList.remove('hidden');
-        output.innerHTML = "<span class='animate-pulse text-blue-400'>🎣 Writing Hooks...</span>";
-        const prompt = `Role: Copywriter. Task: 5 Catchy Hooks for: "${topic}". Language: Burmese (Male voice).`;
-        await callAI(prompt, output);
-    }
-
-    async function continueFbPost() {
-        const output = document.getElementById('fbAiResult');
-        const currentText = output.innerText;
-        output.innerHTML += "<br><br><span class='loading-indicator animate-pulse text-blue-400'>... ဆက်ရေးနေသည် ...</span>";
-        const prompt = `Role: Copywriter. Context: Burmese FB post stopped at: "...${currentText.slice(-300)}". TASK: CONTINUE writing. Finish CTA + Hashtags.`;
-        await callAI(prompt, output, true);
-    }
-
-    // --- TIKTOK ---
-    async function generateTTCaption() {
-        const topic = document.getElementById('ttInput').value;
-        const style = document.getElementById('ttStyle').value;
-        const output = document.getElementById('ttAiResult');
-        document.getElementById('ttOutputArea').classList.remove('hidden');
-        output.innerHTML = "<span class='animate-pulse text-indigo-400'>⏳ Creating TikTok Caption...</span>";
-        const prompt = `Role: Social Media Manager. Task: Write TikTok Caption in Burmese (Male voice). Topic: ${topic}, Style: ${style}.`;
-        await callAI(prompt, output);
-    }
-
-    async function generateTTAI() {
-        const topic = document.getElementById('ttInput').value;
-        const style = document.getElementById('ttStyle').value;
-        const output = document.getElementById('ttAiResult');
-        document.getElementById('ttOutputArea').classList.remove('hidden');
-        document.getElementById('ttContinueBtn').classList.add('hidden');
-        output.innerHTML = "<span class='animate-pulse text-teal-400'>⏳ Writing TikTok Script...</span>";
-        const prompt = `Role: TikTok Creator. Task: Write script for "${topic}" in Burmese (Male voice). Structure: Scene, Audio.`;
-        await callAI(prompt, output);
-        document.getElementById('ttContinueBtn').classList.remove('hidden');
-    }
-    
-    async function ttAssistIdeas() {
-        const topic = document.getElementById('ttInput').value || "Photography";
-        const output = document.getElementById('ttAiResult');
-        document.getElementById('ttOutputArea').classList.remove('hidden');
-        output.innerHTML = "<span class='animate-pulse text-teal-400'>💡 Brainstorming...</span>";
-        const prompt = `Role: TikTok Strategist. Task: 5 Viral Video Ideas for: "${topic}". Language: Burmese.`;
-        await callAI(prompt, output);
-    }
-
-    async function ttAssistHooks() {
-        const topic = document.getElementById('ttInput').value || "Photography";
-        const output = document.getElementById('ttAiResult');
-        document.getElementById('ttOutputArea').classList.remove('hidden');
-        output.innerHTML = "<span class='animate-pulse text-teal-400'>⚡ Creating Hooks...</span>";
-        const prompt = `Role: TikTok Strategist. Task: 5 Visual Hooks for: "${topic}". Language: Burmese.`;
-        await callAI(prompt, output);
-    }
-
-    async function continueTikTok() {
-        const output = document.getElementById('ttAiResult');
-        const currentText = output.innerText;
-        output.innerHTML += "<br><br><span class='loading-indicator animate-pulse text-teal-400'>... ဆက်ရေးနေသည် ...</span>";
-        const prompt = `Role: Scriptwriter. Instruction: Continue Burmese script from: "...${currentText.slice(-100)}".`;
-        await callAI(prompt, output, true);
-    }
-
-    // --- DM HELPER (SUPER CHARGED) ---
-    function setCTA(strength) {
-        document.getElementById('dmCTA').value = strength;
-        showToast("CTA set to: " + strength);
-    }
-
-    async function generateDmBestReplies() {
-        const scenario = document.getElementById('dmScenario').value;
-        const input = document.getElementById('dmInput').value || "General Inquiry";
-        const ctaStrength = document.getElementById('dmCTA').value;
-        const output = document.getElementById('dmOutput');
+        if(history.length > 20) history.pop();
         
-        document.getElementById('dmOutputArea').classList.remove('hidden');
-        output.innerHTML = "<span class='animate-pulse text-purple-400'>⏳ Generating 3 Best Options...</span>";
-
-        const prompt = `
-          Role: Senior Sales Manager.
-          Task: Write 3 Distinct DM Replies in Burmese (Male 'Bya').
-          Context: Client said: "${input}". Scenario: ${scenario}.
-          CTA Level: ${ctaStrength} (Soft=Ask Q, Medium=Invite, Strong=Book Now).
-          
-          Output Format:
-          Option 1: [Professional & Detailed]
-          Option 2: [Friendly & Warm]
-          Option 3: [Short & Urgent/Persuasive]
-        `;
-        await callAI(prompt, output);
+        localStorage.setItem('studioHistory', JSON.stringify(history));
+        showToast("Saved to History");
     }
+
+    function loadHistoryData() {
+        // Basic load
+    }
+
+    function renderHistoryList() {
+        const list = JSON.parse(localStorage.getItem('studioHistory') || '[]');
+        const container = document.getElementById('historyListContainer');
+        
+        if(list.length === 0) {
+            container.innerHTML = "<div class='text-center text-slate-500 py-10'>No history yet.</div>";
+            return;
+        }
+
+        container.innerHTML = list.map(item => `
+            <div class="glass-panel p-4 rounded-lg border-l-4 border-blue-500">
+                <div class="flex justify-between text-xs text-slate-400 mb-2">
+                    <span class="font-bold text-white bg-slate-700 px-2 py-0.5 rounded">${item.type}</span>
+                    <span>${item.date}</span>
+                </div>
+                <div class="text-sm text-slate-300 line-clamp-3">${item.content}</div>
+                <div class="mt-2 text-right">
+                    <button onclick="navigator.clipboard.writeText(\`${item.content.replace(/`/g, '')}\`);showToast('Copied')" class="text-blue-400 text-xs hover:underline">Copy</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function clearHistory() {
+        if(confirm("Clear all?")) {
+            localStorage.removeItem('studioHistory');
+            renderHistoryList();
+        }
+    }
+
   </script>
 </body>
 </html>
