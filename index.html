@@ -331,6 +331,57 @@
                 </div>
             </div>
         </div>
+
+        <!-- 5. CLIENT CHAT ASSISTANT TAB -->
+        <div id="tab-chat" class="tab-content hidden space-y-6">
+
+            <div class="glass-card p-5 rounded-3xl">
+              <div class="flex items-center gap-4">
+                <div class="p-3 bg-gradient-to-br from-amber-500/20 to-transparent rounded-2xl border border-amber-500/20 text-amber-400">
+                  <i data-lucide="messages-square" class="w-6 h-6"></i>
+                </div>
+                <div>
+                  <h2 class="font-bold text-lg text-white">Client Chat Assistant</h2>
+                  <p class="text-xs text-zinc-400">DM reply generator (Pre-Wedding focused)</p>
+                </div>
+              </div>
+            </div>
+          
+            <div class="space-y-4">
+              <div class="space-y-1.5">
+                <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider ml-1">
+                  Client Message
+                </label>
+                <textarea
+                  id="chat-input"
+                  rows="3"
+                  placeholder="ဥပမာ - ၂လပိုင်း ၁၅ရက်ဆို ဒီကြားထဲရိုက်ရင် မီသေးလား?"
+                  class="w-full input-field text-sm rounded-2xl px-4 py-3.5 text-zinc-200 focus:outline-none placeholder:text-zinc-600 resize-none"></textarea>
+              </div>
+          
+              <button
+                onclick="generateChatReply()"
+                class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-4 rounded-2xl shadow-lg shadow-amber-600/20 transition flex justify-center items-center gap-2">
+                <i data-lucide="sparkles" class="w-5 h-5"></i>
+                <span>Generate Best Reply</span>
+              </button>
+            </div>
+          
+            <div id="result-chat" class="hidden space-y-2">
+              <div class="flex justify-between items-end px-1">
+                <span class="text-[10px] font-bold text-amber-400 uppercase tracking-widest">
+                  Reply to Send
+                </span>
+                <button onclick="copyToClipboard('output-chat')" class="text-zinc-500 hover:text-white">
+                  <i data-lucide="copy" class="w-4 h-4"></i>
+                </button>
+              </div>
+          
+              <div class="glass-card rounded-3xl p-6 border-amber-500/20">
+                <div id="output-chat" class="prose prose-sm break-words leading-relaxed"></div>
+              </div>
+            </div>
+        </div>
         
         <!-- Loading Overlay -->
         <div id="loading-overlay" class="absolute inset-0 bg-neutral-950/90 backdrop-blur-sm z-50 hidden flex flex-col items-center justify-center">
@@ -371,6 +422,13 @@
                 </div>
                 <span class="text-[10px] font-medium opacity-60">Reply</span>
             </button>
+            <button onclick="switchTab('chat')" id="nav-chat"
+                class="nav-btn group flex flex-col items-center justify-center w-full h-full text-zinc-500 hover:text-amber-400 transition-all duration-300">
+                <div class="mb-1 p-1.5 rounded-xl group-hover:bg-white/5">
+                <i data-lucide="messages-square" class="w-6 h-6"></i>
+                </div>
+                <span class="text-[10px] font-medium opacity-60">Chat</span>
+            </button>
         </div>
     </nav>
 
@@ -394,7 +452,7 @@
             
             // Nav State
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('text-pink-500', 'text-blue-500', 'text-fuchsia-500', 'text-emerald-500', 'text-zinc-500');
+                btn.classList.remove('text-pink-500', 'text-blue-500', 'text-fuchsia-500', 'text-emerald-500', 'text-amber-500', 'text-zinc-500');
                 btn.querySelector('span').classList.add('opacity-60');
                 btn.querySelector('span').classList.remove('opacity-100');
             });
@@ -410,6 +468,7 @@
             if(tabId === 'facebook') activeBtn.classList.add('text-blue-500');
             if(tabId === 'tiktok') activeBtn.classList.add('text-fuchsia-500');
             if(tabId === 'dm') activeBtn.classList.add('text-emerald-500');
+            if(tabId === 'chat') activeBtn.classList.add('text-amber-500');
             
             activeBtn.querySelector('span').classList.remove('opacity-60');
             activeBtn.querySelector('span').classList.add('opacity-100');
@@ -535,6 +594,70 @@
                 alert("စနစ်ချို့ယွင်းနေပါသည်။ ကျေးဇူးပြု၍ ခဏအကြာမှ ပြန်စမ်းကြည့်ပေးပါ။");
             } finally {
                 loading.classList.add('hidden');
+            }
+        }
+
+        async function generateChatReply() {
+            const input = document.getElementById("chat-input").value.trim();
+            const outputArea = document.getElementById("result-chat");
+            const outputText = document.getElementById("output-chat");
+            const loading = document.getElementById("loading-overlay");
+
+            if (!input) {
+                alert("ဧည့်သည်မေးခွန်းကို ထည့်ပေးပါ။");
+                return;
+            }
+
+            outputArea.classList.add("hidden");
+            outputText.innerHTML = "";
+            loading.classList.remove("hidden");
+
+            const prompt = `
+            You are a professional client communication manager
+            for "With You Photo Studio, Taunggyi".
+
+            The client sent this message:
+            "${input}"
+
+            TASK:
+            Write the BEST possible reply in Burmese.
+
+            RULES:
+            - Sound calm, trustworthy, and professional
+            - Do NOT mention price unless the client asks
+            - Focus on reassurance, planning, and guidance
+            - Invite the client to continue the conversation
+            - End with a gentle question
+            - Do NOT explain anything, ONLY the reply text
+
+            STYLE:
+            Warm, confident, and respectful.
+
+            START NOW.
+            `;
+
+            try {
+                const res = await fetch("/api/generate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ prompt })
+                });
+
+                const data = await res.json();
+                const text = data.result || "";
+
+                if (!text) {
+                outputText.innerHTML =
+                    "<p class='text-amber-400'>Reply မထွက်လာပါ။ ထပ်စမ်းကြည့်ပါ။</p>";
+                } else {
+                outputText.innerHTML = marked.parse(text);
+                }
+
+                outputArea.classList.remove("hidden");
+            } catch (e) {
+                alert("Server error ဖြစ်နေပါတယ်။ ခဏအကြာမှ ပြန်စမ်းပါ။");
+            } finally {
+                loading.classList.add("hidden");
             }
         }
 
