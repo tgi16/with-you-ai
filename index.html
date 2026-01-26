@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Sales Master AI v3.1</title>
+  <title>With You Studio - Sales Master AI v3.2</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -130,7 +130,7 @@
 
     <!-- Footer -->
     <div class="p-4 border-t border-slate-800 text-xs text-slate-600 text-center">
-        <span class="inline-block px-2 py-1 rounded bg-slate-800 border border-slate-700 text-purple-400 font-mono">v3.1 (Fixed)</span>
+        <span class="inline-block px-2 py-1 rounded bg-slate-800 border border-slate-700 text-purple-400 font-mono">v3.2 (Full Fix)</span>
     </div>
   </aside>
 
@@ -188,7 +188,7 @@
     <div class="animate-fade-in space-y-6">
         <div class="flex items-center justify-between">
             <h2 class="text-xl md:text-2xl font-bold text-purple-400 flex items-center gap-2"><i class="ph ph-chat-circle-text"></i> DM Sales Master</h2>
-            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">v3.0</div>
+            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">v3.2</div>
         </div>
         
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -252,7 +252,7 @@
                     </div>
 
                     <button onclick="generateAI('dm_best')" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-purple-900/40 transition active:scale-95 flex items-center justify-center gap-2">
-                        <i class="ph ph-magic-wand text-lg"></i> Generate Sales Replies
+                        <i class="ph ph-magic-wand text-lg"></i> Generate 3 Replies
                     </button>
                 </div>
             </div>
@@ -271,6 +271,12 @@
                     </div>
                     
                     <div id="dmOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 overflow-y-auto max-h-[600px] z-10 pr-2 custom-scroll"></div>
+                    
+                    <!-- DM CONTINUE BUTTON -->
+                    <button id="dmContinueBtn" onclick="continueAI('dm_best')" class="hidden w-full mt-3 py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-purple-300 text-sm font-bold flex items-center justify-center gap-2 transition active:scale-95">
+                        <span>⚠️ Continue Writing (စာဆက်ရေးပါ)</span>
+                        <i class="ph ph-arrow-right"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -329,7 +335,7 @@
     </div>
   </template>
 
-  <!-- 3. FACEBOOK POST TEMPLATE (With CONTINUE Button) -->
+  <!-- 3. FACEBOOK POST TEMPLATE -->
   <template id="tpl-fbpost">
     <div class="animate-fade-in space-y-6">
         <div class="flex items-center justify-between">
@@ -369,7 +375,7 @@
                         </div>
                     </div>
                     <button onclick="generateAI('fbpost')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-blue-600/30 transition flex justify-center items-center gap-2 active:scale-95">
-                        <i class="ph ph-pen-nib"></i> Write Post
+                        <i class="ph ph-pen-nib"></i> Write Post (3 Options)
                     </button>
                 </div>
 
@@ -378,17 +384,15 @@
                         <div id="fbOutput" class="whitespace-pre-wrap leading-relaxed text-sm text-slate-200"></div>
                     </div>
                     
-                    <!-- Continue Button & Save -->
-                    <div class="flex flex-col gap-2">
-                        <button id="fbContinueBtn" onclick="continueFbPost()" class="hidden w-full py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-blue-300 text-sm font-bold flex items-center justify-center gap-2 transition active:scale-95">
-                            <span>⚠️ Continue Writing (စာဆက်ရေးပါ)</span>
-                            <i class="ph ph-arrow-right"></i>
-                        </button>
-                        
-                        <div class="flex gap-2">
-                            <button onclick="saveResult('Facebook', 'fbOutput')" class="flex-1 bg-slate-800 hover:bg-slate-700 py-3 rounded-lg text-xs font-bold border border-slate-700">💾 Save</button>
-                            <button onclick="copyText('fbOutput')" class="flex-1 bg-slate-800 hover:bg-slate-700 py-3 rounded-lg text-xs font-bold border border-slate-700">📋 Copy</button>
-                        </div>
+                    <!-- FB CONTINUE BUTTON -->
+                    <button id="fbContinueBtn" onclick="continueAI('fbpost')" class="hidden w-full py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-blue-300 text-sm font-bold flex items-center justify-center gap-2 transition active:scale-95">
+                        <span>⚠️ Continue Writing (စာဆက်ရေးပါ)</span>
+                        <i class="ph ph-arrow-right"></i>
+                    </button>
+
+                    <div class="flex gap-2">
+                        <button onclick="saveResult('Facebook', 'fbOutput')" class="flex-1 bg-slate-800 hover:bg-slate-700 py-3 rounded-lg text-xs font-bold border border-slate-700">💾 Save</button>
+                        <button onclick="copyText('fbOutput')" class="flex-1 bg-slate-800 hover:bg-slate-700 py-3 rounded-lg text-xs font-bold border border-slate-700">📋 Copy</button>
                     </div>
                 </div>
             </div>
@@ -517,7 +521,7 @@
 
     // --- HTML GENERATORS ---
     function getTikTokHTML() {
-        return `<div class="animate-fade-in space-y-6"><h2 class="text-xl md:text-2xl font-bold text-teal-400 flex items-center gap-2"><i class="ph ph-tiktok-logo"></i> TikTok Script</h2><div class="glass-panel p-4 md:p-5 rounded-xl space-y-4"><div class="flex gap-2"><input type="text" id="ttInput" placeholder="Video Topic..." class="flex-1 bg-slate-800 border border-slate-700 rounded p-3 text-white"><button onclick="startVoiceInput('ttInput', this)" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded px-4 text-teal-400"><i class="ph ph-microphone text-xl"></i></button></div><select id="ttStyle" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white"><option>Trending & Fast</option><option>Vlog / Behind Scenes</option><option>Cinematic Mood</option></select><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><button onclick="generateAI('tt_caption')" class="bg-slate-700 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Get 3 Captions</button><button onclick="generateAI('tt_script')" class="bg-teal-600 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Write 3 Scripts</button></div></div><div id="ttResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl"><div id="ttOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div><button onclick="saveResult('TikTok', 'ttOutput')" class="mt-4 bg-slate-800 text-xs py-2 px-4 rounded border border-slate-700">💾 Save</button></div></div>`;
+        return `<div class="animate-fade-in space-y-6"><h2 class="text-xl md:text-2xl font-bold text-teal-400 flex items-center gap-2"><i class="ph ph-tiktok-logo"></i> TikTok Script</h2><div class="glass-panel p-4 md:p-5 rounded-xl space-y-4"><div class="flex gap-2"><input type="text" id="ttInput" placeholder="Video Topic..." class="flex-1 bg-slate-800 border border-slate-700 rounded p-3 text-white"><button onclick="startVoiceInput('ttInput', this)" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded px-4 text-teal-400"><i class="ph ph-microphone text-xl"></i></button></div><select id="ttStyle" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white"><option>Trending & Fast</option><option>Vlog / Behind Scenes</option><option>Cinematic Mood</option></select><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><button onclick="generateAI('tt_caption')" class="bg-slate-700 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Get 3 Captions</button><button onclick="generateAI('tt_script')" class="bg-teal-600 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Write 3 Scripts</button></div></div><div id="ttResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl"><div id="ttOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div><button id="ttContinueBtn" onclick="continueAI('tt_script')" class="hidden w-full mt-2 py-2 bg-slate-800 text-teal-400 text-xs border border-slate-600 rounded">⚠️ Continue Writing</button><button onclick="saveResult('TikTok', 'ttOutput')" class="mt-4 bg-slate-800 text-xs py-2 px-4 rounded border border-slate-700">💾 Save</button></div></div>`;
     }
     function getPoseHTML() {
         return `<div class="animate-fade-in space-y-6"><h2 class="text-xl md:text-2xl font-bold text-pink-400 flex items-center gap-2"><i class="ph ph-camera"></i> Pose Helper</h2><div class="glass-panel p-4 md:p-5 rounded-xl space-y-4"><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><div><label class="text-xs font-bold text-slate-400 uppercase">Outfit</label><select id="poseOutfit" class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm"><option>Wedding Gown/Suit</option><option>Traditional</option><option>Casual</option></select></div><div><label class="text-xs font-bold text-slate-400 uppercase">Props</label><input type="text" id="poseProps" placeholder="Flowers..." class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm"></div></div><div class="flex gap-2 mb-2"><button onclick="fillPose('Shy')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">😳 Shy</button><button onclick="fillPose('Plus')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">❤️ Plus</button></div><div class="relative"><textarea id="poseInput" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white h-24 pr-10" placeholder="Situation..."></textarea><button onclick="startVoiceInput('poseInput', this)" class="absolute right-2 bottom-2 bg-slate-700/80 hover:bg-pink-600 p-2 rounded-full transition text-slate-300 hover:text-white"><i class="ph ph-microphone text-lg"></i></button></div><button onclick="generateAI('pose')" class="w-full bg-pink-600 py-3 rounded text-white font-bold active:scale-95 transition">Generate Poses</button></div><div id="poseResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl"><div id="poseOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div></div></div>`;
@@ -552,6 +556,7 @@
     async function generateAI(type, isContinue = false) {
         const outputIds = { 'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'timeline': 'tlOutput', 'tt_caption': 'ttOutput', 'tt_script': 'ttOutput', 'pose': 'poseOutput' };
         const areaIds = { 'fbpost': 'fbResultArea', 'dm_best': 'dmResultArea', 'timeline': 'tlResultArea', 'tt_caption': 'ttResultArea', 'tt_script': 'ttResultArea', 'pose': 'poseResultArea' };
+        const continueBtnIds = { 'fbpost': 'fbContinueBtn', 'dm_best': 'dmContinueBtn', 'tt_caption': 'ttContinueBtn', 'tt_script': 'ttContinueBtn' };
 
         const outId = outputIds[type];
         const areaId = areaIds[type];
@@ -589,25 +594,38 @@
             const scenario = document.getElementById('dmScenario').value;
             const msg = document.getElementById('dmInput').value;
             const strategy = document.getElementById('dmType').value;
-            taskPrompt = `TASK: Write 3 SALES REPLIES. Context: ${service}. Status: ${scenario}. Client: "${msg}". Strategy: ${strategy}.`;
+            
+            if(isContinue) {
+                const prev = document.getElementById(outId).innerText;
+                taskPrompt = `CONTEXT: You were writing 3 DM replies. It stopped at: "...${prev.slice(-100)}". TASK: CONTINUE exactly from there. Finish the 3 options.`;
+            } else {
+                taskPrompt = `TASK: Write 3 DISTINCT SALES REPLIES. 
+                Context: ${service}. Status: ${scenario}. Client: "${msg}". Strategy: ${strategy}.
+                OUTPUT: 
+                1. [Warm Reply]
+                2. [Direct/Value Reply]
+                3. [Short/Urgent Reply]
+                MUST include Contact Info in CTA.`;
+            }
         } 
         else if (type === 'fbpost') {
             const topic = document.getElementById('fbInput').value;
             const tone = document.getElementById('fbTone').value;
             const len = document.getElementById('fbLength').value;
             
-            // Handle Continue
             if(isContinue) {
                 const prevText = document.getElementById('fbOutput').innerText;
                 const lastChunk = prevText.slice(-300);
                 taskPrompt = `CONTEXT: You are writing a FB post. It stopped at: "...${lastChunk}". 
-                TASK: CONTINUE writing from there. Finish the body, add a strong CTA using ${contactInfo}, and add Hashtags. Do NOT repeat the start.`;
+                TASK: CONTINUE writing from there. Finish the body, add a strong CTA using ${contactInfo}, and add Hashtags.`;
             } else {
-                // Initial generation logic for "3 Options" vs "Long Post"
                 if(len === "Long") {
                     taskPrompt = `TASK: Write ONE detailed, long-form storytelling Facebook Post about "${topic}". Tone: ${tone}. Go deep into emotion. Don't cut off.`;
                 } else {
-                    taskPrompt = `TASK: Write 3 Facebook Post Variations about "${topic}". Tone: ${tone}. Length: ${len}. Include CTA with ${contactInfo}.`;
+                    taskPrompt = `TASK: Write 3 DISTINCT Facebook Post Variations about "${topic}". 
+                    Tone: ${tone}. Length: ${len}. 
+                    FORMAT: Option 1, Option 2, Option 3.
+                    Include CTA with ${contactInfo}.`;
                 }
             }
         }
@@ -623,7 +641,12 @@
             const topic = document.getElementById('ttInput').value;
             const style = document.getElementById('ttStyle').value;
             const sub = type==='tt_caption'?'Caption':'Script';
-            taskPrompt = `TASK: Write 3 TikTok ${sub} options for "${topic}". Style: ${style}. Keep it viral & trendy.`;
+            if(isContinue) {
+                const prev = document.getElementById(outId).innerText;
+                taskPrompt = `CONTEXT: Writing TikTok content. Stopped at: "...${prev.slice(-100)}". TASK: Continue finishing the 3 options.`;
+            } else {
+                taskPrompt = `TASK: Write 3 TikTok ${sub} options for "${topic}". Style: ${style}. Keep it viral & trendy. Format: Option 1, 2, 3.`;
+            }
         }
         else if (type === 'pose') {
             const input = document.getElementById('poseInput').value;
@@ -644,17 +667,16 @@
             
             if(document.getElementById(outId)) {
                 if(isContinue) {
-                    // Remove loading text if appended
-                    const current = document.getElementById(outId).innerHTML;
-                    // Simply append the new text
+                    // Append new text
                     document.getElementById(outId).innerText += "\n" + data.result;
                 } else {
                     document.getElementById(outId).innerText = data.result || "Error generating.";
                 }
                 
-                // Show Continue Button for FB Post only if results exist
-                if(type === 'fbpost') {
-                    document.getElementById('fbContinueBtn').classList.remove('hidden');
+                // Show Continue Button for relevant types
+                if(continueBtnIds[type]) {
+                    const btn = document.getElementById(continueBtnIds[type]);
+                    if(btn) btn.classList.remove('hidden');
                 }
             }
         } catch(e) {
@@ -663,12 +685,12 @@
         }
     }
 
-    // --- CONTINUE FUNCTION ---
-    function continueFbPost() {
-        const out = document.getElementById('fbOutput');
-        // Add visual indicator
-        out.innerHTML += "<br><br><span class='text-blue-400 text-xs animate-pulse'>... Continuing ...</span>";
-        generateAI('fbpost', true);
+    // --- CONTINUE FUNCTION (UNIFIED) ---
+    function continueAI(type) {
+        const outputIds = { 'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'tt_script': 'ttOutput', 'tt_caption': 'ttOutput' };
+        const out = document.getElementById(outputIds[type]);
+        if(out) out.innerHTML += "<br><br><span class='text-blue-400 text-xs animate-pulse'>... Continuing ...</span>";
+        generateAI(type, true);
     }
 
     // --- VOICE INPUT ---
