@@ -227,25 +227,91 @@
     </section>
 
 
-    <!-- 4. DM HELPER TAB -->
-    <section id="dm" class="space-y-4 hidden animate-fade-in">
+    <!-- 4. DM HELPER TAB (UPGRADED) -->
+    <section id="dm" class="space-y-6 hidden animate-fade-in">
+      
+      <!-- Main Input Area -->
       <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 shadow-sm">
         <h2 class="text-lg font-bold text-purple-400 flex items-center gap-2 mb-4">
-          <span>💬</span> Client DM Helper
+          <span>💬</span> Client DM Sales Master
         </h2>
-        <p class="text-xs text-slate-400 mb-3">Client ကို စကားပြန်ဖို့ အခက်အခဲရှိနေရင် သုံးပါ</p>
-        
-        <textarea
-            id="dmInput"
-            placeholder="Client ဘာပြောလဲ? (ဥပမာ - ဈေးကြီးတယ် ပြောပြီး seen မပြတော့ဘူး)"
-            class="w-full p-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-purple-500 outline-none h-24 text-sm resize-none"
-          ></textarea>
 
-        <button onclick="generateDmReply()" class="w-full mt-4 bg-purple-600 hover:bg-purple-500 text-white py-3 rounded-xl font-bold transition-all shadow-lg shadow-purple-900/30">
-          💌 Generate Reply
-        </button>
+        <div class="space-y-4">
+            <!-- Scenario Selector -->
+            <div>
+                <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Client Situation (အခြေအနေ)</label>
+                <select id="dmScenario" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-purple-500 outline-none text-sm text-slate-200">
+                    <option value="General Inquiry">❓ General Inquiry (စုံစမ်းမေးမြန်း)</option>
+                    <option value="Price Objection">💸 Price Objection (ဈေးကြီးတယ်ပြော)</option>
+                    <option value="Ghosting">👻 Ghosting (Seen ပြပြီးပျောက်)</option>
+                    <option value="Closing">🤝 Closing the Sale (Booking တင်ဖို့စကားစ)</option>
+                    <option value="Availability">📅 Date Availability (ရက်အားမေး)</option>
+                    <option value="Complaint">⚠️ Complaint Handling (စိတ်မတိုင်းကျဖြစ်)</option>
+                </select>
+            </div>
+
+            <!-- Client Message -->
+            <div>
+                 <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Client's Message (Optional)</label>
+                <textarea
+                    id="dmInput"
+                    placeholder="Client ပို့လိုက်တဲ့ စာ (သို့) အခြေအနေအကျဉ်းချုပ်..."
+                    class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-purple-500 outline-none h-24 text-sm resize-none"
+                ></textarea>
+            </div>
+
+            <!-- Tone Selector -->
+            <div>
+                 <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Response Tone</label>
+                <select id="dmTone" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-purple-500 outline-none text-sm text-slate-200">
+                    <option value="Professional & Polite">👔 Professional & Polite (ရိုသေလေးစားစွာ)</option>
+                    <option value="Warm & Friendly">😊 Warm & Friendly (ရင်းနှီးဖော်ရွေစွာ)</option>
+                    <option value="Persuasive & Confident">🔥 Persuasive (ဆွဲဆောင်မှုရှိရှိ)</option>
+                    <option value="Apologetic & Solution-oriented">🙏 Apologetic (တောင်းပန်/ဖြေရှင်း)</option>
+                </select>
+            </div>
+
+            <button onclick="generateDmReply()" class="w-full bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white py-3 rounded-xl font-bold shadow-lg shadow-purple-900/30 transition-all transform active:scale-95 flex justify-center items-center gap-2">
+                <span>⚡</span> Generate Reply
+            </button>
+        </div>
       </div>
-      <div id="dmOutput" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 text-sm whitespace-pre-wrap leading-relaxed hidden animate-fade-in text-slate-200"></div>
+
+      <!-- Quick Strategies (Creative Assistant) -->
+      <div class="bg-slate-900/30 p-5 rounded-2xl border border-purple-500/20">
+        <h3 class="text-sm font-bold text-purple-300 mb-3 uppercase tracking-wider flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" /></svg>
+          ✨ Quick Strategies (နည်းလမ်းကောင်းများ)
+        </h3>
+        <p class="text-xs text-slate-500 mb-4">အရောင်းပိတ်ဖို့အတွက် အထောက်အကူပြု နည်းဗျူဟာများ</p>
+        
+        <div class="grid grid-cols-2 gap-3">
+          <button onclick="dmAssistFollowUp()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1">
+            <span class="text-xl">📅</span>
+            <span>Smart Follow-up</span>
+          </button>
+          <button onclick="dmAssistDiscount()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1">
+            <span class="text-xl">🎁</span>
+            <span>Discount Offer</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Result Area -->
+      <div id="dmOutputArea" class="hidden space-y-4 animate-fade-in">
+        <div class="flex flex-col gap-2">
+            <div class="flex justify-between items-end px-1">
+                <span class="text-xs font-bold text-slate-400 uppercase">Suggested Reply</span>
+                <button onclick="copyText('dmOutput')" class="text-xs text-purple-400 hover:text-purple-300">Copy Text</button>
+            </div>
+            <div id="dmOutput" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 whitespace-pre-wrap leading-relaxed text-slate-200 shadow-inner"></div>
+             <!-- Continue Button -->
+            <button id="dmContinueBtn" onclick="continueDmReply()" class="hidden w-full py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl text-purple-300 text-sm font-bold flex items-center justify-center gap-2 transition-colors">
+                <span>⚠️ မပြီးသေးရင် နှိပ်ပါ (Continue)</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+        </div>
+      </div>
     </section>
 
   </main>
@@ -448,15 +514,52 @@
     }
 
 
-    // --- 4. DM ---
+    // --- 4. DM HELPER (UPGRADED) ---
     async function generateDmReply() {
-        const input = document.getElementById('dmInput').value;
+        const scenario = document.getElementById('dmScenario').value;
+        const input = document.getElementById('dmInput').value || "No specific text";
+        const tone = document.getElementById('dmTone').value;
         const output = document.getElementById('dmOutput');
         
-        output.classList.remove("hidden");
-        output.innerHTML = "<span class='animate-pulse text-purple-400'>⏳ Drafting reply...</span>";
-        const prompt = `Role: Manager. Task: Reply to client: "${input}" in Burmese (Male voice). Tone: Polite & Sales-oriented.`;
+        document.getElementById('dmOutputArea').classList.remove('hidden');
+        document.getElementById('dmContinueBtn').classList.add('hidden');
+        output.innerHTML = "<span class='animate-pulse text-purple-400'>⏳ Analyzing & Drafting Reply...</span>";
+
+        const prompt = `
+          Role: Senior Sales Manager for With You Photo Studio (Taunggyi).
+          Task: Write a reply to a client in Burmese (Male voice 'Bya').
+          Context: Scenario='${scenario}', Client Msg='${input}', Tone='${tone}'.
+          Strategy: Be professional, handle objections if any, and try to move towards a booking.
+        `;
         await callAI(prompt, output);
+        document.getElementById('dmContinueBtn').classList.remove('hidden');
+    }
+
+    async function dmAssistFollowUp() {
+        const output = document.getElementById('dmOutput');
+        document.getElementById('dmOutputArea').classList.remove('hidden');
+        document.getElementById('dmContinueBtn').classList.add('hidden');
+        output.innerHTML = "<span class='animate-pulse text-purple-400'>⏳ Generating Follow-up Templates...</span>";
+        
+        const prompt = `Role: Sales Expert. Task: Write 3 follow-up messages (Casual, Value, Urgency) in Burmese (Male voice) for a photography client.`;
+        await callAI(prompt, output);
+    }
+
+    async function dmAssistDiscount() {
+        const output = document.getElementById('dmOutput');
+        document.getElementById('dmOutputArea').classList.remove('hidden');
+        document.getElementById('dmContinueBtn').classList.add('hidden');
+        output.innerHTML = "<span class='animate-pulse text-purple-400'>⏳ Generating Offer...</span>";
+        
+        const prompt = `Role: Sales Expert. Task: Write a special discount offer message in Burmese (Male voice) to close a deal today.`;
+        await callAI(prompt, output);
+    }
+
+    async function continueDmReply() {
+        const output = document.getElementById('dmOutput');
+        output.innerHTML += "<br><br><span class='loading-indicator animate-pulse text-purple-400'>... ဆက်ရေးနေသည် ...</span>";
+        const prompt = `Role: Sales Manager. Instruction: Continue the previous Burmese reply.`;
+        await callAI(prompt, output, true);
     }
 
     // UTILS
