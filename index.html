@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Sales Master AI v4.4</title>
+  <title>With You Studio - Sales Master AI v4.5</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -116,7 +116,6 @@
         <div>
             <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Priority</p>
             <div class="space-y-1">
-                <!-- NEW CREATIVE DIRECTOR TAB -->
                 <button onclick="window.loadView('creative')" id="nav-creative" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
                     <i class="ph ph-lightbulb text-lg text-yellow-400"></i> Ideas (What to post?)
                 </button>
@@ -215,12 +214,12 @@
 
   <!-- TEMPLATES -->
   
-  <!-- 0. CREATIVE DIRECTOR TEMPLATE (NEW) -->
+  <!-- 0. CREATIVE DIRECTOR TEMPLATE -->
   <template id="tpl-creative">
     <div class="animate-fade-in space-y-6">
         <div class="flex items-center justify-between">
             <h2 class="text-xl md:text-2xl font-bold text-yellow-400 flex items-center gap-2"><i class="ph ph-lightbulb"></i> Creative Director</h2>
-            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">v4.4</div>
+            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">v4.5</div>
         </div>
         
         <div class="glass-panel p-6 rounded-xl border border-yellow-500/20 shadow-lg relative overflow-hidden">
@@ -231,7 +230,7 @@
                 <!-- Inputs -->
                 <div class="space-y-5">
                     <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Today's Workload (အလုပ်ရှုပ်လား)</label>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Today's Workload</label>
                         <div class="grid grid-cols-3 gap-2">
                             <button onclick="setCreativeOption('workload', 'Busy', this)" class="creative-btn p-3 rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-center transition">Busy<br>🥵</button>
                             <button onclick="setCreativeOption('workload', 'Normal', this)" class="creative-btn active p-3 rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-center transition">Normal<br>😐</button>
@@ -241,7 +240,7 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Focus Area (ဘာအကြောင်းတင်ချင်လဲ)</label>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Focus Area</label>
                         <select id="crFocus" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white focus:border-yellow-500 outline-none">
                             <option value="Anything">🎲 Anything (Best Choice)</option>
                             <option value="Pre-Wedding">💍 Pre-Wedding Focus</option>
@@ -281,7 +280,7 @@
                      </div>
                 </div>
             </div>
-
+            
             <!-- Output Area (Mobile) -->
             <div id="crResultAreaMobile" class="md:hidden hidden mt-4">
                  <div class="bg-slate-900/50 rounded-xl border border-slate-700 p-4">
@@ -301,13 +300,15 @@
     <div class="animate-fade-in space-y-6">
         <div class="flex items-center justify-between">
             <h2 class="text-xl md:text-2xl font-bold text-purple-400 flex items-center gap-2"><i class="ph ph-chat-circle-text"></i> DM Sales Master</h2>
-            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">v3.9.1</div>
+            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">v4.5</div>
         </div>
         
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Left Column: Strategy & Input -->
             <div class="space-y-4">
                 <div class="glass-panel p-4 md:p-5 rounded-xl space-y-4 border border-purple-500/20 shadow-lg shadow-purple-900/10">
+                    
+                    <!-- Context Section -->
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Topic</label>
@@ -331,6 +332,7 @@
                         </div>
                     </div>
                     
+                    <!-- Message Input -->
                     <div>
                         <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Client Message / Context</label>
                         <div class="relative">
@@ -484,6 +486,7 @@
         </div>
         <div id="tlResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl">
             <div id="tlOutput" class="whitespace-pre-wrap text-sm text-slate-200 font-mono"></div>
+            <button id="tlContinueBtn" onclick="window.continueAI('timeline')" class="hidden w-full mt-2 py-2 bg-slate-800 text-orange-400 text-xs border border-slate-600 rounded">⚠️ Continue Writing</button>
             <div class="mt-4 flex gap-2">
                 <button onclick="window.downloadFile('Schedule.txt', 'tlOutput')" class="text-xs text-blue-400 border border-blue-900 p-2 rounded">⬇️ Download</button>
                 <button onclick="window.copyText('tlOutput')" class="text-xs text-slate-400 border border-slate-700 p-2 rounded">📋 Copy</button>
@@ -574,7 +577,7 @@
         let templateId = 'tpl-' + viewId;
         if(viewId === 'tiktok') container.innerHTML = getTikTokHTML();
         else if(viewId === 'pose') container.innerHTML = getPoseHTML();
-        else if(viewId === 'creative') { const tpl = document.getElementById('tpl-creative'); if(tpl) container.appendChild(tpl.content.cloneNode(true)); } // ADDED HANDLER
+        else if(viewId === 'creative') { const tpl = document.getElementById('tpl-creative'); if(tpl) container.appendChild(tpl.content.cloneNode(true)); } 
         else if(viewId === 'recent') { const tpl = document.getElementById('tpl-recent'); if(tpl) container.appendChild(tpl.content.cloneNode(true)); renderHistoryList(); }
         else { const tpl = document.getElementById(templateId); if(tpl) { container.appendChild(tpl.content.cloneNode(true)); if(viewId === 'brand') loadBrandData(); } }
         window.currentView = viewId;
@@ -740,7 +743,7 @@
                 taskPrompt = `CONTEXT: Writing FB post. Stopped at: "...${lastChunk}". TASK: CONTINUE writing from there. Finish body, CTA, Hashtags. End with "--- End of Post ---".`;
             } else {
                 if(len === "Long") {
-                    taskPrompt = `TASK: Write ONE detailed, long-form storytelling Facebook Post about "${topic}". Tone: ${tone}. Go deep into emotion. Don't cut off.`;
+                    taskPrompt = `TASK: Write ONE detailed storytelling Facebook Post about "${topic}". Tone: ${tone}. Go deep into emotion. Don't cut off.`;
                 } else {
                     taskPrompt = `TASK: Write 3 DISTINCT Facebook Post Variations about "${topic}". Tone: ${tone}. Length: ${len}. FORMAT: Option 1, Option 2, Option 3. Include CTA with ${contactInfo}. Ensure all 3 options are fully written out.`;
                 }
