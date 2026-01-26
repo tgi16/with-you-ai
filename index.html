@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Pro Dashboard v2.3</title>
+  <title>With You Studio - Pro Dashboard v2.4</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -42,6 +42,8 @@
     .listening-ring {
         box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
         animation: pulse-red 1.5s infinite cubic-bezier(0.66, 0, 0, 1);
+        border-color: #ef4444 !important; /* Red border */
+        color: #ef4444 !important; /* Red icon */
     }
     @keyframes pulse-red {
         to { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
@@ -122,7 +124,7 @@
 
     <!-- Footer -->
     <div class="p-4 border-t border-slate-800 text-xs text-slate-600 text-center">
-        <span class="inline-block px-2 py-1 rounded bg-slate-800 border border-slate-700 text-blue-400 font-mono">v2.3 (Voice Enabled)</span>
+        <span class="inline-block px-2 py-1 rounded bg-slate-800 border border-slate-700 text-blue-400 font-mono">v2.4 (Voice Pro)</span>
     </div>
   </aside>
 
@@ -170,7 +172,7 @@
   <div id="toast" class="toast">Action Complete</div>
 
 
-  <!-- TEMPLATES (Updated with Voice Buttons) -->
+  <!-- TEMPLATES (Updated with Voice Buttons passing 'this') -->
   
   <!-- 1. FACEBOOK POST TEMPLATE -->
   <template id="tpl-fbpost">
@@ -188,7 +190,7 @@
                         <!-- Voice Button Logic -->
                         <div class="flex gap-2">
                             <input type="text" id="fbInput" placeholder="ဥပမာ - Pre-wedding package အသစ်..." class="flex-1 w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm focus:border-blue-500 outline-none text-white">
-                            <button onclick="startVoiceInput('fbInput')" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg px-4 flex items-center justify-center transition active:scale-95" title="Speak to Type">
+                            <button onclick="startVoiceInput('fbInput', this)" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg px-4 flex items-center justify-center transition active:scale-95" title="Speak to Type">
                                 <i class="ph ph-microphone text-xl text-blue-400"></i>
                             </button>
                         </div>
@@ -279,7 +281,7 @@
                         <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Client Message</label>
                         <div class="relative">
                             <textarea id="dmInput" placeholder="Client မေးတဲ့စာ (သို့) Package နာမည်..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm h-24 text-white resize-none focus:border-purple-500 pr-10"></textarea>
-                            <button onclick="startVoiceInput('dmInput')" class="absolute right-2 bottom-2 bg-slate-700/80 hover:bg-purple-600 p-2 rounded-full transition text-slate-300 hover:text-white" title="Speak">
+                            <button onclick="startVoiceInput('dmInput', this)" class="absolute right-2 bottom-2 bg-slate-700/80 hover:bg-purple-600 p-2 rounded-full transition text-slate-300 hover:text-white" title="Speak">
                                 <i class="ph ph-microphone text-lg"></i>
                             </button>
                         </div>
@@ -455,7 +457,7 @@
             <div class="glass-panel p-4 md:p-5 rounded-xl space-y-4">
                 <div class="flex gap-2">
                     <input type="text" id="ttInput" placeholder="Video Topic..." class="flex-1 bg-slate-800 border border-slate-700 rounded p-3 text-white">
-                    <button onclick="startVoiceInput('ttInput')" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded px-4 text-teal-400"><i class="ph ph-microphone text-xl"></i></button>
+                    <button onclick="startVoiceInput('ttInput', this)" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded px-4 text-teal-400"><i class="ph ph-microphone text-xl"></i></button>
                 </div>
                 <select id="ttStyle" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white"><option>Trending & Fast</option><option>Vlog / Behind Scenes</option><option>Cinematic Mood</option></select>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -491,7 +493,7 @@
                 </div>
                 <div class="relative">
                     <textarea id="poseInput" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white h-24 pr-10" placeholder="Client situation/mood..."></textarea>
-                    <button onclick="startVoiceInput('poseInput')" class="absolute right-2 bottom-2 bg-slate-700/80 hover:bg-pink-600 p-2 rounded-full transition text-slate-300 hover:text-white"><i class="ph ph-microphone text-lg"></i></button>
+                    <button onclick="startVoiceInput('poseInput', this)" class="absolute right-2 bottom-2 bg-slate-700/80 hover:bg-pink-600 p-2 rounded-full transition text-slate-300 hover:text-white"><i class="ph ph-microphone text-lg"></i></button>
                 </div>
                 <button onclick="generateAI('pose')" class="w-full bg-pink-600 py-3 rounded text-white font-bold active:scale-95 transition">Generate Poses</button>
             </div>
@@ -513,40 +515,45 @@
     }
 
     // --- VOICE INPUT FUNCTION ---
-    function startVoiceInput(elementId) {
-        if (!('webkitSpeechRecognition' in window)) {
-            showToast("❌ Browser not compatible with Voice.");
+    function startVoiceInput(elementId, btn) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (!SpeechRecognition) {
+            showToast("❌ Voice input ကို ဒီ browser မှာ မထောက်ပံ့ပါဘူး");
             return;
         }
 
-        const recognition = new webkitSpeechRecognition();
-        recognition.lang = 'my-MM'; // Burmese
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'my-MM';
         recognition.interimResults = false;
         recognition.maxAlternatives = 1;
 
-        showToast("🎤 Listening... Speak now!");
-        
-        // Visual feedback on button if possible, but toast is good enough for now
-        
-        recognition.start();
+        if (btn) btn.classList.add('listening-ring');
+        showToast("🎤 နားထောင်နေပါတယ်… ပြောပါ");
+
+        try {
+            recognition.start();
+        } catch (e) {
+            showToast("⚠️ Voice already started");
+            if (btn) btn.classList.remove('listening-ring');
+            return;
+        }
 
         recognition.onresult = function(event) {
-            const speechResult = event.results[0][0].transcript;
-            const inputEl = document.getElementById(elementId);
-            if (inputEl) {
-                // Append text if already exists, or set new
-                const currentVal = inputEl.value;
-                inputEl.value = currentVal ? currentVal + " " + speechResult : speechResult;
-                showToast("✅ Text Added!");
-            }
+            const text = event.results[0][0].transcript;
+            const el = document.getElementById(elementId);
+            if (el) el.value = el.value ? el.value + " " + text : text;
+            showToast("✅ အသံကို စာအဖြစ် ပြောင်းပြီးပါပြီ");
         };
 
-        recognition.onspeechend = function() {
-            recognition.stop();
+        recognition.onerror = function(e) {
+            showToast("❌ Voice error: " + e.error);
+            if (btn) btn.classList.remove('listening-ring');
         };
 
-        recognition.onerror = function(event) {
-            showToast("Error: " + event.error);
+        recognition.onend = function() {
+            showToast("🎤 Voice input ပြီးပါပြီ");
+            if (btn) btn.classList.remove('listening-ring');
         };
     }
 
