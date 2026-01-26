@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Sales Master AI v3.9</title>
+  <title>With You Studio - Sales Master AI v3.9.1</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -208,18 +208,38 @@
 
   <!-- TEMPLATES -->
   
-  <!-- 1. DM SALES MASTER TEMPLATE (Major Upgrade with Decision Helper) -->
   <template id="tpl-dm">
     <div class="animate-fade-in space-y-6">
         <div class="flex items-center justify-between">
             <h2 class="text-xl md:text-2xl font-bold text-purple-400 flex items-center gap-2"><i class="ph ph-chat-circle-text"></i> DM Sales Master</h2>
-            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">v3.9 (Decision Helper)</div>
+            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">v3.9.1</div>
         </div>
         
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Left Column: Input & Analysis -->
             <div class="space-y-4">
                 <div class="glass-panel p-4 md:p-5 rounded-xl space-y-4 border border-purple-500/20 shadow-lg shadow-purple-900/10">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Topic</label>
+                            <select id="dmService" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-purple-500">
+                                <option value="Pre-wedding Package">💍 Pre-wedding</option>
+                                <option value="Wedding Actual Day">👰 Wedding Day</option>
+                                <option value="Family Photoshoot">👨‍👩‍👧‍👦 Family</option>
+                                <option value="Graduation Photo">🎓 Graduation</option>
+                                <option value="General Inquiry">❓ General</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Status</label>
+                            <select id="dmScenario" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-purple-500">
+                                <option value="New Inquiry">New Inquiry</option>
+                                <option value="Price Objection">Expensive (ဈေးကြီး)</option>
+                                <option value="Ghosting">Seen (စာမပြန်)</option>
+                                <option value="Comparing">Comparing (ယှဉ်နေ)</option>
+                                <option value="Closing">Ready to Book</option>
+                            </select>
+                        </div>
+                    </div>
                     
                     <div>
                         <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Client Message / Context</label>
@@ -229,20 +249,15 @@
                         </div>
                     </div>
 
-                    <!-- ANALYZE BUTTON -->
                     <button onclick="window.generateAI('dm_analyze')" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2 border border-indigo-400/30">
-                        <i class="ph ph-magnifying-glass text-lg"></i> Analyze Client (ဝယ်မလား စစ်မယ်)
+                        <i class="ph ph-magnifying-glass text-lg"></i> Analyze Client
                     </button>
                     
-                    <!-- DECISION PANEL (Hidden by default) -->
                     <div id="dmAnalysisPanel" class="hidden animate-fade-in bg-slate-900/80 p-4 rounded-xl border border-slate-700 relative">
                         <div class="absolute -top-3 left-4 bg-slate-800 px-2 text-[10px] text-slate-400 uppercase font-bold tracking-wider border border-slate-700 rounded">AI Sales Strategist</div>
-                        <div id="dmAnalysisContent" class="space-y-3 text-sm mt-1">
-                            <!-- Dynamic Content -->
-                        </div>
+                        <div id="dmAnalysisContent" class="space-y-3 text-sm mt-1"></div>
                     </div>
 
-                    <!-- Quick Tactics (Fallback) -->
                     <div class="pt-2 border-t border-slate-800">
                         <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Manual Actions</label>
                         <div class="grid grid-cols-2 gap-2">
@@ -254,7 +269,6 @@
                 </div>
             </div>
 
-            <!-- Right Column: Output -->
             <div id="dmResultArea" class="hidden h-full">
                 <div class="glass-panel p-4 md:p-6 rounded-xl border-purple-500/30 h-full flex flex-col relative overflow-hidden">
                     <div class="flex justify-between items-center mb-3 z-10">
@@ -262,7 +276,7 @@
                         <div class="flex gap-2"><button onclick="window.copyText('dmOutput')" class="text-xs bg-purple-900/50 hover:bg-purple-800 px-3 py-1.5 rounded text-purple-200 border border-purple-700">Copy</button></div>
                     </div>
                     <div id="dmOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 overflow-y-auto max-h-[600px] z-10 pr-2 custom-scroll"></div>
-                    <button id="dmContinueBtn" onclick="window.continueAI('dm_best')" class="hidden w-full mt-3 py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-purple-300 text-sm font-bold flex items-center justify-center gap-2 transition active:scale-95"><span>⚠️ Continue Writing</span><i class="ph ph-arrow-right"></i></button>
+                    <button id="dmContinueBtn" onclick="window.continueAI('dm_best')" class="hidden w-full mt-3 py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-purple-300 text-sm font-bold flex items-center justify-center gap-2 transition active:scale-95"><span>⚠️ Continue Writing (စာဆက်ရေးပါ)</span><i class="ph ph-arrow-right"></i></button>
                 </div>
             </div>
         </div>
@@ -293,12 +307,8 @@
                     </div>
                     <input type="text" id="brandAddr" placeholder="Address (Taunggyi)" class="mt-3 w-full bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white">
                 </div>
-                
-                <!-- Manual Save Button -->
                 <div class="pt-4 flex flex-col items-center gap-2">
-                    <button onclick="window.saveBrandData()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-lg shadow-lg flex items-center justify-center gap-2 transition active:scale-95">
-                        <i class="ph ph-floppy-disk"></i> Save Changes to Cloud
-                    </button>
+                    <button onclick="window.saveBrandData()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-lg shadow-lg flex items-center justify-center gap-2 transition active:scale-95"><i class="ph ph-floppy-disk"></i> Save Changes to Cloud</button>
                     <div id="saveStatus" class="text-xs text-slate-400">Ready to save.</div>
                 </div>
             </div>
@@ -367,6 +377,7 @@
         </div>
         <div id="tlResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl">
             <div id="tlOutput" class="whitespace-pre-wrap text-sm text-slate-200 font-mono"></div>
+            <button id="tlContinueBtn" onclick="window.continueAI('timeline')" class="hidden w-full mt-2 py-2 bg-slate-800 text-orange-400 text-xs border border-slate-600 rounded">⚠️ Continue Writing</button>
             <div class="mt-4 flex gap-2">
                 <button onclick="window.downloadFile('Schedule.txt', 'tlOutput')" class="text-xs text-blue-400 border border-blue-900 p-2 rounded">⬇️ Download</button>
                 <button onclick="window.copyText('tlOutput')" class="text-xs text-slate-400 border border-slate-700 p-2 rounded">📋 Copy</button>
@@ -406,12 +417,18 @@
     const db = getFirestore(app);
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
     let userId = null;
-    let currentAnalysis = null; // Store analysis result
+    let currentAnalysis = null;
+
+    // --- HELPER: SAFE GET VALUE ---
+    const getValue = (id) => {
+        const el = document.getElementById(id);
+        return el ? el.value : "";
+    };
 
     // --- AUTH ---
     window.handleLogin = async function() {
-        const email = document.getElementById('loginEmail').value;
-        const pass = document.getElementById('loginPass').value;
+        const email = getValue('loginEmail');
+        const pass = getValue('loginPass');
         if(!email || !pass) return;
         try { await signInWithEmailAndPassword(auth, email, pass); } catch(error) { document.getElementById('loginError').innerText = error.message; document.getElementById('loginError').classList.remove('hidden'); }
     }
@@ -462,14 +479,11 @@
     // --- UPDATED SAVE FUNCTION WITH STATUS ---
     window.saveBrandData = async function() {
         if (!userId) { window.showToast("Login required!"); return; }
-        
         const statusEl = document.getElementById('saveStatus');
         if(statusEl) statusEl.innerText = "Saving...";
-        
         const ids = ['brandStyle', 'brandClient', 'brandPhone', 'brandViber', 'brandFB', 'brandTT', 'brandAddr', 'brandPackages'];
         const data = {};
         ids.forEach(id => { const el = document.getElementById(id); if(el) data[id] = el.value; });
-        
         try { 
             await setDoc(doc(db, 'artifacts', appId, 'users', userId, 'config', 'brand'), data, {merge: true}); 
             if(statusEl) { statusEl.innerText = "Cloud Saved ✅"; statusEl.classList.add('text-green-400'); }
@@ -510,13 +524,9 @@
         const outId = outputIds[type];
         const areaId = areaIds[type];
         
-        // UI Handling
         if(type === 'dm_analyze') {
              const panel = document.getElementById('dmAnalysisPanel');
-             if(panel) {
-                 panel.classList.remove('hidden');
-                 panel.innerHTML = "<div class='text-center text-indigo-400 text-sm animate-pulse'>🔍 Analyzing Sales Status...</div>";
-             }
+             if(panel) { panel.classList.remove('hidden'); panel.innerHTML = "<div class='text-center text-indigo-400 text-sm animate-pulse'>🔍 Analyzing Sales Status...</div>"; }
         } else {
              if(document.getElementById(areaId)) document.getElementById(areaId).classList.remove('hidden');
              if(!isContinue && document.getElementById(outId)) {
@@ -544,68 +554,49 @@
         let contextTopic = "";
 
         if (type === 'dm_analyze') {
-            const msg = document.getElementById('dmInput').value;
-            taskPrompt = `
-            ROLE: Senior Sales Strategist.
-            TASK: Analyze this client message: "${msg}".
-            RETURN STRICTLY IN THIS FORMAT:
-            Status: READY TO BOOK | STILL THINKING | NOT READY YET
-            Reason: (Short sentence why)
-            NextAction:
-            - (Action 1)
-            - (Action 2)
-            Tone: (Suggested tone)
-            DO NOT write a full reply yet. Just the analysis.
-            `;
+            const msg = getValue('dmInput');
+            taskPrompt = `ROLE: Senior Sales Strategist. TASK: Analyze message: "${msg}". RETURN FORMAT: Status: READY|THINKING|NOT_READY. Reason: ... NextAction: ... Tone: ... DO NOT write full reply.`;
         }
         else if (type === 'dm_best') {
-            const service = document.getElementById('dmService').value;
-            const scenario = document.getElementById('dmScenario').value;
-            const msg = document.getElementById('dmInput').value;
-            const strategy = document.getElementById('dmType').value;
-            
-            // Add Analysis Context if available
-            let analysisContext = "";
-            if (currentAnalysis) {
-                analysisContext = `Based on Analysis: ${currentAnalysis}`;
-            }
-
+            const service = getValue('dmService');
+            const scenario = getValue('dmScenario');
+            const msg = getValue('dmInput');
+            const strategy = getValue('dmType');
+            let analysisContext = currentAnalysis ? `Based on Analysis: ${currentAnalysis}` : "";
             contextTopic = `DM: ${service} (${scenario})`;
             
             if(isContinue) {
                 const prev = document.getElementById(outId).innerText;
                 taskPrompt = `CONTEXT: Writing 3 DM replies. Stopped at: "...${prev.slice(-100)}". TASK: CONTINUE exactly from there. Finish the options. Add a closing.`;
             } else {
-                taskPrompt = `TASK: Write 3 DISTINCT SALES REPLIES (Numbered 1, 2, 3). 
-                Context: ${service}. Status: ${scenario}. Client: "${msg}". Strategy: ${strategy}. 
-                ${analysisContext}
-                OUTPUT: 1. [Warm Reply] 2. [Direct/Value Reply] 3. [Short/Urgent Reply]. MUST include Contact Info in CTA. Ensure full text.`;
+                taskPrompt = `TASK: Write 3 DISTINCT SALES REPLIES (Numbered 1, 2, 3). Context: ${service}. Status: ${scenario}. Client: "${msg}". Strategy: ${strategy}. ${analysisContext}. OUTPUT: 1. [Warm] 2. [Direct] 3. [Short]. MUST include Contact in CTA. Ensure full text.`;
             }
         } 
         else if (type === 'fbpost') {
-            const topic = document.getElementById('fbInput').value;
-            const tone = document.getElementById('fbTone').value;
-            const len = document.getElementById('fbLength').value;
+            const topic = getValue('fbInput');
+            const tone = getValue('fbTone');
+            const len = getValue('fbLength');
             contextTopic = `FB Post: ${topic}`;
             
             if(isContinue) {
                 const prevText = document.getElementById('fbOutput').innerText;
                 const lastChunk = prevText.slice(-300);
-                taskPrompt = `CONTEXT: You are writing a FB post. It stopped at: "...${lastChunk}". TASK: CONTINUE writing from there. Finish the body, add a strong CTA using ${contactInfo}, and add Hashtags. End with "--- End of Post ---".`;
+                taskPrompt = `CONTEXT: Writing FB post. Stopped at: "...${lastChunk}". TASK: CONTINUE writing. Finish body, CTA, Hashtags. End with "--- End of Post ---".`;
             } else {
                 if(len === "Long") {
-                    taskPrompt = `TASK: Write ONE detailed, long-form storytelling Facebook Post about "${topic}". Tone: ${tone}. Go deep into emotion. Don't cut off.`;
+                    taskPrompt = `TASK: Write ONE detailed storytelling Facebook Post about "${topic}". Tone: ${tone}. Go deep. Don't cut off.`;
                 } else {
                     taskPrompt = `TASK: Write 3 DISTINCT Facebook Post Variations about "${topic}". Tone: ${tone}. Length: ${len}. FORMAT: Option 1, Option 2, Option 3. Include CTA with ${contactInfo}. Ensure all 3 options are fully written out.`;
                 }
             }
         }
         else if (type === 'timeline') {
-            const start = document.getElementById('tlStart').value;
-            const place = document.getElementById('tlPlace').value;
-            const dress = document.getElementById('tlDress').value;
-            const pace = document.getElementById('tlPace').value;
-            const sunset = document.getElementById('tlSunset').checked ? "Include Sunset" : "No Sunset";
+            const start = getValue('tlStart');
+            const place = getValue('tlPlace');
+            const dress = getValue('tlDress');
+            const pace = getValue('tlPace');
+            const sunsetElement = document.getElementById('tlSunset');
+            const sunset = sunsetElement && sunsetElement.checked ? "Include Sunset" : "No Sunset";
             contextTopic = `Timeline: ${place} (${dress})`;
             if(isContinue) {
                 const prev = document.getElementById(outId).innerText;
@@ -615,8 +606,8 @@
             }
         }
         else if (type.includes('tt_')) {
-            const topic = document.getElementById('ttInput').value;
-            const style = document.getElementById('ttStyle').value;
+            const topic = getValue('ttInput');
+            const style = getValue('ttStyle');
             const sub = type==='tt_caption'?'Caption':'Script';
             contextTopic = `TikTok ${sub}: ${topic}`;
             if(isContinue) {
@@ -627,9 +618,9 @@
             }
         }
         else if (type === 'pose') {
-            const input = document.getElementById('poseInput').value;
-            const outfit = document.getElementById('poseOutfit').value;
-            const props = document.getElementById('poseProps').value;
+            const input = getValue('poseInput');
+            const outfit = getValue('poseOutfit');
+            const props = getValue('poseProps');
             contextTopic = `Pose: ${outfit}`;
             taskPrompt = `TASK: Suggest 3 Poses. Context: ${input}. Outfit: ${outfit}. Props: ${props}. Give clear Burmese instructions.`;
         }
@@ -644,12 +635,9 @@
             });
             const data = await res.json();
             
-            // SPECIAL HANDLER FOR ANALYSIS
             if (type === 'dm_analyze') {
                 const result = data.result;
-                currentAnalysis = result; // Store for next step
-                
-                // Parse rudimentary
+                currentAnalysis = result;
                 let statusColor = "text-slate-200";
                 let borderColor = "border-slate-600";
                 if(result.includes("READY")) { statusColor = "status-ready text-emerald-400"; borderColor = "border-emerald-500/50"; }
@@ -659,16 +647,9 @@
                 const panel = document.getElementById('dmAnalysisPanel');
                 if(panel) {
                     panel.className = `mt-4 p-4 rounded-xl border ${borderColor} bg-slate-900/90 relative animate-fade-in`;
-                    panel.innerHTML = `
-                        <div class="absolute -top-3 left-4 bg-slate-900 px-2 text-[10px] ${statusColor} uppercase font-bold tracking-wider border ${borderColor} rounded">AI Analysis</div>
-                        <div class="text-sm whitespace-pre-wrap leading-relaxed ${statusColor} font-medium mt-2">${result}</div>
-                        <div class="mt-3 flex gap-2 pt-3 border-t border-slate-700/50">
-                            <button onclick="window.generateAI('dm_best')" class="flex-1 bg-white/10 hover:bg-white/20 py-2 rounded text-xs text-white transition">✨ Generate Smart Reply</button>
-                        </div>
-                    `;
+                    panel.innerHTML = `<div class="absolute -top-3 left-4 bg-slate-900 px-2 text-[10px] ${statusColor} uppercase font-bold tracking-wider border ${borderColor} rounded">AI Analysis</div><div class="text-sm whitespace-pre-wrap leading-relaxed ${statusColor} font-medium mt-2">${result}</div><div class="mt-3 flex gap-2 pt-3 border-t border-slate-700/50"><button onclick="window.generateAI('dm_best')" class="flex-1 bg-white/10 hover:bg-white/20 py-2 rounded text-xs text-white transition">✨ Generate Smart Reply</button></div>`;
                 }
             }
-            // NORMAL HANDLER
             else if(document.getElementById(outId)) {
                 let finalContent = "";
                 if(isContinue) {
@@ -678,15 +659,8 @@
                     document.getElementById(outId).innerText = data.result || "Error generating.";
                     finalContent = data.result;
                 }
-                
-                if (finalContent && !finalContent.includes("Error")) {
-                    saveToRecents(type, finalContent, contextTopic);
-                }
-
-                if(continueBtnIds[type]) {
-                    const btn = document.getElementById(continueBtnIds[type]);
-                    if(btn) btn.classList.remove('hidden');
-                }
+                if (finalContent && !finalContent.includes("Error")) { saveToRecents(type, finalContent, contextTopic); }
+                if(continueBtnIds[type]) { const btn = document.getElementById(continueBtnIds[type]); if(btn) btn.classList.remove('hidden'); }
             }
         } catch(e) {
             console.error(e);
