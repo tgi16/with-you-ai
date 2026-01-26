@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Cloud Sales AI v3.7</title>
+  <title>With You Studio - Cloud Sales AI v3.8</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -207,7 +207,7 @@
     <div class="animate-fade-in space-y-6">
         <div class="flex items-center justify-between">
             <h2 class="text-xl md:text-2xl font-bold text-purple-400 flex items-center gap-2"><i class="ph ph-chat-circle-text"></i> DM Sales Master</h2>
-            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">v3.7</div>
+            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">v3.8</div>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div class="space-y-4">
@@ -229,6 +229,7 @@
                                 <option value="New Inquiry">New Inquiry</option>
                                 <option value="Price Objection">Expensive (ဈေးကြီး)</option>
                                 <option value="Ghosting">Seen (စာမပြန်)</option>
+                                <option value="Comparing">Comparing (ယှဉ်နေ)</option>
                                 <option value="Closing">Ready to Book</option>
                             </select>
                         </div>
@@ -267,6 +268,7 @@
     </div>
   </template>
 
+  <!-- 2. BRAND BRAIN TEMPLATE (UPDATED: Manual Save Button) -->
   <template id="tpl-brand">
     <div class="animate-fade-in max-w-2xl mx-auto space-y-6">
         <div class="bg-gradient-to-br from-slate-800 to-slate-900 p-6 md:p-8 rounded-2xl border border-slate-700 relative overflow-hidden shadow-2xl">
@@ -289,6 +291,14 @@
                         <input type="text" id="brandTT" placeholder="TikTok Link" class="bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white">
                     </div>
                     <input type="text" id="brandAddr" placeholder="Address (Taunggyi)" class="mt-3 w-full bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white">
+                </div>
+                
+                <!-- Manual Save Button -->
+                <div class="pt-4 flex flex-col items-center gap-2">
+                    <button onclick="window.saveBrandData()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-lg shadow-lg flex items-center justify-center gap-2 transition active:scale-95">
+                        <i class="ph ph-floppy-disk"></i> Save Changes to Cloud
+                    </button>
+                    <div id="saveStatus" class="text-xs text-slate-400">Ready to save.</div>
                 </div>
             </div>
         </div>
@@ -356,7 +366,6 @@
         </div>
         <div id="tlResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl">
             <div id="tlOutput" class="whitespace-pre-wrap text-sm text-slate-200 font-mono"></div>
-            <button id="tlContinueBtn" onclick="window.continueAI('timeline')" class="hidden w-full mt-2 py-2 bg-slate-800 text-orange-400 text-xs border border-slate-600 rounded">⚠️ Continue Writing</button>
             <div class="mt-4 flex gap-2">
                 <button onclick="window.downloadFile('Schedule.txt', 'tlOutput')" class="text-xs text-blue-400 border border-blue-900 p-2 rounded">⬇️ Download</button>
                 <button onclick="window.copyText('tlOutput')" class="text-xs text-slate-400 border border-slate-700 p-2 rounded">📋 Copy</button>
@@ -448,20 +457,32 @@
     function getTikTokHTML() { return `<div class="animate-fade-in space-y-6"><h2 class="text-xl md:text-2xl font-bold text-teal-400 flex items-center gap-2"><i class="ph ph-tiktok-logo"></i> TikTok Script</h2><div class="glass-panel p-4 md:p-5 rounded-xl space-y-4"><div class="flex gap-2"><input type="text" id="ttInput" placeholder="Video Topic..." class="flex-1 bg-slate-800 border border-slate-700 rounded p-3 text-white"><button onclick="window.startVoiceInput('ttInput', this)" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded px-4 text-teal-400"><i class="ph ph-microphone text-xl"></i></button></div><select id="ttStyle" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white"><option>Trending & Fast</option><option>Vlog / Behind Scenes</option><option>Cinematic Mood</option></select><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><button onclick="window.generateAI('tt_caption')" class="bg-slate-700 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Get 3 Captions</button><button onclick="window.generateAI('tt_script')" class="bg-teal-600 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Write 3 Scripts</button></div></div><div id="ttResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl"><div id="ttOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div><button id="ttContinueBtn" onclick="window.continueAI('tt_script')" class="hidden w-full mt-2 py-2 bg-slate-800 text-teal-400 text-xs border border-slate-600 rounded">⚠️ Continue Writing</button><div class="text-xs text-green-400 mt-2">✅ Auto-saved to Cloud</div></div></div>`; }
     function getPoseHTML() { return `<div class="animate-fade-in space-y-6"><h2 class="text-xl md:text-2xl font-bold text-pink-400 flex items-center gap-2"><i class="ph ph-camera"></i> Pose Helper</h2><div class="glass-panel p-4 md:p-5 rounded-xl space-y-4"><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><div><label class="text-xs font-bold text-slate-400 uppercase">Outfit</label><select id="poseOutfit" class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm"><option>Wedding Gown/Suit</option><option>Traditional</option><option>Casual</option></select></div><div><label class="text-xs font-bold text-slate-400 uppercase">Props</label><input type="text" id="poseProps" placeholder="Flowers..." class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm"></div></div><div class="flex gap-2 mb-2"><button onclick="window.fillPose('Shy')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">😳 Shy</button><button onclick="window.fillPose('Plus')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">❤️ Plus</button></div><div class="relative"><textarea id="poseInput" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white h-24 pr-10" placeholder="Situation..."></textarea><button onclick="window.startVoiceInput('poseInput', this)" class="absolute right-2 bottom-2 bg-slate-700/80 hover:bg-pink-600 p-2 rounded-full transition text-slate-300 hover:text-white"><i class="ph ph-microphone text-lg"></i></button></div><button onclick="window.generateAI('pose')" class="w-full bg-pink-600 py-3 rounded text-white font-bold active:scale-95 transition">Generate Poses</button></div><div id="poseResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl"><div id="poseOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div><div class="text-xs text-green-400 mt-2">✅ Auto-saved to Cloud</div></div></div>`; }
 
+    // --- UPDATED SAVE FUNCTION WITH STATUS ---
     window.saveBrandData = async function() {
-        if (!userId) return;
+        if (!userId) { window.showToast("Login required!"); return; }
+        
+        const statusEl = document.getElementById('saveStatus');
+        if(statusEl) statusEl.innerText = "Saving...";
+        
         const ids = ['brandStyle', 'brandClient', 'brandPhone', 'brandViber', 'brandFB', 'brandTT', 'brandAddr', 'brandPackages'];
         const data = {};
         ids.forEach(id => { const el = document.getElementById(id); if(el) data[id] = el.value; });
-        try { await setDoc(doc(db, 'artifacts', appId, 'users', userId, 'config', 'brand'), data, {merge: true}); window.showToast("Cloud Save Success!"); } catch (e) { console.error(e); }
+        
+        try { 
+            await setDoc(doc(db, 'artifacts', appId, 'users', userId, 'config', 'brand'), data, {merge: true}); 
+            if(statusEl) { statusEl.innerText = "Cloud Saved ✅"; statusEl.classList.add('text-green-400'); }
+            window.showToast("Cloud Save Success!"); 
+        } catch (e) { 
+            console.error(e); 
+            if(statusEl) statusEl.innerText = "Error Saving"; 
+        }
     }
     window.loadBrandData = async function() {
         if (!userId) return;
         try {
             const docSnap = await getDoc(doc(db, 'artifacts', appId, 'users', userId, 'config', 'brand'));
             if (docSnap.exists()) { const data = docSnap.data(); for (const [key, value] of Object.entries(data)) { const el = document.getElementById(key); if(el) el.value = value; } }
-            const inputs = document.querySelectorAll('#content-container input, #content-container textarea');
-            inputs.forEach(input => { input.addEventListener('change', window.saveBrandData); });
+            // Note: Auto-save disabled to use Manual Button exclusively to prevent confusion, per request context
         } catch(e) { console.error(e); }
     }
     async function saveToRecents(type, content, topic) {
@@ -521,7 +542,7 @@
             
             if(isContinue) {
                 const prev = document.getElementById(outId).innerText;
-                taskPrompt = `CONTEXT: You were writing 3 DM replies. It stopped at: "...${prev.slice(-100)}". TASK: CONTINUE exactly from there. Finish the options. Add a closing.`;
+                taskPrompt = `CONTEXT: Writing 3 DM replies. Stopped at: "...${prev.slice(-100)}". TASK: CONTINUE exactly from there. Finish the options. Add a closing.`;
             } else {
                 taskPrompt = `TASK: Write 3 DISTINCT SALES REPLIES (Numbered 1, 2, 3). Context: ${service}. Status: ${scenario}. Client: "${msg}". Strategy: ${strategy}. OUTPUT: 1. [Warm Reply] 2. [Direct/Value Reply] 3. [Short/Urgent Reply]. MUST include Contact Info in CTA. Ensure full text.`;
             }
