@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Cloud Sales AI v3.8</title>
+  <title>With You Studio - Sales Master AI v3.9</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -50,6 +50,11 @@
         border-color: #ef4444 !important; color: #ef4444 !important;
     }
     @keyframes pulse-red { to { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } }
+    
+    /* Analysis Status Colors */
+    .status-ready { color: #34d399; border-color: #34d399; background: rgba(52, 211, 153, 0.1); }
+    .status-thinking { color: #fbbf24; border-color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
+    .status-notready { color: #60a5fa; border-color: #60a5fa; background: rgba(96, 165, 250, 0.1); }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-200 h-screen h-[100dvh] flex overflow-hidden">
@@ -203,72 +208,68 @@
 
   <!-- TEMPLATES -->
   
+  <!-- 1. DM SALES MASTER TEMPLATE (Major Upgrade with Decision Helper) -->
   <template id="tpl-dm">
     <div class="animate-fade-in space-y-6">
         <div class="flex items-center justify-between">
             <h2 class="text-xl md:text-2xl font-bold text-purple-400 flex items-center gap-2"><i class="ph ph-chat-circle-text"></i> DM Sales Master</h2>
-            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">v3.8</div>
+            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">v3.9 (Decision Helper)</div>
         </div>
+        
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Left Column: Input & Analysis -->
             <div class="space-y-4">
                 <div class="glass-panel p-4 md:p-5 rounded-xl space-y-4 border border-purple-500/20 shadow-lg shadow-purple-900/10">
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Topic</label>
-                            <select id="dmService" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-purple-500">
-                                <option value="Pre-wedding Package">💍 Pre-wedding</option>
-                                <option value="Wedding Actual Day">👰 Wedding Day</option>
-                                <option value="Family Photoshoot">👨‍👩‍👧‍👦 Family</option>
-                                <option value="Graduation Photo">🎓 Graduation</option>
-                                <option value="General Inquiry">❓ General</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Status</label>
-                            <select id="dmScenario" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-purple-500">
-                                <option value="New Inquiry">New Inquiry</option>
-                                <option value="Price Objection">Expensive (ဈေးကြီး)</option>
-                                <option value="Ghosting">Seen (စာမပြန်)</option>
-                                <option value="Comparing">Comparing (ယှဉ်နေ)</option>
-                                <option value="Closing">Ready to Book</option>
-                            </select>
-                        </div>
-                    </div>
+                    
                     <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Client Message</label>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Client Message / Context</label>
                         <div class="relative">
-                            <textarea id="dmInput" placeholder="Client မေးတဲ့စာ (သို့) အခြေအနေ..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm h-24 text-white resize-none focus:border-purple-500 pr-10 shadow-inner"></textarea>
+                            <textarea id="dmInput" placeholder="Client မေးတဲ့စာ (သို့) အခြေအနေ..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm h-32 text-white resize-none focus:border-purple-500 pr-10 shadow-inner"></textarea>
                             <button onclick="window.startVoiceInput('dmInput', this)" class="absolute right-2 bottom-2 bg-slate-700/80 hover:bg-purple-600 p-2 rounded-full transition text-slate-300 hover:text-white" title="Speak"><i class="ph ph-microphone text-lg"></i></button>
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-purple-300 uppercase mb-2 flex items-center gap-1"><i class="ph ph-lightning"></i> Sales Strategy</label>
+
+                    <!-- ANALYZE BUTTON -->
+                    <button onclick="window.generateAI('dm_analyze')" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2 border border-indigo-400/30">
+                        <i class="ph ph-magnifying-glass text-lg"></i> Analyze Client (ဝယ်မလား စစ်မယ်)
+                    </button>
+                    
+                    <!-- DECISION PANEL (Hidden by default) -->
+                    <div id="dmAnalysisPanel" class="hidden animate-fade-in bg-slate-900/80 p-4 rounded-xl border border-slate-700 relative">
+                        <div class="absolute -top-3 left-4 bg-slate-800 px-2 text-[10px] text-slate-400 uppercase font-bold tracking-wider border border-slate-700 rounded">AI Sales Strategist</div>
+                        <div id="dmAnalysisContent" class="space-y-3 text-sm mt-1">
+                            <!-- Dynamic Content -->
+                        </div>
+                    </div>
+
+                    <!-- Quick Tactics (Fallback) -->
+                    <div class="pt-2 border-t border-slate-800">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Manual Actions</label>
                         <div class="grid grid-cols-2 gap-2">
-                            <button onclick="window.setDmType('Value First', this)" class="tactic-btn p-2 border border-slate-600 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-left transition flex items-center gap-2"><i class="ph ph-diamond text-blue-400"></i> Value Stack</button>
                             <button onclick="window.setDmType('Price Defense', this)" class="tactic-btn p-2 border border-slate-600 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-left transition flex items-center gap-2"><i class="ph ph-shield-check text-green-400"></i> Price Defense</button>
                             <button onclick="window.setDmType('Urgency', this)" class="tactic-btn p-2 border border-slate-600 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-left transition flex items-center gap-2"><i class="ph ph-timer text-orange-400"></i> Create Urgency</button>
-                            <button onclick="window.setDmType('Soft Close', this)" class="tactic-btn active p-2 border border-slate-600 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-left transition flex items-center gap-2"><i class="ph ph-handshake text-purple-400"></i> Soft Close</button>
                         </div>
                         <input type="hidden" id="dmType" value="Soft Close">
                     </div>
-                    <button onclick="window.generateAI('dm_best')" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-purple-900/40 transition active:scale-95 flex items-center justify-center gap-2"><i class="ph ph-magic-wand text-lg"></i> Generate 3 Replies</button>
                 </div>
             </div>
+
+            <!-- Right Column: Output -->
             <div id="dmResultArea" class="hidden h-full">
                 <div class="glass-panel p-4 md:p-6 rounded-xl border-purple-500/30 h-full flex flex-col relative overflow-hidden">
                     <div class="flex justify-between items-center mb-3 z-10">
-                        <span class="text-xs font-bold text-purple-400 uppercase flex items-center gap-1"><i class="ph ph-check-circle"></i> Suggested Options</span>
-                        <div class="flex gap-2"><button onclick="window.copyText('dmOutput')" class="text-xs bg-purple-900/50 hover:bg-purple-800 px-3 py-1.5 rounded text-purple-200 border border-purple-700">Copy All</button></div>
+                        <span class="text-xs font-bold text-purple-400 uppercase flex items-center gap-1"><i class="ph ph-check-circle"></i> Generated Reply</span>
+                        <div class="flex gap-2"><button onclick="window.copyText('dmOutput')" class="text-xs bg-purple-900/50 hover:bg-purple-800 px-3 py-1.5 rounded text-purple-200 border border-purple-700">Copy</button></div>
                     </div>
                     <div id="dmOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 overflow-y-auto max-h-[600px] z-10 pr-2 custom-scroll"></div>
-                    <button id="dmContinueBtn" onclick="window.continueAI('dm_best')" class="hidden w-full mt-3 py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-purple-300 text-sm font-bold flex items-center justify-center gap-2 transition active:scale-95"><span>⚠️ Continue Writing (စာဆက်ရေးပါ)</span><i class="ph ph-arrow-right"></i></button>
+                    <button id="dmContinueBtn" onclick="window.continueAI('dm_best')" class="hidden w-full mt-3 py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-purple-300 text-sm font-bold flex items-center justify-center gap-2 transition active:scale-95"><span>⚠️ Continue Writing</span><i class="ph ph-arrow-right"></i></button>
                 </div>
             </div>
         </div>
     </div>
   </template>
 
-  <!-- 2. BRAND BRAIN TEMPLATE (UPDATED: Manual Save Button) -->
+  <!-- 2. BRAND BRAIN TEMPLATE -->
   <template id="tpl-brand">
     <div class="animate-fade-in max-w-2xl mx-auto space-y-6">
         <div class="bg-gradient-to-br from-slate-800 to-slate-900 p-6 md:p-8 rounded-2xl border border-slate-700 relative overflow-hidden shadow-2xl">
@@ -405,6 +406,7 @@
     const db = getFirestore(app);
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
     let userId = null;
+    let currentAnalysis = null; // Store analysis result
 
     // --- AUTH ---
     window.handleLogin = async function() {
@@ -482,7 +484,6 @@
         try {
             const docSnap = await getDoc(doc(db, 'artifacts', appId, 'users', userId, 'config', 'brand'));
             if (docSnap.exists()) { const data = docSnap.data(); for (const [key, value] of Object.entries(data)) { const el = document.getElementById(key); if(el) el.value = value; } }
-            // Note: Auto-save disabled to use Manual Button exclusively to prevent confusion, per request context
         } catch(e) { console.error(e); }
     }
     async function saveToRecents(type, content, topic) {
@@ -509,10 +510,19 @@
         const outId = outputIds[type];
         const areaId = areaIds[type];
         
-        if(document.getElementById(areaId)) document.getElementById(areaId).classList.remove('hidden');
-        if(!isContinue && document.getElementById(outId)) {
-            document.getElementById(outId).innerHTML = "<span class='animate-pulse text-purple-400'>✨ Senior Sales Manager is thinking...</span>";
-            if(window.innerWidth < 768) setTimeout(() => { document.getElementById(areaId).scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+        // UI Handling
+        if(type === 'dm_analyze') {
+             const panel = document.getElementById('dmAnalysisPanel');
+             if(panel) {
+                 panel.classList.remove('hidden');
+                 panel.innerHTML = "<div class='text-center text-indigo-400 text-sm animate-pulse'>🔍 Analyzing Sales Status...</div>";
+             }
+        } else {
+             if(document.getElementById(areaId)) document.getElementById(areaId).classList.remove('hidden');
+             if(!isContinue && document.getElementById(outId)) {
+                document.getElementById(outId).innerHTML = "<span class='animate-pulse text-purple-400'>✨ Senior Sales Manager is thinking...</span>";
+                if(window.innerWidth < 768) setTimeout(() => { document.getElementById(areaId).scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+            }
         }
 
         let brandData = {};
@@ -525,7 +535,7 @@
         const systemPrompt = `
         ROLE: Senior Sales Manager & Studio Owner of "With You Photo Studio" in Taunggyi.
         GOAL: Close deals warmly. Be helpful, persuasive, and confident.
-        TONE: Natural Burmese (Bya). Sandwich Method (Value -> Price -> Value).
+        TONE: Natural Burmese (Bya/Khamya). Sandwich Method (Value -> Price -> Value).
         DATA: Packages: ${brandPackages}, Contact: ${contactInfo}.
         IMPORTANT: Always output COMPLETE responses. Do not stop mid-sentence.
         `;
@@ -533,18 +543,43 @@
         let taskPrompt = "";
         let contextTopic = "";
 
-        if (type === 'dm_best') {
+        if (type === 'dm_analyze') {
+            const msg = document.getElementById('dmInput').value;
+            taskPrompt = `
+            ROLE: Senior Sales Strategist.
+            TASK: Analyze this client message: "${msg}".
+            RETURN STRICTLY IN THIS FORMAT:
+            Status: READY TO BOOK | STILL THINKING | NOT READY YET
+            Reason: (Short sentence why)
+            NextAction:
+            - (Action 1)
+            - (Action 2)
+            Tone: (Suggested tone)
+            DO NOT write a full reply yet. Just the analysis.
+            `;
+        }
+        else if (type === 'dm_best') {
             const service = document.getElementById('dmService').value;
             const scenario = document.getElementById('dmScenario').value;
             const msg = document.getElementById('dmInput').value;
             const strategy = document.getElementById('dmType').value;
+            
+            // Add Analysis Context if available
+            let analysisContext = "";
+            if (currentAnalysis) {
+                analysisContext = `Based on Analysis: ${currentAnalysis}`;
+            }
+
             contextTopic = `DM: ${service} (${scenario})`;
             
             if(isContinue) {
                 const prev = document.getElementById(outId).innerText;
                 taskPrompt = `CONTEXT: Writing 3 DM replies. Stopped at: "...${prev.slice(-100)}". TASK: CONTINUE exactly from there. Finish the options. Add a closing.`;
             } else {
-                taskPrompt = `TASK: Write 3 DISTINCT SALES REPLIES (Numbered 1, 2, 3). Keep them concise to ensure all 3 display fully. Context: ${service}. Status: ${scenario}. Client: "${msg}". Strategy: ${strategy}. OUTPUT: 1. [Warm Reply] 2. [Direct/Value Reply] 3. [Short/Urgent Reply]. MUST include Contact Info in CTA. Ensure full text.`;
+                taskPrompt = `TASK: Write 3 DISTINCT SALES REPLIES (Numbered 1, 2, 3). 
+                Context: ${service}. Status: ${scenario}. Client: "${msg}". Strategy: ${strategy}. 
+                ${analysisContext}
+                OUTPUT: 1. [Warm Reply] 2. [Direct/Value Reply] 3. [Short/Urgent Reply]. MUST include Contact Info in CTA. Ensure full text.`;
             }
         } 
         else if (type === 'fbpost') {
@@ -559,9 +594,9 @@
                 taskPrompt = `CONTEXT: You are writing a FB post. It stopped at: "...${lastChunk}". TASK: CONTINUE writing from there. Finish the body, add a strong CTA using ${contactInfo}, and add Hashtags. End with "--- End of Post ---".`;
             } else {
                 if(len === "Long") {
-                    taskPrompt = `TASK: Write ONE detailed Facebook Post about "${topic}". Tone: ${tone}. Focus on storytelling but ensure you reach the CTA and Hashtags before the token limit.`;
+                    taskPrompt = `TASK: Write ONE detailed, long-form storytelling Facebook Post about "${topic}". Tone: ${tone}. Go deep into emotion. Don't cut off.`;
                 } else {
-                    taskPrompt = `TASK: Write 3 DISTINCT Facebook Post Variations about "${topic}". Tone: ${tone}. Length: ${len}. Keep them concise. FORMAT: Option 1, Option 2, Option 3. Include CTA with ${contactInfo}. Ensure all 3 options are fully written out.`;
+                    taskPrompt = `TASK: Write 3 DISTINCT Facebook Post Variations about "${topic}". Tone: ${tone}. Length: ${len}. FORMAT: Option 1, Option 2, Option 3. Include CTA with ${contactInfo}. Ensure all 3 options are fully written out.`;
                 }
             }
         }
@@ -609,7 +644,32 @@
             });
             const data = await res.json();
             
-            if(document.getElementById(outId)) {
+            // SPECIAL HANDLER FOR ANALYSIS
+            if (type === 'dm_analyze') {
+                const result = data.result;
+                currentAnalysis = result; // Store for next step
+                
+                // Parse rudimentary
+                let statusColor = "text-slate-200";
+                let borderColor = "border-slate-600";
+                if(result.includes("READY")) { statusColor = "status-ready text-emerald-400"; borderColor = "border-emerald-500/50"; }
+                if(result.includes("THINKING")) { statusColor = "status-thinking text-amber-400"; borderColor = "border-amber-500/50"; }
+                if(result.includes("NOT READY")) { statusColor = "status-notready text-blue-400"; borderColor = "border-blue-500/50"; }
+                
+                const panel = document.getElementById('dmAnalysisPanel');
+                if(panel) {
+                    panel.className = `mt-4 p-4 rounded-xl border ${borderColor} bg-slate-900/90 relative animate-fade-in`;
+                    panel.innerHTML = `
+                        <div class="absolute -top-3 left-4 bg-slate-900 px-2 text-[10px] ${statusColor} uppercase font-bold tracking-wider border ${borderColor} rounded">AI Analysis</div>
+                        <div class="text-sm whitespace-pre-wrap leading-relaxed ${statusColor} font-medium mt-2">${result}</div>
+                        <div class="mt-3 flex gap-2 pt-3 border-t border-slate-700/50">
+                            <button onclick="window.generateAI('dm_best')" class="flex-1 bg-white/10 hover:bg-white/20 py-2 rounded text-xs text-white transition">✨ Generate Smart Reply</button>
+                        </div>
+                    `;
+                }
+            }
+            // NORMAL HANDLER
+            else if(document.getElementById(outId)) {
                 let finalContent = "";
                 if(isContinue) {
                     document.getElementById(outId).innerText += "\n" + data.result;
