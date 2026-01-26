@@ -144,7 +144,7 @@
         <h2 class="text-lg font-bold text-teal-400 flex items-center gap-2">
           <span>🎵</span> TikTok Script Creator
         </h2>
-        <p class="text-sm text-slate-400 mb-4">Video Script (Visuals + Audio) for Trends & Education</p>
+        <p class="text-sm text-slate-400 mb-4">Video Script & Caption Helper</p>
 
         <div class="space-y-3">
           <div>
@@ -165,29 +165,26 @@
         </div>
 
         <div class="grid grid-cols-2 gap-3 mt-4">
-          <button onclick="generateTTPromptCode()" class="bg-slate-700 hover:bg-slate-600 py-3 rounded font-bold text-sm border border-slate-600">
-            📋 Get Prompt Code
+          <!-- REPLACED BUTTON: Get Caption instead of Prompt Code -->
+          <button onclick="generateTTCaption()" class="bg-indigo-600 hover:bg-indigo-500 py-3 rounded font-bold text-sm shadow-lg shadow-indigo-900/30">
+            📝 Get Caption (Postစာသား)
           </button>
           <button onclick="generateTTAI()" class="bg-teal-600 hover:bg-teal-500 py-3 rounded font-bold text-sm shadow-lg shadow-teal-900/30">
-            🤖 Write Script
+            🤖 Write Script (ရိုက်ကွက်)
           </button>
         </div>
       </div>
 
        <!-- Result Area for TikTok -->
        <div id="ttOutputArea" class="hidden space-y-4 animate-fade-in">
-        <div id="ttCodeBlock" class="hidden">
-            <div class="flex justify-between items-center mb-2">
-                <span class="text-xs text-green-400 font-mono">TIKTOK PROMPT CODE</span>
-                <button onclick="copyCode('ttCodeContent')" class="text-xs bg-slate-700 px-2 py-1 rounded">Copy</button>
-            </div>
-            <pre class="bg-black/50 p-4 rounded border border-slate-700 overflow-x-auto text-xs font-mono text-gray-300"><code id="ttCodeContent"></code></pre>
-        </div>
         
         <div id="ttResultWrapper" class="hidden flex flex-col gap-2">
+            <!-- Label for context -->
+            <div id="ttResultLabel" class="text-xs font-bold text-slate-400 uppercase ml-1">Result</div>
             <div id="ttAiResult" class="bg-slate-900 p-5 rounded-lg border border-slate-800 whitespace-pre-wrap leading-relaxed text-gray-100"></div>
+            
             <button id="ttContinueBtn" onclick="continueTikTok()" class="hidden w-full py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded text-teal-300 text-sm font-bold flex items-center justify-center gap-2">
-                <span>⚠️ မပြီးသေးရင် နှိပ်ပါ (Continue Script)</span>
+                <span>⚠️ မပြီးသေးရင် နှိပ်ပါ (Continue)</span>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </button>
         </div>
@@ -243,7 +240,7 @@
     switchTab('fbpost'); 
 
 
-    // --- AI CALL HANDLER (UPDATED for Append Logic) ---
+    // --- AI CALL HANDLER ---
     async function callAI(promptText, outputElement, isAppend = false) {
         try {
             const res = await fetch("/api/generate", {
@@ -255,7 +252,6 @@
             const data = await res.json();
             if (data.result) {
                 if(isAppend) {
-                    // Remove loading indicator from append
                     const loadingSpans = outputElement.querySelectorAll('.loading-indicator');
                     loadingSpans.forEach(el => el.remove());
                     outputElement.innerHTML += " " + data.result;
@@ -320,7 +316,7 @@
         document.getElementById('fbOutputArea').classList.remove('hidden');
         document.getElementById('fbCodeBlock').classList.add('hidden');
         document.getElementById('fbResultWrapper').classList.remove('hidden');
-        document.getElementById('fbContinueBtn').classList.add('hidden'); // Hide until loaded
+        document.getElementById('fbContinueBtn').classList.add('hidden'); 
 
         output.innerHTML = "<span class='animate-pulse text-blue-400'>⏳ AI is writing your post (Male voice, Continuous)...</span>";
 
@@ -333,58 +329,76 @@
         `;
 
         await callAI(prompt, output);
-        
-        // Show continue button after first generation
         document.getElementById('fbContinueBtn').classList.remove('hidden');
     }
 
     async function continueFbPost() {
         const output = document.getElementById('fbAiResult');
-        // Add visual indicator
         output.innerHTML += "<br><br><span class='loading-indicator animate-pulse text-blue-400'>... ဆက်ရေးနေသည် ...</span>";
-
         const prompt = `
             Role: Copywriter. 
             Instruction: The previous Burmese Facebook post was cut off.
             TASK: CONTINUE writing explicitly from where it stopped. Finish the [CTA] and [HASHTAGS] if missing.
             Language: Burmese.
         `;
-        
         await callAI(prompt, output, true);
     }
 
 
-    // --- 3. TIKTOK LOGIC ---
-    function getTikTokPrompt() {
-        const topic = document.getElementById('ttInput').value || "General";
+    // --- 3. TIKTOK LOGIC (UPDATED) ---
+    
+    // NEW: Generate TikTok Caption (Post Text)
+    async function generateTTCaption() {
+        const topic = document.getElementById('ttInput').value;
         const style = document.getElementById('ttStyle').value;
-        return `prompt = \`\nRole: TikTok Creator (With You Studio).\nTASK: Write Script in Burmese (Male Voice).\nTopic: ${topic}\nStyle: ${style}\n\``;
-    }
+        const output = document.getElementById('ttAiResult');
 
-    function generateTTPromptCode() {
-        const code = getTikTokPrompt();
         document.getElementById('ttOutputArea').classList.remove('hidden');
-        document.getElementById('ttCodeBlock').classList.remove('hidden');
-        document.getElementById('ttResultWrapper').classList.add('hidden');
-        document.getElementById('ttCodeContent').innerText = code;
+        document.getElementById('ttResultWrapper').classList.remove('hidden');
+        document.getElementById('ttContinueBtn').classList.add('hidden');
+        document.getElementById('ttResultLabel').innerText = "TIKTOK POST CAPTION (စာသား)";
+
+        output.innerHTML = "<span class='animate-pulse text-indigo-400'>⏳ Creating TikTok Caption...</span>";
+
+        const prompt = `
+          Role: Social Media Manager (With You Studio).
+          Task: Write a TikTok Video Caption (Description) in Burmese.
+          Topic: ${topic}
+          Style: ${style}
+          Rules:
+          1. Use Male voice "Bya" (ဗျ).
+          2. Short, Catchy, and Fun.
+          3. Include relevant hashtags for Myanmar/Taunggyi audience.
+          4. NO English explanations. Just the caption.
+        `;
+
+        await callAI(prompt, output);
     }
 
+    // UPDATED: Generate Script (Strict Burmese)
     async function generateTTAI() {
         const topic = document.getElementById('ttInput').value;
         const style = document.getElementById('ttStyle').value;
         const output = document.getElementById('ttAiResult');
 
         document.getElementById('ttOutputArea').classList.remove('hidden');
-        document.getElementById('ttCodeBlock').classList.add('hidden');
         document.getElementById('ttResultWrapper').classList.remove('hidden');
         document.getElementById('ttContinueBtn').classList.add('hidden');
+        document.getElementById('ttResultLabel').innerText = "TIKTOK VIDEO SCRIPT (ရိုက်ကွက်)";
 
-        output.innerHTML = "<span class='animate-pulse text-teal-400'>⏳ Writing TikTok Script...</span>";
+        output.innerHTML = "<span class='animate-pulse text-teal-400'>⏳ Writing TikTok Script (Burmese)...</span>";
 
+        // Forced Burmese instruction
         const prompt = `
           Role: TikTok Creator for With You Photo Studio.
           Task: Write a script for "${topic}" in style "${style}".
-          Language: Burmese (Male voice 'Bya').
+          
+          STRICT LANGUAGE RULES:
+          1. WRITE EVERYTHING IN BURMESE (မြန်မာဘာသာ).
+          2. Do NOT use English headers like 'Scene 1', 'Visual', 'Audio'.
+          3. Instead use 'အခန်း (၁)', 'မြင်ကွင်း', 'အသံ/စကားပြော'.
+          4. Male speaker voice ('ဗျ').
+          
           Format: Scene breakdown with Voiceover text.
         `;
 
@@ -397,7 +411,8 @@
         output.innerHTML += "<br><br><span class='loading-indicator animate-pulse text-teal-400'>... ဆက်ရေးနေသည် ...</span>";
         const prompt = `
             Role: Scriptwriter.
-            Instruction: Continue the previous TikTok script exactly where it stopped. Finish the CTA.
+            Instruction: Continue the previous Burmese script/caption exactly where it stopped.
+            Language: Burmese Only.
         `;
         await callAI(prompt, output, true);
     }
