@@ -12,178 +12,213 @@
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: #0f172a; }
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    
+    /* Animation */
+    .animate-fade-in { animation: fadeIn 0.5s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body class="bg-slate-950 text-white min-h-screen flex flex-col">
 
   <!-- HEADER -->
-  <header class="px-4 py-4 bg-slate-900 border-b border-white/10 flex justify-between items-center sticky top-0 z-50">
+  <header class="px-4 py-4 bg-slate-900 border-b border-white/10 flex justify-between items-center sticky top-0 z-50 shadow-lg">
     <div>
-      <h1 class="text-xl font-bold text-blue-400">With You Photo Studio</h1>
+      <h1 class="text-xl font-bold text-blue-400 tracking-tight">With You Photo Studio</h1>
       <p class="text-xs text-slate-400">AI Content & Pose Assistant</p>
     </div>
-    <div class="text-xs bg-slate-800 px-2 py-1 rounded border border-slate-700">Taunggyi Branch</div>
+    <div class="text-xs bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700 text-slate-300">Taunggyi Branch</div>
   </header>
 
   <!-- MAIN CONTENT -->
   <main class="flex-1 p-4 space-y-6 max-w-3xl mx-auto w-full">
 
     <!-- TAB BUTTONS -->
-    <div class="grid grid-cols-4 gap-2 bg-slate-900 p-1 rounded-lg overflow-x-auto">
-      <button onclick="switchTab('pose')" id="btn-pose" class="tab-btn bg-slate-800 py-2 rounded text-xs md:text-sm whitespace-nowrap transition-all hover:bg-slate-700">🎨 Poses</button>
-      <button onclick="switchTab('fbpost')" id="btn-fbpost" class="tab-btn bg-blue-600 py-2 rounded text-xs md:text-sm font-bold shadow-lg shadow-blue-900/50">📝 FB Post</button>
-      <button onclick="switchTab('tiktok')" id="btn-tiktok" class="tab-btn bg-slate-800 py-2 rounded text-xs md:text-sm whitespace-nowrap transition-all hover:bg-slate-700">🎵 TikTok</button>
-      <button onclick="switchTab('dm')" id="btn-dm" class="tab-btn bg-slate-800 py-2 rounded text-xs md:text-sm whitespace-nowrap transition-all hover:bg-slate-700">💬 DM</button>
+    <div class="grid grid-cols-4 gap-2 bg-slate-900 p-1.5 rounded-xl border border-slate-800">
+      <button onclick="switchTab('pose')" id="btn-pose" class="tab-btn py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 hover:bg-slate-800">🎨 Poses</button>
+      <button onclick="switchTab('fbpost')" id="btn-fbpost" class="tab-btn py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 hover:bg-slate-800">📝 FB Post</button>
+      <button onclick="switchTab('tiktok')" id="btn-tiktok" class="tab-btn py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 hover:bg-slate-800">🎵 TikTok</button>
+      <button onclick="switchTab('dm')" id="btn-dm" class="tab-btn py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 hover:bg-slate-800">💬 DM</button>
     </div>
 
     <!-- 1. POSE HELPER TAB -->
-    <section id="pose" class="space-y-4 hidden">
-      <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-800">
-        <h2 class="text-lg font-bold text-pink-400 flex items-center gap-2">
+    <section id="pose" class="space-y-4 hidden animate-fade-in">
+      <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 shadow-sm">
+        <h2 class="text-lg font-bold text-pink-400 flex items-center gap-2 mb-4">
           <span>📸</span> Pre-Wedding Pose Helper
         </h2>
-        <p class="text-sm text-slate-400 mb-4">Pose မတတ် / မလှမှာ စိတ်ပူတဲ့ client အတွက် AI direction</p>
 
-        <div class="space-y-3">
-          <select id="scene" class="w-full p-3 rounded bg-slate-800 border border-slate-700 focus:border-pink-500 outline-none">
-            <option value="Outdoor">🌿 Outdoor (Nature)</option>
-            <option value="Studio">💡 In-Studio</option>
-            <option value="Cafe">☕ Cafe / Casual</option>
-            <option value="Colonial Building">🏛️ Colonial Style</option>
-          </select>
+        <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-3">
+             <select id="scene" class="w-full p-3 rounded-lg bg-slate-800 border border-slate-700 focus:border-pink-500 outline-none text-sm">
+              <option value="Outdoor">🌿 Outdoor (Nature)</option>
+              <option value="Studio">💡 In-Studio</option>
+              <option value="Cafe">☕ Cafe / Casual</option>
+              <option value="Colonial Building">🏛️ Colonial Style</option>
+            </select>
 
-          <select id="mood" class="w-full p-3 rounded bg-slate-800 border border-slate-700 focus:border-pink-500 outline-none">
-            <option value="Romantic">💞 Romantic & Sweet</option>
-            <option value="Natural">🌸 Natural & Candid</option>
-            <option value="Cinematic">🎬 Cinematic & Drama</option>
-            <option value="Fun">😂 Fun & Playful</option>
-          </select>
+            <select id="mood" class="w-full p-3 rounded-lg bg-slate-800 border border-slate-700 focus:border-pink-500 outline-none text-sm">
+              <option value="Romantic">💞 Romantic</option>
+              <option value="Natural">🌸 Natural</option>
+              <option value="Cinematic">🎬 Cinematic</option>
+              <option value="Fun">😂 Fun & Playful</option>
+            </select>
+          </div>
 
           <textarea
             id="poseInput"
             placeholder="Client အခြေအနေ (ဥပမာ - သတို့သားက ရှက်တတ်တယ်၊ အရမ်းဝတဲ့ အတွဲ...)"
-            class="w-full p-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-pink-500 outline-none h-24"
+            class="w-full p-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-pink-500 outline-none h-24 text-sm resize-none"
           ></textarea>
+        
+          <button onclick="generatePose()" class="w-full bg-gradient-to-r from-pink-600 to-pink-500 hover:from-pink-500 hover:to-pink-400 text-white py-3 rounded-xl font-bold shadow-lg shadow-pink-900/30 transition-all transform active:scale-95">
+            ✨ Generate Pose Ideas
+          </button>
         </div>
-
-        <button onclick="generatePose()" class="w-full mt-4 bg-pink-600 hover:bg-pink-500 py-3 rounded font-bold transition shadow-lg shadow-pink-900/30">
-          ✨ Generate Pose Ideas
-        </button>
       </div>
 
       <div id="poseOutputWrapper" class="hidden space-y-2">
-          <div id="poseOutput" class="bg-slate-900 p-4 rounded-lg border border-slate-800 text-sm whitespace-pre-wrap animate-fade-in"></div>
+          <div id="poseOutput" class="bg-slate-900 p-5 rounded-2xl border border-slate-800 text-sm whitespace-pre-wrap leading-relaxed animate-fade-in text-slate-200"></div>
       </div>
     </section>
 
 
-    <!-- 2. FB POST PROMPT BUILDER TAB -->
-    <section id="fbpost" class="space-y-4">
-      <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-800">
-        <h2 class="text-lg font-bold text-blue-400 flex items-center gap-2">
+    <!-- 2. FB POST CREATOR TAB -->
+    <section id="fbpost" class="space-y-6 hidden animate-fade-in">
+      
+      <!-- Main Input Area -->
+      <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 shadow-sm">
+        <h2 class="text-lg font-bold text-blue-400 flex items-center gap-2 mb-4">
           <span>📝</span> Facebook Post Creator
         </h2>
-        <p class="text-sm text-slate-400 mb-4">Master Prompt (Male Voice 'Bya', Continuity, White Text)</p>
 
-        <div class="space-y-3">
+        <div class="space-y-4">
           <div>
-            <label class="text-xs text-slate-400 uppercase font-bold">Topic</label>
+            <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Topic</label>
             <input type="text" id="fbInput" placeholder="ဥပမာ - Pre-wedding package အသစ် Promotion" 
-              class="w-full p-3 mt-1 rounded bg-slate-800 border border-slate-700 focus:border-blue-500 outline-none">
+              class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-blue-500 outline-none text-sm transition-colors">
           </div>
           
           <div>
-            <label class="text-xs text-slate-400 uppercase font-bold">Tone</label>
-            <select id="fbTone" class="w-full p-3 mt-1 rounded bg-slate-800 border border-slate-700 focus:border-blue-500 outline-none">
+            <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Tone</label>
+            <select id="fbTone" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-blue-500 outline-none text-sm">
               <option value="Professional & Warm">Professional & Warm (ရိုသေလေးစားမှုရှိသော)</option>
               <option value="Friendly & Exciting">Friendly & Exciting (ရင်းနှီးဖော်ရွေသော)</option>
               <option value="Emotional & Touching">Emotional & Touching (စိတ်ခံစားမှု အသားပေး)</option>
               <option value="Casual & Fun">Casual & Fun (ပေါ့ပေါ့ပါးပါး)</option>
             </select>
           </div>
-        </div>
 
-        <div class="grid grid-cols-2 gap-3 mt-4">
-          <button onclick="generateFbPromptCode()" class="bg-slate-700 hover:bg-slate-600 py-3 rounded font-bold text-sm border border-slate-600">
-            📋 Get Prompt Code
+          <button onclick="generateFbPostAI()" class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white py-3 rounded-xl font-bold shadow-lg shadow-blue-900/30 transition-all transform active:scale-95 flex justify-center items-center gap-2">
+            <span>🤖</span> Post အပြည့်အစုံ ရေးခိုင်းမည်
           </button>
-          <button onclick="generateFbPostAI()" class="bg-blue-600 hover:bg-blue-500 py-3 rounded font-bold text-sm shadow-lg shadow-blue-900/30">
-            🤖 Ask AI to Write
+        </div>
+      </div>
+
+      <!-- Creative Assistant Section (New) -->
+      <div class="bg-slate-900/30 p-5 rounded-2xl border border-blue-500/20">
+        <h3 class="text-sm font-bold text-blue-300 mb-3 uppercase tracking-wider flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" /></svg>
+          ✨ ဖန်တီးမှုလက်ထောက် (Creative Assistant)
+        </h3>
+        <p class="text-xs text-slate-500 mb-4">Post တစ်ခုလုံး မရေးချင်ဘူး၊ အိုင်ဒီယာပဲ လိုချင်ရင် သုံးပါ</p>
+        
+        <div class="grid grid-cols-2 gap-3">
+          <button onclick="fbAssistIdeas()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1">
+            <span class="text-xl">💡</span>
+            <span>Content Ideas</span>
+          </button>
+          <button onclick="fbAssistHooks()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1">
+            <span class="text-xl">🎣</span>
+            <span>Catchy Hooks (ခေါင်းစဉ်)</span>
           </button>
         </div>
       </div>
 
       <!-- Result Area for FB Post -->
       <div id="fbOutputArea" class="hidden space-y-4 animate-fade-in">
-        
-        <!-- Code Block View -->
-        <div id="fbCodeBlock" class="hidden">
-            <div class="flex justify-between items-center mb-2">
-                <span class="text-xs text-green-400 font-mono">GENERATED PROMPT CODE</span>
-                <button onclick="copyCode('codeContent')" class="text-xs bg-slate-700 px-2 py-1 rounded">Copy</button>
+        <div id="fbResultWrapper" class="flex flex-col gap-2">
+             <div class="flex justify-between items-end px-1">
+                <span class="text-xs font-bold text-slate-400 uppercase">Result</span>
+                <button onclick="copyText('fbAiResult')" class="text-xs text-blue-400 hover:text-blue-300">Copy Text</button>
             </div>
-            <pre class="bg-black/50 p-4 rounded border border-slate-700 overflow-x-auto text-xs font-mono text-gray-300"><code id="codeContent"></code></pre>
-        </div>
-
-        <!-- AI Text Result View -->
-        <div id="fbResultWrapper" class="hidden flex flex-col gap-2">
-            <div id="fbAiResult" class="bg-slate-900 p-5 rounded-lg border border-slate-800 whitespace-pre-wrap leading-relaxed text-gray-100"></div>
+            <div id="fbAiResult" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 whitespace-pre-wrap leading-relaxed text-slate-200 shadow-inner"></div>
+            
             <!-- Continue Button -->
-            <button id="fbContinueBtn" onclick="continueFbPost()" class="hidden w-full py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded text-blue-300 text-sm font-bold flex items-center justify-center gap-2">
+            <button id="fbContinueBtn" onclick="continueFbPost()" class="hidden w-full py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl text-blue-300 text-sm font-bold flex items-center justify-center gap-2 transition-colors">
                 <span>⚠️ မပြီးသေးရင် နှိပ်ပါ (Continue Writing)</span>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </button>
         </div>
-
       </div>
     </section>
 
     <!-- 3. TIKTOK CREATOR TAB -->
-    <section id="tiktok" class="space-y-4 hidden">
-      <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-800">
-        <h2 class="text-lg font-bold text-teal-400 flex items-center gap-2">
+    <section id="tiktok" class="space-y-6 hidden animate-fade-in">
+      
+      <!-- Main Input -->
+      <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 shadow-sm">
+        <h2 class="text-lg font-bold text-teal-400 flex items-center gap-2 mb-4">
           <span>🎵</span> TikTok Script Creator
         </h2>
-        <p class="text-sm text-slate-400 mb-4">Video Script & Caption Helper</p>
 
-        <div class="space-y-3">
+        <div class="space-y-4">
           <div>
-            <label class="text-xs text-slate-400 uppercase font-bold">Video Idea / Topic</label>
+            <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Video Idea / Topic</label>
             <input type="text" id="ttInput" placeholder="ဥပမာ - Studio ဖွင့်ချိန် Vlog / မိုးရာသီ Pre-wedding tips" 
-              class="w-full p-3 mt-1 rounded bg-slate-800 border border-slate-700 focus:border-teal-500 outline-none">
+              class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-teal-500 outline-none text-sm transition-colors">
           </div>
           
           <div>
-            <label class="text-xs text-slate-400 uppercase font-bold">Video Style</label>
-            <select id="ttStyle" class="w-full p-3 mt-1 rounded bg-slate-800 border border-slate-700 focus:border-teal-500 outline-none">
+            <label class="text-xs text-slate-400 uppercase font-bold tracking-wider ml-1">Video Style</label>
+            <select id="ttStyle" class="w-full p-3 mt-1 rounded-lg bg-slate-800 border border-slate-700 focus:border-teal-500 outline-none text-sm">
               <option value="Trending & Fast">⚡ Trending & Fast Paced</option>
               <option value="Vlog Style">📹 Vlog / Behind the Scenes</option>
               <option value="Educational">🎓 Tips & Educational</option>
               <option value="Cinematic Mood">🎬 Cinematic Mood</option>
             </select>
           </div>
-        </div>
 
-        <div class="grid grid-cols-2 gap-3 mt-4">
-          <!-- REPLACED BUTTON: Get Caption instead of Prompt Code -->
-          <button onclick="generateTTCaption()" class="bg-indigo-600 hover:bg-indigo-500 py-3 rounded font-bold text-sm shadow-lg shadow-indigo-900/30">
-            📝 Get Caption (Postစာသား)
+          <div class="grid grid-cols-2 gap-3 pt-2">
+            <button onclick="generateTTCaption()" class="bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-slate-700 py-3 rounded-xl font-bold text-sm transition-all">
+              📝 Get Caption
+            </button>
+            <button onclick="generateTTAI()" class="bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 text-white py-3 rounded-xl font-bold text-sm shadow-lg shadow-teal-900/30 transition-all transform active:scale-95">
+              🤖 Write Script
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Creative Assistant Section (New) -->
+      <div class="bg-slate-900/30 p-5 rounded-2xl border border-teal-500/20">
+        <h3 class="text-sm font-bold text-teal-300 mb-3 uppercase tracking-wider flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" /></svg>
+          ✨ ဖန်တီးမှုလက်ထောက် (Creative Assistant)
+        </h3>
+        <p class="text-xs text-slate-500 mb-4">Trending ဖြစ်မယ့် အကြံဉာဏ်များ ရယူပါ</p>
+        
+        <div class="grid grid-cols-2 gap-3">
+          <button onclick="ttAssistIdeas()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1">
+            <span class="text-xl">💡</span>
+            <span>Video Ideas</span>
           </button>
-          <button onclick="generateTTAI()" class="bg-teal-600 hover:bg-teal-500 py-3 rounded font-bold text-sm shadow-lg shadow-teal-900/30">
-            🤖 Write Script (ရိုက်ကွက်)
+          <button onclick="ttAssistHooks()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 rounded-lg text-xs font-medium transition-colors flex flex-col items-center gap-1">
+            <span class="text-xl">⚡</span>
+            <span>Visual Hooks (အဖွင့်)</span>
           </button>
         </div>
       </div>
 
        <!-- Result Area for TikTok -->
        <div id="ttOutputArea" class="hidden space-y-4 animate-fade-in">
-        
-        <div id="ttResultWrapper" class="hidden flex flex-col gap-2">
-            <!-- Label for context -->
-            <div id="ttResultLabel" class="text-xs font-bold text-slate-400 uppercase ml-1">Result</div>
-            <div id="ttAiResult" class="bg-slate-900 p-5 rounded-lg border border-slate-800 whitespace-pre-wrap leading-relaxed text-gray-100"></div>
+        <div id="ttResultWrapper" class="flex flex-col gap-2">
+            <div class="flex justify-between items-end px-1">
+                <span id="ttResultLabel" class="text-xs font-bold text-slate-400 uppercase">Result</span>
+                <button onclick="copyText('ttAiResult')" class="text-xs text-teal-400 hover:text-teal-300">Copy Text</button>
+            </div>
+            <div id="ttAiResult" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 whitespace-pre-wrap leading-relaxed text-slate-200 shadow-inner"></div>
             
-            <button id="ttContinueBtn" onclick="continueTikTok()" class="hidden w-full py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded text-teal-300 text-sm font-bold flex items-center justify-center gap-2">
+            <button id="ttContinueBtn" onclick="continueTikTok()" class="hidden w-full py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl text-teal-300 text-sm font-bold flex items-center justify-center gap-2 transition-colors">
                 <span>⚠️ မပြီးသေးရင် နှိပ်ပါ (Continue)</span>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </button>
@@ -193,24 +228,24 @@
 
 
     <!-- 4. DM HELPER TAB -->
-    <section id="dm" class="space-y-4 hidden">
-      <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-800">
-        <h2 class="text-lg font-bold text-purple-400 flex items-center gap-2">
+    <section id="dm" class="space-y-4 hidden animate-fade-in">
+      <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 shadow-sm">
+        <h2 class="text-lg font-bold text-purple-400 flex items-center gap-2 mb-4">
           <span>💬</span> Client DM Helper
         </h2>
-        <p class="text-sm text-slate-400 mb-4">Client ကို စကားပြန်ဖို့ အခက်အခဲရှိနေရင် သုံးပါ (Price shock, Ghosting etc.)</p>
+        <p class="text-xs text-slate-400 mb-3">Client ကို စကားပြန်ဖို့ အခက်အခဲရှိနေရင် သုံးပါ</p>
         
         <textarea
             id="dmInput"
             placeholder="Client ဘာပြောလဲ? (ဥပမာ - ဈေးကြီးတယ် ပြောပြီး seen မပြတော့ဘူး)"
-            class="w-full p-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-purple-500 outline-none h-24"
-        ></textarea>
+            class="w-full p-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-purple-500 outline-none h-24 text-sm resize-none"
+          ></textarea>
 
-        <button onclick="generateDmReply()" class="w-full mt-4 bg-purple-600 hover:bg-purple-500 py-3 rounded font-bold transition shadow-lg shadow-purple-900/30">
+        <button onclick="generateDmReply()" class="w-full mt-4 bg-purple-600 hover:bg-purple-500 text-white py-3 rounded-xl font-bold transition-all shadow-lg shadow-purple-900/30">
           💌 Generate Reply
         </button>
       </div>
-      <div id="dmOutput" class="bg-slate-900 p-4 rounded-lg border border-slate-800 text-sm whitespace-pre-wrap hidden animate-fade-in"></div>
+      <div id="dmOutput" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 text-sm whitespace-pre-wrap leading-relaxed hidden animate-fade-in text-slate-200"></div>
     </section>
 
   </main>
@@ -221,22 +256,26 @@
     function switchTab(tab) {
       ['pose','fbpost','tiktok','dm'].forEach(id => {
         document.getElementById(id).classList.add('hidden');
-        document.getElementById('btn-' + id).classList.remove('bg-pink-600', 'bg-blue-600', 'bg-teal-600', 'bg-purple-600', 'font-bold', 'shadow-lg');
-        document.getElementById('btn-' + id).classList.add('bg-slate-800');
+        document.getElementById('btn-' + id).classList.remove('bg-pink-600', 'bg-blue-600', 'bg-teal-600', 'bg-purple-600', 'text-white', 'shadow-lg', 'bg-slate-800');
+        
+        // Reset to default style
+        document.getElementById('btn-' + id).classList.add('bg-transparent', 'text-slate-400', 'hover:bg-slate-800');
       });
 
       document.getElementById(tab).classList.remove('hidden');
       
       const btn = document.getElementById('btn-' + tab);
-      btn.classList.remove('bg-slate-800');
-      btn.classList.add('font-bold', 'shadow-lg');
-
+      btn.classList.remove('bg-transparent', 'text-slate-400', 'hover:bg-slate-800');
+      
+      // Active styles
+      btn.classList.add('text-white', 'shadow-lg');
       if(tab === 'pose') btn.classList.add('bg-pink-600');
       if(tab === 'fbpost') btn.classList.add('bg-blue-600');
       if(tab === 'tiktok') btn.classList.add('bg-teal-600');
       if(tab === 'dm') btn.classList.add('bg-purple-600');
     }
 
+    // Init
     switchTab('fbpost'); 
 
 
@@ -267,55 +306,29 @@
         }
     }
 
-
-    // --- 1. POSE GENERATION ---
+    // --- 1. POSE ---
     async function generatePose() {
       const mood = document.getElementById("mood").value;
       const scene = document.getElementById("scene").value;
       const input = document.getElementById("poseInput").value;
-      
       const outputWrapper = document.getElementById("poseOutputWrapper");
       const output = document.getElementById("poseOutput");
 
       outputWrapper.classList.remove("hidden");
-      output.innerHTML = "<span class='animate-pulse'>⏳ Generating pose ideas...</span>";
+      output.innerHTML = "<span class='animate-pulse text-pink-400'>⏳ Generating pose ideas...</span>";
 
-      const prompt = `
-        Role: Professional Pre-wedding Photographer (With You Studio).
-        Task: Give pose instructions in Burmese.
-        Scene: ${scene}
-        Mood: ${mood}
-        Context: ${input}
-        Output: 3 Clear Pose Ideas with direct Burmese instructions.
-      `;
-
+      const prompt = `Role: Photographer (With You Studio). Task: Give 3 pose ideas in Burmese. Scene: ${scene}, Mood: ${mood}, Context: ${input}.`;
       await callAI(prompt, output);
     }
 
 
-    // --- 2. FB POST LOGIC ---
-    function getFbMasterPrompt() {
-        const topic = document.getElementById('fbInput').value || "General Service";
-        const tone = document.getElementById('fbTone').value;
-        return `prompt = \`\nRole: Senior Social Media Copywriter (With You Studio).\nTASK: Write ONE complete Facebook post in Burmese.\nRULES:\n- Use "Bya" (ဗျ) / "Khamya". NO "Shin".\n- DO NOT stop until finished.\n- Structure: HOOK, BODY, VALUE, CTA, HASHTAGS.\n\nTopic: ${topic}\nTone: ${tone}\n\``;
-    }
-
-    function generateFbPromptCode() {
-        const code = getFbMasterPrompt();
-        document.getElementById('fbOutputArea').classList.remove('hidden');
-        document.getElementById('fbCodeBlock').classList.remove('hidden');
-        document.getElementById('fbResultWrapper').classList.add('hidden');
-        document.getElementById('codeContent').innerText = code;
-    }
-
+    // --- 2. FB POST ---
     async function generateFbPostAI() {
         const topic = document.getElementById('fbInput').value;
         const tone = document.getElementById('fbTone').value;
         const output = document.getElementById('fbAiResult');
         
         document.getElementById('fbOutputArea').classList.remove('hidden');
-        document.getElementById('fbCodeBlock').classList.add('hidden');
-        document.getElementById('fbResultWrapper').classList.remove('hidden');
         document.getElementById('fbContinueBtn').classList.add('hidden'); 
 
         output.innerHTML = "<span class='animate-pulse text-blue-400'>⏳ AI is writing your post (Male voice, Continuous)...</span>";
@@ -327,122 +340,130 @@
           TASK: Write ONE complete Facebook post in Burmese.
           RULES: Use "Bya" (ဗျ). Do NOT stop until finished. Structure: Hook -> Body -> Value -> CTA -> Hashtags.
         `;
-
         await callAI(prompt, output);
         document.getElementById('fbContinueBtn').classList.remove('hidden');
+    }
+
+    // FB ASSISTANT FUNCTIONS
+    async function fbAssistIdeas() {
+        const topic = document.getElementById('fbInput').value || "Photography";
+        const output = document.getElementById('fbAiResult');
+        document.getElementById('fbOutputArea').classList.remove('hidden');
+        document.getElementById('fbContinueBtn').classList.add('hidden');
+        
+        output.innerHTML = "<span class='animate-pulse text-blue-400'>💡 Brainstorming Ideas...</span>";
+        
+        const prompt = `
+            Role: Creative Director.
+            Task: Give 5 Creative Facebook Post Ideas for With You Photo Studio related to: "${topic}".
+            Language: Burmese (Male voice 'Bya').
+            Format: Bullet points.
+        `;
+        await callAI(prompt, output);
+    }
+
+    async function fbAssistHooks() {
+        const topic = document.getElementById('fbInput').value || "Photography";
+        const output = document.getElementById('fbAiResult');
+        document.getElementById('fbOutputArea').classList.remove('hidden');
+        document.getElementById('fbContinueBtn').classList.add('hidden');
+        
+        output.innerHTML = "<span class='animate-pulse text-blue-400'>🎣 Writing Hooks...</span>";
+        
+        const prompt = `
+            Role: Copywriter.
+            Task: Write 5 Catchy First Lines (Hooks) for a post about: "${topic}".
+            Goal: Stop people from scrolling.
+            Language: Burmese (Male voice 'Bya').
+        `;
+        await callAI(prompt, output);
     }
 
     async function continueFbPost() {
         const output = document.getElementById('fbAiResult');
         output.innerHTML += "<br><br><span class='loading-indicator animate-pulse text-blue-400'>... ဆက်ရေးနေသည် ...</span>";
-        const prompt = `
-            Role: Copywriter. 
-            Instruction: The previous Burmese Facebook post was cut off.
-            TASK: CONTINUE writing explicitly from where it stopped. Finish the [CTA] and [HASHTAGS] if missing.
-            Language: Burmese.
-        `;
+        const prompt = `Role: Copywriter. Instruction: Continue the previous Burmese post. Language: Burmese.`;
         await callAI(prompt, output, true);
     }
 
 
-    // --- 3. TIKTOK LOGIC (UPDATED) ---
-    
-    // NEW: Generate TikTok Caption (Post Text)
+    // --- 3. TIKTOK ---
     async function generateTTCaption() {
         const topic = document.getElementById('ttInput').value;
         const style = document.getElementById('ttStyle').value;
         const output = document.getElementById('ttAiResult');
 
         document.getElementById('ttOutputArea').classList.remove('hidden');
-        document.getElementById('ttResultWrapper').classList.remove('hidden');
         document.getElementById('ttContinueBtn').classList.add('hidden');
-        document.getElementById('ttResultLabel').innerText = "TIKTOK POST CAPTION (စာသား)";
+        document.getElementById('ttResultLabel').innerText = "TIKTOK POST CAPTION";
 
         output.innerHTML = "<span class='animate-pulse text-indigo-400'>⏳ Creating TikTok Caption...</span>";
-
-        const prompt = `
-          Role: Social Media Manager (With You Studio).
-          Task: Write a TikTok Video Caption (Description) in Burmese.
-          Topic: ${topic}
-          Style: ${style}
-          Rules:
-          1. Use Male voice "Bya" (ဗျ).
-          2. Short, Catchy, and Fun.
-          3. Include relevant hashtags for Myanmar/Taunggyi audience.
-          4. NO English explanations. Just the caption.
-        `;
-
+        const prompt = `Role: Social Media Manager. Task: Write TikTok Caption in Burmese (Male voice). Topic: ${topic}, Style: ${style}.`;
         await callAI(prompt, output);
     }
 
-    // UPDATED: Generate Script (Strict Burmese)
     async function generateTTAI() {
         const topic = document.getElementById('ttInput').value;
         const style = document.getElementById('ttStyle').value;
         const output = document.getElementById('ttAiResult');
 
         document.getElementById('ttOutputArea').classList.remove('hidden');
-        document.getElementById('ttResultWrapper').classList.remove('hidden');
         document.getElementById('ttContinueBtn').classList.add('hidden');
-        document.getElementById('ttResultLabel').innerText = "TIKTOK VIDEO SCRIPT (ရိုက်ကွက်)";
+        document.getElementById('ttResultLabel').innerText = "TIKTOK SCRIPT";
 
-        output.innerHTML = "<span class='animate-pulse text-teal-400'>⏳ Writing TikTok Script (Burmese)...</span>";
-
-        // Forced Burmese instruction
-        const prompt = `
-          Role: TikTok Creator for With You Photo Studio.
-          Task: Write a script for "${topic}" in style "${style}".
-          
-          STRICT LANGUAGE RULES:
-          1. WRITE EVERYTHING IN BURMESE (မြန်မာဘာသာ).
-          2. Do NOT use English headers like 'Scene 1', 'Visual', 'Audio'.
-          3. Instead use 'အခန်း (၁)', 'မြင်ကွင်း', 'အသံ/စကားပြော'.
-          4. Male speaker voice ('ဗျ').
-          
-          Format: Scene breakdown with Voiceover text.
-        `;
-
+        output.innerHTML = "<span class='animate-pulse text-teal-400'>⏳ Writing TikTok Script...</span>";
+        const prompt = `Role: TikTok Creator. Task: Write script for "${topic}" in Burmese (Male voice). Structure: Scene, Audio.`;
         await callAI(prompt, output);
         document.getElementById('ttContinueBtn').classList.remove('hidden');
+    }
+
+    // TIKTOK ASSISTANT FUNCTIONS
+    async function ttAssistIdeas() {
+        const topic = document.getElementById('ttInput').value || "Photography";
+        const output = document.getElementById('ttAiResult');
+        document.getElementById('ttOutputArea').classList.remove('hidden');
+        document.getElementById('ttResultLabel').innerText = "VIDEO IDEAS";
+        
+        output.innerHTML = "<span class='animate-pulse text-teal-400'>💡 Brainstorming Video Ideas...</span>";
+        const prompt = `Role: TikTok Strategist. Task: Give 5 Viral Video Ideas for: "${topic}". Language: Burmese (Male voice).`;
+        await callAI(prompt, output);
+    }
+
+    async function ttAssistHooks() {
+        const topic = document.getElementById('ttInput').value || "Photography";
+        const output = document.getElementById('ttAiResult');
+        document.getElementById('ttOutputArea').classList.remove('hidden');
+        document.getElementById('ttResultLabel').innerText = "VISUAL HOOKS";
+        
+        output.innerHTML = "<span class='animate-pulse text-teal-400'>⚡ Creating Hooks...</span>";
+        const prompt = `Role: TikTok Strategist. Task: Give 5 Visual Hook ideas (first 3 seconds) for a video about: "${topic}". Language: Burmese.`;
+        await callAI(prompt, output);
     }
 
     async function continueTikTok() {
         const output = document.getElementById('ttAiResult');
         output.innerHTML += "<br><br><span class='loading-indicator animate-pulse text-teal-400'>... ဆက်ရေးနေသည် ...</span>";
-        const prompt = `
-            Role: Scriptwriter.
-            Instruction: Continue the previous Burmese script/caption exactly where it stopped.
-            Language: Burmese Only.
-        `;
+        const prompt = `Role: Scriptwriter. Instruction: Continue the previous Burmese script.`;
         await callAI(prompt, output, true);
     }
 
 
-    // --- 4. DM GENERATION ---
+    // --- 4. DM ---
     async function generateDmReply() {
         const input = document.getElementById('dmInput').value;
         const output = document.getElementById('dmOutput');
         
         output.classList.remove("hidden");
         output.innerHTML = "<span class='animate-pulse text-purple-400'>⏳ Drafting reply...</span>";
-
-        const prompt = `
-          Role: Studio Manager (With You Studio).
-          Task: Reply to client message in Burmese.
-          Client said: "${input}"
-          Tone: Professional, Empathetic. Use "Bya".
-          Goal: Close the sale.
-        `;
-
+        const prompt = `Role: Manager. Task: Reply to client: "${input}" in Burmese (Male voice). Tone: Polite & Sales-oriented.`;
         await callAI(prompt, output);
     }
 
-
-    // --- SHARED UTILS ---
-    function copyCode(elementId) {
-        const code = document.getElementById(elementId).innerText;
-        navigator.clipboard.writeText(code);
-        alert("Copied to clipboard!");
+    // UTILS
+    function copyText(elementId) {
+        const text = document.getElementById(elementId).innerText;
+        navigator.clipboard.writeText(text);
+        alert("Text copied!");
     }
   </script>
 </body>
