@@ -388,7 +388,7 @@ button { transition: all 0.2s ease; }
                         </div>
                         
                         <button onclick="window.generateAI('creative_tt_text')" class="w-full bg-slate-800 border border-teal-500/50 hover:bg-slate-700 text-teal-400 font-bold py-3.5 rounded-xl transition active:scale-95 flex items-center justify-center gap-2 shadow-md">
-                            <i class="ph ph-text-t text-lg"></i> TikTok Text Mode (500 chars)
+                            <i class="ph ph-text-t text-lg"></i> TikTok Text Mode (250 chars)
                         </button>
                     </div>
                 </div>
@@ -880,21 +880,24 @@ window.runAssistant = async function(type) {
     let isChatSubmitting = false;
 
     window.handleChatSubmit = async function() {
-        // 1. Check if already submitting (Double enter fix)
-        if(isChatSubmitting) return;
+        if(isChatSubmitting) return; // Stop double clicks
 
         const inputEl = document.getElementById('chatInput');
+        const sendBtn = document.querySelector('button[onclick="window.handleChatSubmit()"]'); // Find button
         const text = inputEl.value.trim();
         if(!text) return;
         
-        // Lock the function
+        // --- LOCK & UI FEEDBACK ---
         isChatSubmitting = true;
-
+        inputEl.disabled = true; 
+        if(sendBtn) {
+            sendBtn.disabled = true;
+            sendBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+        
+        // Add User Message
         addMessageToUI('user', text);
         inputEl.value = '';
-        
-        // Disable input while thinking to prevent extra enters
-        inputEl.disabled = true; 
         
         const loadingId = addMessageToUI('ai', 'Thinking...', true);
         
@@ -979,6 +982,10 @@ window.runAssistant = async function(type) {
                 inputEl.disabled = false;
                 inputEl.focus();
             }
+            if(sendBtn) {
+                sendBtn.disabled = false;
+                sendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
         }
     };
     
@@ -998,12 +1005,20 @@ window.runAssistant = async function(type) {
         if(isLoading) content = `<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>`;
         else content = text.replace(/\n/g, '<br>');
 
-        div.innerHTML = `
-            <div class="${role === 'user' ? 'chat-bubble-user max-w-[80%]' : 'flex items-start gap-3 max-w-[85%]'}">
-                ${role === 'ai' ? '<div class="w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-400 border border-yellow-500/30 shrink-0"><i class="ph ph-robot"></i></div>' : ''}
-                <div class="${role === 'ai' ? 'chat-bubble-ai' : ''}">${content}</div>
-            </div>
-        `;
+        // --- FIX: Remove extra wrapper div for User ---
+        if (role === 'user') {
+            // User Message: Direct Chat Bubble (Fixes Width Issue)
+            div.innerHTML = `<div class="chat-bubble-user max-w-[80%] text-left">${content}</div>`;
+        } else {
+            // AI Message: With Icon
+            div.innerHTML = `
+                <div class="flex items-start gap-3 max-w-[85%]">
+                    <div class="w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-400 border border-yellow-500/30 shrink-0"><i class="ph ph-robot"></i></div>
+                    <div class="chat-bubble-ai">${content}</div>
+                </div>
+            `;
+        }
+        
         container.appendChild(div);
         container.scrollTop = container.scrollHeight;
         return id;
@@ -1120,8 +1135,19 @@ window.runAssistant = async function(type) {
         }
         else if (type === 'creative_director') { prompt = `Task: 3-Day Content Plan. Focus=${getValue('crFocus')}.`; contextTopic = `Creative Plan`; }
         else if (type === 'creative_post') { prompt = `Task: Write FB Post about "${getValue('crFocus')}".`; contextTopic = `Creative Post`; }
-        else if (type === 'creative_tt_text') { prompt = `Task: TikTok Text Mode post. Topic: ${getValue('crFocus')}.`; contextTopic = `TikTok Text`; }
-        else if (type === 'dm_auto_detect') { prompt = `Task: Best DM Reply for "${getValue('dmInput')}".`; contextTopic = `Auto DM Reply`; }
+else if (type === 'creative_tt_text') {
+             const topic = getValue('crFocus');
+             prompt = `
+             Role: Viral TikTok Content Creator.
+             Task: Write a "Text Mode" (Image of text) post about "${topic}".
+             CONSTRAINT: MUST be under 250 characters total.
+             STYLE: Aesthetic, Deep, Emotional, or Minimalist.
+             FORMAT: Short, punchy lines (Stanza format). No hashtags needed inside the text image.
+             GOAL: Visually beautiful text that people want to save as wallpaper.
+             Language: Burmese (Unicode) mixed with minimal English if needed for style.
+             `;
+             contextTopic = `TikTok Text Mode (${topic})`;
+        }        else if (type === 'dm_auto_detect') { prompt = `Task: Best DM Reply for "${getValue('dmInput')}".`; contextTopic = `Auto DM Reply`; }
         else if (type === 'dm_analyze') { prompt = `Task: Analyze "${getValue('dmInput')}". Output: Status, Reason.`; }
         else if (type === 'dm_best') { prompt = `Task: 3 Sales Replies. Client: "${getValue('dmInput')}".`; contextTopic = `DM Sales`; }
         else if (type === 'fbpost') { prompt = `Task: 3 FB Posts. Topic: ${getValue('fbInput')}.`; contextTopic = `FB Post`; }
