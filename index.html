@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Sales Master AI v6.6</title>
+  <title>With You Studio - Sales Master AI v6.7</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -170,7 +170,7 @@ button { transition: all 0.2s ease; }
             <h1 class="text-xl font-bold text-white tracking-tight flex items-center gap-2">
                 <i class="ph ph-camera text-blue-400"></i> With You Studio
             </h1>
-            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">Sales Master AI v6.6</div>
+            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">Sales Master AI v6.7</div>
             <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1 flex items-center gap-1">
                 <span id="connectionStatus" class="w-2 h-2 rounded-full bg-red-500"></span> Online
             </p>
@@ -876,88 +876,111 @@ window.runAssistant = async function(type) {
     window.setManagerOption = window.setCreativeOption;
     
     // --- CHAT MANAGER (RESTORED) ---
-    // Global variable to prevent double submission
-    let isChatSubmitting = false;
+    // --- GLOBAL VARIABLES ---
+    let isChatSubmitting = false; // Double Enter Lock
 
+    // --- ALL-IN-ONE SMART CHAT FUNCTION ---
     window.handleChatSubmit = async function() {
-        if(isChatSubmitting) return; // Stop double clicks
+        // 1. Safety Checks
+        if(isChatSubmitting) return;
 
         const inputEl = document.getElementById('chatInput');
-        const sendBtn = document.querySelector('button[onclick="window.handleChatSubmit()"]'); // Find button
+        const sendBtn = document.querySelector('button[onclick="window.handleChatSubmit()"]');
         const text = inputEl.value.trim();
         if(!text) return;
         
-        // --- LOCK & UI FEEDBACK ---
+        // 2. Lock UI
         isChatSubmitting = true;
         inputEl.disabled = true; 
-        if(sendBtn) {
-            sendBtn.disabled = true;
-            sendBtn.classList.add('opacity-50', 'cursor-not-allowed');
-        }
+        if(sendBtn) sendBtn.classList.add('opacity-50', 'cursor-not-allowed');
         
-        // Add User Message
+        // 3. UI Updates
         addMessageToUI('user', text);
         inputEl.value = '';
-        
         const loadingId = addMessageToUI('ai', 'Thinking...', true);
         
-        let brand = {};
-        if(userId) { try { const s = await getDoc(doc(db, 'artifacts', appId, 'users', userId, 'config', 'brand')); if(s.exists()) brand = s.data(); } catch(e){} }
-        
-        let savedDecisions = [];
+        // 4. SMART DATA FETCHING
+        let contextData = "No prior data.";
         if(userId) {
-             try {
-                 const q = query(collection(db, 'artifacts', appId, 'users', userId, 'decisions'), orderBy('timestamp', 'desc'), limit(3));
-                 const snaps = await getDocs(q); 
-                 snaps.forEach(d => savedDecisions.push(d.data().content));
-             } catch(e) {}
+            try {
+                // Fetch Brand Config
+                let brand = {};
+                const brandSnap = await getDoc(doc(db, 'artifacts', appId, 'users', userId, 'config', 'brand')); 
+                if(brandSnap.exists()) brand = brandSnap.data();
+                const packages = brand.brandPackages || "Not set";
+                const style = brand.brandStyle || "Professional";
+
+                // Fetch Recent Decisions
+                let decisions = [];
+                const qDecisions = query(collection(db, 'artifacts', appId, 'users', userId, 'decisions'), orderBy('timestamp', 'desc'), limit(3));
+                const snapDecisions = await getDocs(qDecisions); 
+                snapDecisions.forEach(d => decisions.push(d.data().content));
+
+                // Fetch Chat History
+                let history = [];
+                const qHistory = query(collection(db, 'artifacts', appId, 'users', userId, 'history'), orderBy('timestamp', 'desc'), limit(5));
+                const snapHistory = await getDocs(qHistory);
+                snapHistory.forEach(d => history.push(`[${d.data().type}]: ${d.data().topic}`));
+
+                contextData = `Studio Style: ${style} \n Packages: ${packages} \n Recent Decisions: ${decisions.join('; ')} \n Chat History: ${history.join('; ')}`;
+            } catch(e) { console.log("Context fetch warning:", e); }
         }
 
-        const packages = (brand && brand.brandPackages) ? brand.brandPackages : "Not set";
-        const style = (brand && brand.brandStyle) ? brand.brandStyle : "Professional";
-        
+        // 5. THE "AUTO-SWITCH" SYSTEM PROMPT (Updated with Powerful Rules)
         const systemPrompt = `
-        === IDENTITY & ROLE ===
-        YOU ARE: "Ko Thet", the Senior Studio Manager & Business Partner of "With You Studio" (Taunggyi).
-        RELATIONSHIP: You are Ko Sai's right-hand man. You are loyal, proactive, and strategic.
+        === 🎭 SUPER-SYSTEM IDENTITY ===
+        You are "The Dual-Brain AI" for With You Photo Studio (Taunggyi).
+        You must dynamically SHIFT your personality based on Ko Sai's input.
         
-        === TONE & VOICE ===
-        - Language: Natural Burmese (Myanmar Unicode).
-        - Ending Particles: Always use "Bya" (ဗျ), "Khamya" (ခင်ဗျာ). Never use "Shin".
-        - Vibe: Warm, Brotherly, but Professional. Like a close friend discussing business.
-        - Taunggyi Context: You understand local trends and the photography market in Taunggyi.
+        === 🕵️‍♂️ STEP 1: INTENT & MODE ANALYSIS ===
+        Analyze input: "${text}"
+        
+        🔴 TRIGGER: BUSINESS MANAGER ("Ko Thet") IF:
+        - Input is about: Money, Packages, Clients, Bookings, Schedule, Strategy.
+        - Keyword signals: "Price", "Cost", "Post", "Customer", "Plan", "Busy".
 
-        === KNOWLEDGE BASE ===
-        - Studio Style: ${style}
-        - Current Packages: ${packages}
-        - Recent Context: ${savedDecisions.join('; ')}
+        🔵 TRIGGER: CREATIVE MENTOR ("Saya") IF:
+        - Input is about: Lighting, Composition, Camera Settings, Art, Inspiration, Mindset.
+        - Keyword signals: "Light", "Mood", "Lens", "Feel", "Learn", "Idea".
 
-        === CRITICAL RULES (MUST FOLLOW) ===
-        1. 🛡️ NO HALLUCINATIONS: If you don't know a specific price, say "ဒီ Package ဈေးနှုန်းလေးကို ကျွန်တော် ပြန်အတည်ပြုပေးပါမယ်" (Let me confirm). Do NOT guess prices.
-        2. 💰 SALES TACTIC: When discussing packages, use the "Sandwich Method" (Value -> Price -> Value). Highlight the *feeling* of the photos, not just the price.
-        3. ⚡ BREVITY: Keep chat replies concise (under 4 sentences) unless asked for a full plan.
-        4. 🎯 GOAL: Always try to move the conversation towards a "Booking" or a "Solution".
+        (⚠️ If ambiguous, default to BUSINESS MANAGER).
 
-        === CURRENT TASK ===
-        User Input: "${text}"
-        Your Response:
+        === 🧠 MODE 1: BUSINESS MANAGER ("Ko Thet") ===
+        - ROLE: Ko Sai's Right-Hand Man. Loyal, Proactive, Strategic.
+        - TONE: Natural Burmese (Unicode). Ends with "Bya/Khamya". Warm but Professional.
+        - 🛡️ CRITICAL RULE 1 (NO HALLUCINATIONS): If you don't know a specific price in the data, say "Let me confirm the price." DO NOT GUESS.
+        - 💰 CRITICAL RULE 2 (SANDWICH METHOD): When discussing price, wrap it in value (Value -> Price -> Value). Focus on the *feeling* of the photos.
+        - GOAL: Move conversation to a "Booking" or "Solution".
+
+        === 📚 MODE 2: CREATIVE MENTOR ("Saya") ===
+        - ROLE: Senior Artist & Wise Teacher.
+        - TONE: Calm, Deep, Inspiring. Ends with soft "Bya".
+        - RULE: NEVER talk about business/prices. Focus on Art, Light, and Emotion.
+        - GOAL: Teach, Inspire, and expand Ko Sai's artistic eye.
+
+        === 📝 CONTEXT DATA ===
+        ${contextData}
+
+        === EXECUTION ===
+        1. Decide the Mode (🔴 or 🔵).
+        2. Stay 100% in that character.
+        3. Respond in concise, natural Burmese.
         `;
         
-        const finalPrompt = systemPrompt + "\n\nUser: " + text + "\nAI:";
-
+        // 6. Send to API
         try {
             const res = await fetch("/api/generate", {
                 method: "POST", headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    userMessage: finalPrompt,
-                    mode: "manager"
+                    userMessage: systemPrompt + "\n\nUser Input: " + text + "\nAI Response:",
+                    mode: "auto-switch"
                 })
             });
             
             if (!res.ok) throw new Error("Server Error " + res.status);
-
             const d = await res.json();
             
+            // 7. Success Handling
             const loadingEl = document.getElementById(loadingId);
             if (loadingEl) loadingEl.remove();
 
@@ -965,27 +988,19 @@ window.runAssistant = async function(type) {
             addSaveButton(msgId, d.result);
 
             if(d.result && userId) {
-                saveToRecents('manager_chat', d.result, `AI Chat: ${text.substring(0, 15)}...`);
+                const topicTag = text.length > 20 ? text.substring(0, 20) + "..." : text;
+                saveToRecents('ai_chat', d.result, topicTag);
             }
             
         } catch(e) {
             console.error(e);
             const loadingEl = document.getElementById(loadingId);
-            if(loadingEl) {
-                loadingEl.innerHTML = "<span class='text-red-400'>Connection failed.</span>";
-                loadingEl.classList.remove('typing-dot'); 
-            }
+            if(loadingEl) { loadingEl.innerHTML = "<span class='text-red-400'>Connection failed.</span>"; loadingEl.classList.remove('typing-dot'); }
         } finally {
-            // Unlock and Re-enable input
+            // 8. Unlock UI
             isChatSubmitting = false;
-            if(inputEl) {
-                inputEl.disabled = false;
-                inputEl.focus();
-            }
-            if(sendBtn) {
-                sendBtn.disabled = false;
-                sendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-            }
+            if(inputEl) { inputEl.disabled = false; inputEl.focus(); }
+            if(sendBtn) sendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
         }
     };
     
