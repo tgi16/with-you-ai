@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Sales Master AI v4.6</title>
+  <title>With You Studio - Sales Master AI v4.7</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -215,12 +215,12 @@
 
   <!-- TEMPLATES -->
   
-  <!-- 0. CREATIVE DIRECTOR TEMPLATE (UPDATED: Added Write Post Now Button) -->
+  <!-- 0. CREATIVE DIRECTOR TEMPLATE (UPDATED) -->
   <template id="tpl-creative">
     <div class="animate-fade-in space-y-6">
         <div class="flex items-center justify-between">
             <h2 class="text-xl md:text-2xl font-bold text-yellow-400 flex items-center gap-2"><i class="ph ph-lightbulb"></i> Creative Director</h2>
-            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">v4.6</div>
+            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">v4.7</div>
         </div>
         
         <div class="glass-panel p-6 rounded-xl border border-yellow-500/20 shadow-lg relative overflow-hidden">
@@ -265,13 +265,20 @@
                          </div>
                     </div>
 
-                    <!-- Dual Action Buttons -->
-                    <div class="grid grid-cols-2 gap-3 mt-4">
-                        <button onclick="window.generateAI('creative_director')" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 font-bold py-3.5 rounded-xl transition active:scale-95 flex items-center justify-center gap-2">
-                            <i class="ph ph-calendar-plus text-lg"></i> 3-Day Plan
-                        </button>
-                        <button onclick="window.generateAI('creative_post')" class="bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-500 hover:to-orange-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-yellow-900/30 transition active:scale-95 flex items-center justify-center gap-2">
-                            <i class="ph ph-pen-nib text-lg"></i> Write Post Now
+                    <!-- Multi Action Buttons -->
+                    <div class="space-y-3 mt-4">
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="window.generateAI('creative_director')" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 font-bold py-3.5 rounded-xl transition active:scale-95 flex items-center justify-center gap-2">
+                                <i class="ph ph-calendar-plus text-lg"></i> 3-Day Plan
+                            </button>
+                            <button onclick="window.generateAI('creative_post')" class="bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-500 hover:to-orange-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-yellow-900/30 transition active:scale-95 flex items-center justify-center gap-2">
+                                <i class="ph ph-pen-nib text-lg"></i> Write Post Now
+                            </button>
+                        </div>
+                        
+                        <!-- NEW TIKTOK TEXT MODE BUTTON -->
+                        <button onclick="window.generateAI('creative_tt_text')" class="w-full bg-slate-800 border border-teal-500/50 hover:bg-slate-700 text-teal-400 font-bold py-3.5 rounded-xl transition active:scale-95 flex items-center justify-center gap-2">
+                            <i class="ph ph-text-t text-lg"></i> TikTok Text Mode (500 chars)
                         </button>
                     </div>
                 </div>
@@ -645,8 +652,8 @@
     }
 
     window.generateAI = async function(type, isContinue = false) {
-        const outputIds = { 'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'timeline': 'tlOutput', 'tt_caption': 'ttOutput', 'tt_script': 'ttOutput', 'pose': 'poseOutput', 'creative_director': 'crOutput', 'creative_post': 'crOutput' }; // Added creative_post
-        const areaIds = { 'fbpost': 'fbResultArea', 'dm_best': 'dmResultArea', 'timeline': 'tlResultArea', 'tt_caption': 'ttResultArea', 'tt_script': 'ttResultArea', 'pose': 'poseResultArea', 'creative_director': 'crResultArea', 'creative_post': 'crResultArea' }; // Added creative_post
+        const outputIds = { 'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'timeline': 'tlOutput', 'tt_caption': 'ttOutput', 'tt_script': 'ttOutput', 'pose': 'poseOutput', 'creative_director': 'crOutput', 'creative_post': 'crOutput', 'creative_tt_text': 'crOutput' }; 
+        const areaIds = { 'fbpost': 'fbResultArea', 'dm_best': 'dmResultArea', 'timeline': 'tlResultArea', 'tt_caption': 'ttResultArea', 'tt_script': 'ttResultArea', 'pose': 'poseResultArea', 'creative_director': 'crResultArea', 'creative_post': 'crResultArea', 'creative_tt_text': 'crResultArea' };
         const continueBtnIds = { 'fbpost': 'fbContinueBtn', 'dm_best': 'dmContinueBtn', 'timeline': 'tlContinueBtn', 'tt_caption': 'ttContinueBtn', 'tt_script': 'ttContinueBtn' };
 
         const outId = outputIds[type];
@@ -658,18 +665,18 @@
         } else {
              if(document.getElementById(areaId)) document.getElementById(areaId).classList.remove('hidden');
              // Special handling for Creative Director Mobile
-             if(type === 'creative_director' || type === 'creative_post') {
+             if(type === 'creative_director' || type === 'creative_post' || type === 'creative_tt_text') {
                  if(window.innerWidth < 768) document.getElementById('crResultAreaMobile').classList.remove('hidden');
              }
 
              if(!isContinue && document.getElementById(outId)) {
                 document.getElementById(outId).innerHTML = "<span class='animate-pulse text-purple-400'>✨ Senior Sales Manager is thinking...</span>";
-                if((type === 'creative_director' || type === 'creative_post') && window.innerWidth < 768) {
+                if((type === 'creative_director' || type === 'creative_post' || type === 'creative_tt_text') && window.innerWidth < 768) {
                     document.getElementById('crOutputMobile').innerHTML = "<span class='animate-pulse text-yellow-400'>✨ Creating...</span>";
                 }
                 
                 if(window.innerWidth < 768) {
-                    const scrollTarget = (type === 'creative_director' || type === 'creative_post') ? document.getElementById('crResultAreaMobile') : document.getElementById(areaId);
+                    const scrollTarget = (type === 'creative_director' || type === 'creative_post' || type === 'creative_tt_text') ? document.getElementById('crResultAreaMobile') : document.getElementById(areaId);
                     setTimeout(() => { scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
                 }
             }
@@ -735,6 +742,21 @@
             - Strong Call to Action (Book now)
             - 5 Relevant Hashtags
             LANGUAGE: Burmese (Natural, warm, "Bya" ending).
+            `;
+        }
+        else if (type === 'creative_tt_text') {
+            const focus = getValue('crFocus');
+            contextTopic = `TikTok Text: ${focus}`;
+            taskPrompt = `
+            TASK: Write a TikTok 'Text Mode' post (Slide/Photo mode text).
+            TOPIC: ${focus}.
+            CONSTRAINT: MUST be under 500 characters total.
+            TONE: Emotional, poetic, or super helpful tip. Very natural Burmese.
+            STRUCTURE:
+            - Hook (1 line)
+            - Short touching story or advice (3-4 lines)
+            - Warm CTA
+            - 3 Hashtags
             `;
         }
         else if (type === 'dm_analyze') {
@@ -848,7 +870,7 @@
                 }
                 
                 // Duplicate to Mobile Creative Output
-                if(type === 'creative_director' || type === 'creative_post') {
+                if(type === 'creative_director' || type === 'creative_post' || type === 'creative_tt_text') {
                     if (document.getElementById('crOutputMobile')) {
                         document.getElementById('crOutputMobile').innerText = finalContent;
                     }
