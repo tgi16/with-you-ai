@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - AI Manager v5.0</title>
+  <title>With You Studio - AI Manager v5.1</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -28,7 +28,7 @@
         border-color: transparent;
     }
 
-    .tactic-btn.active, .manager-btn.active {
+    .tactic-btn.active, .manager-btn.active, .creative-btn.active {
         background-color: #7e22ce; 
         border-color: #a855f7;
         color: white;
@@ -214,19 +214,19 @@
 
   <!-- TEMPLATES -->
   
-  <!-- 0. AI MANAGER TEMPLATE (NEW & IMPROVED) -->
+  <!-- 0. AI MANAGER TEMPLATE (UPDATED: Merged Ideas) -->
   <template id="tpl-manager">
     <div class="animate-fade-in space-y-6">
         <div class="flex items-center justify-between">
             <h2 class="text-xl md:text-2xl font-bold text-yellow-400 flex items-center gap-2"><i class="ph ph-robot"></i> AI Manager</h2>
-            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">Daily Guide</div>
+            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">Daily Master Plan</div>
         </div>
         
         <div class="glass-panel p-6 rounded-xl border border-yellow-500/20 shadow-lg relative overflow-hidden">
              <i class="ph ph-sparkle absolute -top-4 -right-4 text-9xl text-yellow-500 opacity-5 rotate-12"></i>
              
              <p class="text-sm text-slate-300 mb-6 relative z-10">
-                "မင်္ဂလာပါ ကိုစိုင်း။ ဒီနေ့ ဘာလုပ်ရမလဲ ကျွန်တော် စီစဉ်ပေးပါရစေ။"
+                "မင်္ဂလာပါ ကိုစိုင်း။ ဒီနေ့အတွက် စီမံခန့်ခွဲမှုနဲ့ Content Idea တွေပါ ပေါင်းပြီး ကျွန်တော် စီစဉ်ပေးပါရစေ။"
              </p>
 
              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
@@ -242,18 +242,28 @@
                         <input type="hidden" id="mgrEnergy" value="Normal">
                     </div>
 
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Today's Goal (ရည်မှန်းချက်)</label>
-                        <select id="mgrGoal" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white focus:border-yellow-500 outline-none">
-                            <option value="Get Bookings">💰 Get Bookings (အရောင်း)</option>
-                            <option value="Brand Awareness">📢 Brand Awareness (နာမည်ရဖို့)</option>
-                            <option value="Content Creation">🎥 Just Create Content (ရိုက်ကူးရေး)</option>
-                            <option value="Organization">🧹 Clean & Organize (ဆိုင်ရှင်း/စီစဉ်)</option>
-                        </select>
+                    <div class="grid grid-cols-2 gap-3">
+                         <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Today's Goal</label>
+                            <select id="mgrGoal" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white focus:border-yellow-500 outline-none">
+                                <option value="Get Bookings">💰 Sales (Booking)</option>
+                                <option value="Brand Awareness">📢 Branding (Popularity)</option>
+                                <option value="Organization">🧹 Clean & Organize</option>
+                            </select>
+                        </div>
+                        <div>
+                             <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Focus (Content)</label>
+                             <select id="mgrFocus" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white focus:border-yellow-500 outline-none">
+                                <option value="Anything">🎲 Anything</option>
+                                <option value="Pre-Wedding">💍 Pre-Wedding</option>
+                                <option value="Wedding Day">👰 Wedding</option>
+                                <option value="Studio Branding">🏢 Studio</option>
+                            </select>
+                        </div>
                     </div>
 
                     <button onclick="window.generateAI('manager_daily')" class="w-full mt-4 bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-500 hover:to-orange-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-yellow-900/30 transition active:scale-95 flex items-center justify-center gap-2">
-                        <i class="ph ph-magic-wand text-lg"></i> Give Me A Plan
+                        <i class="ph ph-magic-wand text-lg"></i> Generate Master Plan
                     </button>
                 </div>
 
@@ -261,10 +271,15 @@
                 <div id="mgrResultArea" class="hidden h-full">
                      <div class="bg-slate-900/50 rounded-xl border border-slate-700 p-4 h-full flex flex-col">
                         <div class="flex justify-between items-center mb-3">
-                            <span class="text-xs font-bold text-yellow-400 uppercase">Today's Mission</span>
-                            <button onclick="window.copyText('mgrOutput')" class="text-xs bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded border border-slate-600 transition">Copy</button>
+                            <span class="text-xs font-bold text-yellow-400 uppercase">Your Daily Mission</span>
+                            <div class="flex gap-2">
+                                <button onclick="window.copyText('mgrOutput')" class="text-xs bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded border border-slate-600 transition">Copy</button>
+                            </div>
                         </div>
                         <div id="mgrOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 overflow-y-auto max-h-[400px] custom-scroll"></div>
+                        <button id="mgrContinueBtn" onclick="window.continueAI('manager_daily')" class="hidden w-full mt-3 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-yellow-400 text-xs font-bold flex items-center justify-center gap-2 transition">
+                            <span>⚠️ Continue Planning</span>
+                        </button>
                      </div>
                 </div>
             </div>
@@ -272,7 +287,7 @@
     </div>
   </template>
 
-  <!-- 1. DM AUTO DETECT TEMPLATE (Updated) -->
+  <!-- 1. DM AUTO DETECT TEMPLATE -->
   <template id="tpl-dm">
     <div class="animate-fade-in space-y-6">
         <div class="flex items-center justify-between">
@@ -532,6 +547,8 @@
     window.generateAI = async function(type, isContinue = false) {
         const outputIds = { 'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'timeline': 'tlOutput', 'tt_caption': 'ttOutput', 'tt_script': 'ttOutput', 'pose': 'poseOutput', 'manager_daily': 'mgrOutput', 'dm_auto_detect': 'dmOutput' };
         const areaIds = { 'fbpost': 'fbResultArea', 'dm_best': 'dmResultArea', 'timeline': 'tlResultArea', 'tt_caption': 'ttResultArea', 'tt_script': 'ttResultArea', 'pose': 'poseResultArea', 'manager_daily': 'mgrResultArea', 'dm_auto_detect': 'dmResultArea' };
+        const continueBtnIds = { 'fbpost': 'fbContinueBtn', 'dm_best': 'dmContinueBtn', 'timeline': 'tlContinueBtn', 'tt_caption': 'ttContinueBtn', 'tt_script': 'ttContinueBtn', 'manager_daily': 'mgrContinueBtn', 'dm_auto_detect': 'dmContinueBtn' }; // Added continue button mapping
+
         const outId = outputIds[type];
         const areaId = areaIds[type];
 
@@ -550,18 +567,27 @@
         if(userId) { try { const s = await getDoc(doc(db, 'artifacts', appId, 'users', userId, 'config', 'brand')); if(s.exists()) brand = s.data(); } catch(e){} }
         const packages = brand.brandPackages || "Not set";
         const contact = `Ph: ${brand.brandPhone||''}, Viber: ${brand.brandViber||''}`;
-        const baseSystem = `Role: Owner of With You Studio. Tone: Natural Burmese (Bya/Khamya), Warm. Data: ${packages}, ${contact}.`;
+        const baseSystem = `Role: Owner of With You Studio. Tone: Natural Burmese (Bya/Khamya), Warm. Data: ${packages}, ${contact}. IMPORTANT: Use complete sentences.`;
         
         let prompt = "";
         let contextTopic = "";
 
         if (type === 'manager_daily') { // Map creative_director to manager logic
-             prompt = `Task: Create a 3-Day Mini Content Plan for a busy studio owner. Input: Energy=${getValue('mgrEnergy')}, Goal=${getValue('mgrGoal') || 'General'}. Output: Checklist format in Burmese.`;
-             contextTopic = `Manager Plan`;
+             prompt = `Task: Create a Comprehensive Daily Plan for a studio owner. 
+             Input: Energy=${getValue('mgrEnergy')}, Goal=${getValue('mgrGoal') || 'General'}, Content Focus=${getValue('mgrFocus')}. 
+             OUTPUT SECTIONS:
+             1. 🔋 Mindset Check (1 sentence based on energy)
+             2. 🎯 Top 3 Priorities (Operational/Sales)
+             3. 💡 Content Idea of the Day (Specific to ${getValue('mgrFocus')} for TikTok/FB)
+             4. 💬 Sales Tip (Quick advice for closing deals)
+             Write in Burmese.`;
+             contextTopic = `Manager Plan (${getValue('mgrFocus')})`;
+             if(isContinue) prompt = `Context: Continue daily plan from: "${document.getElementById(outId).innerText.slice(-50)}". Finish sections.`;
         }
         else if (type === 'dm_auto_detect') { // Auto Detect Logic
              prompt = `Task: Analyze client message "${getValue('dmInput')}" and immediately write the BEST single reply strategy. Detect if they need price, reassurance, or booking info. Write the reply directly.`;
              contextTopic = `Auto DM Reply`;
+             if(isContinue) prompt = `Context: Continue DM reply from: "${document.getElementById(outId).innerText.slice(-50)}".`;
         }
         else if (type === 'dm_analyze') {
             const msg = getValue('dmInput');
@@ -578,9 +604,11 @@
         } else if(type === 'timeline') {
              prompt = `Task: Wedding Timeline. Start: ${getValue('tlStart')}. Place: ${getValue('tlPlace')}. Outfit: ${getValue('tlDress')}.`;
              contextTopic = `Timeline: ${getValue('tlPlace')}`;
+             if(isContinue) prompt = `Context: Continue timeline from: "${document.getElementById(outId).innerText.slice(-50)}".`;
         } else if(type.includes('tt_')) {
              prompt = `Task: TikTok ${type.split('_')[1]}. Topic: ${getValue('ttInput')}. Style: ${getValue('ttStyle')}.`;
              contextTopic = `TikTok: ${getValue('ttInput')}`;
+             if(isContinue) prompt = `Context: Continue TikTok content from: "${document.getElementById(outId).innerText.slice(-50)}".`;
         } else if(type === 'pose') {
              prompt = `Task: 3 Pose Ideas. Context: ${getValue('poseInput')}. Outfit: ${getValue('poseOutfit')}.`;
              contextTopic = `Pose: ${getValue('poseOutfit')}`;
@@ -599,6 +627,12 @@
             } else {
                 if(isContinue) document.getElementById(outId).innerText += "\n" + d.result;
                 else document.getElementById(outId).innerText = d.result;
+                
+                // Show Continue Button if available
+                if(continueBtnIds[type]) {
+                    const btn = document.getElementById(continueBtnIds[type]);
+                    if(btn) btn.classList.remove('hidden');
+                }
                 
                 if(d.result && !d.result.includes("Error")) {
                      saveToRecents(type, document.getElementById(outId).innerText, contextTopic);
