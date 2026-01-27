@@ -3,7 +3,7 @@ export const config = {
 };
 
 export default async function handler(req, res) {
-  /* ---------------- CORS ---------------- */
+  /* ---------- CORS ---------- */
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -11,21 +11,14 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
-
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
-    /* ---------------- INPUT ---------------- */
-    const {
-      userMessage = "",
-      conversation = [],   // [{role, content}]
-      memory = "",         // Brand Brain
-      mode = "general"     // dm | manager | studio | general
-    } = req.body || {};
+    const { userMessage = "", memory = "" } = req.body || {};
 
-    if (!userMessage) {
+    if (!userMessage.trim()) {
       return res.status(400).json({ error: "userMessage is required" });
     }
 
@@ -34,133 +27,158 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "API key missing" });
     }
 
-    /* ---------------- SYSTEM PROMPT ---------------- */
-    const systemPrompt = `
-You are the trusted AI partner of "With You Photo Studio, Taunggyi".
-You know Ko Sai personally and professionally.
+    /* =====================================================
+       1️⃣ INTENT DETECTION (AUTO-SWITCH BRAIN)
+    ===================================================== */
+    const intentPrompt = `
+You are an intent classifier.
 
-PERSONALITY:
-- Sound like a real experienced human
-- Calm, patient, warm, trustworthy
-- Never sound like AI or marketing copy
-- Burmese language only (natural spoken Myanmar)
+Classify the user's message into ONE category only:
+- business (sales, client, content, booking, studio operation)
+- mentor (photography learning, inspiration, skill, art, famous photographers)
+- general (casual chat, unclear, mixed)
 
-BUSINESS STYLE:
-- Strong in Pre-Wedding & guiding couples
-- Sell with trust, not price war
-- Reduce decision fatigue
-- One clear suggestion at a time
+Reply with ONLY one word:
+business OR mentor OR general
+
+User message:
+"${userMessage}"
 `;
 
-    /* ---------------- MEMORY ---------------- */
-    const memoryBlock = memory
-      ? `STUDIO MEMORY:\n${memory}`
-      : `STUDIO MEMORY:
-Studio: With You Photo Studio, Taunggyi
-Strength: Pre-Wedding, patient guiding
-Client feedback: trustworthy, calm, detailed
-`;
+    const intentRes = await fetch(
+      "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" +
+        apiKey,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: [{ text: intentPrompt }] }],
+          generationConfig: { temperature: 0 }
+        })
+      }
+    );
 
-    /* ---------------- CONVERSATION ---------------- */
-    const convoBlock = conversation
-      .slice(-6)
-      .map(m => `${m.role.toUpperCase()}: ${m.content}`)
-      .join("\n");
+    const intentData = await intentRes.json();
+    let intent =
+      intentData?.candidates?.[0]?.content?.parts?.[0]?.text
+        ?.toLowerCase()
+        ?.trim() || "general";
 
-    /* ---------------- MODE ---------------- */
-    let modeInstruction = "";
-
-    if (mode === "dm") {
-      modeInstruction = `
-TASK:
-Reply to client DM naturally.
-If price asked → explain value, invite discussion.
-If date asked → guide next step.
-End with warm polite closing.
-`;
-    } else if (mode === "manager") {
-      modeInstruction = `
-TASK:
-Act as daily AI Manager.
-Give ONE clear direction for today.
-Focus on what brings booking or trust.
-`;
-    } else if (mode === "studio") {
-      modeInstruction = `
-TASK:
-Create natural human-like studio content.
-Avoid hype or AI tone.
-`;
-    } else {
-      modeInstruction = `
-TASK:
-Respond like a trusted colleague.
-Be clear and helpful.
-`;
+    if (!["business", "mentor", "general"].includes(intent)) {
+      intent = "general";
     }
 
-    /* ---------------- FINAL PROMPT ---------------- */
+    /* =====================================================
+       2️⃣ SYSTEM PROMPTS (AUTO SWITCH)
+    ===================================================== */
+
+    const businessPrompt = `
+You are AI Manager for "With You Photo Studio, Taunggyi".
+
+You speak to Ko Sai (studio owner).
+
+Tone:
+- Calm
+- Warm
+- Patient
+- Trustworthy
+- Natural Burmese (spoken Myanmar)
+
+Rules:
+- Focus on bookings, clients, content, daily studio actions
+- Sell by trust, not price
+- Reduce decision fatigue
+- ONE clear suggestion at a time
+- Never sound like marketing textbook
+`;
+
+    const mentorPrompt = `
+You are a photography mentor and senior artist.
+
+You speak to Ko Sai, a photographer from Taunggyi.
+
+Tone:
+- Calm
+- Inspiring
+- Experienced
+- Human (never say you are AI)
+- Burmese language only
+
+Rules:
+- NO selling
+- NO business advice unless asked
+- Focus on photography skills, art, emotion, light, composition
+- Mention famous photographers when helpful
+- Encourage learning and curiosity
+`;
+
+    const generalPrompt = `
+You are a trusted colleague and thinking partner.
+
+Tone:
+- Natural
+- Friendly
+- Clear
+- Burmese language only
+`;
+
+    let systemPrompt = generalPrompt;
+    if (intent === "business") systemPrompt = businessPrompt;
+    if (intent === "mentor") systemPrompt = mentorPrompt;
+
+    /* =====================================================
+       3️⃣ FINAL GENERATION
+    ===================================================== */
     const finalPrompt = `
 SYSTEM:
 ${systemPrompt}
 
-${memoryBlock}
-
-CONVERSATION:
-${convoBlock || "None"}
-
-${modeInstruction}
+STUDIO MEMORY:
+${memory || "With You Photo Studio, Taunggyi"}
 
 USER:
 ${userMessage}
 
 IMPORTANT:
 - Answer fully
-- Short but complete
+- Do NOT cut off
 - Sound human
 `;
 
-    /* ---------------- GEMINI CALL ---------------- */
-    const url =
-      "https://generativelanguage.googleapis.com/v1/models/" +
-      "gemini-2.5-flash:generateContent?key=" + apiKey;
-
-    const geminiRes = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [
-          {
-            role: "user",
-            parts: [{ text: finalPrompt }]
+    const genRes = await fetch(
+      "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" +
+        apiKey,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: [{ text: finalPrompt }] }],
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 3500
           }
-        ],
-        generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 3000
-        }
-      })
-    });
+        })
+      }
+    );
 
-    const data = await geminiRes.json();
+    const genData = await genRes.json();
 
-    if (!geminiRes.ok) {
-      console.error("Gemini error:", data);
+    if (!genRes.ok) {
       return res.status(200).json({
-        error: data?.error?.message || "Gemini API error"
+        error: genData?.error?.message || "Gemini API error"
       });
     }
 
-    const text =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    const result =
+      genData?.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
-    return res.status(200).json({ result: text });
+    return res.status(200).json({
+      intent,      // 👈 FRONTEND က သိနိုင်အောင်
+      result
+    });
 
   } catch (err) {
-    console.error("Backend crash:", err);
-    return res.status(200).json({
-      error: "Server error",
-      detail: err.message
-    });
+    console.error("❌ Backend error:", err);
+    return res.status(200).json({ error: "Server error" });
   }
 }
