@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Sales Master AI v6.3</title>
+  <title>With You Studio - Sales Master AI v6.4</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -766,7 +766,7 @@
         onSnapshot(q, (snapshot) => {
             const items = [];
             snapshot.forEach((doc) => { items.push({ id: doc.id, ...doc.data() }); });
-            c.innerHTML = items.length ? items.map(i=>`<div class="glass-panel p-4 rounded-lg border-l-4 border-green-500 mb-2 group relative"><div class="flex justify-between items-start mb-2"><div><span class="font-bold text-white text-sm block">${i.topic}</span><span class="text-[10px] text-slate-400 uppercase bg-slate-800 px-1.5 rounded">${i.type}</span></div><span class="text-[10px] text-slate-500">${i.date}</span></div><div class="text-xs text-slate-300 line-clamp-3 bg-slate-900/50 p-2 rounded cursor-pointer hover:bg-slate-900 transition" onclick="window.toggleExpand(this)">${i.content}</div><div class="mt-2 text-right flex justify-end gap-2"><button onclick="window.copyText('${i.content.replace(/'/g, "\\'").replace(/\n/g, "\\n")}')" class="text-blue-400 text-xs hover:text-white border border-blue-500/30 px-2 py-1 rounded">Copy</button></div></div>`).join('') : "<div class='text-center text-slate-500 py-10'>No recent activity on Cloud.</div>";
+            c.innerHTML = items.length ? items.map(i=>`<div class="glass-panel p-4 rounded-lg border-l-4 border-green-500 mb-2 group relative"><div class="flex justify-between items-start mb-2"><div><span class="font-bold text-white text-sm block">${i.topic}</span><span class="text-[10px] text-slate-400 uppercase bg-slate-800 px-1.5 rounded">${i.type}</span></div><span class="text-[10px] text-slate-500">${i.date}</span></div><div class="text-xs text-slate-300 line-clamp-3 bg-slate-900/50 p-2 rounded cursor-pointer hover:bg-slate-900 transition" onclick="window.toggleExpand(this)">${i.content}</div><div class="mt-2 text-right flex justify-end gap-2"><button onclick="window.copyText('${i.content.replace(/'/g, "\\'").replace(/\n/g, "\\n")}')" class="text-blue-400 text-xs hover:text-white border border-blue-500/30 px-2 py-1 rounded">Copy</button></div></div>`).join('') : "<div class='text-center text-slate-500 py-10'>No recent activity.</div>";
         });
     }
 
@@ -820,18 +820,13 @@
         try {
             const res = await fetch("/api/generate", {
                 method: "POST", headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-  userMessage: text,
-  conversation: chatHistory,
-  mode: "manager"
-})
+                body: JSON.stringify({ prompt: systemPrompt })
             });
             const d = await res.json();
             
             // Remove loading
             const loadingEl = document.getElementById(loadingId);
-if (loadingEl) loadingEl.remove();
-
+            if(loadingEl) loadingEl.remove();
             
             const msgId = addMessageToUI('ai', d.result);
             addSaveButton(msgId, d.result);
@@ -930,9 +925,8 @@ if (loadingEl) loadingEl.remove();
         if (userId) { try { const s = await getDoc(doc(db, 'artifacts', appId, 'users', userId, 'config', 'brand')); if(s.exists()) brandData = s.data(); } catch(e){} }
         
         const brandStyle = brandData.brandStyle || "Professional";
-        const brandPackages = brandData.brandPackages || "Not specified. Ask client for details.";
-        const contactInfo = `Phone: ${brandData.brandPhone || ''}, Viber: ${brandData.brandViber || ''}, Facebook: ${brandData.brandFB || ''}, TikTok: ${brandData.brandTT || ''}`;
-const packages = brandData.brandPackages || "Not set";
+        const brandPackages = brandData.brandPackages || "Not set";
+        const contactInfo = `Ph: ${brandData.brandPhone || ''}, Viber: ${brandData.brandViber || ''}, Facebook: ${brandData.brandFB || ''}, TikTok: ${brandData.brandTT || ''}`;
 
         // CORE SYSTEM PROMPT
         const systemPrompt = `
@@ -972,32 +966,28 @@ const packages = brandData.brandPackages || "Not set";
              contextTopic = `TikTok Text`;
         }
         else if (type === 'dm_auto_detect') { 
-             prompt = `Task: Analyze client message "${getValue('dmInput')}" and immediately write the BEST single reply strategy. Detect if they need price, reassurance, or booking info. Write the reply directly.`;
+             prompt = `Task: Analyze message "${getValue('dmInput')}" and write BEST reply.`;
              contextTopic = `Auto DM Reply`;
-             if(isContinue) prompt = `Context: Continue DM reply from: "${document.getElementById(outId).innerText.slice(-50)}".`;
         }
         else if (type === 'dm_analyze') {
             const msg = getValue('dmInput');
-            prompt = `ROLE: Strategist. TASK: Analyze "${msg}". Output: Status (Ready/Thinking/NotReady), Reason, NextAction. No full reply.`;
+            prompt = `ROLE: Strategist. TASK: Analyze "${msg}". Output: Status, Reason, NextAction.`;
         }
         else if (type === 'dm_best') {
-             prompt = `Task: Write 3 Sales Replies. Client: "${getValue('dmInput')}". Context: ${getValue('dmService')}. Strategy: ${getValue('dmType')}.`;
+             prompt = `Task: Write 3 Sales Replies. Client: "${getValue('dmInput')}". Context: ${getValue('dmService')}.`;
              contextTopic = `DM: ${getValue('dmService')}`;
-             if(isContinue) prompt = `Context: Continue writing DM replies from: "${document.getElementById(outId).innerText.slice(-50)}". Finish it.`;
+             if(isContinue) prompt = `Context: Continue writing from: "${document.getElementById(outId).innerText.slice(-50)}".`;
         } else if(type === 'fbpost') {
-             prompt = `Task: Write 3 FB Post Variations. Topic: ${getValue('fbInput')}. Tone: ${getValue('fbTone')}. Length: ${getValue('fbLength')}.`;
+             prompt = `Task: Write 3 FB Posts. Topic: ${getValue('fbInput')}.`;
              contextTopic = `FB: ${getValue('fbInput')}`;
-             if(isContinue) prompt = `Context: Continue FB post from: "${document.getElementById(outId).innerText.slice(-50)}". Finish it.`;
         } else if(type === 'timeline') {
-             prompt = `Task: Wedding Timeline. Start: ${getValue('tlStart')}. Place: ${getValue('tlPlace')}. Outfit: ${getValue('tlDress')}.`;
-             contextTopic = `Timeline: ${getValue('tlPlace')}`;
-             if(isContinue) prompt = `Context: Continue timeline from: "${document.getElementById(outId).innerText.slice(-50)}".`;
+             prompt = `Task: Wedding Timeline. Start: ${getValue('tlStart')}.`;
+             contextTopic = `Timeline`;
         } else if(type.includes('tt_')) {
              prompt = `Task: TikTok Content. Topic: ${getValue('ttInput')}.`;
              contextTopic = `TikTok`;
-             if(isContinue) prompt = `Context: Continue TikTok content from: "${document.getElementById(outId).innerText.slice(-50)}".`;
         } else if(type === 'pose') {
-             prompt = `Task: 3 Pose Ideas. Context: ${getValue('poseInput')}. Outfit: ${getValue('poseOutfit')}.`;
+             prompt = `Task: 3 Pose Ideas. Context: ${getValue('poseInput')}.`;
              contextTopic = `Pose`;
         }
 
