@@ -820,13 +820,18 @@
         try {
             const res = await fetch("/api/generate", {
                 method: "POST", headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ prompt: systemPrompt })
+                body: JSON.stringify({
+  userMessage: text,
+  conversation: chatHistory,
+  mode: "manager"
+})
             });
             const d = await res.json();
             
             // Remove loading
             const loadingEl = document.getElementById(loadingId);
-            if(loadingEl) loadingEl.remove();
+if (loadingEl) loadingEl.remove();
+
             
             const msgId = addMessageToUI('ai', d.result);
             addSaveButton(msgId, d.result);
@@ -927,6 +932,7 @@
         const brandStyle = brandData.brandStyle || "Professional";
         const brandPackages = brandData.brandPackages || "Not specified. Ask client for details.";
         const contactInfo = `Phone: ${brandData.brandPhone || ''}, Viber: ${brandData.brandViber || ''}, Facebook: ${brandData.brandFB || ''}, TikTok: ${brandData.brandTT || ''}`;
+const packages = brandData.brandPackages || "Not set";
 
         // CORE SYSTEM PROMPT
         const systemPrompt = `
