@@ -101,6 +101,29 @@ Be helpful and clear.
 `;
     }
 
+else if (type === 'manager_daily') {
+  prompt = `
+Task: Act as my AI Manager.
+User: Ko Sai (Photo Studio Owner – With You Photo Studio, Taunggyi)
+
+Inputs:
+- Energy: ${getValue('mgrEnergy')}
+- Goal: ${getValue('mgrGoal')}
+- Focus: ${getValue('mgrFocus')}
+
+Output format (Burmese, very natural, human-like):
+1. 🔥 Today’s Priority (1–2 tasks only)
+2. 🎯 Content Action (what to post + where)
+3. 💬 Sales Action (DM / Follow-up suggestion)
+4. ⏱ Simple next step (within 30 minutes)
+
+Tone: Calm, experienced, human advisor (not AI).
+No emojis overload. No AI wording.
+`;
+  contextTopic = "AI Manager – Today Plan";
+}
+
+    
     /* ---------------- FINAL PROMPT ---------------- */
     const finalPrompt = `
 SYSTEM:
