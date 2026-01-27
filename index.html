@@ -123,14 +123,14 @@ button { transition: all 0.2s ease; }
         
         <div class="w-full space-y-4">
             <div>
-                <label class="text-xs font-bold text-slate-400 uppercase mb-1 ml-1">Email</label>
+                <label class="text-sm font-bold text-slate-400 uppercase mb-1 ml-1">Email</label>
                 <div class="relative">
                     <i class="ph ph-envelope absolute left-3 top-3 text-slate-500 text-lg"></i>
                     <input type="email" id="loginEmail" placeholder="admin@studio.com" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 pl-10 text-white focus:border-blue-500 outline-none transition placeholder-slate-600">
                 </div>
             </div>
             <div>
-                <label class="text-xs font-bold text-slate-400 uppercase mb-1 ml-1">Password</label>
+                <label class="text-sm font-bold text-slate-400 uppercase mb-1 ml-1">Password</label>
                 <div class="relative">
                     <i class="ph ph-key absolute left-3 top-3 text-slate-500 text-lg"></i>
                     <input type="password" id="loginPass" placeholder="••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 pl-10 text-white focus:border-blue-500 outline-none transition placeholder-slate-600">
@@ -384,8 +384,8 @@ button { transition: all 0.2s ease; }
                 <div id="crResultArea" class="hidden md:block h-full">
                      <div class="bg-slate-900/50 rounded-xl border border-slate-700 p-5 h-full flex flex-col shadow-inner">
                         <div class="flex justify-between items-center mb-4">
-                            <span class="text-xs font-bold text-yellow-400 uppercase flex items-center gap-2"><i class="ph ph-check-circle"></i> Generated Content</span>
-                            <button onclick="window.copyText('crOutput')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-600 text-white transition">Copy</button>
+                            <span class="text-sm font-bold text-yellow-400 uppercase flex items-center gap-2"><i class="ph ph-check-circle"></i> Generated Content</span>
+                            <button onclick="window.copyText('crOutput')" class="text-sm bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-600 text-white transition">Copy</button>
                         </div>
                         <div id="crOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 overflow-y-auto max-h-[400px] custom-scroll pr-2"></div>
                      </div>
@@ -396,8 +396,8 @@ button { transition: all 0.2s ease; }
             <div id="crResultAreaMobile" class="md:hidden hidden mt-4">
                  <div class="bg-slate-900/50 rounded-xl border border-slate-700 p-5 shadow-inner">
                     <div class="flex justify-between items-center mb-4">
-                        <span class="text-xs font-bold text-yellow-400 uppercase">Result</span>
-                        <button onclick="window.copyText('crOutputMobile')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-600 text-white transition">Copy</button>
+                        <span class="text-sm font-bold text-yellow-400 uppercase">Result</span>
+                        <button onclick="window.copyText('crOutputMobile')" class="text-sm bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-600 text-white transition">Copy</button>
                     </div>
                     <div id="crOutputMobile" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed"></div>
                  </div>
@@ -487,8 +487,8 @@ button { transition: all 0.2s ease; }
                     <div class="absolute top-0 right-0 p-6 opacity-5 pointer-events-none"><i class="ph ph-robot text-8xl text-purple-500"></i></div>
                     
                     <div class="flex justify-between items-center mb-4 z-10">
-                        <span class="text-xs font-bold text-purple-400 uppercase flex items-center gap-2"><i class="ph ph-check-circle-fill"></i> Generated Options</span>
-                        <button onclick="window.copyText('dmOutput')" class="text-xs bg-purple-500/20 hover:bg-purple-500/40 px-3 py-1.5 rounded-lg text-purple-200 border border-purple-500/30 transition">Copy All</button>
+                        <span class="text-sm font-bold text-purple-400 uppercase flex items-center gap-2"><i class="ph ph-check-circle-fill"></i> Generated Options</span>
+                        <button onclick="window.copyText('dmOutput')" class="text-sm bg-purple-500/20 hover:bg-purple-500/40 px-3 py-1.5 rounded-lg text-purple-200 border border-purple-500/30 transition">Copy All</button>
                     </div>
                     
                     <div id="dmOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 overflow-y-auto max-h-[600px] z-10 pr-2 custom-scroll bg-slate-950/30 p-4 rounded-xl border border-white/5"></div>
@@ -510,21 +510,21 @@ button { transition: all 0.2s ease; }
             <h2 class="text-xl md:text-3xl font-bold text-white mb-2 flex items-center gap-3"><i class="ph ph-database text-blue-400"></i> Studio Brain (Cloud Sync)</h2>
             <div class="space-y-6 text-left relative z-10">
                 <div class="bg-slate-950/50 p-5 rounded-2xl border border-slate-700">
-                    <label class="text-xs font-bold text-yellow-400 uppercase mb-3 block flex items-center gap-2"><i class="ph ph-package"></i> Packages & Pricing (Important)</label>
+                    <label class="text-sm font-bold text-yellow-400 uppercase mb-3 block flex items-center gap-2"><i class="ph ph-package"></i> Packages & Pricing (Important)</label>
                     <textarea id="brandPackages" placeholder="Example: Silver Package: 3 Lakhs..." class="w-full bg-slate-900 border border-slate-600 rounded-xl p-4 text-sm text-white h-32 resize-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500/50"></textarea>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
-                        <label class="text-xs font-bold text-blue-400 uppercase mb-2 block">Studio Vibe</label>
+                        <label class="text-sm font-bold text-blue-400 uppercase mb-2 block">Studio Vibe</label>
                         <input type="text" id="brandStyle" value="Moody, Cinematic, Emotional" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white">
                     </div>
                     <div>
-                        <label class="text-xs font-bold text-blue-400 uppercase mb-2 block">Target Audience</label>
+                        <label class="text-sm font-bold text-blue-400 uppercase mb-2 block">Target Audience</label>
                         <input type="text" id="brandClient" value="Luxury Couples, Young Professionals" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white">
                     </div>
                 </div>
                 <div>
-                    <label class="text-xs font-bold text-slate-300 uppercase mb-2 block">Contact Details</label>
+                    <label class="text-sm font-bold text-slate-300 uppercase mb-2 block">Contact Details</label>
                     <div class="grid grid-cols-2 gap-3">
                         <input type="text" id="brandPhone" placeholder="Phone" class="bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white">
                         <input type="text" id="brandViber" placeholder="Viber" class="bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white">
@@ -535,7 +535,7 @@ button { transition: all 0.2s ease; }
                 </div>
                 <div class="pt-4 flex flex-col items-center gap-2">
                     <button onclick="window.saveBrandData()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2 transition active:scale-95"><i class="ph ph-floppy-disk text-xl"></i> Save Changes to Cloud</button>
-                    <div id="saveStatus" class="text-xs text-slate-500 text-center">Sync ready.</div>
+                    <div id="saveStatus" class="text-sm text-slate-500 text-center">Sync ready.</div>
                 </div>
             </div>
         </div>
@@ -550,7 +550,7 @@ button { transition: all 0.2s ease; }
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="lg:col-span-2 space-y-4">
-                <div class="glass-panel p-4 md:p-5 rounded-xl space-y-4">
+                <div class="glass-panel p-6 md:p-5 rounded-xl space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Topic</label>
                         <div class="flex gap-2">
@@ -565,7 +565,7 @@ button { transition: all 0.2s ease; }
                     <button onclick="window.generateAI('fbpost')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-blue-600/30 transition flex justify-center items-center gap-2 active:scale-95"><i class="ph ph-pen-nib"></i> Write Post (3 Options)</button>
                 </div>
                 <div id="fbResultArea" class="hidden space-y-2">
-                    <div class="glass-panel p-4 md:p-6 rounded-xl border-blue-500/30">
+                    <div class="glass-panel p-6 md:p-6 rounded-xl border-blue-500/30">
                         <div id="fbOutput" class="whitespace-pre-wrap leading-relaxed text-sm text-slate-200"></div>
                     </div>
                     <button id="fbContinueBtn" onclick="window.continueAI('fbpost')" class="hidden w-full py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-blue-300 text-sm font-bold flex items-center justify-center gap-2"><span>⚠️ Continue Writing</span><i class="ph ph-arrow-right"></i></button>
@@ -591,12 +591,12 @@ button { transition: all 0.2s ease; }
   <template id="tpl-timeline">
     <div class="animate-fade-in space-y-6">
         <h2 class="text-xl md:text-2xl font-bold text-orange-400 flex items-center gap-2"><i class="ph ph-clock"></i> Timeline Generator</h2>
-        <div class="glass-panel p-4 md:p-6 rounded-xl">
+        <div class="glass-panel p-6 md:p-6 rounded-xl">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                <div><label class="text-xs text-slate-400 uppercase font-bold">Start</label><select id="tlStart" class="w-full p-2 mt-1 bg-slate-800 rounded border border-slate-700 text-white"><option>6:00 AM</option><option>7:00 AM</option><option>8:00 AM</option><option>1:00 PM</option></select></div>
-                <div><label class="text-xs text-slate-400 uppercase font-bold">Place</label><select id="tlPlace" class="w-full p-2 mt-1 bg-slate-800 rounded border border-slate-700 text-white"><option>Taunggyi (City)</option><option>Inle Lake</option><option>Kalaw</option></select></div>
-                <div><label class="text-xs text-slate-400 uppercase font-bold">Outfits</label><select id="tlDress" class="w-full p-2 mt-1 bg-slate-800 rounded border border-slate-700 text-white"><option>3 Dresses</option><option>4 Dresses</option><option>5 Dresses</option></select></div>
-                <div><label class="text-xs text-slate-400 uppercase font-bold">Pacing</label><select id="tlPace" class="w-full p-2 mt-1 bg-slate-800 rounded border border-slate-700 text-white"><option>Relaxed</option><option>Packed</option></select></div>
+                <div><label class="text-sm text-slate-400 uppercase font-bold">Start</label><select id="tlStart" class="w-full p-2 mt-1 bg-slate-800 rounded border border-slate-700 text-white"><option>6:00 AM</option><option>7:00 AM</option><option>8:00 AM</option><option>1:00 PM</option></select></div>
+                <div><label class="text-sm text-slate-400 uppercase font-bold">Place</label><select id="tlPlace" class="w-full p-2 mt-1 bg-slate-800 rounded border border-slate-700 text-white"><option>Taunggyi (City)</option><option>Inle Lake</option><option>Kalaw</option></select></div>
+                <div><label class="text-sm text-slate-400 uppercase font-bold">Outfits</label><select id="tlDress" class="w-full p-2 mt-1 bg-slate-800 rounded border border-slate-700 text-white"><option>3 Dresses</option><option>4 Dresses</option><option>5 Dresses</option></select></div>
+                <div><label class="text-sm text-slate-400 uppercase font-bold">Pacing</label><select id="tlPace" class="w-full p-2 mt-1 bg-slate-800 rounded border border-slate-700 text-white"><option>Relaxed</option><option>Packed</option></select></div>
             </div>
             <div class="flex items-center gap-2 mb-4 p-2 bg-slate-800/50 rounded"><input type="checkbox" id="tlSunset" class="w-4 h-4 rounded bg-slate-800 border-slate-700 text-orange-500"><label for="tlSunset" class="text-sm text-slate-300">Include Sunset Shot</label></div>
             <button onclick="window.generateAI('timeline')" class="w-full bg-orange-600 hover:bg-orange-500 py-3 rounded text-white font-bold active:scale-95 transition">Generate Schedule</button>
@@ -604,8 +604,8 @@ button { transition: all 0.2s ease; }
         <div id="tlResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl">
             <div id="tlOutput" class="whitespace-pre-wrap text-sm text-slate-200 font-mono"></div>
             <div class="mt-4 flex gap-2">
-                <button onclick="window.downloadFile('Schedule.txt', 'tlOutput')" class="text-xs text-blue-400 border border-blue-900 p-2 rounded">⬇️ Download</button>
-                <button onclick="window.copyText('tlOutput')" class="text-xs text-slate-400 border border-slate-700 p-2 rounded">📋 Copy</button>
+                <button onclick="window.downloadFile('Schedule.txt', 'tlOutput')" class="text-sm text-blue-400 border border-blue-900 p-2 rounded">⬇️ Download</button>
+                <button onclick="window.copyText('tlOutput')" class="text-sm text-slate-400 border border-slate-700 p-2 rounded">📋 Copy</button>
             </div>
         </div>
     </div>
@@ -617,17 +617,16 @@ button { transition: all 0.2s ease; }
             <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2"><i class="ph ph-clock-counter-clockwise text-green-400"></i> Cloud History</h2>
             <button onclick="window.clearHistory()" class="text-red-400 text-xs border border-red-900/50 px-3 py-1.5 rounded">Clear All</button>
         </div>
-        <p class="text-xs text-slate-500 mb-4">Saved securely on Firebase.</p>
+        <p class="text-sm text-slate-500 mb-4">Saved securely on Firebase.</p>
         <div id="historyListContainer" class="space-y-4 pb-20"></div>
     </div>
   </template>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, orderBy, limit, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-    // Need getDocs for Chat History context if used
-    import { getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, orderBy, limit, onSnapshot, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+    
 
     const firebaseConfig = {
       apiKey: "AIzaSyBEqE5lWdLWIZOO_M3RYY35e17VMTGk-G0",
@@ -777,10 +776,35 @@ window.runAssistant = async function(type) {
 
     // --- HTML STRINGS ---
     function getTikTokHTML() {
-        return `<div class="animate-fade-in space-y-6"><h2 class="text-xl md:text-2xl font-bold text-teal-400 flex items-center gap-2"><i class="ph ph-tiktok-logo"></i> TikTok Script</h2><div class="glass-panel p-4 md:p-5 rounded-xl space-y-4"><div class="flex gap-2"><input type="text" id="ttInput" placeholder="Video Topic..." class="flex-1 bg-slate-800 border border-slate-700 rounded p-3 text-white"><button onclick="window.startVoiceInput('ttInput', this)" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded px-4 text-teal-400"><i class="ph ph-microphone text-xl"></i></button></div><select id="ttStyle" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white"><option>Trending & Fast</option><option>Vlog / Behind Scenes</option><option>Cinematic Mood</option></select><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><button onclick="window.generateAI('tt_caption')" class="bg-slate-700 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Get 3 Captions</button><button onclick="window.generateAI('tt_script')" class="bg-teal-600 py-3 rounded text-white text-sm font-bold active:scale-95 transition">Write 3 Scripts</button></div></div><div id="ttResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl"><div id="ttOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div><button id="ttContinueBtn" onclick="window.continueAI('tt_script')" class="hidden w-full mt-2 py-2 bg-slate-800 text-teal-400 text-xs border border-slate-600 rounded">⚠️ Continue Writing</button><div class="text-xs text-green-400 mt-2">✅ Auto-saved to Cloud</div></div></div>`;
+        return `
+        <div class="animate-fade-in space-y-6">
+            <h2 class="text-xl md:text-2xl font-bold text-teal-400 flex items-center gap-2"><i class="ph ph-tiktok-logo"></i> TikTok Studio</h2>
+            <div class="glass-panel p-6 md:p-5 rounded-xl space-y-4">
+                <div class="flex gap-2">
+                    <input type="text" id="ttInput" placeholder="Video Topic (e.g. Pre-wedding tips)..." class="flex-1 bg-slate-800 border border-slate-700 rounded p-3 text-white">
+                    <button onclick="window.startVoiceInput('ttInput', this)" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded px-4 text-teal-400"><i class="ph ph-microphone text-xl"></i></button>
+                </div>
+                <select id="ttStyle" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white">
+                    <option>Trending & Fast</option>
+                    <option>Vlog / Behind Scenes</option>
+                    <option>Cinematic Mood</option>
+                </select>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <button onclick="window.generateAI('tt_script')" class="bg-slate-700 hover:bg-slate-600 py-3 rounded text-white text-xs md:text-sm font-bold active:scale-95 transition">📝 Video Script</button>
+                    <button onclick="window.generateAI('tt_caption')" class="bg-slate-700 hover:bg-slate-600 py-3 rounded text-white text-xs md:text-sm font-bold active:scale-95 transition">✍️ Captions Only</button>
+                    <button onclick="window.generateAI('tt_post_full')" class="bg-teal-600 hover:bg-teal-500 py-3 rounded text-white text-xs md:text-sm font-bold active:scale-95 transition shadow-lg shadow-teal-900/50">🚀 Full Post Pack</button>
+                </div>
+            </div>
+            <div id="ttResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl">
+                <div id="ttOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div>
+                <button id="ttContinueBtn" onclick="window.continueAI('tt_script')" class="hidden w-full mt-2 py-2 bg-slate-800 text-teal-400 text-xs border border-slate-600 rounded">⚠️ Continue Writing</button>
+                <div class="text-sm text-green-400 mt-2">✅ Auto-saved to Cloud</div>
+            </div>
+        </div>`;
     }
     function getPoseHTML() {
-        return `<div class="animate-fade-in space-y-6"><h2 class="text-xl md:text-2xl font-bold text-pink-400 flex items-center gap-2"><i class="ph ph-camera"></i> Pose Helper</h2><div class="glass-panel p-4 md:p-5 rounded-xl space-y-4"><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><div><label class="text-xs font-bold text-slate-400 uppercase">Outfit</label><select id="poseOutfit" class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm"><option>Wedding Gown/Suit</option><option>Traditional</option><option>Casual</option></select></div><div><label class="text-xs font-bold text-slate-400 uppercase">Props</label><input type="text" id="poseProps" placeholder="Flowers..." class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm"></div></div><div class="flex gap-2 mb-2"><button onclick="window.fillPose('Shy')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">😳 Shy</button><button onclick="window.fillPose('Plus')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">❤️ Plus</button></div><div class="relative"><textarea id="poseInput" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white h-24 pr-10" placeholder="Situation..."></textarea><button onclick="window.startVoiceInput('poseInput', this)" class="absolute right-2 bottom-2 bg-slate-700/80 hover:bg-pink-600 p-2 rounded-full transition text-slate-300 hover:text-white"><i class="ph ph-microphone text-lg"></i></button></div><button onclick="window.generateAI('pose')" class="w-full bg-pink-600 py-3 rounded text-white font-bold active:scale-95 transition">Generate Poses</button></div><div id="poseResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl"><div id="poseOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div><div class="text-xs text-green-400 mt-2">✅ Auto-saved to Cloud</div></div></div>`;
+        return `<div class="animate-fade-in space-y-6"><h2 class="text-xl md:text-2xl font-bold text-pink-400 flex items-center gap-2"><i class="ph ph-camera"></i> Pose Helper</h2><div class="glass-panel p-6 md:p-5 rounded-xl space-y-4"><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><div><label class="text-sm font-bold text-slate-400 uppercase">Outfit</label><select id="poseOutfit" class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm"><option>Wedding Gown/Suit</option><option>Traditional</option><option>Casual</option></select></div><div><label class="text-sm font-bold text-slate-400 uppercase">Props</label><input type="text" id="poseProps" placeholder="Flowers..." class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm"></div></div><div class="flex gap-2 mb-2"><button onclick="window.fillPose('Shy')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">😳 Shy</button><button onclick="window.fillPose('Plus')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">❤️ Plus</button></div><div class="relative"><textarea id="poseInput" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white h-24 pr-10" placeholder="Situation..."></textarea><button onclick="window.startVoiceInput('poseInput', this)" class="absolute right-2 bottom-2 bg-slate-700/80 hover:bg-pink-600 p-2 rounded-full transition text-slate-300 hover:text-white"><i class="ph ph-microphone text-lg"></i></button></div><button onclick="window.generateAI('pose')" class="w-full bg-pink-600 py-3 rounded text-white font-bold active:scale-95 transition">Generate Poses</button></div><div id="poseResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl"><div id="poseOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div><div class="text-sm text-green-400 mt-2">✅ Auto-saved to Cloud</div></div></div>`;
     }
 
     // --- UPDATED SAVE FUNCTION WITH STATUS ---
@@ -819,7 +843,7 @@ window.runAssistant = async function(type) {
         onSnapshot(q, (snapshot) => {
             const items = [];
             snapshot.forEach((doc) => { items.push({ id: doc.id, ...doc.data() }); });
-            c.innerHTML = items.length ? items.map(i=>`<div class="glass-panel p-4 rounded-lg border-l-4 border-green-500 mb-2 group relative"><div class="flex justify-between items-start mb-2"><div><span class="font-bold text-white text-sm block">${i.topic}</span><span class="text-[10px] text-slate-400 uppercase bg-slate-800 px-1.5 rounded">${i.type}</span></div><span class="text-[10px] text-slate-500">${i.date}</span></div><div class="text-xs text-slate-300 line-clamp-3 bg-slate-900/50 p-2 rounded cursor-pointer hover:bg-slate-900 transition" onclick="window.toggleExpand(this)">${i.content}</div><div class="mt-2 text-right flex justify-end gap-2"><button onclick="window.copyText('${i.content.replace(/'/g, "\\'").replace(/\n/g, "\\n")}')" class="text-blue-400 text-xs hover:text-white border border-blue-500/30 px-2 py-1 rounded">Copy</button></div></div>`).join('') : "<div class='text-center text-slate-500 py-10'>No recent activity on Cloud.</div>";
+            c.innerHTML = items.length ? items.map(i=>`<div class="glass-panel p-6 rounded-lg border-l-4 border-green-500 mb-2 group relative"><div class="flex justify-between items-start mb-2"><div><span class="font-bold text-white text-sm block">${i.topic}</span><span class="text-[10px] text-slate-400 uppercase bg-slate-800 px-1.5 rounded">${i.type}</span></div><span class="text-[10px] text-slate-500">${i.date}</span></div><div class="text-sm text-slate-300 line-clamp-3 bg-slate-900/50 p-2 rounded cursor-pointer hover:bg-slate-900 transition" onclick="window.toggleExpand(this)">${i.content}</div><div class="mt-2 text-right flex justify-end gap-2"><button onclick="window.copyText('${i.content.replace(/'/g, "\\'").replace(/\n/g, "\\n")}')" class="text-blue-400 text-xs hover:text-white border border-blue-500/30 px-2 py-1 rounded">Copy</button></div></div>`).join('') : "<div class='text-center text-slate-500 py-10'>No recent activity on Cloud.</div>";
         });
     }
 
@@ -848,7 +872,7 @@ window.runAssistant = async function(type) {
         inputEl.value = '';
         const loadingId = addMessageToUI('ai', 'Thinking...', true);
         
-        // --- FIX: Safe Brand Data Fetching ---
+        // 1. Safe Data Fetching
         let brand = {};
         if(userId) { try { const s = await getDoc(doc(db, 'artifacts', appId, 'users', userId, 'config', 'brand')); if(s.exists()) brand = s.data(); } catch(e){} }
         
@@ -861,7 +885,6 @@ window.runAssistant = async function(type) {
              } catch(e) {}
         }
 
-        // --- FIX: Safe Variable Access (Error 3 Fix) ---
         const packages = (brand && brand.brandPackages) ? brand.brandPackages : "Not set";
         const style = (brand && brand.brandStyle) ? brand.brandStyle : "Professional";
         
@@ -875,12 +898,11 @@ window.runAssistant = async function(type) {
         const finalPrompt = systemPrompt + "\n\nUser: " + text + "\nAI:";
 
         try {
-            // --- FIX: Payload Key Change (Error 1 Fix) ---
             const res = await fetch("/api/generate", {
                 method: "POST", headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    userMessage: finalPrompt, // Changed from 'prompt' to 'userMessage'
-                    mode: "manager" // Optional tag
+                    userMessage: finalPrompt,
+                    mode: "manager"
                 })
             });
             
@@ -889,18 +911,22 @@ window.runAssistant = async function(type) {
             const d = await res.json();
             
             const loadingEl = document.getElementById(loadingId);
-            // --- FIX: Null Safety (Error 2 Fix) ---
             if (loadingEl) loadingEl.remove();
 
             const msgId = addMessageToUI('ai', d.result);
             addSaveButton(msgId, d.result);
+
+            // --- NEW: Also Save to Recent History (Cloud) ---
+            if(d.result && userId) {
+                // Chat ကို Recent ထဲ Auto သိမ်းပေးမယ့် Code
+                saveToRecents('manager_chat', d.result, `AI Chat: ${text.substring(0, 15)}...`);
+            }
             
         } catch(e) {
             console.error(e);
             const loadingEl = document.getElementById(loadingId);
-            // --- FIX: Null Safety inside Catch ---
             if(loadingEl) {
-                loadingEl.innerHTML = "<span class='text-red-400'>Server connection failed. Try again.</span>";
+                loadingEl.innerHTML = "<span class='text-red-400'>Connection failed. Check Internet/VPN.</span>";
                 loadingEl.classList.remove('typing-dot'); 
             }
         }
@@ -957,6 +983,7 @@ window.runAssistant = async function(type) {
 
 
     window.generateAI = async function(type, isContinue = false) {
+        // UI IDs Setup
         const outputIds = { 'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'timeline': 'tlOutput', 'tt_caption': 'ttOutput', 'tt_script': 'ttOutput', 'pose': 'poseOutput', 'creative_director': 'crOutput', 'creative_post': 'crOutput', 'creative_tt_text': 'crOutput', 'dm_auto_detect': 'dmOutput', 'manager_daily': 'mgrOutput' };
         const areaIds = { 'fbpost': 'fbResultArea', 'dm_best': 'dmResultArea', 'timeline': 'tlResultArea', 'tt_caption': 'ttResultArea', 'tt_script': 'ttResultArea', 'pose': 'poseResultArea', 'creative_director': 'crResultArea', 'creative_post': 'crResultArea', 'creative_tt_text': 'crResultArea', 'dm_auto_detect': 'dmResultArea', 'manager_daily': 'mgrResultArea' };
         const continueBtnIds = { 'fbpost': 'fbContinueBtn', 'dm_best': 'dmContinueBtn', 'timeline': 'tlContinueBtn', 'tt_caption': 'ttContinueBtn', 'tt_script': 'ttContinueBtn', 'manager_daily': 'mgrContinueBtn', 'dm_auto_detect': 'dmContinueBtn' }; 
@@ -964,15 +991,15 @@ window.runAssistant = async function(type) {
         const outId = outputIds[type];
         const areaId = areaIds[type];
 
+        // UI Loading
         if(type !== 'dm_analyze') {
             const areaEl = document.getElementById(areaId);
             if(areaEl) areaEl.classList.remove('hidden');
             
             if(!isContinue) {
                 const outEl = document.getElementById(outId);
-                // --- FIX: Null Safety ---
                 if(outEl) outEl.innerHTML = "<span class='animate-pulse text-purple-400'>✨ Thinking...</span>";
-                
+                // Mobile Scroll
                 if(window.innerWidth < 768) {
                     if((type.startsWith('creative'))) {
                         const mobEl = document.getElementById('crResultAreaMobile');
@@ -991,7 +1018,7 @@ window.runAssistant = async function(type) {
              }
         }
 
-        // --- FIX: Safe Data Loading ---
+        // Data Loading
         let packages = "Not specified";
         let contactInfo = "Not set";
         
@@ -1014,10 +1041,14 @@ window.runAssistant = async function(type) {
         `;
 
         let prompt = ""; 
-        let contextTopic = "";
+        let contextTopic = "General Content"; // Default topic
         
-        // (Prompt logic remain same, shortened for brevity)
-        if (type === 'manager_daily') { prompt = `Task: Daily Plan. Focus=${getValue('mgrFocus')}.`; contextTopic = `Manager Plan`; }
+        // --- PROMPT LOGIC ---
+        if (type === 'manager_daily') { 
+            const focus = getValue('mgrFocus') || 'General';
+            prompt = `Task: Daily Plan. Focus=${focus}. Output: 4 Sections (Priority, Content, Sales, Quick Win).`; 
+            contextTopic = `Manager Plan (${focus})`; // Ensure Topic is set
+        }
         else if (type === 'creative_director') { prompt = `Task: 3-Day Content Plan. Focus=${getValue('crFocus')}.`; contextTopic = `Creative Plan`; }
         else if (type === 'creative_post') { prompt = `Task: Write FB Post about "${getValue('crFocus')}".`; contextTopic = `Creative Post`; }
         else if (type === 'creative_tt_text') { prompt = `Task: TikTok Text Mode post. Topic: ${getValue('crFocus')}.`; contextTopic = `TikTok Text`; }
@@ -1026,8 +1057,26 @@ window.runAssistant = async function(type) {
         else if (type === 'dm_best') { prompt = `Task: 3 Sales Replies. Client: "${getValue('dmInput')}".`; contextTopic = `DM Sales`; }
         else if (type === 'fbpost') { prompt = `Task: 3 FB Posts. Topic: ${getValue('fbInput')}.`; contextTopic = `FB Post`; }
         else if (type === 'timeline') { prompt = `Task: Wedding Timeline. Place: ${getValue('tlPlace')}.`; contextTopic = `Timeline`; }
-        else if (type.includes('tt_')) { prompt = `Task: TikTok Content. Topic: ${getValue('ttInput')}.`; contextTopic = `TikTok`; }
-        else if (type === 'pose') { prompt = `Task: 3 Pose Ideas. Context: ${getValue('poseInput')}.`; contextTopic = `Pose`; }
+// TikTok Logic Update
+        else if (type === 'tt_post_full') {
+             const topic = getValue('ttInput');
+             prompt = `Role: TikTok Expert for a Photo Studio.
+             Task: Create a complete TikTok Post Package for topic: "${topic}".
+             OUTPUT FORMAT:
+             1. 📺 **Text on Video (Hook)**: (Short text to put on video cover)
+             2. 📝 **Caption**: (Engaging caption in Burmese, asking a question)
+             3. #️⃣ **Hashtags**: (5-10 Trending Myanmar Hashtags)
+             4. 🎵 **Song Vibe**: (Suggested music style)
+             `;
+             contextTopic = `TikTok Post (${topic})`;
+        }
+        else if(type.includes('tt_')) {
+             // Script or Caption only
+             const subType = type === 'tt_script' ? "Video Script (Scene by Scene)" : "3 Viral Captions";
+             prompt = `Task: Write ${subType} for TikTok. Topic: ${getValue('ttInput')}. Style: ${getValue('ttStyle')}.`;
+             contextTopic = `TikTok Content`;
+             if(isContinue) prompt = `Context: Continue TikTok content from: "${document.getElementById(outId).innerText.slice(-50)}".`;
+        }        else if (type === 'pose') { prompt = `Task: 3 Pose Ideas. Context: ${getValue('poseInput')}.`; contextTopic = `Pose`; }
 
         if(isContinue) {
             const currentText = document.getElementById(outId) ? document.getElementById(outId).innerText : "";
@@ -1035,7 +1084,6 @@ window.runAssistant = async function(type) {
         }
 
         try {
-            // --- FIX: Payload Key Change (Error 1 Fix) ---
             const res = await fetch("/api/generate", {
                 method: "POST", headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
@@ -1043,7 +1091,7 @@ window.runAssistant = async function(type) {
                 })
             });
             
-            if(!res.ok) throw new Error("API Error " + res.status); // Error 5 Fix
+            if(!res.ok) throw new Error("API Error " + res.status);
 
             const d = await res.json();
             
@@ -1052,7 +1100,6 @@ window.runAssistant = async function(type) {
                 document.getElementById('dmAnalysisContent').innerHTML = html;
             } else {
                 const outEl = document.getElementById(outId);
-                // --- FIX: Null Safety (Error 2 Fix) ---
                 if(outEl) {
                     if(isContinue) outEl.innerText += "\n" + d.result;
                     else outEl.innerText = d.result;
@@ -1060,8 +1107,11 @@ window.runAssistant = async function(type) {
                     if(type.startsWith('creative') && document.getElementById('crOutputMobile')) {
                         document.getElementById('crOutputMobile').innerText = outEl.innerText;
                     }
-                    if(d.result && !d.result.includes("Error")) {
-                         saveToRecents(type, outEl.innerText, contextTopic);
+
+                    // --- SAVE TO RECENT LOGIC ---
+                    if(d.result && !d.result.includes("Error") && userId) {
+                         // Manager Plan (သို့) အခြား result တွေကို Recent ထဲသိမ်းပါမယ်
+                         await saveToRecents(type, outEl.innerText, contextTopic);
                     }
                 }
                 const btn = document.getElementById(continueBtnIds[type]);
