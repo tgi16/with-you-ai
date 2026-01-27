@@ -73,31 +73,40 @@ button { transition: all 0.2s ease; }
     @keyframes pulse-red { to { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } }
     
     /* Chat Bubbles */
+    /* Chat Bubbles Fixed - Compact Size */
     .chat-bubble-ai {
         background: #1e293b;
         color: #e2e8f0;
         border-radius: 12px 12px 12px 2px;
-        padding: 12px 16px;
+        padding: 10px 14px; /* Padding နည်းနည်းလျှော့ထားပါတယ် */
         font-size: 14px;
         line-height: 1.6;
         border: 1px solid rgba(255,255,255,0.05);
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         white-space: pre-wrap;
-        width: fit-content; 
-        max-width: 100%;    
+        
+        /* ✅ KEY FIXES HERE */
+        display: inline-block; /* စာရှိသလောက်ပဲ ကျယ်ပါမယ် */
+        width: auto;
+        max-width: 100%;
+        word-wrap: break-word;
     }
+
     .chat-bubble-user {
         background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
         color: white;
         border-radius: 12px 12px 2px 12px;
-        padding: 12px 16px;
+        padding: 10px 14px; /* Padding နည်းနည်းလျှော့ထားပါတယ် */
         font-size: 14px;
         line-height: 1.6;
         box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
         white-space: pre-wrap;
-        width: fit-content; /* ✅ ဒီစာကြောင်းလေး ထပ်ထည့်လိုက်တာပါ */
+        
+        /* ✅ KEY FIXES HERE */
+        display: inline-block; /* စာရှိသလောက်ပဲ ကျယ်ပါမယ် */
+        width: auto; 
         max-width: 100%;
-        margin-left: auto;  /* ညာဘက်ကပ်အောင် */
+        margin-left: auto; /* ညာဘက်ကပ်အောင် */
     }
     
     .typing-dot {
