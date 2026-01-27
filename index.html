@@ -469,7 +469,7 @@
         container.innerHTML = ''; 
         let templateId = 'tpl-' + viewId;
         // Map old names to templates if needed, or simple check
-        if(viewId === 'creative') templateId = 'tpl-creative'; // Rename check
+        if(viewId === 'creative') templateId = 'tpl-manager'; // Corrected ID map
         const tpl = document.getElementById(templateId);
         if(tpl) {
             container.appendChild(tpl.content.cloneNode(true));
@@ -480,10 +480,10 @@
     }
 
     // --- NEW: CREATIVE DIRECTOR HELPERS ---
-    window.setCreativeOption = function(type, value, btn) {
-        if(type === 'workload') {
-            document.getElementById('crWorkload').value = value;
-            document.querySelectorAll('.creative-btn').forEach(b => b.classList.remove('active')); 
+    window.setManagerOption = function(type, value, btn) {
+        if(type === 'energy') {
+            document.getElementById('mgrEnergy').value = value;
+            document.querySelectorAll('.manager-btn').forEach(b => b.classList.remove('active')); 
             if(btn && btn.parentElement) {
                 Array.from(btn.parentElement.children).forEach(c => c.classList.remove('active'));
                 btn.classList.add('active');
@@ -530,8 +530,8 @@
 
     // --- AI LOGIC ---
     window.generateAI = async function(type, isContinue = false) {
-        const outputIds = { 'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'timeline': 'tlOutput', 'tt_caption': 'ttOutput', 'tt_script': 'ttOutput', 'pose': 'poseOutput', 'creative_director': 'crOutput', 'dm_auto_detect': 'dmOutput' };
-        const areaIds = { 'fbpost': 'fbResultArea', 'dm_best': 'dmResultArea', 'timeline': 'tlResultArea', 'tt_caption': 'ttResultArea', 'tt_script': 'ttResultArea', 'pose': 'poseResultArea', 'creative_director': 'crResultArea', 'dm_auto_detect': 'dmResultArea' };
+        const outputIds = { 'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'timeline': 'tlOutput', 'tt_caption': 'ttOutput', 'tt_script': 'ttOutput', 'pose': 'poseOutput', 'manager_daily': 'mgrOutput', 'dm_auto_detect': 'dmOutput' };
+        const areaIds = { 'fbpost': 'fbResultArea', 'dm_best': 'dmResultArea', 'timeline': 'tlResultArea', 'tt_caption': 'ttResultArea', 'tt_script': 'ttResultArea', 'pose': 'poseResultArea', 'manager_daily': 'mgrResultArea', 'dm_auto_detect': 'dmResultArea' };
         const outId = outputIds[type];
         const areaId = areaIds[type];
 
@@ -556,16 +556,10 @@
         let contextTopic = "";
 
         if (type === 'manager_daily') { // Map creative_director to manager logic
-             type = 'creative_director'; // fix output id mapping
-             prompt = `Task: Create a 3-Day Mini Content Plan for a busy studio owner. Input: Energy=${getValue('crWorkload')}, Goal=${getValue('mgrGoal') || 'General'}. Output: Checklist format in Burmese.`;
+             prompt = `Task: Create a 3-Day Mini Content Plan for a busy studio owner. Input: Energy=${getValue('mgrEnergy')}, Goal=${getValue('mgrGoal') || 'General'}. Output: Checklist format in Burmese.`;
              contextTopic = `Manager Plan`;
         }
-        else if (type === 'creative_director') { // Fallback if old button
-             prompt = `Task: 3-Day Plan. Workload: ${getValue('crWorkload')}. Focus: ${getValue('crFocus')}.`;
-             contextTopic = `Plan: ${getValue('crFocus')}`;
-        }
         else if (type === 'dm_auto_detect') { // Auto Detect Logic
-             type = 'dm_best'; // Redirect output to DM box
              prompt = `Task: Analyze client message "${getValue('dmInput')}" and immediately write the BEST single reply strategy. Detect if they need price, reassurance, or booking info. Write the reply directly.`;
              contextTopic = `Auto DM Reply`;
         }
@@ -617,7 +611,7 @@
     window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3000); };
     window.copyText = (id) => { navigator.clipboard.writeText(document.getElementById(id).innerText); window.showToast("Copied"); };
     window.setDmType = (t, b) => { document.getElementById('dmType').value = t; document.querySelectorAll('.tactic-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); };
-    window.setCreativeOption = (t, v, b) => { document.getElementById('crWorkload').value = v; document.querySelectorAll('.creative-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); };
+    window.setManagerOption = (t, v, b) => { document.getElementById('mgrEnergy').value = v; document.querySelectorAll('.manager-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); };
     window.fillPose = (t) => { document.getElementById('poseInput').value = t === 'Shy' ? "အရမ်းရှက်တတ်တယ်" : "ဝတဲ့အတွဲ"; };
     window.startVoiceInput = (id, btn) => {
         const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
