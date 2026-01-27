@@ -19,10 +19,10 @@ export default async function handler(req, res) {
   try {
     /* ---------------- INPUT ---------------- */
     const {
-      userMessage,
+      userMessage = "",
       conversation = [],   // [{role, content}]
-      memory = "",         // Brand Brain / Saved Decisions
-      mode = "general"     // dm / studio / manager / general
+      memory = "",         // Brand Brain
+      mode = "general"     // dm | manager | studio | general
     } = req.body || {};
 
     if (!userMessage) {
@@ -36,20 +36,19 @@ export default async function handler(req, res) {
 
     /* ---------------- SYSTEM PROMPT ---------------- */
     const systemPrompt = `
-You are AI Manager for "With You Photo Studio, Taunggyi".
+You are the trusted AI partner of "With You Photo Studio, Taunggyi".
 You know Ko Sai personally and professionally.
 
-PERSONALITY RULES:
-- Speak like a real experienced studio staff
-- Calm, warm, patient, trustworthy
-- Never sound like marketing textbook
-- Never say you are AI
-- Burmese language only (natural Myanmar spoken tone)
+PERSONALITY:
+- Sound like a real experienced human
+- Calm, patient, warm, trustworthy
+- Never sound like AI or marketing copy
+- Burmese language only (natural spoken Myanmar)
 
-BUSINESS RULES:
-- Strong at Pre-Wedding & guiding shy couples
-- Sell by trust, not price war
-- Reduce decision fatigue for clients
+BUSINESS STYLE:
+- Strong in Pre-Wedding & guiding couples
+- Sell with trust, not price war
+- Reduce decision fatigue
 - One clear suggestion at a time
 `;
 
@@ -64,11 +63,11 @@ Client feedback: trustworthy, calm, detailed
 
     /* ---------------- CONVERSATION ---------------- */
     const convoBlock = conversation
-      .slice(-6) // last 6 messages only
+      .slice(-6)
       .map(m => `${m.role.toUpperCase()}: ${m.content}`)
       .join("\n");
 
-    /* ---------------- MODE INSTRUCTION ---------------- */
+    /* ---------------- MODE ---------------- */
     let modeInstruction = "";
 
     if (mode === "dm") {
@@ -89,41 +88,17 @@ Focus on what brings booking or trust.
     } else if (mode === "studio") {
       modeInstruction = `
 TASK:
-Help create human-like content.
-Avoid hype words.
-Natural Burmese tone only.
+Create natural human-like studio content.
+Avoid hype or AI tone.
 `;
     } else {
       modeInstruction = `
 TASK:
-Respond like trusted colleague.
-Be helpful and clear.
+Respond like a trusted colleague.
+Be clear and helpful.
 `;
     }
 
-else if (type === 'manager_daily') {
-  prompt = `
-Task: Act as my AI Manager.
-User: Ko Sai (Photo Studio Owner – With You Photo Studio, Taunggyi)
-
-Inputs:
-- Energy: ${getValue('mgrEnergy')}
-- Goal: ${getValue('mgrGoal')}
-- Focus: ${getValue('mgrFocus')}
-
-Output format (Burmese, very natural, human-like):
-1. 🔥 Today’s Priority (1–2 tasks only)
-2. 🎯 Content Action (what to post + where)
-3. 💬 Sales Action (DM / Follow-up suggestion)
-4. ⏱ Simple next step (within 30 minutes)
-
-Tone: Calm, experienced, human advisor (not AI).
-No emojis overload. No AI wording.
-`;
-  contextTopic = "AI Manager – Today Plan";
-}
-
-    
     /* ---------------- FINAL PROMPT ---------------- */
     const finalPrompt = `
 SYSTEM:
@@ -140,7 +115,7 @@ USER:
 ${userMessage}
 
 IMPORTANT:
-- Answer fully (do not cut off)
+- Answer fully
 - Short but complete
 - Sound human
 `;
@@ -182,7 +157,10 @@ IMPORTANT:
     return res.status(200).json({ result: text });
 
   } catch (err) {
-    console.error("Backend error:", err);
-    return res.status(200).json({ error: "Server error" });
+    console.error("Backend crash:", err);
+    return res.status(200).json({
+      error: "Server error",
+      detail: err.message
+    });
   }
 }
