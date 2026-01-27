@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Sales Master AI v6.5</title>
+  <title>With You Studio - Sales Master AI v6.5.5</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -156,7 +156,7 @@ button { transition: all 0.2s ease; }
             <h1 class="text-xl font-bold text-white tracking-tight flex items-center gap-2">
                 <i class="ph ph-camera text-blue-400"></i> With You
             </h1>
-            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">With You Studio - Sales Master AI v6.5</div>
+            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">With You Studio - Sales Master AI v6.5.5</div>
             <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1 flex items-center gap-1">
                 <span id="connectionStatus" class="w-2 h-2 rounded-full bg-red-500"></span> Online
             </p>
@@ -304,8 +304,7 @@ button { transition: all 0.2s ease; }
 
             <!-- Input Box -->
             <div class="relative glass-panel rounded-2xl p-2 flex items-end gap-2 border border-slate-600/50 shadow-xl">
-                <textarea id="chatInput" rows="1" placeholder="ကိုစိုင်း ပြောချင်တာ ရေးပါ..." class="flex-1 bg-transparent border-none text-white text-sm px-4 py-3 focus:ring-0 resize-none max-h-32 placeholder-slate-500" onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); window.handleChatSubmit(); }"></textarea>
-                
+<textarea id="chatInput" rows="1" placeholder="ကိုစိုင်း ပြောချင်တာ ရေးပါ..." class="flex-1 bg-transparent border-none text-white text-sm px-4 py-3 focus:ring-0 resize-none max-h-32 placeholder-slate-500" onkeydown="if(event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); window.handleChatSubmit(); }"></textarea>                
                 <button onclick="window.startVoiceInput('chatInput', this)" class="p-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-700/50 transition shrink-0" title="Voice"><i class="ph ph-microphone text-xl"></i></button>
                 
                 <button onclick="window.handleChatSubmit()" class="p-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg hover:shadow-blue-500/20 active:scale-95 transition shrink-0">
@@ -863,16 +862,28 @@ window.runAssistant = async function(type) {
     window.setManagerOption = window.setCreativeOption;
     
     // --- CHAT MANAGER (RESTORED) ---
+    // Global variable to prevent double submission
+    let isChatSubmitting = false;
+
     window.handleChatSubmit = async function() {
+        // 1. Check if already submitting (Double enter fix)
+        if(isChatSubmitting) return;
+
         const inputEl = document.getElementById('chatInput');
         const text = inputEl.value.trim();
         if(!text) return;
         
+        // Lock the function
+        isChatSubmitting = true;
+
         addMessageToUI('user', text);
         inputEl.value = '';
+        
+        // Disable input while thinking to prevent extra enters
+        inputEl.disabled = true; 
+        
         const loadingId = addMessageToUI('ai', 'Thinking...', true);
         
-        // 1. Safe Data Fetching
         let brand = {};
         if(userId) { try { const s = await getDoc(doc(db, 'artifacts', appId, 'users', userId, 'config', 'brand')); if(s.exists()) brand = s.data(); } catch(e){} }
         
@@ -889,10 +900,30 @@ window.runAssistant = async function(type) {
         const style = (brand && brand.brandStyle) ? brand.brandStyle : "Professional";
         
         const systemPrompt = `
-        ROLE: Ko Sai's Business Partner & AI Manager for "With You Studio" (Taunggyi).
-        TONE: Natural, warm, "Bya" ending. Chat like a human friend.
-        MEMORY: Studio Style: ${style}, Recent Decisions: ${savedDecisions.join('; ')}, Packages: ${packages}
-        TASK: Respond to "${text}". Be concise.
+        === IDENTITY & ROLE ===
+        YOU ARE: "Ko Thet", the Senior Studio Manager & Business Partner of "With You Studio" (Taunggyi).
+        RELATIONSHIP: You are Ko Sai's right-hand man. You are loyal, proactive, and strategic.
+        
+        === TONE & VOICE ===
+        - Language: Natural Burmese (Myanmar Unicode).
+        - Ending Particles: Always use "Bya" (ဗျ), "Khamya" (ခင်ဗျာ). Never use "Shin".
+        - Vibe: Warm, Brotherly, but Professional. Like a close friend discussing business.
+        - Taunggyi Context: You understand local trends and the photography market in Taunggyi.
+
+        === KNOWLEDGE BASE ===
+        - Studio Style: ${style}
+        - Current Packages: ${packages}
+        - Recent Context: ${savedDecisions.join('; ')}
+
+        === CRITICAL RULES (MUST FOLLOW) ===
+        1. 🛡️ NO HALLUCINATIONS: If you don't know a specific price, say "ဒီ Package ဈေးနှုန်းလေးကို ကျွန်တော် ပြန်အတည်ပြုပေးပါမယ်" (Let me confirm). Do NOT guess prices.
+        2. 💰 SALES TACTIC: When discussing packages, use the "Sandwich Method" (Value -> Price -> Value). Highlight the *feeling* of the photos, not just the price.
+        3. ⚡ BREVITY: Keep chat replies concise (under 4 sentences) unless asked for a full plan.
+        4. 🎯 GOAL: Always try to move the conversation towards a "Booking" or a "Solution".
+
+        === CURRENT TASK ===
+        User Input: "${text}"
+        Your Response:
         `;
         
         const finalPrompt = systemPrompt + "\n\nUser: " + text + "\nAI:";
@@ -916,9 +947,7 @@ window.runAssistant = async function(type) {
             const msgId = addMessageToUI('ai', d.result);
             addSaveButton(msgId, d.result);
 
-            // --- NEW: Also Save to Recent History (Cloud) ---
             if(d.result && userId) {
-                // Chat ကို Recent ထဲ Auto သိမ်းပေးမယ့် Code
                 saveToRecents('manager_chat', d.result, `AI Chat: ${text.substring(0, 15)}...`);
             }
             
@@ -926,8 +955,15 @@ window.runAssistant = async function(type) {
             console.error(e);
             const loadingEl = document.getElementById(loadingId);
             if(loadingEl) {
-                loadingEl.innerHTML = "<span class='text-red-400'>Connection failed. Check Internet/VPN.</span>";
+                loadingEl.innerHTML = "<span class='text-red-400'>Connection failed.</span>";
                 loadingEl.classList.remove('typing-dot'); 
+            }
+        } finally {
+            // Unlock and Re-enable input
+            isChatSubmitting = false;
+            if(inputEl) {
+                inputEl.disabled = false;
+                inputEl.focus();
             }
         }
     };
@@ -1034,10 +1070,29 @@ window.runAssistant = async function(type) {
         }
 
         const systemPrompt = `
-        ROLE: Senior Sales Manager & Studio Owner of "With You Photo Studio".
-        TONE: Natural Burmese (Bya/Khamya). 
-        DATA: Packages: ${packages}, Contact: ${contactInfo}.
-        IMPORTANT: Always output COMPLETE responses.
+        === 🎭 ROLE & IDENTITY ===
+        YOU ARE: The "Creative Director & Senior Sales Strategist" for 'With You Photo Studio' (Taunggyi).
+        BRAND VOICE: Cinematic, Emotional, High-End yet Accessible, Warm.
+        MISSION: Turn casual viewers into paying clients through storytelling.
+
+        === ✍️ WRITING RULES (CRITICAL) ===
+        1. 🗣️ TONE: Natural Burmese (Unicode). Use "Bya/Khamya" for politeness, but keep the vibe Exciting & Emotional.
+        2. 🚫 NO ROBOTIC LANGUAGE: Avoid formal textbook Burmese. Write like a human influencer talking to fans.
+        3. 🎣 HOOKS FIRST: Always start with a "Hook" (Question, Shocking Statement, or Emotional Appeal) to grab attention.
+        4. 🍔 STRUCTURE: Use the AIDA model (Attention -> Interest -> Desire -> Action).
+        5. ✨ FORMATTING: Use Emojis (📸, ✨, 👰) strategically to break up text. Use Bullet points for readability.
+
+        === 🧠 KNOWLEDGE BASE ===
+        - Studio Data: Packages=[${packages}], Contact=[${contactInfo}].
+        - Location context: Taunggyi, Inle, Kalaw (Shan State vibes).
+
+        === 🎯 GOAL PER TYPE ===
+        - If FB POST: Focus on "Storytelling" & "Emotion". Long form is okay.
+        - If TIKTOK: Focus on "Trends", "Fast Pace", & "Visual descriptions".
+        - If DM REPLY: Focus on "Empathy", "Clarity", & "Closing the Deal".
+        - If TIMELINE: Be "Logical" & "Detailed".
+
+        IMPORTANT: Always output COMPLETE responses. Do not cut off.
         `;
 
         let prompt = ""; 
