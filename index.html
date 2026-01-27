@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Sales Master AI v6.1</title>
+  <title>With You Studio - Sales Master AI v6.2</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -34,6 +34,16 @@
         color: white;
         font-weight: bold;
         box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
+    }
+    
+    /* Next Step Button Animation */
+    .next-step-btn {
+        animation: fadeInUp 0.5s ease-out;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     #sidebar { transition: transform 0.3s ease-in-out; }
@@ -80,10 +90,9 @@
     .typing-dot:nth-child(2) { animation-delay: -0.16s; }
     @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
     
-    /* Analysis Status Colors */
-    .status-ready { color: #34d399; border-color: #34d399; background: rgba(52, 211, 153, 0.1); }
-    .status-thinking { color: #fbbf24; border-color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
-    .status-notready { color: #60a5fa; border-color: #60a5fa; background: rgba(96, 165, 250, 0.1); }
+    /* Toast Animation */
+    .toast { visibility: hidden; min-width: 250px; background-color: #1e293b; color: #fff; text-align: center; border-radius: 50px; padding: 12px 24px; position: fixed; z-index: 100; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; opacity: 0; }
+    .toast.show { visibility: visible; bottom: 40px; opacity: 1; }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-200 h-screen h-[100dvh] flex overflow-hidden">
@@ -102,17 +111,11 @@
         <div class="w-full space-y-4">
             <div>
                 <label class="text-xs font-bold text-slate-400 uppercase mb-1 ml-1">Email</label>
-                <div class="relative">
-                    <i class="ph ph-envelope absolute left-3 top-3 text-slate-500 text-lg"></i>
-                    <input type="email" id="loginEmail" placeholder="admin@studio.com" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 pl-10 text-white focus:border-blue-500 outline-none transition placeholder-slate-600">
-                </div>
+                <input type="email" id="loginEmail" placeholder="admin@studio.com" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 pl-10 text-white focus:border-blue-500 outline-none transition placeholder-slate-600">
             </div>
             <div>
                 <label class="text-xs font-bold text-slate-400 uppercase mb-1 ml-1">Password</label>
-                <div class="relative">
-                    <i class="ph ph-key absolute left-3 top-3 text-slate-500 text-lg"></i>
-                    <input type="password" id="loginPass" placeholder="••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 pl-10 text-white focus:border-blue-500 outline-none transition placeholder-slate-600">
-                </div>
+                <input type="password" id="loginPass" placeholder="••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 pl-10 text-white focus:border-blue-500 outline-none transition placeholder-slate-600">
             </div>
             <button onclick="window.handleLogin()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-blue-900/50 transition active:scale-95 flex justify-center gap-2 items-center">
                 <span>Sign In</span>
@@ -249,51 +252,88 @@
 
   <!-- TEMPLATES -->
   
-  <!-- 0. AI MANAGER TEMPLATE -->
+  <!-- 0. AI MANAGER TEMPLATE (UPDATED: STRUCTURED OUTPUT) -->
   <template id="tpl-manager">
-    <div class="animate-fade-in space-y-4 h-full flex flex-col">
-        <div class="flex items-center justify-between shrink-0">
-            <h2 class="text-xl md:text-3xl font-bold text-yellow-400 flex items-center gap-3"><i class="ph ph-robot"></i> AI Partner</h2>
-            <div class="text-[10px] text-slate-400 bg-slate-800/50 border border-slate-700 px-3 py-1 rounded-full">Today's Direction</div>
+    <div class="animate-fade-in space-y-6">
+        <div class="flex items-center justify-between">
+            <h2 class="text-xl md:text-2xl font-bold text-yellow-400 flex items-center gap-2"><i class="ph ph-robot"></i> AI Manager</h2>
+            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">Daily Command Center</div>
         </div>
         
-        <!-- Chat Area -->
-        <div id="chatContainer" class="flex-1 overflow-y-auto space-y-4 p-2 custom-scroll">
-            <div class="flex flex-col space-y-4">
-                <div class="flex items-start gap-3">
-                    <div class="w-9 h-9 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-400 border border-yellow-500/30 shrink-0 shadow-lg shadow-yellow-500/10"><i class="ph ph-robot text-lg"></i></div>
-                    <div class="chat-bubble-ai max-w-[90%] md:max-w-[75%]">
-                        မင်္ဂလာပါ ကိုစိုင်းရေ။ ဒီနေ့ ဘာလုပ်ကြမလဲဗျ? အလုပ်ကိစ္စ ဆွေးနွေးမလား၊ Content အတွက် အကြံဉာဏ်ယူမလား၊ ဒါမှမဟုတ် စိတ်ထွက်ပေါက်အနေနဲ့ စကားပြောမလား?
+        <div class="glass-panel p-6 rounded-xl border border-yellow-500/20 shadow-lg relative overflow-hidden">
+             <i class="ph ph-sparkle absolute -top-4 -right-4 text-9xl text-yellow-500 opacity-5 rotate-12"></i>
+             
+             <p class="text-sm text-slate-300 mb-6 relative z-10">
+                "မင်္ဂလာပါ ကိုစိုင်း။ ဒီနေ့ ဘာလုပ်ကြမလဲ? ကျွန်တော် Plan ဆွဲပေးမယ်။"
+             </p>
+
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
+                <!-- Inputs -->
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Energy Level (အားအင်)</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="setManagerOption('energy', 'Low', this)" class="manager-btn p-3 rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-center transition">Low<br>😴</button>
+                            <button onclick="setManagerOption('energy', 'Normal', this)" class="manager-btn active p-3 rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-center transition">Normal<br>🙂</button>
+                            <button onclick="setManagerOption('energy', 'High', this)" class="manager-btn p-3 rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-center transition">High<br>🔥</button>
+                        </div>
+                        <input type="hidden" id="mgrEnergy" value="Normal">
                     </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                         <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Today's Goal</label>
+                            <select id="mgrGoal" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white focus:border-yellow-500 outline-none">
+                                <option value="Get Bookings">💰 Sales (Booking)</option>
+                                <option value="Brand Awareness">📢 Branding (Popularity)</option>
+                                <option value="Organization">🧹 Clean & Organize</option>
+                            </select>
+                        </div>
+                        <div>
+                             <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Focus (Content)</label>
+                             <select id="mgrFocus" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white focus:border-yellow-500 outline-none">
+                                <option value="Anything">🎲 Anything</option>
+                                <option value="Pre-Wedding">💍 Pre-Wedding</option>
+                                <option value="Wedding Day">👰 Wedding</option>
+                                <option value="Studio Branding">🏢 Studio</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button onclick="window.generateAI('manager_daily')" class="w-full mt-4 bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-500 hover:to-orange-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-yellow-900/30 transition active:scale-95 flex items-center justify-center gap-2">
+                        <i class="ph ph-magic-wand text-lg"></i> Generate Master Plan
+                    </button>
                 </div>
-            </div>
-        </div>
 
-        <!-- Input Area (Fixed Bottom) -->
-        <div class="shrink-0 pt-3 space-y-3 pb-2">
-            <!-- Quick Chips -->
-            <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1 px-1">
-                <button onclick="window.sendChat('💡 ဒီနေ့အတွက် Idea တစ်ခုလောက် ပေးပါ')" class="whitespace-nowrap px-4 py-2 rounded-full bg-slate-800/80 border border-slate-700 text-xs font-medium text-slate-300 hover:bg-slate-700 hover:border-yellow-500/50 hover:text-white transition backdrop-blur-sm shadow-sm">💡 Today Idea</button>
-                <button onclick="window.sendChat('📩 Client က ဈေးမေးပြီး ငြိမ်သွားတယ် ဘာပြန်ပြောရမလဲ?')" class="whitespace-nowrap px-4 py-2 rounded-full bg-slate-800/80 border border-slate-700 text-xs font-medium text-slate-300 hover:bg-slate-700 hover:border-purple-500/50 hover:text-white transition backdrop-blur-sm shadow-sm">📩 DM Strategy</button>
-                <button onclick="window.sendChat('🎥 TikTok နဲ့ FB မှာ ဘာတင်ရင်ကောင်းမလဲ?')" class="whitespace-nowrap px-4 py-2 rounded-full bg-slate-800/80 border border-slate-700 text-xs font-medium text-slate-300 hover:bg-slate-700 hover:border-blue-500/50 hover:text-white transition backdrop-blur-sm shadow-sm">🎥 Content Plan</button>
-                <button onclick="window.sendChat('🧠 ငါနဲ့ အတူတူ စဉ်းစားပေးပါ')" class="whitespace-nowrap px-4 py-2 rounded-full bg-slate-800/80 border border-slate-700 text-xs font-medium text-slate-300 hover:bg-slate-700 hover:border-green-500/50 hover:text-white transition backdrop-blur-sm shadow-sm">🧠 Brainstorm</button>
-            </div>
+                <!-- Output Area -->
+                <div id="mgrResultArea" class="hidden h-full">
+                     <div class="bg-slate-900/50 rounded-xl border border-slate-700 p-4 h-full flex flex-col">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold text-yellow-400 uppercase">Today's Mission</span>
+                            <div class="flex gap-2">
+                                <button onclick="window.copyText('mgrOutput')" class="text-xs bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded border border-slate-600 transition">Copy</button>
+                            </div>
+                        </div>
+                        <div id="mgrOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 overflow-y-auto max-h-[400px] custom-scroll"></div>
+                        
+                        <!-- NEW NEXT STEP BUTTON -->
+                        <div id="mgrNextStep" class="hidden mt-3 pt-3 border-t border-slate-700">
+                             <button onclick="window.loadView('creative')" class="w-full next-step-btn py-2.5 rounded-lg text-white text-xs font-bold flex items-center justify-center gap-2 shadow-lg">
+                                <span>💡 Get Content Ideas Now</span> <i class="ph ph-arrow-right"></i>
+                             </button>
+                        </div>
 
-            <!-- Input Box -->
-            <div class="relative glass-panel rounded-2xl p-2 flex items-end gap-2 border border-slate-600/50 shadow-xl">
-                <textarea id="chatInput" rows="1" placeholder="ကိုစိုင်း ပြောချင်တာ ရေးပါ..." class="flex-1 bg-transparent border-none text-white text-sm px-4 py-3 focus:ring-0 resize-none max-h-32 placeholder-slate-500" onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); window.handleChatSubmit(); }"></textarea>
-                
-                <button onclick="window.startVoiceInput('chatInput', this)" class="p-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-700/50 transition shrink-0" title="Voice"><i class="ph ph-microphone text-xl"></i></button>
-                
-                <button onclick="window.handleChatSubmit()" class="p-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg hover:shadow-blue-500/30 active:scale-95 transition shrink-0">
-                    <i class="ph ph-paper-plane-right-fill text-xl"></i>
-                </button>
+                        <button id="mgrContinueBtn" onclick="window.continueAI('manager_daily')" class="hidden w-full mt-2 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-yellow-400 text-xs font-bold flex items-center justify-center gap-2 transition">
+                            <span>⚠️ Continue Planning</span>
+                        </button>
+                     </div>
+                </div>
             </div>
         </div>
     </div>
   </template>
 
-  <!-- CREATIVE DIRECTOR TEMPLATE -->
+  <!-- CREATIVE DIRECTOR TEMPLATE (UPDATED) -->
   <template id="tpl-creative">
     <div class="animate-fade-in space-y-6">
         <div class="flex items-center justify-between">
@@ -311,7 +351,7 @@
                         <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Today's Workload</label>
                         <div class="grid grid-cols-3 gap-2">
                             <button onclick="setCreativeOption('workload', 'Busy', this)" class="creative-btn p-3 rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-center transition">Busy<br>🥵</button>
-                            <button onclick="setCreativeOption('workload', 'Normal', this)" class="creative-btn active p-3 rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-center transition">Normal<br>😐</button>
+                            <button onclick="setCreativeOption('workload', 'Normal', this)" class="creative-btn active p-3 rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-center transition">Normal<br>🙂</button>
                             <button onclick="setCreativeOption('workload', 'Free', this)" class="creative-btn p-3 rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-center transition">Motivated<br>🤩</button>
                         </div>
                         <input type="hidden" id="crWorkload" value="Normal">
@@ -368,6 +408,11 @@
                             <button onclick="window.copyText('crOutput')" class="text-xs bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded border border-slate-600 transition">Copy</button>
                         </div>
                         <div id="crOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 overflow-y-auto max-h-[400px] custom-scroll"></div>
+                        
+                        <!-- NEXT STEP BUTTON (Dynamic) -->
+                        <div id="crNextStep" class="hidden mt-3 pt-3 border-t border-slate-700">
+                             <!-- JS will inject here -->
+                        </div>
                      </div>
                 </div>
             </div>
@@ -380,13 +425,14 @@
                         <button onclick="window.copyText('crOutputMobile')" class="text-xs bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded border border-slate-600 transition">Copy</button>
                     </div>
                     <div id="crOutputMobile" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed"></div>
+                    <div id="crNextStepMobile" class="hidden mt-3 pt-3 border-t border-slate-700"></div>
                  </div>
             </div>
         </div>
     </div>
   </template>
 
-  <!-- 1. DM SALES MASTER TEMPLATE -->
+  <!-- 1. DM SALES MASTER TEMPLATE (UPDATED) -->
   <template id="tpl-dm">
     <div class="animate-fade-in space-y-6">
         <div class="flex items-center justify-between">
@@ -475,6 +521,11 @@
                     
                     <div id="dmOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 overflow-y-auto max-h-[600px] z-10 pr-2 custom-scroll"></div>
                     
+                    <!-- NEXT STEP BUTTON -->
+                    <div id="dmNextStep" class="hidden mt-3 pt-3 border-t border-slate-700">
+                         <!-- Injected by JS -->
+                    </div>
+
                     <!-- DM CONTINUE BUTTON -->
                     <button id="dmContinueBtn" onclick="window.continueAI('dm_best')" class="hidden w-full mt-3 py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-purple-300 text-sm font-bold flex items-center justify-center gap-2 transition active:scale-95">
                         <span>⚠️ Continue Writing (စာဆက်ရေးပါ)</span>
@@ -519,7 +570,7 @@
     </div>
   </template>
 
-  <!-- FB POST (Unchanged) -->
+  <!-- FB POST (UPDATED) -->
   <template id="tpl-fbpost">
     <div class="animate-fade-in space-y-6">
         <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2"><i class="ph ph-facebook-logo text-blue-500"></i> Facebook Post</h2>
@@ -528,7 +579,12 @@
             <div class="grid grid-cols-2 gap-4"><select id="fbTone" class="bg-slate-800 border border-slate-700 rounded-lg p-3 text-white"><option>Professional</option><option>Friendly</option></select><select id="fbLength" class="bg-slate-800 border border-slate-700 rounded-lg p-3 text-white"><option>Medium</option><option>Long</option></select></div>
             <button onclick="window.generateAI('fbpost')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg shadow-lg transition active:scale-95">Write Post</button>
         </div>
-        <div id="fbResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl"><div id="fbOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div><button id="fbContinueBtn" onclick="window.continueAI('fbpost')" class="hidden w-full mt-3 py-3 bg-slate-800 rounded-lg text-blue-300 text-sm font-bold">⚠️ Continue</button><button onclick="window.copyText('fbOutput')" class="w-full mt-2 py-3 border border-slate-700 rounded-lg text-slate-300 text-sm">Copy</button></div>
+        <div id="fbResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl">
+            <div id="fbOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div>
+            <div id="fbNextStep" class="hidden mt-3 pt-3 border-t border-slate-700"></div>
+            <button id="fbContinueBtn" onclick="window.continueAI('fbpost')" class="hidden w-full mt-3 py-3 bg-slate-800 rounded-lg text-blue-300 text-sm font-bold">⚠️ Continue</button>
+            <button onclick="window.copyText('fbOutput')" class="w-full mt-2 py-3 border border-slate-700 rounded-lg text-slate-300 text-sm">Copy</button>
+        </div>
     </div>
   </template>
 
@@ -636,110 +692,6 @@
         window.currentView = viewId;
     }
 
-    // --- NEW: CHAT MANAGER LOGIC ---
-    window.handleChatSubmit = async function() {
-        const inputEl = document.getElementById('chatInput');
-        const text = inputEl.value.trim();
-        if(!text) return;
-        
-        addMessageToUI('user', text);
-        inputEl.value = '';
-        const loadingId = addMessageToUI('ai', 'Thinking...', true);
-        
-        let brand = {};
-        if(userId) { try { const s = await getDoc(doc(db, 'artifacts', appId, 'users', userId, 'config', 'brand')); if(s.exists()) brand = s.data(); } catch(e){} }
-        
-        let savedDecisions = [];
-        if(userId) {
-             try {
-                 const q = query(collection(db, 'artifacts', appId, 'users', userId, 'decisions'), orderBy('timestamp', 'desc'), limit(3));
-                 const snaps = await getDocs(q); 
-                 snaps.forEach(d => savedDecisions.push(d.data().content));
-             } catch(e) {}
-        }
-
-        const packages = brand.brandPackages || "Not set";
-        const style = brand.brandStyle || "Professional";
-        
-        const systemPrompt = `
-        ROLE: Ko Sai's Business Partner & AI Manager for "With You Studio" (Taunggyi).
-        TONE: Natural, warm, "Bya" ending. Chat like a human friend.
-        MEMORY: Studio Style: ${style}, Recent Decisions: ${savedDecisions.join('; ')}, Packages: ${packages}
-        TASK: Respond to "${text}". Be concise.
-        `;
-        
-        try {
-            const res = await fetch("/api/generate", {
-                method: "POST", headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ prompt: systemPrompt })
-            });
-            const d = await res.json();
-            
-            // REMOVED THE LOADING ELEMENT CHECK FOR NULL SAFETY
-            const loadingEl = document.getElementById(loadingId);
-            if(loadingEl) loadingEl.remove();
-            
-            const msgId = addMessageToUI('ai', d.result);
-            addSaveButton(msgId, d.result);
-            
-        } catch(e) {
-             // Null safe error handling
-             const loadingEl = document.getElementById(loadingId);
-             if(loadingEl) loadingEl.innerText = "Error connecting...";
-        }
-    };
-    
-    window.sendChat = function(text) {
-        document.getElementById('chatInput').value = text;
-        window.handleChatSubmit();
-    }
-
-    function addMessageToUI(role, text, isLoading=false) {
-        const container = document.getElementById('chatContainer');
-        const div = document.createElement('div');
-        const id = 'msg-' + Date.now();
-        div.id = id;
-        div.className = 'flex w-full ' + (role === 'user' ? 'justify-end' : 'justify-start');
-        
-        let content = text;
-        if(isLoading) content = `<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>`;
-        else content = text.replace(/\n/g, '<br>');
-
-        div.innerHTML = `
-            <div class="${role === 'user' ? 'chat-bubble-user max-w-[80%]' : 'flex items-start gap-3 max-w-[85%]'}">
-                ${role === 'ai' ? '<div class="w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-400 border border-yellow-500/30 shrink-0"><i class="ph ph-robot"></i></div>' : ''}
-                <div class="${role === 'ai' ? 'chat-bubble-ai' : ''}">${content}</div>
-            </div>
-        `;
-        container.appendChild(div);
-        container.scrollTop = container.scrollHeight;
-        return id;
-    }
-    
-    function addSaveButton(msgId, content) {
-        const msgEl = document.getElementById(msgId).querySelector('.chat-bubble-ai');
-        const btn = document.createElement('button');
-        btn.className = "mt-2 text-[10px] flex items-center gap-1 text-slate-400 hover:text-yellow-400 transition";
-        btn.innerHTML = `<i class="ph ph-star"></i> Save Decision`;
-        btn.onclick = () => window.saveDecision(content, btn);
-        msgEl.appendChild(btn);
-    }
-    
-    window.saveDecision = async function(content, btnElement) {
-        if(!userId) return window.showToast("Login to save");
-        try {
-            await addDoc(collection(db, 'artifacts', appId, 'users', userId, 'decisions'), {
-                content: content,
-                timestamp: Date.now()
-            });
-            btnElement.innerHTML = `<i class="ph ph-star-fill text-yellow-400"></i> Saved`;
-            btnElement.classList.add('text-yellow-400');
-            window.showToast("Memory Updated!");
-        } catch(e) { console.error(e); }
-    }
-    
-    function loadChatHistory() {}
-
     // --- NEW: CREATIVE DIRECTOR HELPERS ---
     window.setCreativeOption = function(type, value, btn) {
         if(type === 'workload') {
@@ -839,8 +791,16 @@
         let contextTopic = "";
 
         if (type === 'manager_daily') { 
-             prompt = `Task: Create a 3-Day Mini Content Plan for a busy studio owner. Input: Energy=${getValue('crWorkload')}, Goal=${getValue('mgrGoal') || 'General'}. Output: Checklist format in Burmese.`;
-             contextTopic = `Manager Plan`;
+             prompt = `Task: Create a structured Daily Plan for a studio owner.
+             Input: Energy=${getValue('mgrEnergy')}, Goal=${getValue('mgrGoal') || 'General'}, Content Focus=${getValue('mgrFocus')}.
+             OUTPUT FORMAT:
+             1. 🛡️ **The One Thing**: (Most important priority)
+             2. 📸 **Content**: (Specific Idea for ${getValue('mgrFocus')})
+             3. 💬 **Sales Focus**: (Who to follow up)
+             4. ⚡ **Quick Win**: (30 min task)
+             TONE: Direct, encouraging, friendly Burmese ('Bya'). Mix list with short explanations.`;
+             contextTopic = `Manager Plan (${getValue('mgrFocus')})`;
+             if(isContinue) prompt = `Context: Continue daily plan from: "${document.getElementById(outId).innerText.slice(-50)}". Finish sections.`;
         }
         else if (type === 'creative_director') {
              prompt = `Task: 3-Day Mini Content Plan. Input: Energy=${getValue('crWorkload')}, Focus=${getValue('crFocus')}. Output: Checklist format in Burmese.`;
@@ -855,28 +815,32 @@
              contextTopic = `TikTok Text`;
         }
         else if (type === 'dm_auto_detect') { 
-             prompt = `Task: Analyze message "${getValue('dmInput')}" and write BEST reply.`;
+             prompt = `Task: Analyze client message "${getValue('dmInput')}" and immediately write the BEST single reply strategy. Detect if they need price, reassurance, or booking info. Write the reply directly.`;
              contextTopic = `Auto DM Reply`;
+             if(isContinue) prompt = `Context: Continue DM reply from: "${document.getElementById(outId).innerText.slice(-50)}".`;
         }
         else if (type === 'dm_analyze') {
             const msg = getValue('dmInput');
-            prompt = `ROLE: Strategist. TASK: Analyze "${msg}". Output: Status, Reason, NextAction.`;
+            prompt = `ROLE: Strategist. TASK: Analyze "${msg}". Output: Status (Ready/Thinking/NotReady), Reason, NextAction. No full reply.`;
         }
         else if (type === 'dm_best') {
-             prompt = `Task: Write 3 Sales Replies. Client: "${getValue('dmInput')}". Context: ${getValue('dmService')}.`;
+             prompt = `Task: Write 3 Sales Replies. Client: "${getValue('dmInput')}". Context: ${getValue('dmService')}. Strategy: ${getValue('dmType')}.`;
              contextTopic = `DM: ${getValue('dmService')}`;
-             if(isContinue) prompt = `Context: Continue writing from: "${document.getElementById(outId).innerText.slice(-50)}".`;
+             if(isContinue) prompt = `Context: Continue writing DM replies from: "${document.getElementById(outId).innerText.slice(-50)}". Finish it.`;
         } else if(type === 'fbpost') {
-             prompt = `Task: Write 3 FB Posts. Topic: ${getValue('fbInput')}.`;
+             prompt = `Task: Write 3 FB Post Variations. Topic: ${getValue('fbInput')}. Tone: ${getValue('fbTone')}. Length: ${getValue('fbLength')}.`;
              contextTopic = `FB: ${getValue('fbInput')}`;
+             if(isContinue) prompt = `Context: Continue FB post from: "${document.getElementById(outId).innerText.slice(-50)}". Finish it.`;
         } else if(type === 'timeline') {
-             prompt = `Task: Wedding Timeline. Start: ${getValue('tlStart')}.`;
-             contextTopic = `Timeline`;
+             prompt = `Task: Wedding Timeline. Start: ${getValue('tlStart')}. Place: ${getValue('tlPlace')}. Outfit: ${getValue('tlDress')}.`;
+             contextTopic = `Timeline: ${getValue('tlPlace')}`;
+             if(isContinue) prompt = `Context: Continue timeline from: "${document.getElementById(outId).innerText.slice(-50)}".`;
         } else if(type.includes('tt_')) {
              prompt = `Task: TikTok Content. Topic: ${getValue('ttInput')}.`;
              contextTopic = `TikTok`;
+             if(isContinue) prompt = `Context: Continue TikTok content from: "${document.getElementById(outId).innerText.slice(-50)}".`;
         } else if(type === 'pose') {
-             prompt = `Task: 3 Pose Ideas. Context: ${getValue('poseInput')}.`;
+             prompt = `Task: 3 Pose Ideas. Context: ${getValue('poseInput')}. Outfit: ${getValue('poseOutfit')}.`;
              contextTopic = `Pose`;
         }
 
@@ -901,6 +865,14 @@
                     }
                     if(d.result && !d.result.includes("Error")) {
                          saveToRecents(type, outEl.innerText, contextTopic);
+                         
+                         // RENDER NEXT STEP BUTTON
+                         if(type === 'manager_daily') renderNextStepButton('mgrNextStep', 'creative');
+                         if(type === 'creative_director' || type === 'creative_post') {
+                             renderNextStepButton('crNextStep', 'fbpost'); // Desktop
+                             renderNextStepButton('crNextStepMobile', 'fbpost'); // Mobile
+                         }
+                         if(type === 'fbpost') renderNextStepButton('fbNextStep', 'dm');
                     }
                 }
                 const btn = document.getElementById(continueBtnIds[type]);
@@ -908,9 +880,29 @@
             }
         } catch(e) {
             console.error(e);
-            if(document.getElementById(outId) && !isContinue) document.getElementById(outId).innerText = "Connection Error.";
+            const outEl = document.getElementById(outId);
+            if(outEl && !isContinue) outEl.innerText = "Connection Error.";
         }
     };
+    
+    // --- Helper to render dynamic next step button ---
+    function renderNextStepButton(containerId, targetView) {
+        const container = document.getElementById(containerId);
+        if(!container) return;
+        
+        let label = "Next Step";
+        let icon = "ph-arrow-right";
+        if(targetView === 'creative') { label = "💡 Get Content Ideas"; icon = "ph-lightbulb"; }
+        if(targetView === 'fbpost') { label = "📝 Write Post Details"; icon = "ph-pen-nib"; }
+        if(targetView === 'dm') { label = "💬 Check DMs"; icon = "ph-chat-circle-text"; }
+        
+        container.innerHTML = `
+            <button onclick="window.loadView('${targetView}')" class="w-full next-step-btn py-3 rounded-lg text-white text-sm font-bold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5">
+                <span>${label}</span> <i class="ph ${icon}"></i>
+            </button>
+        `;
+        container.classList.remove('hidden');
+    }
 
     window.continueAI = (t) => window.generateAI(t, true);
     window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3000); };
@@ -930,7 +922,7 @@
     window.toggleExpand = (el) => { if(el.classList.contains('line-clamp-3')) el.classList.remove('line-clamp-3'); else el.classList.add('line-clamp-3'); };
     window.downloadFile = (n, id) => { const b = new Blob([document.getElementById(id).innerText],{type:'text/plain'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=n; a.click(); };
 
-    window.loadView('creative'); // Start with Creative
+    window.loadView('manager'); // Start with new Manager
   </script>
 </body>
 </html>
