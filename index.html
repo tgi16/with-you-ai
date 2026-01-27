@@ -612,9 +612,9 @@
   </template>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, orderBy, limit, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, orderBy, limit, onSnapshot, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
     // Need getDocs for Chat History context if used
     import { getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
@@ -837,7 +837,7 @@ window.runAssistant = async function(type) {
         inputEl.value = '';
         const loadingId = addMessageToUI('ai', 'Thinking...', true);
         
-        // --- FIX: Safe Brand Data Fetching ---
+        // 1. Safe Data Fetching
         let brand = {};
         if(userId) { try { const s = await getDoc(doc(db, 'artifacts', appId, 'users', userId, 'config', 'brand')); if(s.exists()) brand = s.data(); } catch(e){} }
         
@@ -850,7 +850,6 @@ window.runAssistant = async function(type) {
              } catch(e) {}
         }
 
-        // --- FIX: Safe Variable Access (Error 3 Fix) ---
         const packages = (brand && brand.brandPackages) ? brand.brandPackages : "Not set";
         const style = (brand && brand.brandStyle) ? brand.brandStyle : "Professional";
         
@@ -864,12 +863,11 @@ window.runAssistant = async function(type) {
         const finalPrompt = systemPrompt + "\n\nUser: " + text + "\nAI:";
 
         try {
-            // --- FIX: Payload Key Change (Error 1 Fix) ---
             const res = await fetch("/api/generate", {
                 method: "POST", headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    userMessage: finalPrompt, // Changed from 'prompt' to 'userMessage'
-                    mode: "manager" // Optional tag
+                    userMessage: finalPrompt,
+                    mode: "manager"
                 })
             });
             
@@ -878,18 +876,22 @@ window.runAssistant = async function(type) {
             const d = await res.json();
             
             const loadingEl = document.getElementById(loadingId);
-            // --- FIX: Null Safety (Error 2 Fix) ---
             if (loadingEl) loadingEl.remove();
 
             const msgId = addMessageToUI('ai', d.result);
             addSaveButton(msgId, d.result);
+
+            // --- NEW: Also Save to Recent History (Cloud) ---
+            if(d.result && userId) {
+                // Chat ကို Recent ထဲ Auto သိမ်းပေးမယ့် Code
+                saveToRecents('manager_chat', d.result, `AI Chat: ${text.substring(0, 15)}...`);
+            }
             
         } catch(e) {
             console.error(e);
             const loadingEl = document.getElementById(loadingId);
-            // --- FIX: Null Safety inside Catch ---
             if(loadingEl) {
-                loadingEl.innerHTML = "<span class='text-red-400'>Server connection failed. Try again.</span>";
+                loadingEl.innerHTML = "<span class='text-red-400'>Connection failed. Check Internet/VPN.</span>";
                 loadingEl.classList.remove('typing-dot'); 
             }
         }
@@ -946,6 +948,7 @@ window.runAssistant = async function(type) {
 
 
     window.generateAI = async function(type, isContinue = false) {
+        // UI IDs Setup
         const outputIds = { 'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'timeline': 'tlOutput', 'tt_caption': 'ttOutput', 'tt_script': 'ttOutput', 'pose': 'poseOutput', 'creative_director': 'crOutput', 'creative_post': 'crOutput', 'creative_tt_text': 'crOutput', 'dm_auto_detect': 'dmOutput', 'manager_daily': 'mgrOutput' };
         const areaIds = { 'fbpost': 'fbResultArea', 'dm_best': 'dmResultArea', 'timeline': 'tlResultArea', 'tt_caption': 'ttResultArea', 'tt_script': 'ttResultArea', 'pose': 'poseResultArea', 'creative_director': 'crResultArea', 'creative_post': 'crResultArea', 'creative_tt_text': 'crResultArea', 'dm_auto_detect': 'dmResultArea', 'manager_daily': 'mgrResultArea' };
         const continueBtnIds = { 'fbpost': 'fbContinueBtn', 'dm_best': 'dmContinueBtn', 'timeline': 'tlContinueBtn', 'tt_caption': 'ttContinueBtn', 'tt_script': 'ttContinueBtn', 'manager_daily': 'mgrContinueBtn', 'dm_auto_detect': 'dmContinueBtn' }; 
@@ -953,15 +956,15 @@ window.runAssistant = async function(type) {
         const outId = outputIds[type];
         const areaId = areaIds[type];
 
+        // UI Loading
         if(type !== 'dm_analyze') {
             const areaEl = document.getElementById(areaId);
             if(areaEl) areaEl.classList.remove('hidden');
             
             if(!isContinue) {
                 const outEl = document.getElementById(outId);
-                // --- FIX: Null Safety ---
                 if(outEl) outEl.innerHTML = "<span class='animate-pulse text-purple-400'>✨ Thinking...</span>";
-                
+                // Mobile Scroll
                 if(window.innerWidth < 768) {
                     if((type.startsWith('creative'))) {
                         const mobEl = document.getElementById('crResultAreaMobile');
@@ -980,7 +983,7 @@ window.runAssistant = async function(type) {
              }
         }
 
-        // --- FIX: Safe Data Loading ---
+        // Data Loading
         let packages = "Not specified";
         let contactInfo = "Not set";
         
@@ -1003,10 +1006,14 @@ window.runAssistant = async function(type) {
         `;
 
         let prompt = ""; 
-        let contextTopic = "";
+        let contextTopic = "General Content"; // Default topic
         
-        // (Prompt logic remain same, shortened for brevity)
-        if (type === 'manager_daily') { prompt = `Task: Daily Plan. Focus=${getValue('mgrFocus')}.`; contextTopic = `Manager Plan`; }
+        // --- PROMPT LOGIC ---
+        if (type === 'manager_daily') { 
+            const focus = getValue('mgrFocus') || 'General';
+            prompt = `Task: Daily Plan. Focus=${focus}. Output: 4 Sections (Priority, Content, Sales, Quick Win).`; 
+            contextTopic = `Manager Plan (${focus})`; // Ensure Topic is set
+        }
         else if (type === 'creative_director') { prompt = `Task: 3-Day Content Plan. Focus=${getValue('crFocus')}.`; contextTopic = `Creative Plan`; }
         else if (type === 'creative_post') { prompt = `Task: Write FB Post about "${getValue('crFocus')}".`; contextTopic = `Creative Post`; }
         else if (type === 'creative_tt_text') { prompt = `Task: TikTok Text Mode post. Topic: ${getValue('crFocus')}.`; contextTopic = `TikTok Text`; }
@@ -1024,7 +1031,6 @@ window.runAssistant = async function(type) {
         }
 
         try {
-            // --- FIX: Payload Key Change (Error 1 Fix) ---
             const res = await fetch("/api/generate", {
                 method: "POST", headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
@@ -1032,7 +1038,7 @@ window.runAssistant = async function(type) {
                 })
             });
             
-            if(!res.ok) throw new Error("API Error " + res.status); // Error 5 Fix
+            if(!res.ok) throw new Error("API Error " + res.status);
 
             const d = await res.json();
             
@@ -1041,7 +1047,6 @@ window.runAssistant = async function(type) {
                 document.getElementById('dmAnalysisContent').innerHTML = html;
             } else {
                 const outEl = document.getElementById(outId);
-                // --- FIX: Null Safety (Error 2 Fix) ---
                 if(outEl) {
                     if(isContinue) outEl.innerText += "\n" + d.result;
                     else outEl.innerText = d.result;
@@ -1049,8 +1054,11 @@ window.runAssistant = async function(type) {
                     if(type.startsWith('creative') && document.getElementById('crOutputMobile')) {
                         document.getElementById('crOutputMobile').innerText = outEl.innerText;
                     }
-                    if(d.result && !d.result.includes("Error")) {
-                         saveToRecents(type, outEl.innerText, contextTopic);
+
+                    // --- SAVE TO RECENT LOGIC ---
+                    if(d.result && !d.result.includes("Error") && userId) {
+                         // Manager Plan (သို့) အခြား result တွေကို Recent ထဲသိမ်းပါမယ်
+                         await saveToRecents(type, outEl.innerText, contextTopic);
                     }
                 }
                 const btn = document.getElementById(continueBtnIds[type]);
