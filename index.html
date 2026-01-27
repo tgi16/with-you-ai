@@ -1019,8 +1019,7 @@
             }
         } catch(e) {
             console.error(e);
-            const outEl = document.getElementById(outId);
-            if(outEl && !isContinue) outEl.innerText = "Connection Error.";
+            if(document.getElementById(outId) && !isContinue) document.getElementById(outId).innerText = "Connection Error.";
         }
     };
 
