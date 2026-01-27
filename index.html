@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Sales Master AI v5.3</title>
+  <title>With You Studio - Sales Master AI v5.3.1</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -390,7 +390,7 @@
     <div class="animate-fade-in space-y-6">
         <div class="flex items-center justify-between">
             <h2 class="text-xl md:text-2xl font-bold text-purple-400 flex items-center gap-2"><i class="ph ph-chat-circle-text"></i> DM Sales Master</h2>
-            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">v5.3</div>
+            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">v5.3.1</div>
         </div>
         
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -554,14 +554,22 @@
     const db = getFirestore(app);
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
     let userId = null;
+    let currentAnalysis = null;
 
-    const getValue = (id) => { const el = document.getElementById(id); return el ? el.value : ""; };
-    
-    window.handleLogin = async () => {
-        try { await signInWithEmailAndPassword(auth, getValue('loginEmail'), getValue('loginPass')); } 
-        catch(e) { const err = document.getElementById('loginError'); err.classList.remove('hidden'); document.getElementById('loginErrorText').innerText = e.message; }
+    // --- HELPER: SAFE GET VALUE ---
+    const getValue = (id) => {
+        const el = document.getElementById(id);
+        return el ? el.value : "";
     };
-    window.handleLogout = async () => { await signOut(auth); window.location.reload(); };
+
+    // --- AUTH ---
+    window.handleLogin = async function() {
+        const email = getValue('loginEmail');
+        const pass = getValue('loginPass');
+        if(!email || !pass) return;
+        try { await signInWithEmailAndPassword(auth, email, pass); } catch(error) { document.getElementById('loginError').innerText = error.message; document.getElementById('loginError').classList.remove('hidden'); }
+    }
+    window.handleLogout = async function() { try { await signOut(auth); window.location.reload(); } catch(e) { console.error(e); } }
 
     onAuthStateChanged(auth, (user) => {
         const overlay = document.getElementById('loginOverlay');
@@ -580,7 +588,7 @@
         }
     });
 
-    window.currentView = 'manager'; // Default to Manager/Creative
+    window.currentView = 'dm'; 
     window.toggleSidebar = function() {
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
@@ -596,7 +604,7 @@
         container.innerHTML = ''; 
         let templateId = 'tpl-' + viewId;
         // Map old names to templates if needed, or simple check
-        if(viewId === 'creative') templateId = 'tpl-creative'; // Use dedicated creative template
+        if(viewId === 'creative') templateId = 'tpl-creative'; 
         const tpl = document.getElementById(templateId);
         if(tpl) {
             container.appendChild(tpl.content.cloneNode(true));
@@ -665,18 +673,34 @@
         const areaId = areaIds[type];
 
         if(type !== 'dm_analyze') {
-            document.getElementById(areaId).classList.remove('hidden');
+             // Added Safety Check for Area Element
+             const areaEl = document.getElementById(areaId);
+             if (areaEl) areaEl.classList.remove('hidden');
+
             if(!isContinue) {
-                document.getElementById(outId).innerHTML = "<span class='animate-pulse text-purple-400'>✨ Thinking...</span>";
+                const outEl = document.getElementById(outId);
+                if (outEl) outEl.innerHTML = "<span class='animate-pulse text-purple-400'>✨ Thinking...</span>";
+                
                 if(window.innerWidth < 768) {
-                    if((type.includes('creative'))) document.getElementById('crResultAreaMobile').classList.remove('hidden');
-                    const scrollTarget = (type.includes('creative')) ? document.getElementById('crResultAreaMobile') : document.getElementById(areaId);
-                    setTimeout(() => scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+                    if((type.includes('creative'))) {
+                        const mobEl = document.getElementById('crResultAreaMobile');
+                        if (mobEl) mobEl.classList.remove('hidden');
+                    }
+                    // Fixed Scroll Logic with Safety Checks
+                    const scrollId = (type.includes('creative')) ? 'crResultAreaMobile' : areaId;
+                    const scrollTarget = document.getElementById(scrollId);
+                    if (scrollTarget) {
+                        setTimeout(() => scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+                    }
                 }
             }
         } else {
-             document.getElementById('dmAnalysisPanel').classList.remove('hidden');
-             document.getElementById('dmAnalysisContent').innerHTML = "<span class='animate-pulse text-indigo-400'>🔍 Analyzing...</span>";
+             const panel = document.getElementById('dmAnalysisPanel');
+             if(panel) { 
+                 panel.classList.remove('hidden'); 
+                 const content = document.getElementById('dmAnalysisContent');
+                 if(content) content.innerHTML = "<span class='animate-pulse text-indigo-400'>🔍 Analyzing...</span>"; 
+             }
         }
 
         let brand = {};
@@ -688,25 +712,22 @@
         let prompt = "";
         let contextTopic = "";
 
-        if (type === 'manager_daily') { // Map creative_director to manager logic
-             prompt = `Task: Create a 3-Day Mini Content Plan for a busy studio owner. Input: Energy=${getValue('crWorkload')}, Goal=${getValue('mgrGoal') || 'General'}. Output: Checklist format in Burmese.`;
-             contextTopic = `Manager Plan`;
-        }
-        else if (type === 'creative_director') { // Fallback if old button
-             prompt = `Task: 3-Day Plan. Workload: ${getValue('crWorkload')}. Focus: ${getValue('crFocus')}.`;
-             contextTopic = `Plan: ${getValue('crFocus')}`;
+        if (type === 'creative_director') {
+             prompt = `Task: Create a 3-Day Mini Content Plan for a busy studio owner. Input: Energy=${getValue('crWorkload')}, Focus=${getValue('crFocus')}. Platforms: FB & TikTok. Output: Checklist format in Burmese.`;
+             contextTopic = `Creative Plan (${getValue('crFocus')})`;
         }
         else if (type === 'creative_post') {
              prompt = `Task: Write a highly persuasive Social Media Post (Caption) about "${getValue('crFocus')}". Goal: Get bookings. Tone: Emotional & Trustworthy. Include Hook, Body, CTA.`;
-             contextTopic = `Creative Post: ${getValue('crFocus')}`;
+             contextTopic = `Creative Post (${getValue('crFocus')})`;
         }
         else if (type === 'creative_tt_text') {
              prompt = `Task: Write a TikTok 'Text Mode' post (Photo slide text). Topic: ${getValue('crFocus')}. Constraint: UNDER 500 characters total. Tone: Poetic/Touching.`;
-             contextTopic = `TikTok Text: ${getValue('crFocus')}`;
+             contextTopic = `TikTok Text (${getValue('crFocus')})`;
         }
         else if (type === 'dm_auto_detect') { 
              prompt = `Task: Analyze client message "${getValue('dmInput')}" and immediately write the BEST single reply strategy. Detect if they need price, reassurance, or booking info. Write the reply directly.`;
              contextTopic = `Auto DM Reply`;
+             if(isContinue) prompt = `Context: Continue DM reply from: "${document.getElementById(outId).innerText.slice(-50)}".`;
         }
         else if (type === 'dm_analyze') {
             const msg = getValue('dmInput');
@@ -744,18 +765,25 @@
                 const html = `<div class='text-slate-300'>${d.result.replace(/\n/g, '<br>')}</div>`;
                 document.getElementById('dmAnalysisContent').innerHTML = html;
             } else {
-                if(isContinue) document.getElementById(outId).innerText += "\n" + d.result;
-                else document.getElementById(outId).innerText = d.result;
-                
-                // Duplicate to Mobile Creative Output
-                if((type.includes('creative')) && document.getElementById('crOutputMobile')) {
-                    document.getElementById('crOutputMobile').innerText = document.getElementById(outId).innerText;
+                const outEl = document.getElementById(outId);
+                if(outEl) {
+                    if(isContinue) outEl.innerText += "\n" + d.result;
+                    else outEl.innerText = d.result;
+                    
+                    // Duplicate to Mobile Creative Output
+                    if(type.includes('creative')) {
+                        const mobOut = document.getElementById('crOutputMobile');
+                        if (mobOut) mobOut.innerText = outEl.innerText;
+                    }
+                    
+                    if(d.result && !d.result.includes("Error")) {
+                         saveToRecents(type, outEl.innerText, contextTopic);
+                    }
                 }
                 
-                if(continueBtnIds[type]) document.getElementById(continueBtnIds[type]).classList.remove('hidden');
-                
-                if(d.result && !d.result.includes("Error") && !d.result.includes("Connection")) {
-                     saveToRecents(type, document.getElementById(outId).innerText, contextTopic);
+                if(continueBtnIds[type]) {
+                    const btn = document.getElementById(continueBtnIds[type]);
+                    if(btn) btn.classList.remove('hidden');
                 }
             }
         } catch(e) { console.error(e); }
