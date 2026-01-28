@@ -1218,28 +1218,28 @@ window.runAssistant = async function(type) {
 else if (type === 'creative_tt_text') {
              const topic = getValue('crFocus');
              prompt = `
-             Role: Viral TikTok Content Creator.
-             Task: Create 2 DISTINCT "Text Mode" options about "${topic}".
+             Role: A Gen-Z Storyteller & Photographer (Not an AI).
+             Task: Write 2 "TikTok Text Mode" contents about "${topic}".
              
-             CONSTRAINTS: 
-             - Each option must be under 250 characters.
-             - NO conversational filler (e.g., "Here is the text"). 
-             - OUTPUT DIRECT CONTENT ONLY.
+             CRITICAL INSTRUCTION:
+             - ❌ NO Robotic/Formal Language. (Do NOT use "မင်္ဂလာပါ", "ကြိုးစားပါ").
+             - ✅ Write like a HUMAN feeling a moment. Use "Spoken Burmese" (အပြောစကား).
+             - Use short phrases, not full sentences.
+             - Make it "Aesthetic", "Raw", and "Deep".
              
-             STYLE: Aesthetic, Deep, Emotional, or Minimalist (Poetry style).
-             FORMAT: Short, punchy lines (Stanza format). No hashtags needed inside the text image.
-             GOAL: Visually beautiful text that people want to save as wallpaper.
-             OUTPUT FORMAT:
-             Option 1:
-             (Write the aesthetic text here)
+             OUTPUT FORMAT (Strictly text only):
              
-             Option 2:
-             (Write a different style text here)
+             Option 1 (Sad/Moody Vibe):
+             (Write short, deep lines. Example style: "တခါတလေတော့လည်းလေ... \n ပြောမထွက်ခဲ့တာတွေက ပိုများတယ်")
+             
+             Option 2 (Hopeful/Sweet Vibe):
+             (Write warm, short lines. Example style: "ဒီနေ့လေးက \n မထင်မှတ်ဘဲ လှနေတယ် ✨")
 
-             Language: Burmese (Unicode) mixed with minimal English if needed for vibe.
+             Topic Context: ${topic}
              `;
              contextTopic = `TikTok Text Mode (${topic})`;
-        }        else if (type === 'dm_auto_detect') { prompt = `Task: Best DM Reply for "${getValue('dmInput')}".`; contextTopic = `Auto DM Reply`; }
+        }    
+         else if (type === 'dm_auto_detect') { prompt = `Task: Best DM Reply for "${getValue('dmInput')}".`; contextTopic = `Auto DM Reply`; }
         else if (type === 'dm_analyze') { prompt = `Task: Analyze "${getValue('dmInput')}". Output: Status, Reason.`; }
         else if (type === 'dm_best') { prompt = `Task: 3 Sales Replies. Client: "${getValue('dmInput')}".`; contextTopic = `DM Sales`; }
         else if (type === 'fbpost') { prompt = `Task: 3 FB Posts. Topic: ${getValue('fbInput')}.`; contextTopic = `FB Post`; }
