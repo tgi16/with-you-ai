@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Sales Master AI v6.7</title>
+  <title>With You Studio - Sales Master AI v6.6</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -170,7 +170,7 @@ button { transition: all 0.2s ease; }
             <h1 class="text-xl font-bold text-white tracking-tight flex items-center gap-2">
                 <i class="ph ph-camera text-blue-400"></i> With You Studio
             </h1>
-            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">Sales Master AI v6.7</div>
+            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">Sales Master AI v6.6</div>
             <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1 flex items-center gap-1">
                 <span id="connectionStatus" class="w-2 h-2 rounded-full bg-red-500"></span> Online
             </p>
@@ -228,6 +228,23 @@ button { transition: all 0.2s ease; }
             </div>
         </div>
     </nav>
+<div class="px-4 pb-4">
+        <div class="bg-slate-900/80 rounded-xl p-3 border border-slate-700 shadow-inner">
+            <div class="flex justify-between items-end mb-2">
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1"><i class="ph ph-lightning"></i> AI Budget</span>
+                <span id="usagePercent" class="text-xs font-bold text-green-400">0%</span>
+            </div>
+            
+            <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden mb-2 border border-slate-700/50">
+                <div id="usageBar" class="h-full bg-gradient-to-r from-green-500 to-emerald-400 transition-all duration-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" style="width: 0%"></div>
+            </div>
+            
+            <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+               <span><span id="usageCost" class="text-slate-200 font-bold">$0.00</span> / $5.00</span>
+               <span id="usageRequests" class="text-slate-500">0 reqs</span>
+            </div>
+        </div>
+    </div>
 
     <div class="p-4 border-t border-slate-800 text-xs text-slate-600 text-center">
         <div id="userEmailDisplay" class="text-[10px] text-blue-400 mb-2 truncate">Checking Auth...</div>
@@ -423,94 +440,89 @@ button { transition: all 0.2s ease; }
   <template id="tpl-dm">
     <div class="animate-fade-in space-y-6">
         <div class="flex items-center justify-between">
-            <h2 class="text-xl md:text-3xl font-bold text-purple-400 flex items-center gap-3"><i class="ph ph-chat-circle-text"></i> DM Sales Master</h2>
-            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">v5.3</div>
+            <h2 class="text-xl md:text-3xl font-bold text-purple-400 flex items-center gap-3">
+                <i class="ph ph-chat-circle-text"></i> DM Sales Master
+            </h2>
         </div>
         
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Left Column: Strategy & Input -->
-            <div class="space-y-4">
-                <div class="glass-panel p-6 rounded-2xl space-y-5 border border-purple-500/20 shadow-lg shadow-purple-900/10">
-                    
-                    <!-- Context Section -->
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 uppercase mb-2 tracking-wider">Topic</label>
-                            <select id="dmService" class="w-full bg-slate-800/50 border border-slate-600 rounded-xl p-3 text-sm text-white focus:border-purple-500 outline-none appearance-none">
-                                <option value="Pre-wedding Package">💍 Pre-wedding</option>
-                                <option value="Wedding Actual Day">👰 Wedding Day</option>
-                                <option value="Family Photoshoot">👨‍👩‍👧‍👦 Family</option>
-                                <option value="Graduation Photo">🎓 Graduation</option>
-                                <option value="General Inquiry">❓ General</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 uppercase mb-2 tracking-wider">Status</label>
-                            <select id="dmScenario" class="w-full bg-slate-800/50 border border-slate-600 rounded-xl p-3 text-sm text-white focus:border-purple-500 outline-none appearance-none">
-                                <option value="New Inquiry">New Inquiry</option>
-                                <option value="Price Objection">Expensive (ဈေးကြီး)</option>
-                                <option value="Ghosting">Seen (စာမပြန်)</option>
-                                <option value="Comparing">Comparing (ယှဉ်နေ)</option>
-                                <option value="Closing">Ready to Book</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <!-- Message Input -->
+        <div class="glass-panel p-6 rounded-2xl border border-purple-500/20 shadow-xl relative overflow-hidden">
+            <i class="ph ph-chat-teardrop-text absolute -top-4 -right-4 text-9xl text-purple-500 opacity-5 rotate-12"></i>
+
+            <div class="relative z-10 space-y-6">
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2 tracking-wider">Client Message / Context</label>
-                        <div class="relative">
-                            <textarea id="dmInput" placeholder="Client မေးတဲ့စာ (သို့) အခြေအနေ..." class="w-full bg-slate-800/50 border border-slate-600 rounded-xl p-4 text-sm h-32 text-white resize-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 pr-12 shadow-inner"></textarea>
-                            <button onclick="window.startVoiceInput('dmInput', this)" class="absolute right-3 bottom-3 bg-slate-700/80 hover:bg-purple-600 p-2.5 rounded-full transition text-slate-300 hover:text-white shadow-lg" title="Speak"><i class="ph ph-microphone text-xl"></i></button>
-                        </div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2 tracking-wider">Topic</label>
+                        <select id="dmService" class="w-full bg-slate-800/50 border border-slate-600 rounded-xl p-3 text-sm text-white focus:border-purple-500 outline-none">
+                            <option value="Pre-wedding Package">💍 Pre-wedding</option>
+                            <option value="Wedding Actual Day">👰 Wedding Day</option>
+                            <option value="Family Photoshoot">👨‍👩‍👧‍👦 Family</option>
+                            <option value="Graduation Photo">🎓 Graduation</option>
+                            <option value="General Inquiry">❓ General</option>
+                        </select>
                     </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2 tracking-wider">Client Status</label>
+                        <select id="dmScenario" class="w-full bg-slate-800/50 border border-slate-600 rounded-xl p-3 text-sm text-white focus:border-purple-500 outline-none">
+                            <option value="New Inquiry">New Inquiry</option>
+                            <option value="Price Objection">Expensive (ဈေးကြီး)</option>
+                            <option value="Ghosting">Seen (စာမပြန်)</option>
+                            <option value="Comparing">Comparing (ယှဉ်နေ)</option>
+                            <option value="Closing">Ready to Book</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2 tracking-wider">Strategy</label>
+                        <select id="dmType" class="w-full bg-slate-800/50 border border-slate-600 rounded-xl p-3 text-sm text-white focus:border-purple-500 outline-none">
+                            <option value="Soft Close">Soft Close (ပုံမှန်)</option>
+                            <option value="Price Defense">Price Defense (တန်ဖိုးပြ)</option>
+                            <option value="Urgency">Create Urgency (မြန်မြန်)</option>
+                        </select>
+                    </div>
+                </div>
 
-                    <button onclick="window.generateAI('dm_analyze')" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl shadow border border-indigo-500/30 transition active:scale-95 flex items-center justify-center gap-2">
-                        <i class="ph ph-magnifying-glass text-lg"></i> Analyze Client Status
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-2 tracking-wider flex justify-between">
+                        <span>Client Message / Context</span>
+                        <span class="text-purple-400 text-[10px] cursor-pointer hover:underline" onclick="document.getElementById('dmInput').value=''">Clear</span>
+                    </label>
+                    <div class="relative">
+                        <textarea id="dmInput" placeholder="Client မေးတဲ့စာ (သို့) အခြေအနေကို ဒီမှာရေးပါ..." class="w-full bg-slate-900/50 border border-slate-600 rounded-xl p-4 text-sm h-32 text-white resize-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 pr-12 shadow-inner transition"></textarea>
+                        <button onclick="window.startVoiceInput('dmInput', this)" class="absolute right-3 bottom-3 bg-slate-700/80 hover:bg-purple-600 p-2.5 rounded-full transition text-slate-300 hover:text-white shadow-lg"><i class="ph ph-microphone text-xl"></i></button>
+                    </div>
+                </div>
+
+                <div id="dmAnalysisPanel" class="hidden animate-fade-in bg-slate-900/80 p-4 rounded-xl border border-indigo-500/30">
+                    <div class="text-[10px] text-indigo-400 uppercase font-bold tracking-wider mb-2 flex items-center gap-2"><i class="ph ph-magic-wand"></i> AI Analysis</div>
+                    <div id="dmAnalysisContent" class="text-sm text-slate-300 leading-relaxed"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
+                    <button onclick="window.generateAI('dm_analyze')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3.5 rounded-xl border border-slate-600 transition active:scale-95 flex items-center justify-center gap-2">
+                        <i class="ph ph-magnifying-glass text-lg"></i> Analyze Only
                     </button>
-                    
-                    <div id="dmAnalysisPanel" class="hidden animate-fade-in bg-slate-950/60 p-4 rounded-xl border border-indigo-500/30 relative mt-2">
-                        <div class="absolute -top-3 left-4 bg-slate-900 px-3 text-[10px] text-indigo-400 uppercase font-bold tracking-wider border border-indigo-500/30 rounded-full">Analysis</div>
-                        <div id="dmAnalysisContent" class="space-y-3 text-sm mt-2 text-slate-300"></div>
-                    </div>
-
-                    <div class="pt-4 border-t border-slate-800/50">
-                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-3 tracking-wider">Manual Strategy Override</label>
-                        <div class="grid grid-cols-2 gap-3">
-                            <button onclick="window.setDmType('Price Defense', this)" class="tactic-btn p-3 border border-slate-600/50 rounded-xl bg-slate-800/50 hover:bg-slate-700 text-xs text-left transition flex items-center gap-3"><i class="ph ph-shield-check text-xl text-green-400"></i> Price Defense</button>
-                            <button onclick="window.setDmType('Urgency', this)" class="tactic-btn p-3 border border-slate-600/50 rounded-xl bg-slate-800/50 hover:bg-slate-700 text-xs text-left transition flex items-center gap-3"><i class="ph ph-timer text-xl text-orange-400"></i> Create Urgency</button>
-                        </div>
-                        <input type="hidden" id="dmType" value="Soft Close">
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <button onclick="window.generateAI('dm_auto_detect')" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-4 rounded-xl shadow-xl shadow-purple-900/40 transition active:scale-95 flex items-center justify-center gap-2">
-                            <i class="ph ph-lightning text-xl"></i> Auto Reply
-                        </button>
-                        <button onclick="window.generateAI('dm_best')" class="w-full bg-slate-800 hover:bg-slate-700 text-purple-300 font-bold py-4 rounded-xl border border-slate-600 transition active:scale-95 flex items-center justify-center gap-2">
-                            Generate 3 Options
-                        </button>
-                    </div>
+                    <button onclick="window.generateAI('dm_best')" class="bg-slate-800 hover:bg-slate-700 text-purple-300 font-bold py-3.5 rounded-xl border border-slate-600 transition active:scale-95 flex items-center justify-center gap-2">
+                        Generate Options
+                    </button>
+                    <button onclick="window.generateAI('dm_auto_detect')" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-purple-900/40 transition active:scale-95 flex items-center justify-center gap-2">
+                        <i class="ph ph-lightning text-xl"></i> Auto Reply
+                    </button>
                 </div>
             </div>
+        </div>
 
-            <!-- Right Column: Output -->
-            <div id="dmResultArea" class="hidden h-full">
-                <div class="glass-panel p-6 rounded-2xl border-purple-500/30 h-full flex flex-col relative overflow-hidden shadow-2xl">
-                    <div class="absolute top-0 right-0 p-6 opacity-5 pointer-events-none"><i class="ph ph-robot text-8xl text-purple-500"></i></div>
-                    
-                    <div class="flex justify-between items-center mb-4 z-10">
-                        <span class="text-sm font-bold text-purple-400 uppercase flex items-center gap-2"><i class="ph ph-check-circle-fill"></i> Generated Options</span>
-                        <button onclick="window.copyText('dmOutput')" class="text-sm bg-purple-500/20 hover:bg-purple-500/40 px-3 py-1.5 rounded-lg text-purple-200 border border-purple-500/30 transition">Copy All</button>
-                    </div>
-                    
-                    <div id="dmOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 overflow-y-auto max-h-[600px] z-10 pr-2 custom-scroll bg-slate-950/30 p-4 rounded-xl border border-white/5"></div>
-                    
-                    <button id="dmContinueBtn" onclick="window.continueAI('dm_best')" class="hidden w-full mt-4 py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl text-purple-300 text-sm font-bold flex items-center justify-center gap-2 transition active:scale-95 shadow-lg">
-                        <span>⚠️ Continue Writing</span>
-                        <i class="ph ph-arrow-right"></i>
-                    </button>
+        <div id="dmResultArea" class="hidden animate-fade-in">
+            <div class="glass-panel p-6 rounded-2xl border border-purple-500/30 relative overflow-hidden shadow-2xl">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-sm font-bold text-purple-400 uppercase flex items-center gap-2"><i class="ph ph-check-circle-fill"></i> Generated Reply</span>
+                    <button onclick="window.copyText('dmOutput')" class="text-sm bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-600 text-white transition">Copy</button>
                 </div>
+                
+                <div id="dmOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed bg-slate-950/30 p-5 rounded-xl border border-white/5 max-h-[500px] overflow-y-auto custom-scroll"></div>
+                
+                <button id="dmContinueBtn" onclick="window.continueAI('dm_best')" class="hidden w-full mt-3 py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl text-purple-300 text-sm font-bold flex items-center justify-center gap-2 transition active:scale-95">
+                    <span>⚠️ Continue Writing</span>
+                </button>
             </div>
         </div>
     </div>
@@ -638,7 +650,7 @@ button { transition: all 0.2s ease; }
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, orderBy, limit, onSnapshot, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, orderBy, limit, onSnapshot, deleteDoc, getDocs, increment } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
     
 
     const firebaseConfig = {
@@ -660,6 +672,58 @@ button { transition: all 0.2s ease; }
     let chatHistory = [];
 
     const getValue = (id) => { const el = document.getElementById(id); return el ? el.value : ""; };
+
+    // --- ✅ 1. ADD THIS BLOCK HERE (Before Auth Listener) ---
+    
+    // Usage Tracking Functions (Hoisted)
+    window.loadUsage = function() {
+        if (!userId) return;
+        // Listen to changes in real-time
+        onSnapshot(doc(db, 'artifacts', appId, 'users', userId, 'usage', 'stats'), (docSnap) => {
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                const cost = data.totalCost || 0;
+                const reqs = data.totalRequests || 0;
+                const limit = 5.00; // $5.00 Limit
+                
+                let percent = (cost / limit) * 100;
+                if(percent > 100) percent = 100;
+
+                // Update UI Elements
+                const costEl = document.getElementById('usageCost');
+                if(costEl) costEl.innerText = `$${cost.toFixed(4)}`;
+                
+                const reqEl = document.getElementById('usageRequests');
+                if(reqEl) reqEl.innerText = `${reqs} reqs`;
+                
+                const perEl = document.getElementById('usagePercent');
+                if(perEl) perEl.innerText = `${percent.toFixed(1)}%`;
+                
+                const bar = document.getElementById('usageBar');
+                if(bar) {
+                    bar.style.width = `${percent}%`;
+                    bar.className = `h-full transition-all duration-500 shadow-[0_0_10px_rgba(0,0,0,0.3)] ${percent > 80 ? 'bg-red-500 shadow-red-500/50' : percent > 50 ? 'bg-yellow-400 shadow-yellow-400/50' : 'bg-gradient-to-r from-green-500 to-emerald-400 shadow-green-500/50'}`;
+                }
+            } else {
+                // Initialize if not exists
+                document.getElementById('usageCost').innerText = "$0.0000";
+            }
+        });
+    };
+
+    window.trackUsage = async function(inputText, outputText) {
+        if (!userId) return;
+        const charCount = (inputText?.length || 0) + (outputText?.length || 0);
+        const estCost = charCount * 0.000002; 
+        try {
+            const usageRef = doc(db, 'artifacts', appId, 'users', userId, 'usage', 'stats');
+            await setDoc(usageRef, {
+                totalCost: increment(estCost),
+                totalRequests: increment(1),
+                lastUpdated: Date.now()
+            }, { merge: true });
+        } catch(e) { console.error("Tracking Error:", e); }
+    };
     
     // --- AUTH ---
     window.handleLogin = async function() {
@@ -680,6 +744,7 @@ button { transition: all 0.2s ease; }
             setTimeout(() => overlay.classList.add('hidden'), 300);
             if(window.currentView === 'brand') loadBrandData();
             if(window.currentView === 'recent') renderHistoryList();
+            window.loadUsage();
         } else {
             userId = null;
             overlay.classList.remove('hidden');
@@ -991,7 +1056,7 @@ window.runAssistant = async function(type) {
                 const topicTag = text.length > 20 ? text.substring(0, 20) + "..." : text;
                 saveToRecents('ai_chat', d.result, topicTag);
             }
-            
+            window.trackUsage(systemPrompt + text, d.result);  // Input + Output
         } catch(e) {
             console.error(e);
             const loadingEl = document.getElementById(loadingId);
@@ -1227,6 +1292,7 @@ else if (type === 'creative_tt_text') {
                 const btn = document.getElementById(continueBtnIds[type]);
                 if(btn) btn.classList.remove('hidden');
             }
+            window.trackUsage(prompt, d.result);
         } catch(e) {
             console.error(e);
             const outEl = document.getElementById(outId);
@@ -1267,6 +1333,8 @@ else if (type === 'creative_tt_text') {
             window.generateAI('fbpost');
         }
     };
+
+    
   </script>
 </body>
 </html>
