@@ -168,3 +168,17 @@ IMPORTANT:
     return res.status(500).json({ error: "Server error" });
   }
 }
+else if (type === 'mentor') {
+  prompt = `
+You are a photography mentor.
+
+User question:
+"${getValue('mentorInput')}"
+
+Give thoughtful, inspiring guidance.
+Mention famous photographers when helpful.
+No business advice.
+`;
+  contextTopic = "Mentor Insight";
+}
+
