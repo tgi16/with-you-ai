@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Sales Master AI v6.7</title>
+  <title>With You Studio - Sales Master AI v6.7.5</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -170,7 +170,7 @@ button { transition: all 0.2s ease; }
             <h1 class="text-xl font-bold text-white tracking-tight flex items-center gap-2">
                 <i class="ph ph-camera text-blue-400"></i> With You Studio
             </h1>
-            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">Sales Master AI v6.6</div>
+            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">Sales Master AI v6.7.5</div>
             <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1 flex items-center gap-1">
                 <span id="connectionStatus" class="w-2 h-2 rounded-full bg-red-500"></span> Online
             </p>
@@ -185,6 +185,9 @@ button { transition: all 0.2s ease; }
                 <button onclick="window.loadView('manager')" id="nav-manager" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
                     <i class="ph ph-robot text-lg text-yellow-400"></i> AI Manager
                 </button>
+                <button onclick="window.loadView('mentor')" id="nav-mentor" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+    <i class="ph ph-student text-lg text-emerald-400"></i> Mentor Mode
+</button>
                 <button onclick="window.loadView('creative')" id="nav-creative" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
                     <i class="ph ph-lightbulb text-lg text-orange-400"></i> Ideas
                 </button>
@@ -267,6 +270,9 @@ button { transition: all 0.2s ease; }
         <button onclick="window.loadView('manager')" id="mob-manager" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
             <i class="ph ph-robot text-yellow-400"></i> Partner
         </button>
+        <button onclick="window.loadView('mentor')" id="mob-mentor" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
+    <i class="ph ph-student text-emerald-400"></i> Mentor
+</button>
         <button onclick="window.loadView('creative')" id="mob-creative" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
             <i class="ph ph-lightbulb text-orange-400"></i> Ideas
         </button>
@@ -343,6 +349,73 @@ button { transition: all 0.2s ease; }
                 </button>
             </div>
         </div>
+    </div>
+  </template>
+<template id="tpl-mentor">
+    <div class="space-y-6 animate-fade-in pb-20"> <div class="flex items-center justify-between">
+        <h2 class="text-xl md:text-2xl font-bold text-emerald-400 flex items-center gap-2">
+          <i class="ph ph-student"></i> Mentor Mode
+        </h2>
+        <span class="text-[10px] bg-emerald-900/30 text-emerald-300 px-3 py-1 rounded-full border border-emerald-500/30">
+          Inspiration • Art • Skill
+        </span>
+      </div>
+
+      <div class="glass-panel p-5 rounded-xl border border-emerald-500/20 space-y-3">
+        <label class="text-xs font-bold text-emerald-300 uppercase">Ask your mentor</label>
+        <div class="relative">
+          <textarea id="mentorInput" rows="3" placeholder="ဥပမာ - မင်္ဂလာဆောင်မှာ emotion ကို ဘယ်လိုဖမ်းရမလဲ?" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg p-4 text-sm text-white resize-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/50 outline-none"></textarea>
+          
+          <button onclick="window.startVoiceInput('mentorInput', this)" class="absolute right-3 bottom-3 p-2 rounded-full bg-slate-800 hover:bg-emerald-600 text-emerald-300 hover:text-white transition">
+            <i class="ph ph-microphone"></i>
+          </button>
+        </div>
+
+        <button onclick="window.generateAI('mentor')" class="w-full mt-2 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-bold py-3 rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2">
+           <i class="ph ph-magic-wand"></i> Ask Mentor
+        </button>
+      </div>
+
+      <div class="glass-panel p-5 rounded-xl border border-slate-700 space-y-4">
+        <h3 class="text-sm font-bold text-slate-300 uppercase flex items-center gap-2">
+            <i class="ph ph-books"></i> Study the Masters
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div onclick="window.askMaster('Jerry Ghionis', 'Lighting & Posing')" class="p-4 bg-slate-900/50 hover:bg-slate-800 rounded-lg border border-slate-700 hover:border-emerald-500/50 cursor-pointer transition group">
+            <h4 class="font-bold text-white group-hover:text-emerald-400 transition">Jerry Ghionis</h4>
+            <p class="text-xs text-slate-400 mt-1">Lighting • Drama • Direction</p>
+          </div>
+
+          <div onclick="window.askMaster('Jose Villa', 'Fine Art Film Style')" class="p-4 bg-slate-900/50 hover:bg-slate-800 rounded-lg border border-slate-700 hover:border-emerald-500/50 cursor-pointer transition group">
+            <h4 class="font-bold text-white group-hover:text-emerald-400 transition">Jose Villa</h4>
+            <p class="text-xs text-slate-400 mt-1">Film • Natural Light • Fine Art</p>
+          </div>
+
+          <div onclick="window.askMaster('Fer Juaristi', 'Creative Composition')" class="p-4 bg-slate-900/50 hover:bg-slate-800 rounded-lg border border-slate-700 hover:border-emerald-500/50 cursor-pointer transition group">
+            <h4 class="font-bold text-white group-hover:text-emerald-400 transition">Fer Juaristi</h4>
+            <p class="text-xs text-slate-400 mt-1">Emotion • Storytelling • Fun</p>
+          </div>
+
+          <div onclick="window.askMaster('Two Mann Studios', 'Documentary Moments')" class="p-4 bg-slate-900/50 hover:bg-slate-800 rounded-lg border border-slate-700 hover:border-emerald-500/50 cursor-pointer transition group">
+            <h4 class="font-bold text-white group-hover:text-emerald-400 transition">Two Mann</h4>
+            <p class="text-xs text-slate-400 mt-1">Moments • Layers • Context</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="mentorResultArea" class="hidden glass-panel p-5 rounded-xl border border-emerald-500/30 shadow-lg shadow-emerald-900/20">
+        <div class="flex justify-between items-center mb-3">
+          <span class="text-xs font-bold text-emerald-400 uppercase flex items-center gap-2"><i class="ph ph-chalkboard-teacher"></i> Mentor Advice</span>
+          <button onclick="window.copyText('mentorOutput')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded text-white border border-slate-600 transition">Copy</button>
+        </div>
+        <div id="mentorOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed custom-scroll max-h-[500px] overflow-y-auto"></div>
+        
+        <button id="mentorContinueBtn" onclick="window.continueAI('mentor')" class="hidden w-full mt-3 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded text-emerald-400 text-xs font-bold transition">
+             Tell me more...
+        </button>
+      </div>
+
     </div>
   </template>
 
@@ -1129,12 +1202,13 @@ window.runAssistant = async function(type) {
 
     window.generateAI = async function(type, isContinue = false) {
         // UI IDs Setup
-        const outputIds = { 'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'timeline': 'tlOutput', 'tt_caption': 'ttOutput', 'tt_script': 'ttOutput','tt_post_full': 'ttOutput','pose': 'poseOutput', 'creative_director': 'crOutput', 'creative_post': 'crOutput', 'creative_tt_text': 'crOutput', 'dm_auto_detect': 'dmOutput', 'manager_daily': 'mgrOutput' };
-        const areaIds = { 'fbpost': 'fbResultArea', 'dm_best': 'dmResultArea', 'timeline': 'tlResultArea', 'tt_caption': 'ttResultArea', 'tt_script': 'ttResultArea','tt_post_full': 'ttResultArea', 'pose': 'poseResultArea', 'creative_director': 'crResultArea', 'creative_post': 'crResultArea', 'creative_tt_text': 'crResultArea', 'dm_auto_detect': 'dmResultArea', 'manager_daily': 'mgrResultArea' };
-        const continueBtnIds = { 'fbpost': 'fbContinueBtn', 'dm_best': 'dmContinueBtn', 'timeline': 'tlContinueBtn', 'tt_caption': 'ttContinueBtn', 'tt_script': 'ttContinueBtn','tt_post_full': 'ttContinueBtn', 'manager_daily': 'mgrContinueBtn', 'dm_auto_detect': 'dmContinueBtn' }; 
+        const outputIds = { 'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'timeline': 'tlOutput', 'tt_caption': 'ttOutput', 'tt_script': 'ttOutput','tt_post_full': 'ttOutput','pose': 'poseOutput', 'creative_director': 'crOutput', 'creative_post': 'crOutput', 'creative_tt_text': 'crOutput', 'dm_auto_detect': 'dmOutput', 'manager_daily': 'mgrOutput', 'mentor': 'mentorOutput' };
+        const areaIds = { 'fbpost': 'fbResultArea', 'dm_best': 'dmResultArea', 'timeline': 'tlResultArea', 'tt_caption': 'ttResultArea', 'tt_script': 'ttResultArea','tt_post_full': 'ttResultArea', 'pose': 'poseResultArea', 'creative_director': 'crResultArea', 'creative_post': 'crResultArea', 'creative_tt_text': 'crResultArea', 'dm_auto_detect': 'dmResultArea', 'manager_daily': 'mgrResultArea', 'mentor': 'mentorResultArea' };
+        const continueBtnIds = { 'fbpost': 'fbContinueBtn', 'dm_best': 'dmContinueBtn', 'timeline': 'tlContinueBtn', 'tt_caption': 'ttContinueBtn', 'tt_script': 'ttContinueBtn','tt_post_full': 'ttContinueBtn', 'manager_daily': 'mgrContinueBtn', 'dm_auto_detect': 'dmContinueBtn', 'mentor': 'mentorContinueBtn' }; 
 
         const outId = outputIds[type];
         const areaId = areaIds[type];
+        
 
         // UI Loading
         if(type !== 'dm_analyze') {
@@ -1206,6 +1280,8 @@ window.runAssistant = async function(type) {
 
         let prompt = ""; 
         let contextTopic = "General Content"; // Default topic
+
+        
         
         // --- PROMPT LOGIC ---
         if (type === 'manager_daily') { 
@@ -1265,6 +1341,24 @@ else if (type === 'creative_tt_text') {
              if(isContinue) prompt = `Context: Continue TikTok content from: "${document.getElementById(outId).innerText.slice(-50)}".`;
         }        else if (type === 'pose') { prompt = `Task: 3 Pose Ideas. Context: ${getValue('poseInput')}.`; contextTopic = `Pose`; }
 
+        else if (type === 'mentor') {
+             const topic = getValue('mentorInput');
+             prompt = `
+             ROLE: World-Class Photography Mentor & Senior Artist.
+             USER: Ko Sai (Professional Photographer).
+             TASK: Provide artistic advice on: "${topic}".
+             
+             GUIDELINES:
+             - Tone: Inspiring, Deep, Educational, Warm (Teacher to Student).
+             - Language: Natural Burmese (Unicode).
+             - Focus: Art, Emotion, Composition, Lighting, Mindset.
+             - RESTRICTION: Do NOT talk about pricing, packages, or business. Only Art.
+             
+             If asking about a specific master (e.g., Jerry Ghionis), explain their style and how Ko Sai can apply it.
+             `;
+             contextTopic = `Mentorship: ${topic}`;
+        }
+        
         if(isContinue) {
             const currentText = document.getElementById(outId) ? document.getElementById(outId).innerText : "";
             prompt = `Context: Continue correctly from: "${currentText.slice(-50)}". Finish the sentence/list.`;
@@ -1346,7 +1440,14 @@ else if (type === 'creative_tt_text') {
         }
     };
 
-    
+    // Mentor Mode Helper
+window.askMaster = function(name, style) {
+    const input = document.getElementById('mentorInput');
+    if(input) {
+        input.value = `${name} ရဲ့ Style ဖြစ်တဲ့ ${style} ကို ကျွန်တော့်ရဲ့ Pre-wedding ရိုက်ကွင်းတွေမှာ ဘယ်လို အသုံးချလို့ရမလဲ?`;
+        window.generateAI('mentor');
+    }
+};
   </script>
 </body>
 </html>
