@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Sales Master AI v6.6</title>
+  <title>With You Studio - Sales Master AI v6.7</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -1219,12 +1219,24 @@ else if (type === 'creative_tt_text') {
              const topic = getValue('crFocus');
              prompt = `
              Role: Viral TikTok Content Creator.
-             Task: Write a "Text Mode" (Image of text) post about "${topic}".
-             CONSTRAINT: MUST be under 250 characters total.
-             STYLE: Aesthetic, Deep, Emotional, or Minimalist.
+             Task: Create 2 DISTINCT "Text Mode" options about "${topic}".
+             
+             CONSTRAINTS: 
+             - Each option must be under 250 characters.
+             - NO conversational filler (e.g., "Here is the text"). 
+             - OUTPUT DIRECT CONTENT ONLY.
+             
+             STYLE: Aesthetic, Deep, Emotional, or Minimalist (Poetry style).
              FORMAT: Short, punchy lines (Stanza format). No hashtags needed inside the text image.
              GOAL: Visually beautiful text that people want to save as wallpaper.
-             Language: Burmese (Unicode) mixed with minimal English if needed for style.
+             OUTPUT FORMAT:
+             Option 1:
+             (Write the aesthetic text here)
+             
+             Option 2:
+             (Write a different style text here)
+
+             Language: Burmese (Unicode) mixed with minimal English if needed for vibe.
              `;
              contextTopic = `TikTok Text Mode (${topic})`;
         }        else if (type === 'dm_auto_detect') { prompt = `Task: Best DM Reply for "${getValue('dmInput')}".`; contextTopic = `Auto DM Reply`; }
