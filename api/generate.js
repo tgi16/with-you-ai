@@ -3,20 +3,20 @@ export const config = {
 };
 
 /* ===============================
-   1️⃣ SIMPLE AUTO INTENT DETECTOR
+   AUTO INTENT DETECTOR
 ================================ */
 function detectIntent(text = "") {
   const t = text.toLowerCase();
 
-  if (/(mentor|ဓာတ်ပုံဆရာ|ဘယ်သူ|လေ့လာ|inspire|inspiration)/i.test(t)) {
+  if (/(mentor|ဓာတ်ပုံဆရာ|ဘယ်သူ|လေ့လာ|inspire|inspiration|artist)/i.test(t)) {
     return "mentor";
   }
 
-  if (/(ဈေး|price|package|booking|ရက်|date|ဘယ်နေ့|client)/i.test(t)) {
+  if (/(ဈေး|price|package|booking|ရက်|date|client|dm)/i.test(t)) {
     return "business";
   }
 
-  if (/(ဒီနေ့|ဘာလုပ်|plan|လုပ်သင့်)/i.test(t)) {
+  if (/(ဒီနေ့|ဘာလုပ်|plan|လုပ်သင့်|today)/i.test(t)) {
     return "manager";
   }
 
@@ -35,11 +35,9 @@ export default async function handler(req, res) {
   }
 
   try {
-    const body = req.body || {};
-    const userMessage = body.userMessage?.trim();
-    const mode = body.mode || null;
+    const { userMessage, mode } = req.body || {};
 
-    if (!userMessage) {
+    if (!userMessage || !userMessage.trim()) {
       return res.status(400).json({ error: "userMessage is required" });
     }
 
@@ -49,12 +47,12 @@ export default async function handler(req, res) {
     }
 
     /* ===============================
-       2️⃣ FINAL MODE (AUTO SWITCH)
+       FINAL MODE (AUTO SWITCH)
     ================================ */
     const intent = mode || detectIntent(userMessage);
 
     /* ===============================
-       3️⃣ SYSTEM PROMPTS
+       SYSTEM PROMPTS
     ================================ */
     const businessPrompt = `
 You are AI Manager for "With You Photo Studio, Taunggyi".
@@ -79,13 +77,13 @@ Tone:
 - Calm
 - Inspiring
 - Experienced
-- Burmese only
+- Burmese language only
 
 Rules:
 - NO selling
-- NO business unless asked
+- NO business advice unless asked
 - Focus on photography skills, light, emotion, composition
-- Mention famous photographers when useful
+- Mention famous photographers when helpful
 `;
 
     const generalPrompt = `
@@ -95,7 +93,7 @@ Tone:
 - Natural
 - Friendly
 - Clear
-- Burmese only
+- Burmese language only
 `;
 
     let systemPrompt = generalPrompt;
@@ -103,7 +101,7 @@ Tone:
     if (intent === "mentor") systemPrompt = mentorPrompt;
 
     /* ===============================
-       4️⃣ FINAL PROMPT
+       FINAL PROMPT
     ================================ */
     const finalPrompt = `
 SYSTEM:
@@ -118,11 +116,11 @@ ${userMessage}
 IMPORTANT:
 - Answer fully
 - Sound human
-- Do not cut off
+- Do not cut off mid sentence
 `;
 
     /* ===============================
-       5️⃣ GEMINI CALL
+       GEMINI CALL
     ================================ */
     const genRes = await fetch(
       "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" +
@@ -152,7 +150,7 @@ IMPORTANT:
       genData?.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
     /* ===============================
-       6️⃣ CUT-OFF DETECTION
+       CUT-OFF DETECTION
     ================================ */
     const isCut =
       result.length > 700 && !result.trim().endsWith("။");
@@ -168,17 +166,3 @@ IMPORTANT:
     return res.status(500).json({ error: "Server error" });
   }
 }
-else if (type === 'mentor') {
-  prompt = `
-You are a photography mentor.
-
-User question:
-"${getValue('mentorInput')}"
-
-Give thoughtful, inspiring guidance.
-Mention famous photographers when helpful.
-No business advice.
-`;
-  contextTopic = "Mentor Insight";
-}
-
