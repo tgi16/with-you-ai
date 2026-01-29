@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Sales Master AI v6.7.5</title>
+  <title>With You Studio - Sales Master AI v6.7</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -170,7 +170,7 @@ button { transition: all 0.2s ease; }
             <h1 class="text-xl font-bold text-white tracking-tight flex items-center gap-2">
                 <i class="ph ph-camera text-blue-400"></i> With You Studio
             </h1>
-            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">Sales Master AI v6.7.5</div>
+            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">Sales Master AI v6.7</div>
             <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1 flex items-center gap-1">
                 <span id="connectionStatus" class="w-2 h-2 rounded-full bg-red-500"></span> Online
             </p>
@@ -310,6 +310,27 @@ button { transition: all 0.2s ease; }
   <!-- TEMPLATES -->
   
   <!-- 0. AI MANAGER TEMPLATE -->
+   emplate id="tpl-manager">
+    <div class="animate-fade-in space-y-4 h-full flex flex-col">
+        
+        <div id="aiManager" class="hidden bg-slate-900/50 border border-slate-700 p-4 rounded-xl mb-2 relative overflow-hidden">
+             <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -z-10"></div>
+             
+             <h3 class="text-sm font-bold text-blue-300 uppercase mb-2 flex items-center gap-2">
+                <i class="ph ph-chart-bar"></i> Studio Pulse (Today)
+             </h3>
+             <p id="aiGreeting" class="text-xs text-slate-400 mb-3">POS Data ကို ဆွဲယူနေပါတယ်...</p>
+
+             <div id="aiDailyBrief" class="grid grid-cols-2 gap-2 mb-3"></div>
+
+             <div id="aiHandoff" class="hidden mt-3 pt-3 border-t border-slate-700/50">
+                <h4 class="text-xs font-bold text-slate-300 mb-1">🌤️ Tomorrow Preview</h4>
+                <div id="aiHandoffContent" class="text-xs text-slate-400"></div>
+             </div>
+        </div>
+        <div class="flex items-center justify-between shrink-0">
+            <h2 class="text-xl md:text-3xl font-bold text-yellow-400 flex items-center gap-3"><i class="ph ph-robot"></i> AI Partner</h2>
+            
   <template id="tpl-manager">
     <div class="animate-fade-in space-y-4 h-full flex flex-col">
         <div class="flex items-center justify-between shrink-0">
@@ -726,6 +747,7 @@ button { transition: all 0.2s ease; }
     import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, orderBy, limit, onSnapshot, deleteDoc, getDocs, increment } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
     
 
+    // --- 1. MAIN APP CONFIG (For Chat, History, Brand) ---
     const firebaseConfig = {
       apiKey: "AIzaSyBEqE5lWdLWIZOO_M3RYY35e17VMTGk-G0",
       authDomain: "saiai-content-generator.firebaseapp.com",
@@ -736,13 +758,24 @@ button { transition: all 0.2s ease; }
       measurementId: "G-C2Q8Y2XBMD"
     };
 
-    const app = initializeApp(firebaseConfig);
+    // --- 2. POS CONFIG (For Dashboard Only) ---
+    const posConfig = {
+        apiKey: "AIzaSyDj5jftTZjkzUzaCtQ-IdReic96GYmvn_Y",
+        authDomain: "wypstudio-pos.firebaseapp.com",
+        projectId: "wypstudio-pos",
+        storageBucket: "wypstudio-pos.appspot.com",
+        messagingSenderId: "244496968576",
+        appId: "1:244496968576:web:2f8646b539c0d381c853c1"
+    };
+
+    // Initialize BOTH Apps
+    const app = initializeApp(firebaseConfig); // Main App
+    const posApp = initializeApp(posConfig, "POS"); // Secondary App
+
+    // Database References
     const auth = getAuth(app);
-    const db = getFirestore(app);
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-    let userId = null;
-    let currentAnalysis = null;
-    let chatHistory = [];
+    const db = getFirestore(app);       // For Chat, History
+    const posDb = getFirestore(posApp); // For POS Dashboard ✅ (New Variable)
 
     const getValue = (id) => { const el = document.getElementById(id); return el ? el.value : ""; };
 
@@ -920,6 +953,7 @@ window.runAssistant = async function(type) {
             if(tpl) {
                 container.appendChild(tpl.content.cloneNode(true));
                 if(viewId === 'brand') loadBrandData(); 
+                if(viewId === 'manager') initPosDashboard();
             }
         }
         window.currentView = viewId;
@@ -1448,6 +1482,47 @@ window.askMaster = function(name, style) {
         window.generateAI('mentor');
     }
 };
+
+// 1. Fetch Data from POS Firestore
+    async function getPosSnapshot() {
+        const snapshot = { todayBooking: 0, unpaid: 0, editingPending: 0, upcomingShoot: 0 };
+        const today = new Date();
+        const todayStr = today.toISOString().split("T")[0];
+
+        try {
+            // ⚠️ Note: Using 'posDb' here instead of 'db'
+            
+            // 1️⃣ Today bookings
+            const q1 = query(collection(posDb, "bookings"), where("date", "==", todayStr));
+            const snap1 = await getDocs(q1);
+            snapshot.todayBooking = snap1.size;
+
+            // 2️⃣ Unpaid
+            const q2 = query(collection(posDb, "payments"), where("status", "!=", "paid"));
+            const snap2 = await getDocs(q2);
+            snapshot.unpaid = snap2.size;
+
+            // 3️⃣ Editing pending
+            const q3 = query(collection(posDb, "productions"), where("status", "==", "editing"));
+            const snap3 = await getDocs(q3);
+            snapshot.editingPending = snap3.size;
+
+            // 4️⃣ Upcoming shoots
+            const threeDaysLater = new Date();
+            threeDaysLater.setDate(today.getDate() + 3);
+            const q4 = query(collection(posDb, "bookings"), 
+                where("date", ">", todayStr),
+                where("date", "<=", threeDaysLater.toISOString().split("T")[0])
+            );
+            const snap4 = await getDocs(q4);
+            snapshot.upcomingShoot = snap4.size;
+
+        } catch (e) {
+            console.error("POS Fetch Error:", e);
+            return null;
+        }
+        return snapshot;
+    }
   </script>
 </body>
 </html>
