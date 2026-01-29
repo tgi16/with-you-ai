@@ -1528,6 +1528,57 @@ window.askMaster = function(name, style) {
         }
         return snapshot;
     }
+    // --- ✅ POS DASHBOARD LOGIC (MISSING FUNCTIONS) ---
+
+    // 1. UI Render Function
+    function renderDailyBrief(data) {
+        const container = document.getElementById('aiDailyBrief');
+        const greeting = document.getElementById('aiGreeting');
+        const managerZone = document.getElementById('aiManager');
+        
+        if(!container || !data) return;
+        
+        managerZone.classList.remove('hidden');
+        if(greeting) greeting.innerText = `ဒီနေ့အတွက် Studio အခြေအနေပါ ကိုစိုင်း 🤍`;
+
+        // Create Stat Cards
+        container.innerHTML = `
+            <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                <div class="text-[10px] text-slate-400 uppercase">Today Shoots</div>
+                <div class="text-xl font-bold text-white">${data.todayBooking} <span class="text-xs font-normal text-slate-500">jobs</span></div>
+            </div>
+            <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                <div class="text-[10px] text-slate-400 uppercase">Pending Edit</div>
+                <div class="text-xl font-bold text-yellow-400">${data.editingPending} <span class="text-xs font-normal text-slate-500">sets</span></div>
+            </div>
+            <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                <div class="text-[10px] text-slate-400 uppercase">Upcoming (3 Days)</div>
+                <div class="text-xl font-bold text-blue-400">${data.upcomingShoot} <span class="text-xs font-normal text-slate-500">shoots</span></div>
+            </div>
+            <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                <div class="text-[10px] text-slate-400 uppercase">Unpaid Bills</div>
+                <div class="text-xl font-bold text-red-400">${data.unpaid} <span class="text-xs font-normal text-slate-500">inv</span></div>
+            </div>
+        `;
+
+        // Render Handoff / Summary
+        const handoff = document.getElementById('aiHandoff');
+        const handoffContent = document.getElementById('aiHandoffContent');
+        if(handoff && handoffContent) {
+            handoff.style.display = 'block';
+            handoffContent.innerHTML = `
+                နောက် ၃ ရက်အတွင်း ရှေ့ဆက်ရမယ့် Shoot <b>${data.upcomingShoot}</b> ခု ရှိပါတယ်။ 
+                ${data.editingPending > 5 ? 'Editing တွေများနေတယ်နော်၊ သတိထားပါအုံး။' : 'Editing ပိုင်း ပေါ့ပါးပါတယ်။'}
+            `;
+        }
+    }
+
+    // 2. Init Function (Called by loadView)
+    window.initPosDashboard = async function() {
+        if(!userId) return; 
+        const snapshot = await getPosSnapshot();
+        if(snapshot) renderDailyBrief(snapshot);
+    };
   </script>
 </body>
 </html>
