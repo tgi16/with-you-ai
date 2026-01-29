@@ -3,427 +3,123 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  
-  <!-- Enhanced SEO Meta Tags -->
-  <title>With You Photo Studio - Professional Photography in Taunggyi | Wedding & Pre-Wedding Studio</title>
-  <meta name="description" content="With You Photo Studio in Taunggyi - Professional wedding photography, pre-wedding shoots, family portraits, and event coverage. AI-powered sales assistant for instant booking." />
-  <meta name="keywords" content="photo studio taunggyi, wedding photography myanmar, pre-wedding shoot, ဓာတ်ပုံရိုက်ကူးရေး, တောင်ကြီး photo studio, with you studio" />
-  <meta name="author" content="With You Photo Studio" />
-  
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://withyoustudio.vercel.app/" />
-  <meta property="og:title" content="With You Photo Studio - Taunggyi's Premier Photography Studio" />
-  <meta property="og:description" content="Capture your special moments with professional photography services in Taunggyi" />
-  <meta property="og:image" content="https://withyoustudio.vercel.app/og-image.jpg" />
-  
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:url" content="https://withyoustudio.vercel.app/" />
-  <meta property="twitter:title" content="With You Photo Studio - Taunggyi" />
-  <meta property="twitter:description" content="Professional Photography Services in Taunggyi" />
-  
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="/favicon.png" />
-  
-  <!-- Schema.org Markup for Local Business -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "ProfessionalService",
-    "name": "With You Photo Studio",
-    "image": "https://withyoustudio.vercel.app/logo.jpg",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Taunggyi",
-      "addressRegion": "Shan State",
-      "addressCountry": "MM"
-    },
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": 20.7891,
-      "longitude": 97.0385
-    },
-    "url": "https://withyoustudio.vercel.app",
-    "telephone": "+95-XXXXXXXXX",
-    "priceRange": "$$",
-    "openingHours": "Mo-Su 09:00-18:00",
-    "sameAs": [
-      "https://www.facebook.com/withyoustudio",
-      "https://www.instagram.com/withyoustudio"
-    ]
-  }
-  </script>
-  
+  <title>With You Studio - Sales Master AI v6.7.5</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
-  
   <style>
-    /* Custom Font Setup - Distinctive Typography */
-    body { 
-      font-family: 'Poppins', 'Padauk', sans-serif; 
-      letter-spacing: 0.01em;
-    }
+    /* English ကို Inter ဦးစားပေးပြီးမှ မြန်မာစာကို Padauk သုံးပါမယ် */
+    body { font-family: 'Inter', 'Padauk', sans-serif; letter-spacing: 0.01em; }
     
-    .font-display {
-      font-family: 'Playfair Display', serif;
-    }
-    
-    /* Enhanced Scrollbar */
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    /* စာလုံးတွေ ပိုရှင်းအောင် Line-height နဲ့ Spacing ချိန်ပါမယ် */
+    p, div, span, button { line-height: 1.6; }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: #0f172a; }
-    ::-webkit-scrollbar-thumb { 
-      background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
-      border-radius: 4px; 
-    }
-    ::-webkit-scrollbar-thumb:hover { background: #1d4ed8; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
     
-    /* Glass Morphism Enhanced */
-    .glass-panel {
-      background: rgba(30, 41, 59, 0.7);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    }
-    
-    .glass-card {
-      background: rgba(15, 23, 42, 0.8);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      transition: all 0.3s ease;
-    }
-    
-    .glass-card:hover {
-      background: rgba(30, 41, 59, 0.9);
-      border-color: rgba(59, 130, 246, 0.3);
-      box-shadow: 0 12px 40px rgba(59, 130, 246, 0.15);
-      transform: translateY(-4px);
-    }
-    
-    /* Gradient Text */
-    .gradient-text {
-      background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #f472b6 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    
-    /* Hero Section Gradient */
-    .hero-gradient {
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .hero-gradient::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
-      animation: pulse-slow 8s ease-in-out infinite;
-    }
-    
-    @keyframes pulse-slow {
-      0%, 100% { transform: scale(1); opacity: 0.5; }
-      50% { transform: scale(1.1); opacity: 0.3; }
-    }
-    
-    /* Portfolio Gallery Grid */
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
-    
-    .gallery-item {
-      position: relative;
-      overflow: hidden;
-      border-radius: 12px;
-      cursor: pointer;
-      aspect-ratio: 4/5;
-    }
-    
-    .gallery-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .gallery-item:hover img {
-      transform: scale(1.1);
-    }
-    
-    .gallery-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.8) 100%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 1.5rem;
-    }
-    
-    .gallery-item:hover .gallery-overlay {
-      opacity: 1;
-    }
-    
-    /* Lightbox */
-    .lightbox {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.95);
-      z-index: 9999;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-    }
-    
-    .lightbox.active {
-      display: flex;
-    }
-    
-    .lightbox img {
-      max-width: 90%;
-      max-height: 90vh;
-      object-fit: contain;
-      border-radius: 8px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-    }
-    
-    /* Pricing Cards */
-    .pricing-card {
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .pricing-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
-    }
-    
-    .pricing-featured {
-      border: 2px solid rgba(59, 130, 246, 0.3);
-      transform: scale(1.05);
-    }
-    
-    /* Floating Action Button */
-    .fab {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      z-index: 50;
-      animation: bounce-gentle 2s ease-in-out infinite;
-    }
-    
-    .fab:hover {
-      transform: scale(1.1);
-      box-shadow: 0 12px 32px rgba(16, 185, 129, 0.5);
-    }
-    
-    @keyframes bounce-gentle {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-    
-    /* Contact Buttons */
-    .contact-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.5rem;
-      border-radius: 50px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      text-decoration: none;
-    }
-    
-    .contact-btn-whatsapp {
-      background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
-      color: white;
-    }
-    
-    .contact-btn-messenger {
-      background: linear-gradient(135deg, #00b2ff 0%, #006aff 100%);
-      color: white;
-    }
-    
-    .contact-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    }
-    
-    /* Button Enhancements */
-    button:active { transform: scale(0.98); }
-    button { transition: all 0.2s ease; }
+    /* <style> ထဲက .glass-panel အဟောင်းကို ဖျက်ပြီး ဒါနဲ့ အစားထိုးပါ */
+.glass-panel {
+    background: rgba(30, 41, 59, 0.6); /* နောက်ခံအရောင် နည်းနည်းလျှော့ */
+    backdrop-filter: blur(16px); /* ဝါးတဲ့ effect တိုးလိုက်မယ် */
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08); /* ဘောင်ကို ပါးလိုက်မယ် */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* အရိပ်ထည့်မယ် */
+}
+
+/* Button တွေမှာ Hover လုပ်ရင် ကြွတက်လာတဲ့ Effect ထည့်မယ် */
+button:active { transform: scale(0.98); }
+button { transition: all 0.2s ease; }
     
     .nav-item.active, .mobile-nav-item.active {
-      background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
-      color: white;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-      border-color: transparent;
+        background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        border-color: transparent;
     }
-    
+
     .tactic-btn.active, .manager-btn.active, .creative-btn.active {
-      background-color: #7e22ce; 
-      border-color: #a855f7;
-      color: white;
-      font-weight: bold;
-      box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
+        background-color: #7e22ce; 
+        border-color: #a855f7;
+        color: white;
+        font-weight: bold;
+        box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
     }
     
+    /* Next Step Button Animation */
     .next-step-btn {
-      animation: fadeInUp 0.5s ease-out;
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        animation: fadeInUp 0.5s ease-out;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     }
-    
     @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
     }
-    
+
     #sidebar { transition: transform 0.3s ease-in-out; }
     .sidebar-open { transform: translateX(0) !important; }
     .sidebar-closed { transform: translateX(-100%); }
     @media (min-width: 768px) { .sidebar-closed { transform: translateX(0); } }
-    
+
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    
+
     .listening-ring {
-      box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
-      animation: pulse-red 1.5s infinite cubic-bezier(0.66, 0, 0, 1);
-      border-color: #ef4444 !important; 
-      color: #ef4444 !important;
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+        animation: pulse-red 1.5s infinite cubic-bezier(0.66, 0, 0, 1);
+        border-color: #ef4444 !important; color: #ef4444 !important;
     }
-    
-    @keyframes pulse-red { 
-      to { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 
-    }
+    @keyframes pulse-red { to { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } }
     
     /* Chat Bubbles */
+    /* Chat Bubbles Fixed - Compact Size */
     .chat-bubble-ai {
-      background: #1e293b;
-      color: #e2e8f0;
-      border-radius: 12px 12px 12px 2px;
-      padding: 10px 14px;
-      font-size: 14px;
-      line-height: 1.6;
-      border: 1px solid rgba(255,255,255,0.05);
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      white-space: pre-wrap;
-      display: inline-block;
-      width: auto;
-      max-width: 100%;
-      word-wrap: break-word;
+        background: #1e293b;
+        color: #e2e8f0;
+        border-radius: 12px 12px 12px 2px;
+        padding: 10px 14px; /* Padding နည်းနည်းလျှော့ထားပါတယ် */
+        font-size: 14px;
+        line-height: 1.6;
+        border: 1px solid rgba(255,255,255,0.05);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        white-space: pre-wrap;
+        
+        /* ✅ KEY FIXES HERE */
+        display: inline-block; /* စာရှိသလောက်ပဲ ကျယ်ပါမယ် */
+        width: auto;
+        max-width: 100%;
+        word-wrap: break-word;
     }
-    
+
     .chat-bubble-user {
-      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-      color: white;
-      border-radius: 12px 12px 2px 12px;
-      padding: 10px 14px;
-      font-size: 14px;
-      line-height: 1.6;
-      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
-      white-space: pre-wrap;
-      display: inline-block;
-      width: auto; 
-      max-width: 100%;
-      margin-left: auto;
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        border-radius: 12px 12px 2px 12px;
+        padding: 10px 14px; /* Padding နည်းနည်းလျှော့ထားပါတယ် */
+        font-size: 14px;
+        line-height: 1.6;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+        white-space: pre-wrap;
+        
+        /* ✅ KEY FIXES HERE */
+        display: inline-block; /* စာရှိသလောက်ပဲ ကျယ်ပါမယ် */
+        width: auto; 
+        max-width: 100%;
+        margin-left: auto; /* ညာဘက်ကပ်အောင် */
     }
     
     .typing-dot {
-      animation: typing 1.4s infinite ease-in-out both;
-      width: 6px; 
-      height: 6px; 
-      background-color: #94a3b8; 
-      border-radius: 50%; 
-      display: inline-block; 
-      margin: 0 2px;
+        animation: typing 1.4s infinite ease-in-out both;
+        width: 6px; height: 6px; background-color: #94a3b8; border-radius: 50%; display: inline-block; margin: 0 2px;
     }
-    
     .typing-dot:nth-child(1) { animation-delay: -0.32s; }
     .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-    
-    @keyframes typing { 
-      0%, 80%, 100% { transform: scale(0); } 
-      40% { transform: scale(1); } 
-    }
+    @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
     
     /* Toast Animation */
-    .toast { 
-      visibility: hidden; 
-      min-width: 250px; 
-      background-color: #1e293b; 
-      color: #fff; 
-      text-align: center; 
-      border-radius: 50px; 
-      padding: 12px 24px; 
-      position: fixed; 
-      z-index: 100; 
-      left: 50%; 
-      bottom: 30px; 
-      transform: translateX(-50%); 
-      font-size: 14px; 
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
-      border: 1px solid rgba(255,255,255,0.1); 
-      transition: all 0.3s; 
-      opacity: 0; 
-    }
-    
-    .toast.show { 
-      visibility: visible; 
-      bottom: 40px; 
-      opacity: 1; 
-    }
-    
-    /* Section Fade-in Animation */
-    .fade-in {
-      animation: fadeIn 0.8s ease-out;
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* Stagger Animation for Grid Items */
-    .stagger-item {
-      animation: fadeInUp 0.6s ease-out backwards;
-    }
-    
-    .stagger-item:nth-child(1) { animation-delay: 0.1s; }
-    .stagger-item:nth-child(2) { animation-delay: 0.2s; }
-    .stagger-item:nth-child(3) { animation-delay: 0.3s; }
-    .stagger-item:nth-child(4) { animation-delay: 0.4s; }
-    .stagger-item:nth-child(5) { animation-delay: 0.5s; }
-    .stagger-item:nth-child(6) { animation-delay: 0.6s; }
+    .toast { visibility: hidden; min-width: 250px; background-color: #1e293b; color: #fff; text-align: center; border-radius: 50px; padding: 12px 24px; position: fixed; z-index: 100; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; opacity: 0; }
+    .toast.show { visibility: visible; bottom: 40px; opacity: 1; }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-200 h-screen h-[100dvh] flex overflow-hidden">
@@ -431,750 +127,1327 @@
   <!-- LOGIN OVERLAY -->
   <div id="loginOverlay" class="fixed inset-0 z-[60] bg-slate-950 flex flex-col items-center justify-center p-6 transition-opacity duration-300">
     <div class="glass-panel p-8 rounded-2xl w-full max-w-sm border border-slate-700 shadow-2xl flex flex-col items-center space-y-6">
-      <div class="text-center">
-        <div class="w-16 h-16 bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-500/30">
-          <i class="ph ph-lock-key text-3xl text-blue-400"></i>
+        <div class="text-center">
+            <div class="w-16 h-16 bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-500/30">
+                <i class="ph ph-lock-key text-3xl text-blue-400"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-white">With You Studio</h2>
+            <p class="text-sm text-slate-400 mt-1">AI Sales Assistant Login</p>
         </div>
-        <h2 class="text-2xl font-bold text-white font-display">With You Studio</h2>
-        <p class="text-sm text-slate-400 mt-1">AI Sales Assistant Login</p>
-      </div>
-      
-      <div class="w-full space-y-4">
-        <div>
-          <label class="text-sm font-bold text-slate-400 uppercase mb-1 ml-1">Email</label>
-          <div class="relative">
-            <i class="ph ph-envelope absolute left-3 top-3 text-slate-500 text-lg"></i>
-            <input type="email" id="loginEmail" placeholder="admin@studio.com" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 pl-10 text-white focus:border-blue-500 outline-none transition placeholder-slate-600">
-          </div>
+        
+        <div class="w-full space-y-4">
+            <div>
+                <label class="text-sm font-bold text-slate-400 uppercase mb-1 ml-1">Email</label>
+                <div class="relative">
+                    <i class="ph ph-envelope absolute left-3 top-3 text-slate-500 text-lg"></i>
+                    <input type="email" id="loginEmail" placeholder="admin@studio.com" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 pl-10 text-white focus:border-blue-500 outline-none transition placeholder-slate-600">
+                </div>
+            </div>
+            <div>
+                <label class="text-sm font-bold text-slate-400 uppercase mb-1 ml-1">Password</label>
+                <div class="relative">
+                    <i class="ph ph-key absolute left-3 top-3 text-slate-500 text-lg"></i>
+                    <input type="password" id="loginPass" placeholder="••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 pl-10 text-white focus:border-blue-500 outline-none transition placeholder-slate-600">
+                </div>
+            </div>
+            <button onclick="window.handleLogin()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-blue-900/50 transition active:scale-95 flex justify-center gap-2 items-center">
+                <span>Sign In</span>
+                <i class="ph ph-arrow-right"></i>
+            </button>
         </div>
-        <div>
-          <label class="text-sm font-bold text-slate-400 uppercase mb-1 ml-1">Password</label>
-          <div class="relative">
-            <i class="ph ph-key absolute left-3 top-3 text-slate-500 text-lg"></i>
-            <input type="password" id="loginPass" placeholder="••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 pl-10 text-white focus:border-blue-500 outline-none transition placeholder-slate-600">
-          </div>
-        </div>
-        <button onclick="window.handleLogin()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-blue-900/50 transition active:scale-95 flex justify-center gap-2 items-center">
-          <i class="ph ph-sign-in"></i>
-          Login
-        </button>
-      </div>
-      
-      <p id="loginError" class="text-red-400 text-xs text-center hidden bg-red-900/20 p-2 rounded w-full border border-red-900/50 mt-2"></p>
+        
+        <p id="loginError" class="text-red-400 text-xs text-center hidden bg-red-900/20 p-2 rounded w-full border border-red-900/50"></p>
     </div>
   </div>
 
-  <!-- MAIN APP CONTAINER -->
-  <div id="appContainer" class="hidden w-full h-full flex">
-    
-    <!-- SIDEBAR (Desktop) -->
-    <aside id="sidebar" class="sidebar-closed w-64 bg-slate-900 border-r border-slate-800 flex-shrink-0 flex flex-col fixed md:relative h-full z-50 md:z-0">
-      <div class="p-6 border-b border-slate-800">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-            <i class="ph-fill ph-camera text-white text-xl"></i>
-          </div>
-          <div>
-            <h1 class="text-lg font-bold text-white font-display">With You</h1>
-            <p class="text-xs text-slate-400">AI Assistant</p>
-          </div>
-        </div>
-      </div>
-      
-      <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
-        <button onclick="window.loadView('home')" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg text-slate-300 hover:bg-slate-800 transition">
-          <i class="ph ph-house text-lg"></i>
-          <span class="font-medium">Home</span>
-        </button>
-        
-        <button onclick="window.loadView('portfolio')" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg text-slate-300 hover:bg-slate-800 transition">
-          <i class="ph ph-images text-lg"></i>
-          <span class="font-medium">Portfolio</span>
-        </button>
-        
-        <button onclick="window.loadView('pricing')" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg text-slate-300 hover:bg-slate-800 transition">
-          <i class="ph ph-tag text-lg"></i>
-          <span class="font-medium">Pricing</span>
-        </button>
-        
-        <div class="pt-4 border-t border-slate-800 mt-4">
-          <p class="text-xs text-slate-500 uppercase font-bold mb-2 px-3">AI Tools</p>
-          
-          <button onclick="window.loadView('creative')" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg text-slate-300 hover:bg-slate-800 transition">
-            <i class="ph ph-magic-wand text-lg"></i>
-            <span class="font-medium">Creative Director</span>
-          </button>
-          
-          <button onclick="window.loadView('dm')" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg text-slate-300 hover:bg-slate-800 transition">
-            <i class="ph ph-chat-circle-dots text-lg"></i>
-            <span class="font-medium">DM Assistant</span>
-          </button>
-          
-          <button onclick="window.loadView('manager')" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg text-slate-300 hover:bg-slate-800 transition">
-            <i class="ph ph-calendar-check text-lg"></i>
-            <span class="font-medium">Manager</span>
-          </button>
-          
-          <button onclick="window.loadView('pose')" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg text-slate-300 hover:bg-slate-800 transition">
-            <i class="ph ph-user-circle text-lg"></i>
-            <span class="font-medium">Pose Ideas</span>
-          </button>
-        </div>
-      </nav>
-      
-      <div class="p-4 border-t border-slate-800">
-        <button onclick="window.logout()" class="w-full flex items-center gap-2 p-3 rounded-lg text-red-400 hover:bg-red-950/30 transition">
-          <i class="ph ph-sign-out"></i>
-          <span>Logout</span>
-        </button>
-      </div>
-    </aside>
+  <!-- OVERLAY for Mobile Sidebar -->
+  <div id="overlay" onclick="window.toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden glass-panel"></div>
 
-    <!-- MAIN CONTENT AREA -->
-    <main class="flex-1 flex flex-col h-full overflow-hidden">
-      
-      <!-- TOP BAR -->
-      <header class="bg-slate-900 border-b border-slate-800 p-4 flex items-center justify-between md:justify-end">
-        <button onclick="window.toggleSidebar()" class="md:hidden p-2 rounded-lg hover:bg-slate-800 transition">
-          <i class="ph ph-list text-2xl text-slate-300"></i>
-        </button>
-        
-        <div class="flex items-center gap-3">
-          <div class="text-right hidden sm:block">
-            <p class="text-sm font-medium text-white" id="userDisplay">Admin</p>
-            <p class="text-xs text-slate-400">Studio Owner</p>
-          </div>
-          <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
-            <i class="ph-fill ph-user text-white"></i>
-          </div>
-        </div>
-      </header>
-
-      <!-- VIEWS CONTAINER -->
-      <div id="viewsContainer" class="flex-1 overflow-y-auto p-4 md:p-8">
-        
-        <!-- HOME VIEW -->
-        <div id="viewHome" class="view-section hidden">
-          <div class="hero-gradient rounded-2xl p-8 md:p-16 mb-8 text-center relative">
-            <h1 class="text-4xl md:text-6xl font-bold mb-4 font-display gradient-text">
-              Welcome to With You Studio
+  <!-- SIDEBAR NAVIGATION -->
+  <aside id="sidebar" class="sidebar-closed fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 border-r border-slate-800 flex flex-col transition-transform duration-300 md:relative md:translate-x-0 shadow-2xl">
+    <div class="p-6 border-b border-slate-800 flex items-center justify-between">
+        <div>
+            <h1 class="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+                <i class="ph ph-camera text-blue-400"></i> With You Studio
             </h1>
-            <p class="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto mb-8">
-              Taunggyi ရဲ့ အကောင်းဆုံး Photography Studio<br>
-              AI-powered Sales Assistant ဖြင့် အလွယ်တကူ စီမံခန့်ခွဲနိုင်ပါပြီ
+            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">Sales Master AI v6.7.5</div>
+            <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1 flex items-center gap-1">
+                <span id="connectionStatus" class="w-2 h-2 rounded-full bg-red-500"></span> Online
             </p>
-            
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="#" onclick="window.loadView('portfolio'); return false;" class="contact-btn contact-btn-whatsapp">
-                <i class="ph-fill ph-images text-xl"></i>
-                View Portfolio
-              </a>
-              <a href="#" onclick="window.loadView('pricing'); return false;" class="contact-btn contact-btn-messenger">
-                <i class="ph-fill ph-tag text-xl"></i>
-                See Packages
-              </a>
-            </div>
-          </div>
+        </div>
+        <button onclick="window.toggleSidebar()" class="md:hidden text-slate-400"><i class="ph ph-x text-xl"></i></button>
+    </div>
 
-          <!-- Features Grid -->
-          <div class="grid md:grid-cols-3 gap-6 mb-8">
-            <div class="glass-card p-6 rounded-xl stagger-item">
-              <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4">
-                <i class="ph-fill ph-robot text-2xl text-blue-400"></i>
-              </div>
-              <h3 class="text-xl font-bold mb-2 text-white">AI Sales Assistant</h3>
-              <p class="text-slate-400 text-sm">အလိုအလျောက် Customer များကို Reply ပြန်ပေးနိုင်သော AI Assistant</p>
+    <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-6">
+        <div>
+            <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Management</p>
+            <div class="space-y-1">
+                <button onclick="window.loadView('manager')" id="nav-manager" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i class="ph ph-robot text-lg text-yellow-400"></i> AI Manager
+                </button>
+                <button onclick="window.loadView('mentor')" id="nav-mentor" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+    <i class="ph ph-student text-lg text-emerald-400"></i> Mentor Mode
+</button>
+                <button onclick="window.loadView('creative')" id="nav-creative" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i class="ph ph-lightbulb text-lg text-orange-400"></i> Ideas
+                </button>
+                <button onclick="window.loadView('dm')" id="nav-dm" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i class="ph ph-chat-circle-text text-lg text-purple-400"></i> DM Auto-Detect
+                </button>
+                <button onclick="window.loadView('brand')" id="nav-brand" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i class="ph ph-brain text-lg text-blue-400"></i> Brand Brain
+                </button>
+            </div>
+        </div>
+        <div>
+            <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Content</p>
+            <div class="space-y-1">
+                <button onclick="window.loadView('fbpost')" id="nav-fbpost" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i class="ph ph-facebook-logo text-lg"></i> Facebook Post
+                </button>
+                <button onclick="window.loadView('tiktok')" id="nav-tiktok" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i class="ph ph-tiktok-logo text-lg"></i> TikTok Script
+                </button>
+            </div>
+        </div>
+        <div>
+            <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Studio Ops</p>
+            <div class="space-y-1">
+                <button onclick="window.loadView('timeline')" id="nav-timeline" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i class="ph ph-clock text-lg"></i> Timeline
+                </button>
+                <button onclick="window.loadView('pose')" id="nav-pose" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i class="ph ph-camera text-lg"></i> Pose Helper
+                </button>
+            </div>
+        </div>
+        <div>
+            <div class="space-y-1 border-t border-slate-800 pt-4">
+                <button onclick="window.loadView('recent')" id="nav-recent" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition group relative">
+                    <i class="ph ph-clock-counter-clockwise text-lg group-hover:text-green-400"></i> 
+                    <span>Recent / Saved</span>
+                    <span id="recentBadge" class="hidden absolute right-3 top-3 w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+<div class="px-4 pb-4">
+        <div class="bg-slate-900/80 rounded-xl p-3 border border-slate-700 shadow-inner">
+            <div class="flex justify-between items-end mb-2">
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1"><i class="ph ph-lightning"></i> AI Budget</span>
+                <span id="usagePercent" class="text-xs font-bold text-green-400">0%</span>
             </div>
             
-            <div class="glass-card p-6 rounded-xl stagger-item">
-              <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4">
-                <i class="ph-fill ph-images text-2xl text-purple-400"></i>
-              </div>
-              <h3 class="text-xl font-bold mb-2 text-white">Professional Portfolio</h3>
-              <p class="text-slate-400 text-sm">Wedding, Pre-wedding, Portrait အစရှိသော Professional ဓာတ်ပုံများ</p>
+            <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden mb-2 border border-slate-700/50">
+                <div id="usageBar" class="h-full bg-gradient-to-r from-green-500 to-emerald-400 transition-all duration-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" style="width: 0%"></div>
             </div>
             
-            <div class="glass-card p-6 rounded-xl stagger-item">
-              <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4">
-                <i class="ph-fill ph-calendar-check text-2xl text-green-400"></i>
-              </div>
-              <h3 class="text-xl font-bold mb-2 text-white">Easy Booking</h3>
-              <p class="text-slate-400 text-sm">WhatsApp/Messenger မှတဆင့် လွယ်ကူစွာ Booking လုပ်နိုင်ပါတယ်</p>
+            <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+               <span><span id="usageCost" class="text-slate-200 font-bold">$0.00</span> / $5.00</span>
+               <span id="usageRequests" class="text-slate-500">0 reqs</span>
             </div>
-          </div>
+        </div>
+    </div>
 
-          <!-- Quick Contact Section -->
-          <div class="glass-panel p-8 rounded-2xl text-center">
-            <h2 class="text-2xl font-bold mb-4 text-white font-display">Get In Touch</h2>
-            <p class="text-slate-300 mb-6">အခုပဲ ဆက်သွယ်ပြီး သင့်အတွက် အသင့်တော်ဆုံး Package ကို ရွေးချယ်လိုက်ပါ</p>
-            
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="https://wa.me/959XXXXXXXX" target="_blank" class="contact-btn contact-btn-whatsapp">
-                <i class="ph-fill ph-whatsapp-logo text-xl"></i>
-                Message on WhatsApp
-              </a>
-              <a href="https://m.me/withyoustudio" target="_blank" class="contact-btn contact-btn-messenger">
-                <i class="ph-fill ph-messenger-logo text-xl"></i>
-                Message on Messenger
-              </a>
+    <div class="p-4 border-t border-slate-800 text-xs text-slate-600 text-center">
+        <div id="userEmailDisplay" class="text-[10px] text-blue-400 mb-2 truncate">Checking Auth...</div>
+        <button onclick="window.handleLogout()" class="w-full py-2 border border-red-900/30 rounded text-red-400 hover:bg-red-900/20 transition flex items-center justify-center gap-1">
+            <i class="ph ph-sign-out"></i> Logout
+        </button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT AREA (RIGHT) -->
+  <div class="flex-1 flex flex-col h-full relative w-full">
+    <header class="md:hidden h-14 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-4 z-30 shrink-0">
+        <button onclick="window.toggleSidebar()" class="text-white p-2"><i class="ph ph-list text-2xl"></i></button>
+        <span class="font-bold text-blue-400 text-lg">With You Studio</span>
+        <div class="w-8"></div>
+    </header>
+
+    <!-- MOBILE QUICK NAV -->
+    <div class="md:hidden bg-slate-900/90 border-b border-slate-800 overflow-x-auto no-scrollbar py-2 px-3 flex gap-2 shrink-0 backdrop-blur-sm z-20 sticky top-0">
+        <button onclick="window.loadView('manager')" id="mob-manager" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
+            <i class="ph ph-robot text-yellow-400"></i> Partner
+        </button>
+        <button onclick="window.loadView('mentor')" id="mob-mentor" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
+    <i class="ph ph-student text-emerald-400"></i> Mentor
+</button>
+        <button onclick="window.loadView('creative')" id="mob-creative" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
+            <i class="ph ph-lightbulb text-orange-400"></i> Ideas
+        </button>
+        <button onclick="window.loadView('dm')" id="mob-dm" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
+            <i class="ph ph-chat-circle-text text-purple-400"></i> DM
+        </button>
+        <button onclick="window.loadView('fbpost')" id="mob-fbpost" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
+            <i class="ph ph-facebook-logo"></i> Post
+        </button>
+        <button onclick="window.loadView('tiktok')" id="mob-tiktok" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
+            <i class="ph ph-tiktok-logo"></i> TikTok
+        </button>
+        <button onclick="window.loadView('brand')" id="mob-brand" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
+            <i class="ph ph-brain"></i> Brain
+        </button>
+        <button onclick="window.loadView('timeline')" id="mob-timeline" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
+            <i class="ph ph-clock"></i> Timeline
+        </button>
+        <button onclick="window.loadView('pose')" id="mob-pose" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
+            <i class="ph ph-camera"></i> Pose
+        </button>
+        <button onclick="window.loadView('recent')" id="mob-recent" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
+            <i class="ph ph-clock-counter-clockwise text-green-400"></i> Recent
+        </button>
+    </div>
+
+    <!-- Dynamic Content Container -->
+    <div id="content-container" class="flex-1 overflow-y-auto p-4 md:p-8 max-w-4xl mx-auto w-full pb-20 scroll-smooth custom-scroll">
+        <!-- Content injects here via JS -->
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Action Complete</div>
+
+  <!-- TEMPLATES -->
+  
+  <!-- 0. AI MANAGER TEMPLATE -->
+  <template id="tpl-manager">
+    <div class="animate-fade-in space-y-4 h-full flex flex-col">
+        <div class="flex items-center justify-between shrink-0">
+            <h2 class="text-xl md:text-3xl font-bold text-yellow-400 flex items-center gap-3"><i class="ph ph-robot"></i> AI Partner</h2>
+            <div class="text-[10px] text-slate-400 bg-slate-800/50 border border-slate-700 px-3 py-1 rounded-full">Today's Direction</div>
+        </div>
+        
+        <!-- Chat Area -->
+        <div id="chatContainer" class="flex-1 overflow-y-auto space-y-4 p-2 custom-scroll">
+            <div class="flex flex-col space-y-4">
+                <div class="flex items-start gap-3">
+                    <div class="w-9 h-9 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-400 border border-yellow-500/30 shrink-0 shadow-lg shadow-yellow-500/10"><i class="ph ph-robot text-lg"></i></div>
+                    <div class="chat-bubble-ai max-w-[90%] md:max-w-[75%]">
+                        မင်္ဂလာပါ ကိုစိုင်းရေ။ ဒီနေ့ ဘာလုပ်ကြမလဲဗျ? အလုပ်ကိစ္စ ဆွေးနွေးမလား၊ Content အတွက် အကြံဉာဏ်ယူမလား၊ ဒါမှမဟုတ် စိတ်ထွက်ပေါက်အနေနဲ့ စကားပြောမလား?
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
 
-        <!-- PORTFOLIO VIEW -->
-        <div id="viewPortfolio" class="view-section hidden fade-in">
-          <div class="mb-8">
-            <h1 class="text-4xl font-bold mb-2 font-display gradient-text">Our Portfolio</h1>
-            <p class="text-slate-400">ကျွန်ုပ်တို့ရိုက်ကူးခဲ့သော အလုပ်များ</p>
-          </div>
+        <!-- Input Area (Fixed Bottom) -->
+        <div class="shrink-0 pt-3 space-y-3 pb-2">
+            <!-- Quick Chips -->
+            <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1 px-1">
+                <button onclick="window.sendChat('💡 ဒီနေ့အတွက် Idea တစ်ခုလောက် ပေးပါ')" class="whitespace-nowrap px-4 py-2 rounded-full bg-slate-800/80 border border-slate-700 text-xs font-medium text-slate-300 hover:bg-slate-700 hover:border-yellow-500/50 hover:text-white transition backdrop-blur-sm shadow-sm">💡 Today Idea</button>
+                <button onclick="window.sendChat('📩 Client က ဈေးမေးပြီး ငြိမ်သွားတယ် ဘာပြန်ပြောရမလဲ?')" class="whitespace-nowrap px-4 py-2 rounded-full bg-slate-800/80 border border-slate-700 text-xs font-medium text-slate-300 hover:bg-slate-700 hover:border-purple-500/50 hover:text-white transition backdrop-blur-sm shadow-sm">📩 DM Strategy</button>
+                <button onclick="window.sendChat('🎥 TikTok နဲ့ FB မှာ ဘာတင်ရင်ကောင်းမလဲ?')" class="whitespace-nowrap px-4 py-2 rounded-full bg-slate-800/80 border border-slate-700 text-xs font-medium text-slate-300 hover:bg-slate-700 hover:border-blue-500/50 hover:text-white transition backdrop-blur-sm shadow-sm">🎥 Content Plan</button>
+                <button onclick="window.sendChat('🧠 ငါနဲ့ အတူတူ စဉ်းစားပေးပါ')" class="whitespace-nowrap px-4 py-2 rounded-full bg-slate-800/80 border border-slate-700 text-xs font-medium text-slate-300 hover:bg-slate-700 hover:border-green-500/50 hover:text-white transition backdrop-blur-sm shadow-sm">🧠 Brainstorm</button>
+            </div>
 
-          <!-- Category Filter -->
-          <div class="flex gap-3 mb-8 overflow-x-auto no-scrollbar">
-            <button onclick="window.filterPortfolio('all')" class="portfolio-filter-btn px-6 py-2 rounded-full bg-blue-600 text-white font-medium whitespace-nowrap">
-              All
-            </button>
-            <button onclick="window.filterPortfolio('wedding')" class="portfolio-filter-btn px-6 py-2 rounded-full bg-slate-800 text-slate-300 font-medium whitespace-nowrap hover:bg-slate-700">
-              Wedding
-            </button>
-            <button onclick="window.filterPortfolio('prewedding')" class="portfolio-filter-btn px-6 py-2 rounded-full bg-slate-800 text-slate-300 font-medium whitespace-nowrap hover:bg-slate-700">
-              Pre-Wedding
-            </button>
-            <button onclick="window.filterPortfolio('portrait')" class="portfolio-filter-btn px-6 py-2 rounded-full bg-slate-800 text-slate-300 font-medium whitespace-nowrap hover:bg-slate-700">
-              Portrait
-            </button>
-            <button onclick="window.filterPortfolio('event')" class="portfolio-filter-btn px-6 py-2 rounded-full bg-slate-800 text-slate-300 font-medium whitespace-nowrap hover:bg-slate-700">
-              Events
-            </button>
-          </div>
-
-          <!-- Portfolio Gallery -->
-          <div class="gallery-grid" id="portfolioGallery">
-            <!-- Sample Images - Replace with actual portfolio images -->
-            <div class="gallery-item stagger-item" data-category="wedding" onclick="window.openLightbox(this)">
-              <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=600" alt="Wedding Photography">
-              <div class="gallery-overlay">
-                <h3 class="text-white font-bold text-lg">Wedding Ceremony</h3>
-                <p class="text-slate-300 text-sm">Taunggyi, 2024</p>
-              </div>
+            <!-- Input Box -->
+            <div class="relative glass-panel rounded-2xl p-2 flex items-end gap-2 border border-slate-600/50 shadow-xl">
+<textarea id="chatInput" rows="1" placeholder="ကိုစိုင်း ပြောချင်တာ ရေးပါ..." class="flex-1 bg-transparent border-none text-white text-sm px-4 py-3 focus:ring-0 resize-none max-h-32 placeholder-slate-500" onkeydown="if(event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); window.handleChatSubmit(); }"></textarea>                
+                <button onclick="window.startVoiceInput('chatInput', this)" class="p-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-700/50 transition shrink-0" title="Voice"><i class="ph ph-microphone text-xl"></i></button>
+                
+                <button onclick="window.handleChatSubmit()" class="p-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg hover:shadow-blue-500/20 active:scale-95 transition shrink-0">
+                    <i class="ph ph-paper-plane-right-fill text-xl"></i>
+                </button>
             </div>
-            
-            <div class="gallery-item stagger-item" data-category="prewedding" onclick="window.openLightbox(this)">
-              <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600" alt="Pre-Wedding Shoot">
-              <div class="gallery-overlay">
-                <h3 class="text-white font-bold text-lg">Pre-Wedding Session</h3>
-                <p class="text-slate-300 text-sm">Inle Lake, 2024</p>
-              </div>
-            </div>
-            
-            <div class="gallery-item stagger-item" data-category="portrait" onclick="window.openLightbox(this)">
-              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600" alt="Portrait Photography">
-              <div class="gallery-overlay">
-                <h3 class="text-white font-bold text-lg">Portrait Session</h3>
-                <p class="text-slate-300 text-sm">Studio, 2024</p>
-              </div>
-            </div>
-            
-            <div class="gallery-item stagger-item" data-category="wedding" onclick="window.openLightbox(this)">
-              <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600" alt="Wedding Details">
-              <div class="gallery-overlay">
-                <h3 class="text-white font-bold text-lg">Wedding Details</h3>
-                <p class="text-slate-300 text-sm">Taunggyi, 2024</p>
-              </div>
-            </div>
-            
-            <div class="gallery-item stagger-item" data-category="event" onclick="window.openLightbox(this)">
-              <img src="https://images.unsplash.com/photo-1464047736614-af63643285bf?w=600" alt="Event Coverage">
-              <div class="gallery-overlay">
-                <h3 class="text-white font-bold text-lg">Corporate Event</h3>
-                <p class="text-slate-300 text-sm">Taunggyi, 2024</p>
-              </div>
-            </div>
-            
-            <div class="gallery-item stagger-item" data-category="prewedding" onclick="window.openLightbox(this)">
-              <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600" alt="Outdoor Pre-Wedding">
-              <div class="gallery-overlay">
-                <h3 class="text-white font-bold text-lg">Outdoor Romance</h3>
-                <p class="text-slate-300 text-sm">Pindaya, 2024</p>
-              </div>
-            </div>
-          </div>
         </div>
-
-        <!-- PRICING VIEW -->
-        <div id="viewPricing" class="view-section hidden fade-in">
-          <div class="mb-8 text-center">
-            <h1 class="text-4xl font-bold mb-2 font-display gradient-text">Our Packages</h1>
-            <p class="text-slate-400">သင့်အတွက် အသင့်တော်ဆုံး Package ကို ရွေးချယ်ပါ</p>
-          </div>
-
-          <!-- Pricing Cards -->
-          <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <!-- Basic Package -->
-            <div class="pricing-card glass-card p-8 rounded-2xl stagger-item">
-              <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <i class="ph-fill ph-camera text-3xl text-blue-400"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-white mb-2">Basic Package</h3>
-                <div class="text-4xl font-bold gradient-text mb-2">500K</div>
-                <p class="text-slate-400 text-sm">Starting Price</p>
-              </div>
-              
-              <ul class="space-y-3 mb-8">
-                <li class="flex items-start gap-3">
-                  <i class="ph-fill ph-check-circle text-green-400 text-xl flex-shrink-0"></i>
-                  <span class="text-slate-300">4 Hours Coverage</span>
-                </li>
-                <li class="flex items-start gap-3">
-                  <i class="ph-fill ph-check-circle text-green-400 text-xl flex-shrink-0"></i>
-                  <span class="text-slate-300">100+ Edited Photos</span>
-                </li>
-                <li class="flex items-start gap-3">
-                  <i class="ph-fill ph-check-circle text-green-400 text-xl flex-shrink-0"></i>
-                  <span class="text-slate-300">Online Gallery</span>
-                </li>
-                <li class="flex items-start gap-3">
-                  <i class="ph-fill ph-check-circle text-green-400 text-xl flex-shrink-0"></i>
-                  <span class="text-slate-300">1 Photographer</span>
-                </li>
-              </ul>
-              
-              <a href="https://wa.me/959XXXXXXXX?text=Hi! I'm interested in the Basic Package" target="_blank" class="block w-full text-center py-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold transition">
-                Book Now
-              </a>
-            </div>
-
-            <!-- Premium Package (Featured) -->
-            <div class="pricing-card pricing-featured glass-card p-8 rounded-2xl stagger-item">
-              <div class="absolute top-4 right-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full">
-                POPULAR
-              </div>
-              
-              <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <i class="ph-fill ph-crown text-3xl text-purple-400"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-white mb-2">Premium Package</h3>
-                <div class="text-4xl font-bold gradient-text mb-2">1.2M</div>
-                <p class="text-slate-400 text-sm">Best Value</p>
-              </div>
-              
-              <ul class="space-y-3 mb-8">
-                <li class="flex items-start gap-3">
-                  <i class="ph-fill ph-check-circle text-green-400 text-xl flex-shrink-0"></i>
-                  <span class="text-slate-300">Full Day Coverage</span>
-                </li>
-                <li class="flex items-start gap-3">
-                  <i class="ph-fill ph-check-circle text-green-400 text-xl flex-shrink-0"></i>
-                  <span class="text-slate-300">300+ Edited Photos</span>
-                </li>
-                <li class="flex items-start gap-3">
-                  <i class="ph-fill ph-check-circle text-green-400 text-xl flex-shrink-0"></i>
-                  <span class="text-slate-300">Online Gallery + Album</span>
-                </li>
-                <li class="flex items-start gap-3">
-                  <i class="ph-fill ph-check-circle text-green-400 text-xl flex-shrink-0"></i>
-                  <span class="text-slate-300">2 Photographers</span>
-                </li>
-                <li class="flex items-start gap-3">
-                  <i class="ph-fill ph-check-circle text-green-400 text-xl flex-shrink-0"></i>
-                  <span class="text-slate-300">Video Highlights</span>
-                </li>
-                <li class="flex items-start gap-3">
-                  <i class="ph-fill ph-check-circle text-green-400 text-xl flex-shrink-0"></i>
-                  <span class="text-slate-300">Free Engagement Shoot</span>
-                </li>
-              </ul>
-              
-              <a href="https://wa.me/959XXXXXXXX?text=Hi! I'm interested in the Premium Package" target="_blank" class="block w-full text-center py-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold transition shadow-lg shadow-blue-900/30">
-                Book Now
-              </a>
-            </div>
-
-            <!-- Platinum Package -->
-            <div class="pricing-card glass-card p-8 rounded-2xl stagger-item">
-              <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-pink-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <i class="ph-fill ph-sparkle text-3xl text-pink-400"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-white mb-2">Platinum Package</h3>
-                <div class="text-4xl font-bold gradient-text mb-2">2.5M</div>
-                <p class="text-slate-400 text-sm">Complete Solution</p>
-              </div>
-              
-              <ul class="space-y-3 mb-8">
-                <li class="flex items-start gap-3">
-                  <i class="ph-fill ph-check-circle text-green-400 text-xl flex-shrink-0"></i>
-                  <span class="text-slate-300">2 Days Coverage</span>
-                </li>
-                <li class="flex items-start gap-3">
-                  <i class="ph-fill ph-check-circle text-green-400 text-xl flex-shrink-0"></i>
-                  <span class="text-slate-300">500+ Edited Photos</span>
-                </li>
-                <li class="flex items-start gap-3">
-                  <i class="ph-fill ph-check-circle text-green-400 text-xl flex-shrink-0"></i>
-                  <span class="text-slate-300">Premium Album + Canvas</span>
-                </li>
-                <li class="flex items-start gap-3">
-                  <i class="ph-fill ph-check-circle text-green-400 text-xl flex-shrink-0"></i>
-                  <span class="text-slate-300">3 Photographers + Videographer</span>
-                </li>
-                <li class="flex items-start gap-3">
-                  <i class="ph-fill ph-check-circle text-green-400 text-xl flex-shrink-0"></i>
-                  <span class="text-slate-300">Cinematic Video</span>
-                </li>
-                <li class="flex items-start gap-3">
-                  <i class="ph-fill ph-check-circle text-green-400 text-xl flex-shrink-0"></i>
-                  <span class="text-slate-300">Pre-wedding + Engagement</span>
-                </li>
-                <li class="flex items-start gap-3">
-                  <i class="ph-fill ph-check-circle text-green-400 text-xl flex-shrink-0"></i>
-                  <span class="text-slate-300">Drone Coverage</span>
-                </li>
-              </ul>
-              
-              <a href="https://wa.me/959XXXXXXXX?text=Hi! I'm interested in the Platinum Package" target="_blank" class="block w-full text-center py-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold transition">
-                Book Now
-              </a>
-            </div>
-          </div>
-
-          <!-- Additional Services -->
-          <div class="mt-12 glass-panel p-8 rounded-2xl">
-            <h2 class="text-2xl font-bold mb-6 text-center text-white font-display">À La Carte Services</h2>
-            <div class="grid md:grid-cols-2 gap-6">
-              <div class="flex items-start gap-4">
-                <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <i class="ph-fill ph-video-camera text-xl text-blue-400"></i>
-                </div>
-                <div>
-                  <h3 class="font-bold text-white mb-1">Video Coverage Only</h3>
-                  <p class="text-slate-400 text-sm">Full day cinematic video - 800K</p>
-                </div>
-              </div>
-              
-              <div class="flex items-start gap-4">
-                <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <i class="ph-fill ph-book-open text-xl text-purple-400"></i>
-                </div>
-                <div>
-                  <h3 class="font-bold text-white mb-1">Additional Album</h3>
-                  <p class="text-slate-400 text-sm">Premium photo album - 300K</p>
-                </div>
-              </div>
-              
-              <div class="flex items-start gap-4">
-                <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <i class="ph-fill ph-airplane-tilt text-xl text-green-400"></i>
-                </div>
-                <div>
-                  <h3 class="font-bold text-white mb-1">Drone Coverage</h3>
-                  <p class="text-slate-400 text-sm">Aerial photography & video - 400K</p>
-                </div>
-              </div>
-              
-              <div class="flex items-start gap-4">
-                <div class="w-12 h-12 bg-pink-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <i class="ph-fill ph-frame-corners text-xl text-pink-400"></i>
-                </div>
-                <div>
-                  <h3 class="font-bold text-white mb-1">Canvas Prints</h3>
-                  <p class="text-slate-400 text-sm">Large format prints - from 150K</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CREATIVE DIRECTOR VIEW (Keep existing AI tools) -->
-        <div id="viewCreative" class="view-section hidden">
-          <div class="mb-6">
-            <h1 class="text-3xl font-bold mb-2 font-display">Creative Director AI</h1>
-            <p class="text-slate-400">AI-powered content creation assistant</p>
-          </div>
-          
-          <!-- Original Creative Tools Content Here -->
-          <div class="glass-card p-6 rounded-xl">
-            <p class="text-slate-300 text-center">AI Creative Tools - Original functionality preserved</p>
-          </div>
-        </div>
-
-        <!-- DM ASSISTANT VIEW (Keep existing) -->
-        <div id="viewDM" class="view-section hidden">
-          <div class="mb-6">
-            <h1 class="text-3xl font-bold mb-2 font-display">DM Reply Assistant</h1>
-            <p class="text-slate-400">Intelligent customer message handling</p>
-          </div>
-          
-          <div class="glass-card p-6 rounded-xl">
-            <p class="text-slate-300 text-center">DM Tools - Original functionality preserved</p>
-          </div>
-        </div>
-
-        <!-- MANAGER VIEW (Keep existing) -->
-        <div id="viewManager" class="view-section hidden">
-          <div class="mb-6">
-            <h1 class="text-3xl font-bold mb-2 font-display">Manager Dashboard</h1>
-            <p class="text-slate-400">Daily planning and task management</p>
-          </div>
-          
-          <div class="glass-card p-6 rounded-xl">
-            <p class="text-slate-300 text-center">Manager Tools - Original functionality preserved</p>
-          </div>
-        </div>
-
-        <!-- POSE IDEAS VIEW (Keep existing) -->
-        <div id="viewPose" class="view-section hidden">
-          <div class="mb-6">
-            <h1 class="text-3xl font-bold mb-2 font-display">Pose Ideas Generator</h1>
-            <p class="text-slate-400">AI-powered pose suggestions</p>
-          </div>
-          
-          <div class="glass-card p-6 rounded-xl">
-            <p class="text-slate-300 text-center">Pose Tools - Original functionality preserved</p>
-          </div>
-        </div>
-
+    </div>
+  </template>
+<template id="tpl-mentor">
+    <div class="space-y-6 animate-fade-in pb-20"> <div class="flex items-center justify-between">
+        <h2 class="text-xl md:text-2xl font-bold text-emerald-400 flex items-center gap-2">
+          <i class="ph ph-student"></i> Mentor Mode
+        </h2>
+        <span class="text-[10px] bg-emerald-900/30 text-emerald-300 px-3 py-1 rounded-full border border-emerald-500/30">
+          Inspiration • Art • Skill
+        </span>
       </div>
-    </main>
-  </div>
 
-  <!-- Lightbox -->
-  <div id="lightbox" class="lightbox" onclick="window.closeLightbox()">
-    <button onclick="window.closeLightbox(); event.stopPropagation();" class="absolute top-4 right-4 w-12 h-12 bg-slate-900/80 rounded-full flex items-center justify-center hover:bg-slate-800 transition">
-      <i class="ph ph-x text-white text-2xl"></i>
-    </button>
-    <img id="lightboxImg" src="" alt="Gallery Image">
-  </div>
+      <div class="glass-panel p-5 rounded-xl border border-emerald-500/20 space-y-3">
+        <label class="text-xs font-bold text-emerald-300 uppercase">Ask your mentor</label>
+        <div class="relative">
+          <textarea id="mentorInput" rows="3" placeholder="ဥပမာ - မင်္ဂလာဆောင်မှာ emotion ကို ဘယ်လိုဖမ်းရမလဲ?" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg p-4 text-sm text-white resize-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/50 outline-none"></textarea>
+          
+          <button onclick="window.startVoiceInput('mentorInput', this)" class="absolute right-3 bottom-3 p-2 rounded-full bg-slate-800 hover:bg-emerald-600 text-emerald-300 hover:text-white transition">
+            <i class="ph ph-microphone"></i>
+          </button>
+        </div>
 
-  <!-- Floating WhatsApp Button -->
-  <a href="https://wa.me/959XXXXXXXX" target="_blank" class="fab">
-    <i class="ph-fill ph-whatsapp-logo text-white text-2xl"></i>
-  </a>
+        <button onclick="window.generateAI('mentor')" class="w-full mt-2 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-bold py-3 rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2">
+           <i class="ph ph-magic-wand"></i> Ask Mentor
+        </button>
+      </div>
 
-  <!-- Toast Notification -->
-  <div id="toast" class="toast"></div>
+      <div class="glass-panel p-5 rounded-xl border border-slate-700 space-y-4">
+        <h3 class="text-sm font-bold text-slate-300 uppercase flex items-center gap-2">
+            <i class="ph ph-books"></i> Study the Masters
+        </h3>
 
-  <!-- Firebase SDK -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div onclick="window.askMaster('Jerry Ghionis', 'Lighting & Posing')" class="p-4 bg-slate-900/50 hover:bg-slate-800 rounded-lg border border-slate-700 hover:border-emerald-500/50 cursor-pointer transition group">
+            <h4 class="font-bold text-white group-hover:text-emerald-400 transition">Jerry Ghionis</h4>
+            <p class="text-xs text-slate-400 mt-1">Lighting • Drama • Direction</p>
+          </div>
+
+          <div onclick="window.askMaster('Jose Villa', 'Fine Art Film Style')" class="p-4 bg-slate-900/50 hover:bg-slate-800 rounded-lg border border-slate-700 hover:border-emerald-500/50 cursor-pointer transition group">
+            <h4 class="font-bold text-white group-hover:text-emerald-400 transition">Jose Villa</h4>
+            <p class="text-xs text-slate-400 mt-1">Film • Natural Light • Fine Art</p>
+          </div>
+
+          <div onclick="window.askMaster('Fer Juaristi', 'Creative Composition')" class="p-4 bg-slate-900/50 hover:bg-slate-800 rounded-lg border border-slate-700 hover:border-emerald-500/50 cursor-pointer transition group">
+            <h4 class="font-bold text-white group-hover:text-emerald-400 transition">Fer Juaristi</h4>
+            <p class="text-xs text-slate-400 mt-1">Emotion • Storytelling • Fun</p>
+          </div>
+
+          <div onclick="window.askMaster('Two Mann Studios', 'Documentary Moments')" class="p-4 bg-slate-900/50 hover:bg-slate-800 rounded-lg border border-slate-700 hover:border-emerald-500/50 cursor-pointer transition group">
+            <h4 class="font-bold text-white group-hover:text-emerald-400 transition">Two Mann</h4>
+            <p class="text-xs text-slate-400 mt-1">Moments • Layers • Context</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="mentorResultArea" class="hidden glass-panel p-5 rounded-xl border border-emerald-500/30 shadow-lg shadow-emerald-900/20">
+        <div class="flex justify-between items-center mb-3">
+          <span class="text-xs font-bold text-emerald-400 uppercase flex items-center gap-2"><i class="ph ph-chalkboard-teacher"></i> Mentor Advice</span>
+          <button onclick="window.copyText('mentorOutput')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded text-white border border-slate-600 transition">Copy</button>
+        </div>
+        <div id="mentorOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed custom-scroll max-h-[500px] overflow-y-auto"></div>
+        
+        <button id="mentorContinueBtn" onclick="window.continueAI('mentor')" class="hidden w-full mt-3 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded text-emerald-400 text-xs font-bold transition">
+             Tell me more...
+        </button>
+      </div>
+
+    </div>
+  </template>
+
+  <!-- CREATIVE DIRECTOR TEMPLATE -->
+  <template id="tpl-creative">
+    <div class="animate-fade-in space-y-6">
+        <div class="flex items-center justify-between">
+            <h2 class="text-xl md:text-3xl font-bold text-yellow-400 flex items-center gap-3"><i class="ph ph-lightbulb"></i> Creative Director</h2>
+            
+        </div>
+        <div class="glass-panel p-6 rounded-2xl border border-yellow-500/20 shadow-xl relative overflow-hidden">
+             <i class="ph ph-sparkle absolute -top-4 -right-4 text-9xl text-yellow-500 opacity-5 rotate-12"></i>
+
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2 tracking-wider">Today's Workload</label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <button onclick="window.setCreativeOption('workload', 'Busy', this)" class="creative-btn p-3 rounded-xl border border-slate-600 bg-slate-800/50 hover:bg-slate-700 text-xs font-bold text-center transition">Busy<br>🥵</button>
+                            <button onclick="window.setCreativeOption('workload', 'Normal', this)" class="creative-btn active p-3 rounded-xl border border-slate-600 bg-slate-800/50 hover:bg-slate-700 text-xs font-bold text-center transition">Normal<br>🙂</button>
+                            <button onclick="window.setCreativeOption('workload', 'Free', this)" class="creative-btn p-3 rounded-xl border border-slate-600 bg-slate-800/50 hover:bg-slate-700 text-xs font-bold text-center transition">Motivated<br>🤩</button>
+                        </div>
+                        <input type="hidden" id="crWorkload" value="Normal">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2 tracking-wider">Focus Area</label>
+                        <select id="crFocus" class="w-full bg-slate-800/50 border border-slate-600 rounded-xl p-3 text-sm text-white focus:border-yellow-500 outline-none appearance-none">
+                            <option value="Anything">🎲 Anything (Best Choice)</option>
+                            <option value="Pre-Wedding">💍 Pre-Wedding Focus</option>
+                            <option value="Wedding Day">👰 Wedding Day</option>
+                            <option value="Studio Branding">🏢 Studio Branding</option>
+                            <option value="Family Portrait">👨‍👩‍👧‍👦 Family / Portrait</option>
+                        </select>
+                    </div>
+
+                    <div>
+                         <label class="block text-xs font-bold text-slate-400 uppercase mb-2 tracking-wider">Platforms</label>
+                         <div class="flex gap-4">
+                             <label class="flex items-center gap-2 cursor-pointer bg-slate-800/50 px-4 py-2 rounded-lg border border-slate-700 hover:border-blue-500 transition select-none">
+                                 <input type="checkbox" id="crFB" checked class="w-4 h-4 rounded bg-slate-700 border-slate-600 text-blue-500 focus:ring-0">
+                                 <span class="text-sm text-slate-300 font-bold">Facebook</span>
+                             </label>
+                             <label class="flex items-center gap-2 cursor-pointer bg-slate-800/50 px-4 py-2 rounded-lg border border-slate-700 hover:border-teal-500 transition select-none">
+                                 <input type="checkbox" id="crTT" checked class="w-4 h-4 rounded bg-slate-700 border-slate-600 text-teal-500 focus:ring-0">
+                                 <span class="text-sm text-slate-300 font-bold">TikTok</span>
+                             </label>
+                         </div>
+                    </div>
+
+                    <!-- Multi Action Buttons -->
+                    <div class="space-y-3 mt-4">
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="window.generateAI('creative_director')" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 font-bold py-3.5 rounded-xl transition active:scale-95 flex items-center justify-center gap-2 shadow-md">
+                                <i class="ph ph-calendar-plus text-lg"></i> 3-Day Plan
+                            </button>
+                            <button onclick="window.generateAI('creative_post')" class="bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-500 hover:to-orange-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-yellow-900/30 transition active:scale-95 flex items-center justify-center gap-2">
+                                <i class="ph ph-pen-nib text-lg"></i> Write Post Now
+                            </button>
+                        </div>
+                        
+                        <button onclick="window.generateAI('creative_tt_text')" class="w-full bg-slate-800 border border-teal-500/50 hover:bg-slate-700 text-teal-400 font-bold py-3.5 rounded-xl transition active:scale-95 flex items-center justify-center gap-2 shadow-md">
+                            <i class="ph ph-text-t text-lg"></i> TikTok Text Mode (250 chars)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Output Area (Desktop) -->
+                <div id="crResultArea" class="hidden md:block h-full">
+                     <div class="bg-slate-900/50 rounded-xl border border-slate-700 p-5 h-full flex flex-col shadow-inner">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-sm font-bold text-yellow-400 uppercase flex items-center gap-2"><i class="ph ph-check-circle"></i> Generated Content</span>
+                            <button onclick="window.copyText('crOutput')" class="text-sm bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-600 text-white transition">Copy</button>
+                        </div>
+                        <div id="crOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 overflow-y-auto max-h-[400px] custom-scroll pr-2"></div>
+                     </div>
+                </div>
+            </div>
+            
+            <!-- Output Area (Mobile) -->
+            <div id="crResultAreaMobile" class="md:hidden hidden mt-4">
+                 <div class="bg-slate-900/50 rounded-xl border border-slate-700 p-5 shadow-inner">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-sm font-bold text-yellow-400 uppercase">Result</span>
+                        <button onclick="window.copyText('crOutputMobile')" class="text-sm bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-600 text-white transition">Copy</button>
+                    </div>
+                    <div id="crOutputMobile" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed"></div>
+                 </div>
+            </div>
+        </div>
+    </div>
+  </template>
+
+  <!-- 1. DM SALES MASTER TEMPLATE -->
+  <template id="tpl-dm">
+    <div class="animate-fade-in space-y-6">
+        <div class="flex items-center justify-between">
+            <h2 class="text-xl md:text-3xl font-bold text-purple-400 flex items-center gap-3">
+                <i class="ph ph-chat-circle-text"></i> DM Sales Master
+            </h2>
+        </div>
+        
+        <div class="glass-panel p-6 rounded-2xl border border-purple-500/20 shadow-xl relative overflow-hidden">
+            <i class="ph ph-chat-teardrop-text absolute -top-4 -right-4 text-9xl text-purple-500 opacity-5 rotate-12"></i>
+
+            <div class="relative z-10 space-y-6">
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2 tracking-wider">Topic</label>
+                        <select id="dmService" class="w-full bg-slate-800/50 border border-slate-600 rounded-xl p-3 text-sm text-white focus:border-purple-500 outline-none">
+                            <option value="Pre-wedding Package">💍 Pre-wedding</option>
+                            <option value="Wedding Actual Day">👰 Wedding Day</option>
+                            <option value="Family Photoshoot">👨‍👩‍👧‍👦 Family</option>
+                            <option value="Graduation Photo">🎓 Graduation</option>
+                            <option value="General Inquiry">❓ General</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2 tracking-wider">Client Status</label>
+                        <select id="dmScenario" class="w-full bg-slate-800/50 border border-slate-600 rounded-xl p-3 text-sm text-white focus:border-purple-500 outline-none">
+                            <option value="New Inquiry">New Inquiry</option>
+                            <option value="Price Objection">Expensive (ဈေးကြီး)</option>
+                            <option value="Ghosting">Seen (စာမပြန်)</option>
+                            <option value="Comparing">Comparing (ယှဉ်နေ)</option>
+                            <option value="Closing">Ready to Book</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2 tracking-wider">Strategy</label>
+                        <select id="dmType" class="w-full bg-slate-800/50 border border-slate-600 rounded-xl p-3 text-sm text-white focus:border-purple-500 outline-none">
+                            <option value="Soft Close">Soft Close (ပုံမှန်)</option>
+                            <option value="Price Defense">Price Defense (တန်ဖိုးပြ)</option>
+                            <option value="Urgency">Create Urgency (မြန်မြန်)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-2 tracking-wider flex justify-between">
+                        <span>Client Message / Context</span>
+                        <span class="text-purple-400 text-[10px] cursor-pointer hover:underline" onclick="document.getElementById('dmInput').value=''">Clear</span>
+                    </label>
+                    <div class="relative">
+                        <textarea id="dmInput" placeholder="Client မေးတဲ့စာ (သို့) အခြေအနေကို ဒီမှာရေးပါ..." class="w-full bg-slate-900/50 border border-slate-600 rounded-xl p-4 text-sm h-32 text-white resize-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 pr-12 shadow-inner transition"></textarea>
+                        <button onclick="window.startVoiceInput('dmInput', this)" class="absolute right-3 bottom-3 bg-slate-700/80 hover:bg-purple-600 p-2.5 rounded-full transition text-slate-300 hover:text-white shadow-lg"><i class="ph ph-microphone text-xl"></i></button>
+                    </div>
+                </div>
+
+                <div id="dmAnalysisPanel" class="hidden animate-fade-in bg-slate-900/80 p-4 rounded-xl border border-indigo-500/30">
+                    <div class="text-[10px] text-indigo-400 uppercase font-bold tracking-wider mb-2 flex items-center gap-2"><i class="ph ph-magic-wand"></i> AI Analysis</div>
+                    <div id="dmAnalysisContent" class="text-sm text-slate-300 leading-relaxed"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
+                    <button onclick="window.generateAI('dm_analyze')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3.5 rounded-xl border border-slate-600 transition active:scale-95 flex items-center justify-center gap-2">
+                        <i class="ph ph-magnifying-glass text-lg"></i> Analyze Only
+                    </button>
+                    <button onclick="window.generateAI('dm_best')" class="bg-slate-800 hover:bg-slate-700 text-purple-300 font-bold py-3.5 rounded-xl border border-slate-600 transition active:scale-95 flex items-center justify-center gap-2">
+                        Generate Options
+                    </button>
+                    <button onclick="window.generateAI('dm_auto_detect')" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-purple-900/40 transition active:scale-95 flex items-center justify-center gap-2">
+                        <i class="ph ph-lightning text-xl"></i> Auto Reply
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="dmResultArea" class="hidden animate-fade-in">
+            <div class="glass-panel p-6 rounded-2xl border border-purple-500/30 relative overflow-hidden shadow-2xl">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-sm font-bold text-purple-400 uppercase flex items-center gap-2"><i class="ph ph-check-circle-fill"></i> Generated Reply</span>
+                    <button onclick="window.copyText('dmOutput')" class="text-sm bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-600 text-white transition">Copy</button>
+                </div>
+                
+                <div id="dmOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed bg-slate-950/30 p-5 rounded-xl border border-white/5 max-h-[500px] overflow-y-auto custom-scroll"></div>
+                
+                <button id="dmContinueBtn" onclick="window.continueAI('dm_best')" class="hidden w-full mt-3 py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl text-purple-300 text-sm font-bold flex items-center justify-center gap-2 transition active:scale-95">
+                    <span>⚠️ Continue Writing</span>
+                </button>
+            </div>
+        </div>
+    </div>
+  </template>
+
+  <!-- 2. BRAND BRAIN TEMPLATE -->
+  <template id="tpl-brand">
+    <div class="animate-fade-in max-w-2xl mx-auto space-y-6">
+        <div class="bg-gradient-to-br from-slate-800 to-slate-900 p-8 rounded-3xl border border-slate-700 relative overflow-hidden shadow-2xl">
+            <h2 class="text-xl md:text-3xl font-bold text-white mb-2 flex items-center gap-3"><i class="ph ph-database text-blue-400"></i> Studio Brain (Cloud Sync)</h2>
+            <div class="space-y-6 text-left relative z-10">
+                <div class="bg-slate-950/50 p-5 rounded-2xl border border-slate-700">
+                    <label class="text-sm font-bold text-yellow-400 uppercase mb-3 block flex items-center gap-2"><i class="ph ph-package"></i> Packages & Pricing (Important)</label>
+                    <textarea id="brandPackages" placeholder="Example: Silver Package: 3 Lakhs..." class="w-full bg-slate-900 border border-slate-600 rounded-xl p-4 text-sm text-white h-32 resize-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500/50"></textarea>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="text-sm font-bold text-blue-400 uppercase mb-2 block">Studio Vibe</label>
+                        <input type="text" id="brandStyle" value="Moody, Cinematic, Emotional" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white">
+                    </div>
+                    <div>
+                        <label class="text-sm font-bold text-blue-400 uppercase mb-2 block">Target Audience</label>
+                        <input type="text" id="brandClient" value="Luxury Couples, Young Professionals" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-sm font-bold text-slate-300 uppercase mb-2 block">Contact Details</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="text" id="brandPhone" placeholder="Phone" class="bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white">
+                        <input type="text" id="brandViber" placeholder="Viber" class="bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white">
+                        <input type="text" id="brandFB" placeholder="Facebook Link" class="bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white">
+                        <input type="text" id="brandTT" placeholder="TikTok Link" class="bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white">
+                    </div>
+                    <input type="text" id="brandAddr" placeholder="Address (Taunggyi)" class="mt-3 w-full bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white">
+                </div>
+                <div class="pt-4 flex flex-col items-center gap-2">
+                    <button onclick="window.saveBrandData()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2 transition active:scale-95"><i class="ph ph-floppy-disk text-xl"></i> Save Changes to Cloud</button>
+                    <div id="saveStatus" class="text-sm text-slate-500 text-center">Sync ready.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </template>
+
+  <template id="tpl-fbpost">
+    <div class="animate-fade-in space-y-6">
+        <div class="flex items-center justify-between">
+            <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2"><i class="ph ph-facebook-logo text-blue-500"></i> Facebook Post</h2>
+            <span class="bg-blue-900/30 text-blue-400 text-[10px] md:text-xs px-2 py-1 rounded border border-blue-500/30">3 Options</span>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-4">
+                <div class="glass-panel p-6 md:p-5 rounded-xl space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Topic</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="fbInput" placeholder="ဥပမာ - Pre-wedding package..." class="flex-1 w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white">
+                            <button onclick="window.startVoiceInput('fbInput', this)" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg px-4 flex items-center justify-center transition active:scale-95"><i class="ph ph-microphone text-xl text-blue-400"></i></button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div><label class="block text-xs font-bold text-slate-400 uppercase mb-1">Tone</label><select id="fbTone" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm outline-none text-white"><option>Professional & Warm</option><option>Friendly & Exciting</option><option>Emotional</option></select></div>
+                        <div><label class="block text-xs font-bold text-slate-400 uppercase mb-1">Length</label><select id="fbLength" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm outline-none text-white"><option value="Medium">Medium</option><option value="Long">Long</option><option value="Short">Short</option></select></div>
+                    </div>
+                    <button onclick="window.generateAI('fbpost')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-blue-600/30 transition flex justify-center items-center gap-2 active:scale-95"><i class="ph ph-pen-nib"></i> Write Post (3 Options)</button>
+                </div>
+                <div id="fbResultArea" class="hidden space-y-2">
+                    <div class="glass-panel p-6 md:p-6 rounded-xl border-blue-500/30">
+                        <div id="fbOutput" class="whitespace-pre-wrap leading-relaxed text-sm text-slate-200"></div>
+                    </div>
+                    <button id="fbContinueBtn" onclick="window.continueAI('fbpost')" class="hidden w-full py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-blue-300 text-sm font-bold flex items-center justify-center gap-2"><span>⚠️ Continue Writing</span><i class="ph ph-arrow-right"></i></button>
+                    <div class="flex gap-2">
+                        <div class="flex-1 py-3 text-center text-xs text-green-400 italic">✅ Auto-saved</div>
+                        <button onclick="window.copyText('fbOutput')" class="flex-1 bg-slate-800 hover:bg-slate-700 py-3 rounded-lg text-xs font-bold border border-slate-700">📋 Copy</button>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
+                    <h3 class="text-sm font-bold text-blue-300 mb-3 flex items-center gap-2"><i class="ph ph-sparkle"></i> Creative Assistant</h3>
+                    <div class="space-y-2">
+                        <button onclick="window.runAssistant('fb_ideas')" class="w-full text-left p-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 border border-slate-700 transition">💡 Get 5 Post Ideas</button>
+                        <button onclick="window.runAssistant('fb_hooks')" class="w-full text-left p-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 border border-slate-700 transition">🎣 Generate Catchy Hooks</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </template>
+
+  <template id="tpl-timeline">
+    <div class="animate-fade-in space-y-6">
+        <h2 class="text-xl md:text-2xl font-bold text-orange-400 flex items-center gap-2"><i class="ph ph-clock"></i> Timeline Generator</h2>
+        <div class="glass-panel p-6 md:p-6 rounded-xl">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                <div><label class="text-sm text-slate-400 uppercase font-bold">Start</label><select id="tlStart" class="w-full p-2 mt-1 bg-slate-800 rounded border border-slate-700 text-white"><option>6:00 AM</option><option>7:00 AM</option><option>8:00 AM</option><option>1:00 PM</option></select></div>
+                <div><label class="text-sm text-slate-400 uppercase font-bold">Place</label><select id="tlPlace" class="w-full p-2 mt-1 bg-slate-800 rounded border border-slate-700 text-white"><option>Taunggyi (City)</option><option>Inle Lake</option><option>Kalaw</option></select></div>
+                <div><label class="text-sm text-slate-400 uppercase font-bold">Outfits</label><select id="tlDress" class="w-full p-2 mt-1 bg-slate-800 rounded border border-slate-700 text-white"><option>3 Dresses</option><option>4 Dresses</option><option>5 Dresses</option></select></div>
+                <div><label class="text-sm text-slate-400 uppercase font-bold">Pacing</label><select id="tlPace" class="w-full p-2 mt-1 bg-slate-800 rounded border border-slate-700 text-white"><option>Relaxed</option><option>Packed</option></select></div>
+            </div>
+            <div class="flex items-center gap-2 mb-4 p-2 bg-slate-800/50 rounded"><input type="checkbox" id="tlSunset" class="w-4 h-4 rounded bg-slate-800 border-slate-700 text-orange-500"><label for="tlSunset" class="text-sm text-slate-300">Include Sunset Shot</label></div>
+            <button onclick="window.generateAI('timeline')" class="w-full bg-orange-600 hover:bg-orange-500 py-3 rounded text-white font-bold active:scale-95 transition">Generate Schedule</button>
+        </div>
+        <div id="tlResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl">
+            <div id="tlOutput" class="whitespace-pre-wrap text-sm text-slate-200 font-mono"></div>
+            <div class="mt-4 flex gap-2">
+                <button onclick="window.downloadFile('Schedule.txt', 'tlOutput')" class="text-sm text-blue-400 border border-blue-900 p-2 rounded">⬇️ Download</button>
+                <button onclick="window.copyText('tlOutput')" class="text-sm text-slate-400 border border-slate-700 p-2 rounded">📋 Copy</button>
+            </div>
+        </div>
+    </div>
+  </template>
+
+  <template id="tpl-recent">
+    <div class="animate-fade-in space-y-6">
+        <div class="flex justify-between items-center">
+            <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2"><i class="ph ph-clock-counter-clockwise text-green-400"></i> Cloud History</h2>
+            <button onclick="window.clearHistory()" class="text-red-400 text-xs border border-red-900/50 px-3 py-1.5 rounded">Clear All</button>
+        </div>
+        <p class="text-sm text-slate-500 mb-4">Saved securely on Firebase.</p>
+        <div id="historyListContainer" class="space-y-4 pb-20"></div>
+    </div>
+  </template>
+
   <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-    import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, limit, onSnapshot, addDoc, getDocs, increment } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, orderBy, limit, onSnapshot, deleteDoc, getDocs, increment } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+    
 
     const firebaseConfig = {
-      apiKey: "AIzaSyBsKh4rYdz_tdBwuCRabULFcfPYV8zt9L0",
-      authDomain: "withyoustudio-ai.firebaseapp.com",
-      projectId: "withyoustudio-ai",
-      storageBucket: "withyoustudio-ai.firebasestorage.app",
-      messagingSenderId: "644583393850",
-      appId: "1:644583393850:web:fc73f84be64fd7e5b9a6cc"
+      apiKey: "AIzaSyBEqE5lWdLWIZOO_M3RYY35e17VMTGk-G0",
+      authDomain: "saiai-content-generator.firebaseapp.com",
+      projectId: "saiai-content-generator",
+      storageBucket: "saiai-content-generator.firebasestorage.app",
+      messagingSenderId: "574947512372",
+      appId: "1:574947512372:web:1d35a5b5aa6f24ea493a61",
+      measurementId: "G-C2Q8Y2XBMD"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const appId = 'withyou_v6';
-
-    // Make globally available
-    window.auth = auth;
-    window.db = db;
-    window.appId = appId;
-    window.firebaseModules = { doc, setDoc, getDoc, collection, query, orderBy, limit, onSnapshot, addDoc, getDocs, increment, signInWithEmailAndPassword, signOut, onAuthStateChanged };
-  </script>
-
-  <script>
-    // Global State
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
     let userId = null;
-    let currentView = 'home';
+    let currentAnalysis = null;
+    let chatHistory = [];
 
-    // Helper function
-    const getValue = (id) => document.getElementById(id)?.value || '';
+    const getValue = (id) => { const el = document.getElementById(id); return el ? el.value : ""; };
 
-    // Login Handler with Firebase
-    window.handleLogin = async function() {
-      const email = getValue('loginEmail');
-      const pass = getValue('loginPass');
-      const errorEl = document.getElementById('loginError');
-      
-      if (!email || !pass) {
-        if (errorEl) {
-          errorEl.textContent = 'Please fill in all fields';
-          errorEl.classList.remove('hidden');
-        }
-        return;
-      }
+    // --- ✅ 1. ADD THIS BLOCK HERE (Before Auth Listener) ---
+    
+    // Usage Tracking Functions (Hoisted)
+    window.loadUsage = function() {
+        if (!userId) return;
+        // Listen to changes in real-time
+        onSnapshot(doc(db, 'artifacts', appId, 'users', userId, 'usage', 'stats'), (docSnap) => {
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                const cost = data.totalCost || 0;
+                const reqs = data.totalRequests || 0;
+                const limit = 5.00; // $5.00 Limit
+                
+                let percent = (cost / limit) * 100;
+                if(percent > 100) percent = 100;
 
-      try {
-        const { signInWithEmailAndPassword } = window.firebaseModules;
-        await signInWithEmailAndPassword(window.auth, email, pass);
-        // Auth state change will handle the rest
-      } catch(error) {
-        console.error('Login error:', error);
-        if (errorEl) {
-          errorEl.textContent = error.message || 'Login failed';
-          errorEl.classList.remove('hidden');
-        }
-        window.showToast('Login failed: ' + (error.message || 'Unknown error'));
-      }
+                // Update UI Elements
+                const costEl = document.getElementById('usageCost');
+                if(costEl) costEl.innerText = `$${cost.toFixed(4)}`;
+                
+                const reqEl = document.getElementById('usageRequests');
+                if(reqEl) reqEl.innerText = `${reqs} reqs`;
+                
+                const perEl = document.getElementById('usagePercent');
+                if(perEl) perEl.innerText = `${percent.toFixed(1)}%`;
+                
+                const bar = document.getElementById('usageBar');
+                if(bar) {
+                    bar.style.width = `${percent}%`;
+                    bar.className = `h-full transition-all duration-500 shadow-[0_0_10px_rgba(0,0,0,0.3)] ${percent > 80 ? 'bg-red-500 shadow-red-500/50' : percent > 50 ? 'bg-yellow-400 shadow-yellow-400/50' : 'bg-gradient-to-r from-green-500 to-emerald-400 shadow-green-500/50'}`;
+                }
+            } else {
+                // Initialize if not exists
+                document.getElementById('usageCost').innerText = "$0.0000";
+            }
+        });
     };
 
-    // Logout
-    window.logout = async function() {
-      if (confirm('Are you sure you want to logout?')) {
+    window.trackUsage = async function(inputText, outputText) {
+        if (!userId) return;
+        const charCount = (inputText?.length || 0) + (outputText?.length || 0);
+        const estCost = charCount * 0.000002; 
         try {
-          const { signOut } = window.firebaseModules;
-          await signOut(window.auth);
-          window.location.reload();
-        } catch(e) {
-          console.error('Logout error:', e);
-          window.showToast('Logout failed');
-        }
-      }
+            const usageRef = doc(db, 'artifacts', appId, 'users', userId, 'usage', 'stats');
+            await setDoc(usageRef, {
+                totalCost: increment(estCost),
+                totalRequests: increment(1),
+                lastUpdated: Date.now()
+            }, { merge: true });
+        } catch(e) { console.error("Tracking Error:", e); }
     };
+    
+    // --- AUTH ---
+    window.handleLogin = async function() {
+        const email = getValue('loginEmail');
+        const pass = getValue('loginPass');
+        if(!email || !pass) return;
+        try { await signInWithEmailAndPassword(auth, email, pass); } catch(error) { document.getElementById('loginError').innerText = error.message; document.getElementById('loginError').classList.remove('hidden'); }
+    }
+    window.handleLogout = async function() { try { await signOut(auth); window.location.reload(); } catch(e) { console.error(e); } }
 
-    // Auth State Listener
-    window.addEventListener('DOMContentLoaded', function() {
-      const { onAuthStateChanged } = window.firebaseModules;
-      
-      onAuthStateChanged(window.auth, (user) => {
+    onAuthStateChanged(auth, (user) => {
         const overlay = document.getElementById('loginOverlay');
-        const appContainer = document.getElementById('appContainer');
-        const userDisplay = document.getElementById('userDisplay');
-        
         if (user) {
-          userId = user.uid;
-          
-          // Update UI
-          if (userDisplay) userDisplay.textContent = user.email;
-          
-          // Hide login, show app
-          if (overlay) {
+            userId = user.uid;
+            document.getElementById('connectionStatus').classList.replace('bg-red-500', 'bg-green-500');
+            document.getElementById('userEmailDisplay').innerText = user.email;
             overlay.classList.add('opacity-0', 'pointer-events-none');
             setTimeout(() => overlay.classList.add('hidden'), 300);
-          }
-          if (appContainer) appContainer.classList.remove('hidden');
-          
-          // Load initial view
-          window.loadView('home');
-          window.showToast('Welcome back!');
+            if(window.currentView === 'brand') loadBrandData();
+            if(window.currentView === 'recent') renderHistoryList();
+            window.loadUsage();
         } else {
-          userId = null;
-          
-          // Show login, hide app
-          if (overlay) {
+            userId = null;
             overlay.classList.remove('hidden');
             setTimeout(() => overlay.classList.remove('opacity-0', 'pointer-events-none'), 50);
-          }
-          if (appContainer) appContainer.classList.add('hidden');
         }
-      });
+    });
+// --- ASSISTANT SHORT ACTIONS (FIX MISSING FUNCTION) ---
+window.runAssistant = async function(type) {
+  let prompt = "";
+
+  if (type === "fb_ideas") {
+    prompt = "With You Photo Studio အတွက် Facebook post idea ၅ ခုလောက် ပေးပါ။ Pre-wedding focus နဲ့ သဘာဝဆန်အောင်ရေးပါ။";
+  }
+
+  if (type === "fb_hooks") {
+    prompt = "Pre-wedding couple တွေအတွက် Facebook hook စာကြောင်းတို ၅ ခုရေးပါ။ လူပြောသလို သဘာဝ tone နဲ့ရေးပါ။";
+  }
+
+  if (!prompt) return;
+
+  try {
+    const res = await fetch("/api/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userMessage: prompt,
+        mode: "studio"
+      })
     });
 
-    // View Management
-    window.loadView = function(viewName) {
-      // Hide all views
-      document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden'));
-      
-      // Show selected view
-      const targetView = document.getElementById('view' + viewName.charAt(0).toUpperCase() + viewName.slice(1));
-      if (targetView) {
-        targetView.classList.remove('hidden');
-        currentView = viewName;
-        
-        // Update nav active state
-        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-        event?.target?.closest('.nav-item')?.classList.add('active');
-        
-        // Close sidebar on mobile
-        if (window.innerWidth < 768) {
-          window.toggleSidebar();
-        }
-      }
-    };
+    if (!res.ok) throw new Error("API Error");
 
-    // Sidebar Toggle
+    const data = await res.json();
+
+    // reuse FB output panel
+    const out = document.getElementById("fbOutput");
+    const area = document.getElementById("fbResultArea");
+    if (out && area) {
+      out.innerText = data.result;
+      area.classList.remove("hidden");
+    }
+
+  } catch (e) {
+    console.error(e);
+    window.showToast("Assistant error");
+  }
+};
+
+    // --- GLOBAL EXPORTS ---
+    window.currentView = 'dm'; 
+
     window.toggleSidebar = function() {
-      const sidebar = document.getElementById('sidebar');
-      sidebar.classList.toggle('sidebar-open');
-      sidebar.classList.toggle('sidebar-closed');
-    };
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        if (sidebar.classList.contains('sidebar-closed')) { sidebar.classList.remove('sidebar-closed'); sidebar.classList.add('sidebar-open'); overlay.classList.remove('hidden'); }
+        else { sidebar.classList.add('sidebar-closed'); sidebar.classList.remove('sidebar-open'); overlay.classList.add('hidden'); }
+    }
 
-    // Portfolio Filter
-    window.filterPortfolio = function(category) {
-      const items = document.querySelectorAll('.gallery-item');
-      const buttons = document.querySelectorAll('.portfolio-filter-btn');
-      
-      // Update button styles
-      buttons.forEach(btn => {
-        btn.classList.remove('bg-blue-600', 'text-white');
-        btn.classList.add('bg-slate-800', 'text-slate-300');
-      });
-      event.target.classList.remove('bg-slate-800', 'text-slate-300');
-      event.target.classList.add('bg-blue-600', 'text-white');
-      
-      // Filter items
-      items.forEach(item => {
-        if (category === 'all' || item.dataset.category === category) {
-          item.style.display = 'block';
-        } else {
-          item.style.display = 'none';
+    window.loadView = function(viewId) {
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        const navBtn = document.getElementById('nav-' + viewId);
+        if(navBtn) navBtn.classList.add('active');
+
+        document.querySelectorAll('.mobile-nav-item').forEach(el => {
+            el.classList.remove('active', 'border-blue-500', 'text-white');
+            el.classList.add('border-slate-700', 'text-slate-300');
+        });
+        const mobBtn = document.getElementById('mob-' + viewId);
+        if(mobBtn) {
+            mobBtn.classList.add('active', 'border-blue-500', 'text-white');
+            mobBtn.classList.remove('border-slate-700', 'text-slate-300');
+            mobBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         }
-      });
-    };
 
-    // Lightbox
-    window.openLightbox = function(element) {
-      const img = element.querySelector('img');
-      const lightbox = document.getElementById('lightbox');
-      const lightboxImg = document.getElementById('lightboxImg');
-      
-      lightboxImg.src = img.src;
-      lightbox.classList.add('active');
-    };
+        if(window.innerWidth < 768) {
+            document.getElementById('sidebar').classList.add('sidebar-closed');
+            document.getElementById('sidebar').classList.remove('sidebar-open');
+            document.getElementById('overlay').classList.add('hidden');
+        }
 
-    window.closeLightbox = function() {
-      document.getElementById('lightbox').classList.remove('active');
-    };
+        const container = document.getElementById('content-container');
+        container.innerHTML = ''; 
 
-    // Toast Notification
-    window.showToast = function(message) {
-      const toast = document.getElementById('toast');
-      toast.textContent = message;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 3000);
-    };
+        let templateId = 'tpl-' + viewId;
+        
+        if(viewId === 'tiktok') container.innerHTML = getTikTokHTML();
+        else if(viewId === 'pose') container.innerHTML = getPoseHTML();
+        else if(viewId === 'creative') {
+             // Handle creative specially if template isn't found by standard logic (though it is defined)
+             const tpl = document.getElementById('tpl-creative');
+             if(tpl) container.appendChild(tpl.content.cloneNode(true));
+        }
+        else if(viewId === 'recent') {
+            const tpl = document.getElementById('tpl-recent');
+            if(tpl) container.appendChild(tpl.content.cloneNode(true));
+            renderHistoryList(); 
+        }
+        else {
+            const tpl = document.getElementById(templateId);
+            if(tpl) {
+                container.appendChild(tpl.content.cloneNode(true));
+                if(viewId === 'brand') loadBrandData(); 
+            }
+        }
+        window.currentView = viewId;
+    }
 
-    // Close lightbox on Escape key
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        window.closeLightbox();
-      }
-    });
+    // --- HTML STRINGS ---
+    function getTikTokHTML() {
+        return `
+        <div class="animate-fade-in space-y-6">
+            <h2 class="text-xl md:text-2xl font-bold text-teal-400 flex items-center gap-2"><i class="ph ph-tiktok-logo"></i> TikTok Studio</h2>
+            <div class="glass-panel p-6 md:p-5 rounded-xl space-y-4">
+                <div class="flex gap-2">
+                    <input type="text" id="ttInput" placeholder="Video Topic (e.g. Pre-wedding tips)..." class="flex-1 bg-slate-800 border border-slate-700 rounded p-3 text-white">
+                    <button onclick="window.startVoiceInput('ttInput', this)" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded px-4 text-teal-400"><i class="ph ph-microphone text-xl"></i></button>
+                </div>
+                <select id="ttStyle" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white">
+                    <option>Trending & Fast</option>
+                    <option>Vlog / Behind Scenes</option>
+                    <option>Cinematic Mood</option>
+                </select>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <button onclick="window.generateAI('tt_script')" class="bg-slate-700 hover:bg-slate-600 py-3 rounded text-white text-xs md:text-sm font-bold active:scale-95 transition">📝 Video Script</button>
+                    <button onclick="window.generateAI('tt_caption')" class="bg-slate-700 hover:bg-slate-600 py-3 rounded text-white text-xs md:text-sm font-bold active:scale-95 transition">✍️ Captions Only</button>
+                    <button onclick="window.generateAI('tt_post_full')" class="bg-teal-600 hover:bg-teal-500 py-3 rounded text-white text-xs md:text-sm font-bold active:scale-95 transition shadow-lg shadow-teal-900/50">🚀 Full Post Pack</button>
+                </div>
+            </div>
+            <div id="ttResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl">
+                <div id="ttOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div>
+                <button id="ttContinueBtn" onclick="window.continueAI('tt_script')" class="hidden w-full mt-2 py-2 bg-slate-800 text-teal-400 text-xs border border-slate-600 rounded">⚠️ Continue Writing</button>
+                <div class="text-sm text-green-400 mt-2">✅ Auto-saved to Cloud</div>
+            </div>
+        </div>`;
+    }
+    function getPoseHTML() {
+        return `<div class="animate-fade-in space-y-6"><h2 class="text-xl md:text-2xl font-bold text-pink-400 flex items-center gap-2"><i class="ph ph-camera"></i> Pose Helper</h2><div class="glass-panel p-6 md:p-5 rounded-xl space-y-4"><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><div><label class="text-sm font-bold text-slate-400 uppercase">Outfit</label><select id="poseOutfit" class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm"><option>Wedding Gown/Suit</option><option>Traditional</option><option>Casual</option></select></div><div><label class="text-sm font-bold text-slate-400 uppercase">Props</label><input type="text" id="poseProps" placeholder="Flowers..." class="w-full mt-1 bg-slate-800 border border-slate-700 rounded p-2 text-white text-sm"></div></div><div class="flex gap-2 mb-2"><button onclick="window.fillPose('Shy')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">😳 Shy</button><button onclick="window.fillPose('Plus')" class="px-3 py-1 bg-pink-900/30 text-pink-200 text-xs rounded border border-pink-500/30">❤️ Plus</button></div><div class="relative"><textarea id="poseInput" class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white h-24 pr-10" placeholder="Situation..."></textarea><button onclick="window.startVoiceInput('poseInput', this)" class="absolute right-2 bottom-2 bg-slate-700/80 hover:bg-pink-600 p-2 rounded-full transition text-slate-300 hover:text-white"><i class="ph ph-microphone text-lg"></i></button></div><button onclick="window.generateAI('pose')" class="w-full bg-pink-600 py-3 rounded text-white font-bold active:scale-95 transition">Generate Poses</button></div><div id="poseResultArea" class="hidden glass-panel p-4 md:p-6 rounded-xl"><div id="poseOutput" class="whitespace-pre-wrap text-sm text-slate-200"></div><div class="text-sm text-green-400 mt-2">✅ Auto-saved to Cloud</div></div></div>`;
+    }
 
-    // Auto-focus email input when page loads
-    window.addEventListener('DOMContentLoaded', function() {
-      const emailInput = document.getElementById('loginEmail');
-      const passInput = document.getElementById('loginPass');
-      
-      if (emailInput) emailInput.focus();
-      
-      // Allow Enter key to login
-      if (passInput) {
-        passInput.addEventListener('keypress', function(e) {
-          if (e.key === 'Enter') {
-            window.handleLogin();
-          }
+    // --- UPDATED SAVE FUNCTION WITH STATUS ---
+    window.saveBrandData = async function() {
+        if (!userId) { window.showToast("Login required!"); return; }
+        const statusEl = document.getElementById('saveStatus');
+        if(statusEl) statusEl.innerText = "Saving...";
+        const ids = ['brandStyle', 'brandClient', 'brandPhone', 'brandViber', 'brandFB', 'brandTT', 'brandAddr', 'brandPackages'];
+        const data = {};
+        ids.forEach(id => { const el = document.getElementById(id); if(el) data[id] = el.value; });
+        try { 
+            await setDoc(doc(db, 'artifacts', appId, 'users', userId, 'config', 'brand'), data, {merge: true}); 
+            if(statusEl) { statusEl.innerText = "Cloud Saved ✅"; statusEl.classList.add('text-green-400'); }
+            window.showToast("Cloud Save Success!"); 
+        } catch (e) { 
+            console.error(e); 
+            if(statusEl) statusEl.innerText = "Error Saving"; 
+        }
+    }
+    window.loadBrandData = async function() {
+        if (!userId) return;
+        try {
+            const docSnap = await getDoc(doc(db, 'artifacts', appId, 'users', userId, 'config', 'brand'));
+            if (docSnap.exists()) { const data = docSnap.data(); for (const [key, value] of Object.entries(data)) { const el = document.getElementById(key); if(el) el.value = value; } }
+        } catch(e) { console.error(e); }
+    }
+    async function saveToRecents(type, content, topic) {
+        if (!userId) return;
+        try { await addDoc(collection(db, 'artifacts', appId, 'users', userId, 'history'), { type: type, topic: topic || "Generated Content", content: content, date: new Date().toLocaleString(), timestamp: Date.now() }); } catch(e) { console.error(e); }
+    }
+    function renderHistoryList() {
+        if (!userId) return;
+        const c = document.getElementById('historyListContainer');
+        if(!c) return;
+        const q = query(collection(db, 'artifacts', appId, 'users', userId, 'history'), orderBy('timestamp', 'desc'), limit(30));
+        onSnapshot(q, (snapshot) => {
+            const items = [];
+            snapshot.forEach((doc) => { items.push({ id: doc.id, ...doc.data() }); });
+            c.innerHTML = items.length ? items.map(i=>`<div class="glass-panel p-6 rounded-lg border-l-4 border-green-500 mb-2 group relative"><div class="flex justify-between items-start mb-2"><div><span class="font-bold text-white text-sm block">${i.topic}</span><span class="text-[10px] text-slate-400 uppercase bg-slate-800 px-1.5 rounded">${i.type}</span></div><span class="text-[10px] text-slate-500">${i.date}</span></div><div class="text-sm text-slate-300 line-clamp-3 bg-slate-900/50 p-2 rounded cursor-pointer hover:bg-slate-900 transition" onclick="window.toggleExpand(this)">${i.content}</div><div class="mt-2 text-right flex justify-end gap-2"><button onclick="window.copyText('${i.content.replace(/'/g, "\\'").replace(/\n/g, "\\n")}')" class="text-blue-400 text-xs hover:text-white border border-blue-500/30 px-2 py-1 rounded">Copy</button></div></div>`).join('') : "<div class='text-center text-slate-500 py-10'>No recent activity on Cloud.</div>";
         });
-      }
-      
-      if (emailInput) {
-        emailInput.addEventListener('keypress', function(e) {
-          if (e.key === 'Enter') {
-            if (passInput) passInput.focus();
-          }
-        });
-      }
-    });
+    }
+
+    // --- NEW: CREATIVE DIRECTOR HELPERS ---
+    window.setCreativeOption = function(type, value, btn) {
+        if(type === 'workload') {
+            document.getElementById('crWorkload').value = value;
+            document.querySelectorAll('.creative-btn').forEach(b => b.classList.remove('active')); 
+            if(btn && btn.parentElement) {
+                Array.from(btn.parentElement.children).forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+            }
+        }
+    };
+    
+    // Support setManagerOption for templates
+    window.setManagerOption = window.setCreativeOption;
+    
+    // --- CHAT MANAGER (RESTORED) ---
+    // --- GLOBAL VARIABLES ---
+    let isChatSubmitting = false; // Double Enter Lock
+
+    // --- ALL-IN-ONE SMART CHAT FUNCTION ---
+    window.handleChatSubmit = async function() {
+        // 1. Safety Checks
+        if(isChatSubmitting) return;
+
+        const inputEl = document.getElementById('chatInput');
+        const sendBtn = document.querySelector('button[onclick="window.handleChatSubmit()"]');
+        const text = inputEl.value.trim();
+        if(!text) return;
+        
+        // 2. Lock UI
+        isChatSubmitting = true;
+        inputEl.disabled = true; 
+        if(sendBtn) sendBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        
+        // 3. UI Updates
+        addMessageToUI('user', text);
+        inputEl.value = '';
+        const loadingId = addMessageToUI('ai', 'Thinking...', true);
+        
+        // 4. SMART DATA FETCHING
+        let contextData = "No prior data.";
+        if(userId) {
+            try {
+                // Fetch Brand Config
+                let brand = {};
+                const brandSnap = await getDoc(doc(db, 'artifacts', appId, 'users', userId, 'config', 'brand')); 
+                if(brandSnap.exists()) brand = brandSnap.data();
+                const packages = brand.brandPackages || "Not set";
+                const style = brand.brandStyle || "Professional";
+
+                // Fetch Recent Decisions
+                let decisions = [];
+                const qDecisions = query(collection(db, 'artifacts', appId, 'users', userId, 'decisions'), orderBy('timestamp', 'desc'), limit(3));
+                const snapDecisions = await getDocs(qDecisions); 
+                snapDecisions.forEach(d => decisions.push(d.data().content));
+
+                // Fetch Chat History
+                let history = [];
+                const qHistory = query(collection(db, 'artifacts', appId, 'users', userId, 'history'), orderBy('timestamp', 'desc'), limit(5));
+                const snapHistory = await getDocs(qHistory);
+                snapHistory.forEach(d => history.push(`[${d.data().type}]: ${d.data().topic}`));
+
+                contextData = `Studio Style: ${style} \n Packages: ${packages} \n Recent Decisions: ${decisions.join('; ')} \n Chat History: ${history.join('; ')}`;
+            } catch(e) { console.log("Context fetch warning:", e); }
+        }
+
+        // 5. THE "AUTO-SWITCH" SYSTEM PROMPT (Updated with Powerful Rules)
+        const systemPrompt = `
+        === 🎭 SUPER-SYSTEM IDENTITY ===
+        You are "The Dual-Brain AI" for With You Photo Studio (Taunggyi).
+        You must dynamically SHIFT your personality based on Ko Sai's input.
+        
+        === 🕵️‍♂️ STEP 1: INTENT & MODE ANALYSIS ===
+        Analyze input: "${text}"
+        
+        🔴 TRIGGER: BUSINESS MANAGER ("Ko Thet") IF:
+        - Input is about: Money, Packages, Clients, Bookings, Schedule, Strategy.
+        - Keyword signals: "Price", "Cost", "Post", "Customer", "Plan", "Busy".
+
+        🔵 TRIGGER: CREATIVE MENTOR ("Saya") IF:
+        - Input is about: Lighting, Composition, Camera Settings, Art, Inspiration, Mindset.
+        - Keyword signals: "Light", "Mood", "Lens", "Feel", "Learn", "Idea".
+
+        (⚠️ If ambiguous, default to BUSINESS MANAGER).
+
+        === 🧠 MODE 1: BUSINESS MANAGER ("Ko Thet") ===
+        - ROLE: Ko Sai's Right-Hand Man. Loyal, Proactive, Strategic.
+        - TONE: Natural Burmese (Unicode). Ends with "Bya/Khamya". Warm but Professional.
+        - 🛡️ CRITICAL RULE 1 (NO HALLUCINATIONS): If you don't know a specific price in the data, say "Let me confirm the price." DO NOT GUESS.
+        - 💰 CRITICAL RULE 2 (SANDWICH METHOD): When discussing price, wrap it in value (Value -> Price -> Value). Focus on the *feeling* of the photos.
+        - GOAL: Move conversation to a "Booking" or "Solution".
+
+        === 📚 MODE 2: CREATIVE MENTOR ("Saya") ===
+        - ROLE: Senior Artist & Wise Teacher.
+        - TONE: Calm, Deep, Inspiring. Ends with soft "Bya".
+        - RULE: NEVER talk about business/prices. Focus on Art, Light, and Emotion.
+        - GOAL: Teach, Inspire, and expand Ko Sai's artistic eye.
+
+        === 📝 CONTEXT DATA ===
+        ${contextData}
+
+        === EXECUTION ===
+        1. Decide the Mode (🔴 or 🔵).
+        2. Stay 100% in that character.
+        3. Respond in concise, natural Burmese.
+        `;
+        
+        // 6. Send to API
+        try {
+            const res = await fetch("/api/generate", {
+                method: "POST", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    userMessage: systemPrompt + "\n\nUser Input: " + text + "\nAI Response:",
+                    mode: "auto-switch"
+                })
+            });
+            
+            if (!res.ok) throw new Error("Server Error " + res.status);
+            const d = await res.json();
+            
+            // 7. Success Handling
+            const loadingEl = document.getElementById(loadingId);
+            if (loadingEl) loadingEl.remove();
+
+            const msgId = addMessageToUI('ai', d.result);
+            addSaveButton(msgId, d.result);
+
+            if(d.result && userId) {
+                const topicTag = text.length > 20 ? text.substring(0, 20) + "..." : text;
+                saveToRecents('ai_chat', d.result, topicTag);
+            }
+            window.trackUsage(systemPrompt + text, d.result);  // Input + Output
+        } catch(e) {
+            console.error(e);
+            const loadingEl = document.getElementById(loadingId);
+            if(loadingEl) { loadingEl.innerHTML = "<span class='text-red-400'>Connection failed.</span>"; loadingEl.classList.remove('typing-dot'); }
+        } finally {
+            // 8. Unlock UI
+            isChatSubmitting = false;
+            if(inputEl) { inputEl.disabled = false; inputEl.focus(); }
+            if(sendBtn) sendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+    };
+    
+    window.sendChat = function(text) {
+        document.getElementById('chatInput').value = text;
+        window.handleChatSubmit();
+    }
+
+    function addMessageToUI(role, text, isLoading=false) {
+        const container = document.getElementById('chatContainer');
+        const div = document.createElement('div');
+        const id = 'msg-' + Date.now();
+        div.id = id;
+        div.className = 'flex w-full ' + (role === 'user' ? 'justify-end' : 'justify-start');
+        
+        let content = text;
+        if(isLoading) content = `<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>`;
+        else content = text.replace(/\n/g, '<br>');
+
+        // --- FIX: Remove extra wrapper div for User ---
+        if (role === 'user') {
+            // User Message: Direct Chat Bubble (Fixes Width Issue)
+            div.innerHTML = `<div class="chat-bubble-user max-w-[80%] text-left">${content}</div>`;
+        } else {
+            // AI Message: With Icon
+            div.innerHTML = `
+                <div class="flex items-start gap-3 max-w-[85%]">
+                    <div class="w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-400 border border-yellow-500/30 shrink-0"><i class="ph ph-robot"></i></div>
+                    <div class="chat-bubble-ai">${content}</div>
+                </div>
+            `;
+        }
+        
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
+        return id;
+    }
+    
+    function addSaveButton(msgId, content) {
+        const msgEl = document.getElementById(msgId).querySelector('.chat-bubble-ai');
+        const btn = document.createElement('button');
+        btn.className = "mt-2 text-[10px] flex items-center gap-1 text-slate-400 hover:text-yellow-400 transition";
+        btn.innerHTML = `<i class="ph ph-star"></i> Save Decision`;
+        btn.onclick = () => window.saveDecision(content, btn);
+        msgEl.appendChild(btn);
+    }
+    
+    window.saveDecision = async function(content, btnElement) {
+        if(!userId) return window.showToast("Login to save");
+        try {
+            await addDoc(collection(db, 'artifacts', appId, 'users', userId, 'decisions'), {
+                content: content,
+                timestamp: Date.now()
+            });
+            btnElement.innerHTML = `<i class="ph ph-star-fill text-yellow-400"></i> Saved`;
+            btnElement.classList.add('text-yellow-400');
+            window.showToast("Memory Updated!");
+        } catch(e) { console.error(e); }
+    }
+
+
+    window.generateAI = async function(type, isContinue = false) {
+        // UI IDs Setup
+        const outputIds = { 'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'timeline': 'tlOutput', 'tt_caption': 'ttOutput', 'tt_script': 'ttOutput','tt_post_full': 'ttOutput','pose': 'poseOutput', 'creative_director': 'crOutput', 'creative_post': 'crOutput', 'creative_tt_text': 'crOutput', 'dm_auto_detect': 'dmOutput', 'manager_daily': 'mgrOutput', 'mentor': 'mentorOutput' };
+        const areaIds = { 'fbpost': 'fbResultArea', 'dm_best': 'dmResultArea', 'timeline': 'tlResultArea', 'tt_caption': 'ttResultArea', 'tt_script': 'ttResultArea','tt_post_full': 'ttResultArea', 'pose': 'poseResultArea', 'creative_director': 'crResultArea', 'creative_post': 'crResultArea', 'creative_tt_text': 'crResultArea', 'dm_auto_detect': 'dmResultArea', 'manager_daily': 'mgrResultArea', 'mentor': 'mentorResultArea' };
+        const continueBtnIds = { 'fbpost': 'fbContinueBtn', 'dm_best': 'dmContinueBtn', 'timeline': 'tlContinueBtn', 'tt_caption': 'ttContinueBtn', 'tt_script': 'ttContinueBtn','tt_post_full': 'ttContinueBtn', 'manager_daily': 'mgrContinueBtn', 'dm_auto_detect': 'dmContinueBtn', 'mentor': 'mentorContinueBtn' }; 
+
+        const outId = outputIds[type];
+        const areaId = areaIds[type];
+        
+
+        // UI Loading
+        if(type !== 'dm_analyze') {
+            const areaEl = document.getElementById(areaId);
+            if(areaEl) areaEl.classList.remove('hidden');
+            
+            if(!isContinue) {
+                const outEl = document.getElementById(outId);
+                if(outEl) outEl.innerHTML = "<span class='animate-pulse text-purple-400'>✨ Thinking...</span>";
+                // Mobile Scroll
+                if(window.innerWidth < 768) {
+                    if((type.startsWith('creative'))) {
+                        const mobEl = document.getElementById('crResultAreaMobile');
+                        if (mobEl) mobEl.classList.remove('hidden');
+                    }
+                    const scrollTarget = (type.startsWith('creative')) ? document.getElementById('crResultAreaMobile') : document.getElementById(areaId);
+                    if(scrollTarget) setTimeout(() => { scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+                }
+            }
+        } else {
+             const panel = document.getElementById('dmAnalysisPanel');
+             if(panel) { 
+                 panel.classList.remove('hidden'); 
+                 const content = document.getElementById('dmAnalysisContent');
+                 if(content) content.innerHTML = "<span class='animate-pulse text-indigo-400'>🔍 Analyzing...</span>"; 
+             }
+        }
+
+        // Data Loading
+        let packages = "Not specified";
+        let contactInfo = "Not set";
+        
+        if (userId) { 
+            try { 
+                const s = await getDoc(doc(db, 'artifacts', appId, 'users', userId, 'config', 'brand')); 
+                if(s.exists()) {
+                    const d = s.data();
+                    if(d.brandPackages) packages = d.brandPackages;
+                    contactInfo = `Phone: ${d.brandPhone || ''}, Viber: ${d.brandViber || ''}`;
+                }
+            } catch(e){ console.log("Brand fetch error", e); } 
+        }
+
+        const systemPrompt = `
+        === 🎭 ROLE & IDENTITY ===
+        YOU ARE: The "Creative Director & Senior Sales Strategist" for 'With You Photo Studio' (Taunggyi).
+        BRAND VOICE: Cinematic, Emotional, High-End yet Accessible, Warm.
+        MISSION: Turn casual viewers into paying clients through storytelling.
+
+        === ✍️ WRITING RULES (CRITICAL) ===
+        1. 🗣️ TONE: Natural Burmese (Unicode). Use "Bya/Khamya" for politeness, but keep the vibe Exciting & Emotional.
+        2. 🚫 NO ROBOTIC LANGUAGE: Avoid formal textbook Burmese. Write like a human influencer talking to fans.
+        3. 🎣 HOOKS FIRST: Always start with a "Hook" (Question, Shocking Statement, or Emotional Appeal) to grab attention.
+        4. 🍔 STRUCTURE: Use the AIDA model (Attention -> Interest -> Desire -> Action).
+        5. ✨ FORMATTING: Use Emojis (📸, ✨, 👰) strategically to break up text. Use Bullet points for readability.
+
+        === 🧠 KNOWLEDGE BASE ===
+        - Studio Data: Packages=[${packages}], Contact=[${contactInfo}].
+        - Location context: Taunggyi, Inle, Kalaw (Shan State vibes).
+
+        === 🎯 GOAL PER TYPE ===
+        - If FB POST: Focus on "Storytelling" & "Emotion". Long form is okay.
+        - If TIKTOK: Focus on "Trends", "Fast Pace", & "Visual descriptions".
+        - If DM REPLY: Focus on "Empathy", "Clarity", & "Closing the Deal".
+        - If TIMELINE: Be "Logical" & "Detailed".
+
+        IMPORTANT: Always output COMPLETE responses. Do not cut off.
+        `;
+
+        let prompt = ""; 
+        let contextTopic = "General Content"; // Default topic
+
+        
+        
+        // --- PROMPT LOGIC ---
+        if (type === 'manager_daily') { 
+            const focus = getValue('mgrFocus') || 'General';
+            prompt = `Task: Daily Plan. Focus=${focus}. Output: 4 Sections (Priority, Content, Sales, Quick Win).`; 
+            contextTopic = `Manager Plan (${focus})`; // Ensure Topic is set
+        }
+        else if (type === 'creative_director') { prompt = `Task: 3-Day Content Plan. Focus=${getValue('crFocus')}.`; contextTopic = `Creative Plan`; }
+        else if (type === 'creative_post') { prompt = `Task: Write FB Post about "${getValue('crFocus')}".`; contextTopic = `Creative Post`; }
+else if (type === 'creative_tt_text') {
+             const topic = getValue('crFocus');
+             prompt = `
+             Role: A Gen-Z Storyteller & Photographer (Not an AI).
+             Task: Write 2 "TikTok Text Mode" contents about "${topic}".
+             
+             CRITICAL INSTRUCTION:
+             - ❌ NO Robotic/Formal Language. (Do NOT use "မင်္ဂလာပါ", "ကြိုးစားပါ").
+             - ✅ Write like a HUMAN feeling a moment. Use "Spoken Burmese" (အပြောစကား).
+             - Use short phrases, not full sentences.
+             - Make it "Aesthetic", "Raw", and "Deep".
+             
+             OUTPUT FORMAT (Strictly text only):
+             
+             Option 1 (Sad/Moody Vibe):
+             (Write short, deep lines. Example style: "တခါတလေတော့လည်းလေ... \n ပြောမထွက်ခဲ့တာတွေက ပိုများတယ်")
+             
+             Option 2 (Hopeful/Sweet Vibe):
+             (Write warm, short lines. Example style: "ဒီနေ့လေးက \n မထင်မှတ်ဘဲ လှနေတယ် ✨")
+
+             Topic Context: ${topic}
+             `;
+             contextTopic = `TikTok Text Mode (${topic})`;
+        }    
+         else if (type === 'dm_auto_detect') { prompt = `Task: Best DM Reply for "${getValue('dmInput')}".`; contextTopic = `Auto DM Reply`; }
+        else if (type === 'dm_analyze') { prompt = `Task: Analyze "${getValue('dmInput')}". Output: Status, Reason.`; }
+        else if (type === 'dm_best') { prompt = `Task: 3 Sales Replies. Client: "${getValue('dmInput')}".`; contextTopic = `DM Sales`; }
+        else if (type === 'fbpost') { prompt = `Task: 3 FB Posts. Topic: ${getValue('fbInput')}.`; contextTopic = `FB Post`; }
+        else if (type === 'timeline') { prompt = `Task: Wedding Timeline. Place: ${getValue('tlPlace')}.`; contextTopic = `Timeline`; }
+// TikTok Logic Update
+        else if (type === 'tt_post_full') {
+             const topic = getValue('ttInput');
+             prompt = `Role: TikTok Expert for a Photo Studio.
+             Task: Create a complete TikTok Post Package for topic: "${topic}".
+             OUTPUT FORMAT:
+             1. 📺 **Text on Video (Hook)**: (Short text to put on video cover)
+             2. 📝 **Caption**: (Engaging caption in Burmese, asking a question)
+             3. #️⃣ **Hashtags**: (5-10 Trending Myanmar Hashtags)
+             4. 🎵 **Song Vibe**: (Suggested music style)
+             `;
+             contextTopic = `TikTok Post (${topic})`;
+        }
+        else if(type.includes('tt_')) {
+             // Script or Caption only
+             const subType = type === 'tt_script' ? "Video Script (Scene by Scene)" : "3 Viral Captions";
+             prompt = `Task: Write ${subType} for TikTok. Topic: ${getValue('ttInput')}. Style: ${getValue('ttStyle')}.`;
+             contextTopic = `TikTok Content`;
+             if(isContinue) prompt = `Context: Continue TikTok content from: "${document.getElementById(outId).innerText.slice(-50)}".`;
+        }        else if (type === 'pose') { prompt = `Task: 3 Pose Ideas. Context: ${getValue('poseInput')}.`; contextTopic = `Pose`; }
+
+        else if (type === 'mentor') {
+             const topic = getValue('mentorInput');
+             prompt = `
+             ROLE: World-Class Photography Mentor & Senior Artist.
+             USER: Ko Sai (Professional Photographer).
+             TASK: Provide artistic advice on: "${topic}".
+             
+             GUIDELINES:
+             - Tone: Inspiring, Deep, Educational, Warm (Teacher to Student).
+             - Language: Natural Burmese (Unicode).
+             - Focus: Art, Emotion, Composition, Lighting, Mindset.
+             - RESTRICTION: Do NOT talk about pricing, packages, or business. Only Art.
+             
+             If asking about a specific master (e.g., Jerry Ghionis), explain their style and how Ko Sai can apply it.
+             `;
+             contextTopic = `Mentorship: ${topic}`;
+        }
+        
+        if(isContinue) {
+            const currentText = document.getElementById(outId) ? document.getElementById(outId).innerText : "";
+            prompt = `Context: Continue correctly from: "${currentText.slice(-50)}". Finish the sentence/list.`;
+        }
+
+        try {
+            const res = await fetch("/api/generate", {
+                method: "POST", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ 
+                    userMessage: systemPrompt + "\n\n" + prompt 
+                })
+            });
+            
+            if(!res.ok) throw new Error("API Error " + res.status);
+
+            const d = await res.json();
+            
+            if(type === 'dm_analyze') {
+                const html = `<div class='text-slate-300'>${d.result.replace(/\n/g, '<br>')}</div>`;
+                document.getElementById('dmAnalysisContent').innerHTML = html;
+            } else {
+                const outEl = document.getElementById(outId);
+                if(outEl) {
+                    if(isContinue) outEl.innerText += "\n" + d.result;
+                    else outEl.innerText = d.result;
+                    
+                    if(type.startsWith('creative') && document.getElementById('crOutputMobile')) {
+                        document.getElementById('crOutputMobile').innerText = outEl.innerText;
+                    }
+
+                    // --- SAVE TO RECENT LOGIC ---
+                    if(d.result && !d.result.includes("Error") && userId) {
+                         // Manager Plan (သို့) အခြား result တွေကို Recent ထဲသိမ်းပါမယ်
+                         await saveToRecents(type, outEl.innerText, contextTopic);
+                    }
+                }
+                const btn = document.getElementById(continueBtnIds[type]);
+                if(btn) btn.classList.remove('hidden');
+            }
+            window.trackUsage(prompt, d.result);
+        } catch(e) {
+            console.error(e);
+            const outEl = document.getElementById(outId);
+            if(outEl && !isContinue) outEl.innerText = "Connection Error: " + e.message;
+        }
+    };
+
+    window.continueAI = (t) => window.generateAI(t, true);
+    window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3000); };
+    window.copyText = (id) => { navigator.clipboard.writeText(document.getElementById(id).innerText); window.showToast("Copied"); };
+    window.setDmType = (t, b) => { document.getElementById('dmType').value = t; document.querySelectorAll('.tactic-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); };
+    window.setCreativeOption = (t, v, b) => { document.getElementById('crWorkload').value = v; document.querySelectorAll('.creative-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); };
+    window.fillPose = (t) => { document.getElementById('poseInput').value = t === 'Shy' ? "အရမ်းရှက်တတ်တယ်" : "ဝတဲ့အတွဲ"; };
+    window.startVoiceInput = (id, btn) => {
+        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if(!SR) return window.showToast("No Voice Support");
+        const r = new SR(); r.lang = 'my-MM'; r.start();
+        btn.classList.add('listening-ring');
+        r.onresult = (e) => { document.getElementById(id).value += " " + e.results[0][0].transcript; window.showToast("Heard!"); };
+        r.onend = () => btn.classList.remove('listening-ring');
+    };
+    window.clearHistory = () => { if(userId && confirm("Clear?")) window.showToast("Clearing local view (Cloud persists)"); };
+    window.toggleExpand = (el) => { if(el.classList.contains('line-clamp-3')) el.classList.remove('line-clamp-3'); else el.classList.add('line-clamp-3'); };
+    window.downloadFile = (n, id) => { const b = new Blob([document.getElementById(id).innerText],{type:'text/plain'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=n; a.click(); };
+
+    window.loadView('creative'); // Start with Creative
+
+    // --- FIX: Missing Function (Error 4 Fix) ---
+    window.runAssistant = function(type) {
+        const inputEl = document.getElementById('fbInput');
+        
+        if (type === 'fb_ideas') {
+            if(inputEl) inputEl.value = "Pre-wedding ဓာတ်ပုံရိုက်ဖို့ ဆန်းသစ်တဲ့ Idea 5 ခု";
+            window.generateAI('fbpost');
+        } 
+        else if (type === 'fb_hooks') {
+            if(inputEl) inputEl.value = "Engagement တက်စေမယ့် ဖမ်းစားနိုင်တဲ့ ခေါင်းစဉ် (Hooks) များ";
+            window.generateAI('fbpost');
+        }
+    };
+
+    // Mentor Mode Helper
+window.askMaster = function(name, style) {
+    const input = document.getElementById('mentorInput');
+    if(input) {
+        input.value = `${name} ရဲ့ Style ဖြစ်တဲ့ ${style} ကို ကျွန်တော့်ရဲ့ Pre-wedding ရိုက်ကွင်းတွေမှာ ဘယ်လို အသုံးချလို့ရမလဲ?`;
+        window.generateAI('mentor');
+    }
+};
   </script>
 </body>
 </html>
