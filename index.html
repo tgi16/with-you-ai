@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Sales Master AI v6.7</title>
+  <title>With You Studio - Sales Master AI v6.7.5</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -170,7 +170,7 @@ button { transition: all 0.2s ease; }
             <h1 class="text-xl font-bold text-white tracking-tight flex items-center gap-2">
                 <i class="ph ph-camera text-blue-400"></i> With You Studio
             </h1>
-            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">Sales Master AI v6.7</div>
+            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">Sales Master AI v6.7.5</div>
             <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1 flex items-center gap-1">
                 <span id="connectionStatus" class="w-2 h-2 rounded-full bg-red-500"></span> Online
             </p>
@@ -310,7 +310,7 @@ button { transition: all 0.2s ease; }
   <!-- TEMPLATES -->
   
   <!-- 0. AI MANAGER TEMPLATE -->
-   <template id="tpl-manager">
+ <template id="tpl-manager">
     <div class="animate-fade-in space-y-4 h-full flex flex-col">
         
         <div id="aiManager" class="hidden bg-slate-900/50 border border-slate-700 p-4 rounded-xl mb-2 relative overflow-hidden">
@@ -328,17 +328,12 @@ button { transition: all 0.2s ease; }
                 <div id="aiHandoffContent" class="text-xs text-slate-400"></div>
              </div>
         </div>
-        <div class="flex items-center justify-between shrink-0">
-            <h2 class="text-xl md:text-3xl font-bold text-yellow-400 flex items-center gap-3"><i class="ph ph-robot"></i> AI Partner</h2>
-            
-  <template id="tpl-manager">
-    <div class="animate-fade-in space-y-4 h-full flex flex-col">
+
         <div class="flex items-center justify-between shrink-0">
             <h2 class="text-xl md:text-3xl font-bold text-yellow-400 flex items-center gap-3"><i class="ph ph-robot"></i> AI Partner</h2>
             <div class="text-[10px] text-slate-400 bg-slate-800/50 border border-slate-700 px-3 py-1 rounded-full">Today's Direction</div>
         </div>
         
-        <!-- Chat Area -->
         <div id="chatContainer" class="flex-1 overflow-y-auto space-y-4 p-2 custom-scroll">
             <div class="flex flex-col space-y-4">
                 <div class="flex items-start gap-3">
@@ -350,9 +345,7 @@ button { transition: all 0.2s ease; }
             </div>
         </div>
 
-        <!-- Input Area (Fixed Bottom) -->
         <div class="shrink-0 pt-3 space-y-3 pb-2">
-            <!-- Quick Chips -->
             <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1 px-1">
                 <button onclick="window.sendChat('💡 ဒီနေ့အတွက် Idea တစ်ခုလောက် ပေးပါ')" class="whitespace-nowrap px-4 py-2 rounded-full bg-slate-800/80 border border-slate-700 text-xs font-medium text-slate-300 hover:bg-slate-700 hover:border-yellow-500/50 hover:text-white transition backdrop-blur-sm shadow-sm">💡 Today Idea</button>
                 <button onclick="window.sendChat('📩 Client က ဈေးမေးပြီး ငြိမ်သွားတယ် ဘာပြန်ပြောရမလဲ?')" class="whitespace-nowrap px-4 py-2 rounded-full bg-slate-800/80 border border-slate-700 text-xs font-medium text-slate-300 hover:bg-slate-700 hover:border-purple-500/50 hover:text-white transition backdrop-blur-sm shadow-sm">📩 DM Strategy</button>
@@ -360,11 +353,9 @@ button { transition: all 0.2s ease; }
                 <button onclick="window.sendChat('🧠 ငါနဲ့ အတူတူ စဉ်းစားပေးပါ')" class="whitespace-nowrap px-4 py-2 rounded-full bg-slate-800/80 border border-slate-700 text-xs font-medium text-slate-300 hover:bg-slate-700 hover:border-green-500/50 hover:text-white transition backdrop-blur-sm shadow-sm">🧠 Brainstorm</button>
             </div>
 
-            <!-- Input Box -->
             <div class="relative glass-panel rounded-2xl p-2 flex items-end gap-2 border border-slate-600/50 shadow-xl">
-<textarea id="chatInput" rows="1" placeholder="ကိုစိုင်း ပြောချင်တာ ရေးပါ..." class="flex-1 bg-transparent border-none text-white text-sm px-4 py-3 focus:ring-0 resize-none max-h-32 placeholder-slate-500" onkeydown="if(event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); window.handleChatSubmit(); }"></textarea>                
+                <textarea id="chatInput" rows="1" placeholder="ကိုစိုင်း ပြောချင်တာ ရေးပါ..." class="flex-1 bg-transparent border-none text-white text-sm px-4 py-3 focus:ring-0 resize-none max-h-32 placeholder-slate-500" onkeydown="if(event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); window.handleChatSubmit(); }"></textarea>                
                 <button onclick="window.startVoiceInput('chatInput', this)" class="p-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-700/50 transition shrink-0" title="Voice"><i class="ph ph-microphone text-xl"></i></button>
-                
                 <button onclick="window.handleChatSubmit()" class="p-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg hover:shadow-blue-500/20 active:scale-95 transition shrink-0">
                     <i class="ph ph-paper-plane-right-fill text-xl"></i>
                 </button>
@@ -372,6 +363,7 @@ button { transition: all 0.2s ease; }
         </div>
     </div>
   </template>
+  
 <template id="tpl-mentor">
     <div class="space-y-6 animate-fade-in pb-20"> <div class="flex items-center justify-between">
         <h2 class="text-xl md:text-2xl font-bold text-emerald-400 flex items-center gap-2">
@@ -744,8 +736,8 @@ button { transition: all 0.2s ease; }
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, orderBy, limit, onSnapshot, deleteDoc, getDocs, increment } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
-    
+import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, orderBy, limit, onSnapshot, deleteDoc, getDocs, increment, where } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+
 
     // --- 1. MAIN APP CONFIG (For Chat, History, Brand) ---
     const firebaseConfig = {
@@ -862,47 +854,6 @@ button { transition: all 0.2s ease; }
             setTimeout(() => overlay.classList.remove('opacity-0', 'pointer-events-none'), 50);
         }
     });
-// --- ASSISTANT SHORT ACTIONS (FIX MISSING FUNCTION) ---
-window.runAssistant = async function(type) {
-  let prompt = "";
-
-  if (type === "fb_ideas") {
-    prompt = "With You Photo Studio အတွက် Facebook post idea ၅ ခုလောက် ပေးပါ။ Pre-wedding focus နဲ့ သဘာဝဆန်အောင်ရေးပါ။";
-  }
-
-  if (type === "fb_hooks") {
-    prompt = "Pre-wedding couple တွေအတွက် Facebook hook စာကြောင်းတို ၅ ခုရေးပါ။ လူပြောသလို သဘာဝ tone နဲ့ရေးပါ။";
-  }
-
-  if (!prompt) return;
-
-  try {
-    const res = await fetch("/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userMessage: prompt,
-        mode: "studio"
-      })
-    });
-
-    if (!res.ok) throw new Error("API Error");
-
-    const data = await res.json();
-
-    // reuse FB output panel
-    const out = document.getElementById("fbOutput");
-    const area = document.getElementById("fbResultArea");
-    if (out && area) {
-      out.innerText = data.result;
-      area.classList.remove("hidden");
-    }
-
-  } catch (e) {
-    console.error(e);
-    window.showToast("Assistant error");
-  }
-};
 
     // --- GLOBAL EXPORTS ---
     window.currentView = 'dm'; 
@@ -1528,6 +1479,7 @@ window.askMaster = function(name, style) {
         }
         return snapshot;
     }
+
     // --- ✅ POS DASHBOARD LOGIC (MISSING FUNCTIONS) ---
 
     // 1. UI Render Function
