@@ -459,6 +459,8 @@
           Login
         </button>
       </div>
+      
+      <p id="loginError" class="text-red-400 text-xs text-center hidden bg-red-900/20 p-2 rounded w-full border border-red-900/50 mt-2"></p>
     </div>
   </div>
 
@@ -953,42 +955,120 @@
   <!-- Toast Notification -->
   <div id="toast" class="toast"></div>
 
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, limit, onSnapshot, addDoc, getDocs, increment } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBsKh4rYdz_tdBwuCRabULFcfPYV8zt9L0",
+      authDomain: "withyoustudio-ai.firebaseapp.com",
+      projectId: "withyoustudio-ai",
+      storageBucket: "withyoustudio-ai.firebasestorage.app",
+      messagingSenderId: "644583393850",
+      appId: "1:644583393850:web:fc73f84be64fd7e5b9a6cc"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const appId = 'withyou_v6';
+
+    // Make globally available
+    window.auth = auth;
+    window.db = db;
+    window.appId = appId;
+    window.firebaseModules = { doc, setDoc, getDoc, collection, query, orderBy, limit, onSnapshot, addDoc, getDocs, increment, signInWithEmailAndPassword, signOut, onAuthStateChanged };
+  </script>
+
   <script>
     // Global State
     let userId = null;
     let currentView = 'home';
 
-    // Login Handler
+    // Helper function
+    const getValue = (id) => document.getElementById(id)?.value || '';
+
+    // Login Handler with Firebase
     window.handleLogin = async function() {
-      const email = document.getElementById('loginEmail').value;
-      const pass = document.getElementById('loginPass').value;
+      const email = getValue('loginEmail');
+      const pass = getValue('loginPass');
+      const errorEl = document.getElementById('loginError');
       
       if (!email || !pass) {
-        window.showToast('Please fill in all fields');
+        if (errorEl) {
+          errorEl.textContent = 'Please fill in all fields';
+          errorEl.classList.remove('hidden');
+        }
         return;
       }
 
-      // Simple validation (replace with real authentication)
-      if (email === 'admin@studio.com' && pass === 'admin123') {
-        userId = 'admin_user';
-        document.getElementById('loginOverlay').classList.add('hidden');
-        document.getElementById('appContainer').classList.remove('hidden');
-        window.loadView('home');
-        window.showToast('Welcome back!');
-      } else {
-        window.showToast('Invalid credentials');
+      try {
+        const { signInWithEmailAndPassword } = window.firebaseModules;
+        await signInWithEmailAndPassword(window.auth, email, pass);
+        // Auth state change will handle the rest
+      } catch(error) {
+        console.error('Login error:', error);
+        if (errorEl) {
+          errorEl.textContent = error.message || 'Login failed';
+          errorEl.classList.remove('hidden');
+        }
+        window.showToast('Login failed: ' + (error.message || 'Unknown error'));
       }
     };
 
     // Logout
-    window.logout = function() {
+    window.logout = async function() {
       if (confirm('Are you sure you want to logout?')) {
-        userId = null;
-        document.getElementById('appContainer').classList.add('hidden');
-        document.getElementById('loginOverlay').classList.remove('hidden');
-        window.showToast('Logged out successfully');
+        try {
+          const { signOut } = window.firebaseModules;
+          await signOut(window.auth);
+          window.location.reload();
+        } catch(e) {
+          console.error('Logout error:', e);
+          window.showToast('Logout failed');
+        }
       }
     };
+
+    // Auth State Listener
+    window.addEventListener('DOMContentLoaded', function() {
+      const { onAuthStateChanged } = window.firebaseModules;
+      
+      onAuthStateChanged(window.auth, (user) => {
+        const overlay = document.getElementById('loginOverlay');
+        const appContainer = document.getElementById('appContainer');
+        const userDisplay = document.getElementById('userDisplay');
+        
+        if (user) {
+          userId = user.uid;
+          
+          // Update UI
+          if (userDisplay) userDisplay.textContent = user.email;
+          
+          // Hide login, show app
+          if (overlay) {
+            overlay.classList.add('opacity-0', 'pointer-events-none');
+            setTimeout(() => overlay.classList.add('hidden'), 300);
+          }
+          if (appContainer) appContainer.classList.remove('hidden');
+          
+          // Load initial view
+          window.loadView('home');
+          window.showToast('Welcome back!');
+        } else {
+          userId = null;
+          
+          // Show login, hide app
+          if (overlay) {
+            overlay.classList.remove('hidden');
+            setTimeout(() => overlay.classList.remove('opacity-0', 'pointer-events-none'), 50);
+          }
+          if (appContainer) appContainer.classList.add('hidden');
+        }
+      });
+    });
 
     // View Management
     window.loadView = function(viewName) {
@@ -1064,23 +1144,35 @@
       setTimeout(() => toast.classList.remove('show'), 3000);
     };
 
-    // Initialize
-    document.addEventListener('DOMContentLoaded', function() {
-      // Auto-focus email input
-      document.getElementById('loginEmail').focus();
-      
-      // Allow Enter key to login
-      document.getElementById('loginPass').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-          window.handleLogin();
-        }
-      });
-    });
-
     // Close lightbox on Escape key
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
         window.closeLightbox();
+      }
+    });
+
+    // Auto-focus email input when page loads
+    window.addEventListener('DOMContentLoaded', function() {
+      const emailInput = document.getElementById('loginEmail');
+      const passInput = document.getElementById('loginPass');
+      
+      if (emailInput) emailInput.focus();
+      
+      // Allow Enter key to login
+      if (passInput) {
+        passInput.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            window.handleLogin();
+          }
+        });
+      }
+      
+      if (emailInput) {
+        emailInput.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            if (passInput) passInput.focus();
+          }
+        });
       }
     });
   </script>
