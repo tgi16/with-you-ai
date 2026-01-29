@@ -773,9 +773,14 @@ button { transition: all 0.2s ease; }
     const posApp = initializeApp(posConfig, "POS"); // Secondary App
 
     // Database References
+    // Database References
     const auth = getAuth(app);
     const db = getFirestore(app);       // For Chat, History
-    const posDb = getFirestore(posApp); // For POS Dashboard ✅ (New Variable)
+    const posDb = getFirestore(posApp); // For POS Dashboard ✅
+
+    // --- 🚨 MISSING VARIABLES FIXED HERE ---
+    let userId = null; // ✅ ဒါမရှိလို့ Error တက်နေတာပါ
+    const appId = "sales_master_ai"; // ✅ Database သိမ်းဖို့ ဒါလည်းလိုပါတယ်
 
     const getValue = (id) => { const el = document.getElementById(id); return el ? el.value : ""; };
 
