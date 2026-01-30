@@ -3,12 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Sales Master AI v6.7.5</title>
+  <title>With You Studio - Sales Master AI v6.8</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <style>
+    /* --- MOBILE APP OPTIMIZATIONS --- */
+    @media (max-width: 768px) {
+        /* ဖုန်းမှာ ဘေးဘောင်ကျဉ်းပြီး စာဖတ်လို့ကောင်းအောင် */
+        .glass-panel { padding: 1.25rem !important; } 
+        
+        /* အောက်ဆုံးက Bottom Bar နဲ့ မလွတ်အောင် နေရာချန်မယ် */
+        #content-container { padding-bottom: 120px !important; } 
+        
+        /* စာလုံးတွေ နည်းနည်းကြီးမယ် */
+        input, select, textarea, button { font-size: 16px !important; } 
+    }
+
+    /* Active State for Bottom Nav */
+    .mobile-btm-nav.active {
+        color: #3b82f6; /* Blue */
+    }
+    .mobile-btm-nav.active i {
+        fill: #3b82f6;
+        font-weight: bold;
+    }
+
     /* English ကို Inter ဦးစားပေးပြီးမှ မြန်မာစာကို Padauk သုံးပါမယ် */
     body { font-family: 'Inter', 'Padauk', sans-serif; letter-spacing: 0.01em; }
     
@@ -170,7 +191,7 @@ button { transition: all 0.2s ease; }
             <h1 class="text-xl font-bold text-white tracking-tight flex items-center gap-2">
                 <i class="ph ph-camera text-blue-400"></i> With You Studio
             </h1>
-            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">Sales Master AI v6.7.5</div>
+            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">Sales Master AI v6.8</div>
             <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1 flex items-center gap-1">
                 <span id="connectionStatus" class="w-2 h-2 rounded-full bg-red-500"></span> Online
             </p>
@@ -265,40 +286,7 @@ button { transition: all 0.2s ease; }
         <div class="w-8"></div>
     </header>
 
-    <!-- MOBILE QUICK NAV -->
-    <div class="md:hidden bg-slate-900/90 border-b border-slate-800 overflow-x-auto no-scrollbar py-2 px-3 flex gap-2 shrink-0 backdrop-blur-sm z-20 sticky top-0">
-        <button onclick="window.loadView('manager')" id="mob-manager" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
-            <i class="ph ph-robot text-yellow-400"></i> Partner
-        </button>
-        <button onclick="window.loadView('mentor')" id="mob-mentor" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
-    <i class="ph ph-student text-emerald-400"></i> Mentor
-</button>
-        <button onclick="window.loadView('creative')" id="mob-creative" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
-            <i class="ph ph-lightbulb text-orange-400"></i> Ideas
-        </button>
-        <button onclick="window.loadView('dm')" id="mob-dm" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
-            <i class="ph ph-chat-circle-text text-purple-400"></i> DM
-        </button>
-        <button onclick="window.loadView('fbpost')" id="mob-fbpost" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
-            <i class="ph ph-facebook-logo"></i> Post
-        </button>
-        <button onclick="window.loadView('tiktok')" id="mob-tiktok" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
-            <i class="ph ph-tiktok-logo"></i> TikTok
-        </button>
-        <button onclick="window.loadView('brand')" id="mob-brand" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
-            <i class="ph ph-brain"></i> Brain
-        </button>
-        <button onclick="window.loadView('timeline')" id="mob-timeline" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
-            <i class="ph ph-clock"></i> Timeline
-        </button>
-        <button onclick="window.loadView('pose')" id="mob-pose" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
-            <i class="ph ph-camera"></i> Pose
-        </button>
-        <button onclick="window.loadView('recent')" id="mob-recent" class="mobile-nav-item flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 text-xs font-bold text-slate-300 whitespace-nowrap bg-slate-800">
-            <i class="ph ph-clock-counter-clockwise text-green-400"></i> Recent
-        </button>
-    </div>
-
+    
     <!-- Dynamic Content Container -->
     <div id="content-container" class="flex-1 overflow-y-auto p-4 md:p-8 max-w-4xl mx-auto w-full pb-20 scroll-smooth custom-scroll">
         <!-- Content injects here via JS -->
@@ -310,30 +298,14 @@ button { transition: all 0.2s ease; }
   <!-- TEMPLATES -->
   
   <!-- 0. AI MANAGER TEMPLATE -->
- <template id="tpl-manager">
+  <template id="tpl-manager">
     <div class="animate-fade-in space-y-4 h-full flex flex-col">
-        
-        <div id="aiManager" class="hidden bg-slate-900/50 border border-slate-700 p-4 rounded-xl mb-2 relative overflow-hidden">
-             <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -z-10"></div>
-             
-             <h3 class="text-sm font-bold text-blue-300 uppercase mb-2 flex items-center gap-2">
-                <i class="ph ph-chart-bar"></i> Studio Pulse (Today)
-             </h3>
-             <p id="aiGreeting" class="text-xs text-slate-400 mb-3">POS Data ကို ဆွဲယူနေပါတယ်...</p>
-
-             <div id="aiDailyBrief" class="grid grid-cols-2 gap-2 mb-3"></div>
-
-             <div id="aiHandoff" class="hidden mt-3 pt-3 border-t border-slate-700/50">
-                <h4 class="text-xs font-bold text-slate-300 mb-1">🌤️ Tomorrow Preview</h4>
-                <div id="aiHandoffContent" class="text-xs text-slate-400"></div>
-             </div>
-        </div>
-
         <div class="flex items-center justify-between shrink-0">
             <h2 class="text-xl md:text-3xl font-bold text-yellow-400 flex items-center gap-3"><i class="ph ph-robot"></i> AI Partner</h2>
             <div class="text-[10px] text-slate-400 bg-slate-800/50 border border-slate-700 px-3 py-1 rounded-full">Today's Direction</div>
         </div>
         
+        <!-- Chat Area -->
         <div id="chatContainer" class="flex-1 overflow-y-auto space-y-4 p-2 custom-scroll">
             <div class="flex flex-col space-y-4">
                 <div class="flex items-start gap-3">
@@ -345,7 +317,9 @@ button { transition: all 0.2s ease; }
             </div>
         </div>
 
+        <!-- Input Area (Fixed Bottom) -->
         <div class="shrink-0 pt-3 space-y-3 pb-2">
+            <!-- Quick Chips -->
             <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1 px-1">
                 <button onclick="window.sendChat('💡 ဒီနေ့အတွက် Idea တစ်ခုလောက် ပေးပါ')" class="whitespace-nowrap px-4 py-2 rounded-full bg-slate-800/80 border border-slate-700 text-xs font-medium text-slate-300 hover:bg-slate-700 hover:border-yellow-500/50 hover:text-white transition backdrop-blur-sm shadow-sm">💡 Today Idea</button>
                 <button onclick="window.sendChat('📩 Client က ဈေးမေးပြီး ငြိမ်သွားတယ် ဘာပြန်ပြောရမလဲ?')" class="whitespace-nowrap px-4 py-2 rounded-full bg-slate-800/80 border border-slate-700 text-xs font-medium text-slate-300 hover:bg-slate-700 hover:border-purple-500/50 hover:text-white transition backdrop-blur-sm shadow-sm">📩 DM Strategy</button>
@@ -353,9 +327,11 @@ button { transition: all 0.2s ease; }
                 <button onclick="window.sendChat('🧠 ငါနဲ့ အတူတူ စဉ်းစားပေးပါ')" class="whitespace-nowrap px-4 py-2 rounded-full bg-slate-800/80 border border-slate-700 text-xs font-medium text-slate-300 hover:bg-slate-700 hover:border-green-500/50 hover:text-white transition backdrop-blur-sm shadow-sm">🧠 Brainstorm</button>
             </div>
 
+            <!-- Input Box -->
             <div class="relative glass-panel rounded-2xl p-2 flex items-end gap-2 border border-slate-600/50 shadow-xl">
-                <textarea id="chatInput" rows="1" placeholder="ကိုစိုင်း ပြောချင်တာ ရေးပါ..." class="flex-1 bg-transparent border-none text-white text-sm px-4 py-3 focus:ring-0 resize-none max-h-32 placeholder-slate-500" onkeydown="if(event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); window.handleChatSubmit(); }"></textarea>                
+<textarea id="chatInput" rows="1" placeholder="ကိုစိုင်း ပြောချင်တာ ရေးပါ..." class="flex-1 bg-transparent border-none text-white text-sm px-4 py-3 focus:ring-0 resize-none max-h-32 placeholder-slate-500" onkeydown="if(event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); window.handleChatSubmit(); }"></textarea>                
                 <button onclick="window.startVoiceInput('chatInput', this)" class="p-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-700/50 transition shrink-0" title="Voice"><i class="ph ph-microphone text-xl"></i></button>
+                
                 <button onclick="window.handleChatSubmit()" class="p-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg hover:shadow-blue-500/20 active:scale-95 transition shrink-0">
                     <i class="ph ph-paper-plane-right-fill text-xl"></i>
                 </button>
@@ -363,7 +339,6 @@ button { transition: all 0.2s ease; }
         </div>
     </div>
   </template>
-  
 <template id="tpl-mentor">
     <div class="space-y-6 animate-fade-in pb-20"> <div class="flex items-center justify-between">
         <h2 class="text-xl md:text-2xl font-bold text-emerald-400 flex items-center gap-2">
@@ -736,10 +711,9 @@ button { transition: all 0.2s ease; }
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, orderBy, limit, onSnapshot, deleteDoc, getDocs, increment, where } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, orderBy, limit, onSnapshot, deleteDoc, getDocs, increment } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+    
 
-
-    // --- 1. MAIN APP CONFIG (For Chat, History, Brand) ---
     const firebaseConfig = {
       apiKey: "AIzaSyBEqE5lWdLWIZOO_M3RYY35e17VMTGk-G0",
       authDomain: "saiai-content-generator.firebaseapp.com",
@@ -750,29 +724,13 @@ import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, orderBy, 
       measurementId: "G-C2Q8Y2XBMD"
     };
 
-    // --- 2. POS CONFIG (For Dashboard Only) ---
-    const posConfig = {
-        apiKey: "AIzaSyDj5jftTZjkzUzaCtQ-IdReic96GYmvn_Y",
-        authDomain: "wypstudio-pos.firebaseapp.com",
-        projectId: "wypstudio-pos",
-        storageBucket: "wypstudio-pos.appspot.com",
-        messagingSenderId: "244496968576",
-        appId: "1:244496968576:web:2f8646b539c0d381c853c1"
-    };
-
-    // Initialize BOTH Apps
-    const app = initializeApp(firebaseConfig); // Main App
-    const posApp = initializeApp(posConfig, "POS"); // Secondary App
-
-    // Database References
-    // Database References
+    const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const db = getFirestore(app);       // For Chat, History
-    const posDb = getFirestore(posApp); // For POS Dashboard ✅
-
-    // --- 🚨 MISSING VARIABLES FIXED HERE ---
-    let userId = null; // ✅ ဒါမရှိလို့ Error တက်နေတာပါ
-    const appId = "sales_master_ai"; // ✅ Database သိမ်းဖို့ ဒါလည်းလိုပါတယ်
+    const db = getFirestore(app);
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    let userId = null;
+    let currentAnalysis = null;
+    let chatHistory = [];
 
     const getValue = (id) => { const el = document.getElementById(id); return el ? el.value : ""; };
 
@@ -854,6 +812,47 @@ import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, orderBy, 
             setTimeout(() => overlay.classList.remove('opacity-0', 'pointer-events-none'), 50);
         }
     });
+// --- ASSISTANT SHORT ACTIONS (FIX MISSING FUNCTION) ---
+window.runAssistant = async function(type) {
+  let prompt = "";
+
+  if (type === "fb_ideas") {
+    prompt = "With You Photo Studio အတွက် Facebook post idea ၅ ခုလောက် ပေးပါ။ Pre-wedding focus နဲ့ သဘာဝဆန်အောင်ရေးပါ။";
+  }
+
+  if (type === "fb_hooks") {
+    prompt = "Pre-wedding couple တွေအတွက် Facebook hook စာကြောင်းတို ၅ ခုရေးပါ။ လူပြောသလို သဘာဝ tone နဲ့ရေးပါ။";
+  }
+
+  if (!prompt) return;
+
+  try {
+    const res = await fetch("/api/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userMessage: prompt,
+        mode: "studio"
+      })
+    });
+
+    if (!res.ok) throw new Error("API Error");
+
+    const data = await res.json();
+
+    // reuse FB output panel
+    const out = document.getElementById("fbOutput");
+    const area = document.getElementById("fbResultArea");
+    if (out && area) {
+      out.innerText = data.result;
+      area.classList.remove("hidden");
+    }
+
+  } catch (e) {
+    console.error(e);
+    window.showToast("Assistant error");
+  }
+};
 
     // --- GLOBAL EXPORTS ---
     window.currentView = 'dm'; 
@@ -866,27 +865,39 @@ import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, orderBy, 
     }
 
     window.loadView = function(viewId) {
+        // Desktop Sidebar Active Logic
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         const navBtn = document.getElementById('nav-' + viewId);
         if(navBtn) navBtn.classList.add('active');
 
-        document.querySelectorAll('.mobile-nav-item').forEach(el => {
-            el.classList.remove('active', 'border-blue-500', 'text-white');
-            el.classList.add('border-slate-700', 'text-slate-300');
+        // --- ✅ MOBILE BOTTOM NAV UPDATE ---
+        // အရင်ဆုံး အားလုံးကို အရောင်ဖြူလိုက်မယ်
+        document.querySelectorAll('.mobile-btm-nav').forEach(el => {
+            el.classList.remove('active', 'text-blue-500');
+            el.classList.add('text-slate-500');
         });
-        const mobBtn = document.getElementById('mob-' + viewId);
-        if(mobBtn) {
-            mobBtn.classList.add('active', 'border-blue-500', 'text-white');
-            mobBtn.classList.remove('border-slate-700', 'text-slate-300');
-            mobBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        
+        // နှိပ်လိုက်တဲ့ကောင်ကို Blue ရောင်ပြောင်းမယ်
+        const btmBtn = document.getElementById('btm-' + viewId);
+        if(btmBtn) {
+            btmBtn.classList.add('active', 'text-blue-500');
+            btmBtn.classList.remove('text-slate-500');
         }
+        
+        // Creative Button (အလယ်ကောင်) အတွက် သီးသန့် Effect
+        const centerBtn = document.getElementById('btm-creative');
+        if(viewId === 'creative') {
+            centerBtn.classList.add('ring-4', 'ring-blue-500/30');
+        } else {
+            centerBtn.classList.remove('ring-4', 'ring-blue-500/30');
+        }
+        // -----------------------------------
 
         if(window.innerWidth < 768) {
             document.getElementById('sidebar').classList.add('sidebar-closed');
             document.getElementById('sidebar').classList.remove('sidebar-open');
             document.getElementById('overlay').classList.add('hidden');
         }
-
         const container = document.getElementById('content-container');
         container.innerHTML = ''; 
 
@@ -909,7 +920,6 @@ import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, orderBy, 
             if(tpl) {
                 container.appendChild(tpl.content.cloneNode(true));
                 if(viewId === 'brand') loadBrandData(); 
-                if(viewId === 'manager') initPosDashboard();
             }
         }
         window.currentView = viewId;
@@ -1438,99 +1448,34 @@ window.askMaster = function(name, style) {
         window.generateAI('mentor');
     }
 };
+<div class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 z-50 flex justify-between items-end px-6 py-4 pb-6 shadow-2xl">
+      
+      <button onclick="window.loadView('manager')" id="btm-manager" class="mobile-btm-nav flex flex-col items-center gap-1 text-slate-500 transition active:scale-90">
+          <i class="ph ph-robot text-2xl mb-0.5"></i>
+          <span class="text-[10px] font-bold">Partner</span>
+      </button>
 
-// 1. Fetch Data from POS Firestore
-    async function getPosSnapshot() {
-        const snapshot = { todayBooking: 0, unpaid: 0, editingPending: 0, upcomingShoot: 0 };
-        const today = new Date();
-        const todayStr = today.toISOString().split("T")[0];
+      <button onclick="window.loadView('mentor')" id="btm-mentor" class="mobile-btm-nav flex flex-col items-center gap-1 text-slate-500 transition active:scale-90">
+          <i class="ph ph-student text-2xl mb-0.5"></i>
+          <span class="text-[10px] font-bold">Mentor</span>
+      </button>
+      
+      <div class="relative -top-5">
+          <button onclick="window.loadView('creative')" id="btm-creative" class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg shadow-blue-600/40 flex items-center justify-center text-white border-[5px] border-slate-950 active:scale-95 transition transform hover:-translate-y-1">
+              <i class="ph ph-lightbulb text-3xl"></i>
+          </button>
+      </div>
 
-        try {
-            // ⚠️ Note: Using 'posDb' here instead of 'db'
-            
-            // 1️⃣ Today bookings
-            const q1 = query(collection(posDb, "bookings"), where("date", "==", todayStr));
-            const snap1 = await getDocs(q1);
-            snapshot.todayBooking = snap1.size;
+      <button onclick="window.loadView('dm')" id="btm-dm" class="mobile-btm-nav flex flex-col items-center gap-1 text-slate-500 transition active:scale-90">
+          <i class="ph ph-chat-circle-text text-2xl mb-0.5"></i>
+          <span class="text-[10px] font-bold">DM</span>
+      </button>
 
-            // 2️⃣ Unpaid
-            const q2 = query(collection(posDb, "payments"), where("status", "!=", "paid"));
-            const snap2 = await getDocs(q2);
-            snapshot.unpaid = snap2.size;
-
-            // 3️⃣ Editing pending
-            const q3 = query(collection(posDb, "productions"), where("status", "==", "editing"));
-            const snap3 = await getDocs(q3);
-            snapshot.editingPending = snap3.size;
-
-            // 4️⃣ Upcoming shoots
-            const threeDaysLater = new Date();
-            threeDaysLater.setDate(today.getDate() + 3);
-            const q4 = query(collection(posDb, "bookings"), 
-                where("date", ">", todayStr),
-                where("date", "<=", threeDaysLater.toISOString().split("T")[0])
-            );
-            const snap4 = await getDocs(q4);
-            snapshot.upcomingShoot = snap4.size;
-
-        } catch (e) {
-            console.error("POS Fetch Error:", e);
-            return null;
-        }
-        return snapshot;
-    }
-
-    // --- ✅ POS DASHBOARD LOGIC (MISSING FUNCTIONS) ---
-
-    // 1. UI Render Function
-    function renderDailyBrief(data) {
-        const container = document.getElementById('aiDailyBrief');
-        const greeting = document.getElementById('aiGreeting');
-        const managerZone = document.getElementById('aiManager');
-        
-        if(!container || !data) return;
-        
-        managerZone.classList.remove('hidden');
-        if(greeting) greeting.innerText = `ဒီနေ့အတွက် Studio အခြေအနေပါ ကိုစိုင်း 🤍`;
-
-        // Create Stat Cards
-        container.innerHTML = `
-            <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
-                <div class="text-[10px] text-slate-400 uppercase">Today Shoots</div>
-                <div class="text-xl font-bold text-white">${data.todayBooking} <span class="text-xs font-normal text-slate-500">jobs</span></div>
-            </div>
-            <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
-                <div class="text-[10px] text-slate-400 uppercase">Pending Edit</div>
-                <div class="text-xl font-bold text-yellow-400">${data.editingPending} <span class="text-xs font-normal text-slate-500">sets</span></div>
-            </div>
-            <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
-                <div class="text-[10px] text-slate-400 uppercase">Upcoming (3 Days)</div>
-                <div class="text-xl font-bold text-blue-400">${data.upcomingShoot} <span class="text-xs font-normal text-slate-500">shoots</span></div>
-            </div>
-            <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
-                <div class="text-[10px] text-slate-400 uppercase">Unpaid Bills</div>
-                <div class="text-xl font-bold text-red-400">${data.unpaid} <span class="text-xs font-normal text-slate-500">inv</span></div>
-            </div>
-        `;
-
-        // Render Handoff / Summary
-        const handoff = document.getElementById('aiHandoff');
-        const handoffContent = document.getElementById('aiHandoffContent');
-        if(handoff && handoffContent) {
-            handoff.style.display = 'block';
-            handoffContent.innerHTML = `
-                နောက် ၃ ရက်အတွင်း ရှေ့ဆက်ရမယ့် Shoot <b>${data.upcomingShoot}</b> ခု ရှိပါတယ်။ 
-                ${data.editingPending > 5 ? 'Editing တွေများနေတယ်နော်၊ သတိထားပါအုံး။' : 'Editing ပိုင်း ပေါ့ပါးပါတယ်။'}
-            `;
-        }
-    }
-
-    // 2. Init Function (Called by loadView)
-    window.initPosDashboard = async function() {
-        if(!userId) return; 
-        const snapshot = await getPosSnapshot();
-        if(snapshot) renderDailyBrief(snapshot);
-    };
+      <button onclick="window.toggleSidebar()" class="flex flex-col items-center gap-1 text-slate-500 transition active:scale-90">
+          <i class="ph ph-squares-four text-2xl mb-0.5"></i>
+          <span class="text-[10px] font-bold">Menu</span>
+      </button>
+  </div>
   </script>
 </body>
 </html>
