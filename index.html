@@ -2001,18 +2001,32 @@ window.runAssistant = async function(type) {
             });
             let cleanedResult = sanitizeGeneratedOutput(type, d.result);
 
-            const initialCut = typeof d.isCut === 'boolean' ? d.isCut : shouldShowContinue(type, cleanedResult);
             const autoContinueTypes = new Set(['studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'tt_script', 'tt_caption', 'tt_post_full']);
-            if (!isContinue && initialCut && autoContinueTypes.has(type)) {
-                try {
-                    const follow = await callGenerateAPI({
-                        userMessage: systemPrompt + "\n\nContext: Continue seamlessly from this ending without repeating:\n" + cleanedResult.slice(-500),
-                        maxOutputTokens
-                    }, { timeoutMs: Math.max(API_TIMEOUT_MS, 40000), retries: 0 });
-                    const followText = sanitizeGeneratedOutput(type, follow.result);
-                    if (followText) cleanedResult = (cleanedResult + "\n" + followText).trim();
-                } catch (followErr) {
-                    console.warn('Auto-continue skipped:', followErr?.message || followErr);
+            let needsMore = typeof d.isCut === 'boolean' ? d.isCut : shouldShowContinue(type, cleanedResult);
+
+            if (!isContinue && needsMore && autoContinueTypes.has(type)) {
+                const maxPasses = type === 'tt_caption' ? 3 : 2;
+                let pass = 0;
+
+                while (needsMore && pass < maxPasses) {
+                    pass += 1;
+                    try {
+                        const follow = await callGenerateAPI({
+                            userMessage: systemPrompt + "\n\nContinue the unfinished output below. Return only NEW remaining lines. Do not repeat any previous line.\n\n" + cleanedResult.slice(-700),
+                            maxOutputTokens
+                        }, { timeoutMs: Math.max(API_TIMEOUT_MS, 40000), retries: 0 });
+
+                        const followText = sanitizeGeneratedOutput(type, follow.result);
+                        if (!followText) break;
+
+                        cleanedResult = (cleanedResult + "\n" + followText).trim();
+                        needsMore = typeof follow.isCut === 'boolean'
+                            ? follow.isCut
+                            : shouldShowContinue(type, cleanedResult);
+                    } catch (followErr) {
+                        console.warn('Auto-continue skipped:', followErr?.message || followErr);
+                        break;
+                    }
                 }
             }
             
