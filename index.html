@@ -555,7 +555,7 @@ button { transition: all 0.2s ease; }
 
                 <div id="dmAnalysisPanel" class="hidden animate-fade-in bg-slate-900/80 p-4 rounded-xl border border-indigo-500/30">
                     <div class="text-[10px] text-indigo-400 uppercase font-bold tracking-wider mb-2 flex items-center gap-2"><i class="ph ph-magic-wand"></i> AI Analysis</div>
-                    <div id="dmAnalysisContent" class="text-sm text-slate-300 leading-relaxed"></div>
+                    <div id="dmAnalysisContent" class="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap"></div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
@@ -616,8 +616,7 @@ button { transition: all 0.2s ease; }
                         <input type="text" id="brandViber" placeholder="Viber" class="bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white">
                         <input type="text" id="brandFB" placeholder="Facebook Link" class="bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white">
                         <input type="text" id="brandTT" placeholder="TikTok Link" class="bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white">
-                         <input type="text" id="brandportfolio" placeholder="portfolio Link" class="bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white">
-
+                        <input type="text" id="brandportfolio" placeholder="portfolio Link" class="bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white">
                     </div>
                     <input type="text" id="brandAddr" placeholder="Address (Taunggyi)" class="mt-3 w-full bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white">
                 </div>
@@ -736,13 +735,150 @@ button { transition: all 0.2s ease; }
 
     const getValue = (id) => { const el = document.getElementById(id); return el ? el.value : ""; };
 
+    let unsubscribeUsage = null;
+    let unsubscribeHistory = null;
+
+    const escapeHtml = (str = "") => String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+
+
+    const API_TIMEOUT_MS = 20000;
+    const API_RETRY_COUNT = 1;
+    const DEFAULT_DEV_API_BASE = 'http://localhost:3000';
+
+    const getGenerateEndpoint = () => {
+        const fromWindow = (window.__API_BASE_URL || '').toString().trim();
+        const fromStorage = (localStorage.getItem('apiBaseUrl') || '').toString().trim();
+        const base = fromWindow || fromStorage;
+
+        if (base) {
+            return `${base.replace(/\/$/, '')}/api/generate`;
+        }
+
+        // VS Code Live Server is static-only. Prefer local backend if available.
+        if (window.location.port === '5500' || window.location.port === '5501') {
+            return `${DEFAULT_DEV_API_BASE}/api/generate`;
+        }
+
+        return '/api/generate';
+    };
+
+    const requireAuth = (message = 'Login required!') => {
+        if (userId) return true;
+        window.showToast(message);
+        return false;
+    };
+
+    const getApiErrorMessage = (err, fallback = 'Connection failed.') => {
+        if (!err) return fallback;
+        if (err.name === 'AbortError') return 'Request timed out. Try again.';
+        return err.message || fallback;
+    };
+
+    const setButtonBusy = (btn, busy, busyText = 'Working...') => {
+        if (!btn) return;
+        if (busy) {
+            btn.disabled = true;
+            btn.classList.add('opacity-60', 'cursor-not-allowed');
+            if (!btn.dataset.originalLabel) btn.dataset.originalLabel = btn.innerHTML;
+            btn.innerHTML = busyText;
+            return;
+        }
+        btn.disabled = false;
+        btn.classList.remove('opacity-60', 'cursor-not-allowed');
+        if (btn.dataset.originalLabel) {
+            btn.innerHTML = btn.dataset.originalLabel;
+            delete btn.dataset.originalLabel;
+        }
+    };
+
+    const callGenerateAPI = async (payload, opts = {}) => {
+        const retries = opts.retries ?? API_RETRY_COUNT;
+        const timeoutMs = opts.timeoutMs ?? API_TIMEOUT_MS;
+
+        for (let attempt = 0; attempt <= retries; attempt += 1) {
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), timeoutMs);
+            try {
+                const endpoint = getGenerateEndpoint();
+                const normalizedPayload = payload?.prompt
+                    ? payload
+                    : { ...payload, prompt: payload?.userMessage || '' };
+
+                const res = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(normalizedPayload),
+                    signal: controller.signal
+                });
+
+                if (!res.ok) {
+                    if (res.status === 404 || res.status === 405) {
+                        throw new Error(`API route unavailable (${res.status}). Start backend (e.g. vercel dev) or set localStorage apiBaseUrl. Endpoint: ${endpoint}`);
+                    }
+                    throw new Error(`Server Error ${res.status}`);
+                }
+
+                return await res.json();
+            } catch (err) {
+                const isLast = attempt === retries;
+                if (isLast) throw err;
+                await new Promise((r) => setTimeout(r, 450 * (attempt + 1)));
+            } finally {
+                clearTimeout(timer);
+            }
+        }
+
+        throw new Error('Unknown request failure');
+    };
+
+    const AI_UI_CONFIG = {
+        outputIds: {
+            fbpost: 'fbOutput', dm_best: 'dmOutput', timeline: 'tlOutput', tt_caption: 'ttOutput',
+            tt_script: 'ttOutput', tt_post_full: 'ttOutput', pose: 'poseOutput', creative_director: 'crOutput',
+            creative_post: 'crOutput', creative_tt_text: 'crOutput', dm_auto_detect: 'dmOutput',
+            manager_daily: 'mgrOutput', mentor: 'mentorOutput'
+        },
+        areaIds: {
+            fbpost: 'fbResultArea', dm_best: 'dmResultArea', timeline: 'tlResultArea', tt_caption: 'ttResultArea',
+            tt_script: 'ttResultArea', tt_post_full: 'ttResultArea', pose: 'poseResultArea',
+            creative_director: 'crResultArea', creative_post: 'crResultArea', creative_tt_text: 'crResultArea',
+            dm_auto_detect: 'dmResultArea', manager_daily: 'mgrResultArea', mentor: 'mentorResultArea'
+        },
+        continueBtnIds: {
+            fbpost: 'fbContinueBtn', dm_best: 'dmContinueBtn', timeline: 'tlContinueBtn', tt_caption: 'ttContinueBtn',
+            tt_script: 'ttContinueBtn', tt_post_full: 'ttContinueBtn', manager_daily: 'mgrContinueBtn',
+            dm_auto_detect: 'dmContinueBtn', mentor: 'mentorContinueBtn'
+        },
+        actionButtonSelectors: {
+            creative_director: 'button[onclick="window.generateAI(\'creative_director\')"]',
+            creative_post: 'button[onclick="window.generateAI(\'creative_post\')"]',
+            creative_tt_text: 'button[onclick="window.generateAI(\'creative_tt_text\')"]',
+            dm_analyze: 'button[onclick="window.generateAI(\'dm_analyze\')"]',
+            dm_best: 'button[onclick="window.generateAI(\'dm_best\')"]',
+            dm_auto_detect: 'button[onclick="window.generateAI(\'dm_auto_detect\')"]',
+            fbpost: 'button[onclick="window.generateAI(\'fbpost\')"]',
+            timeline: 'button[onclick="window.generateAI(\'timeline\')"]',
+            tt_script: 'button[onclick="window.generateAI(\'tt_script\')"]',
+            tt_caption: 'button[onclick="window.generateAI(\'tt_caption\')"]',
+            tt_post_full: 'button[onclick="window.generateAI(\'tt_post_full\')"]',
+            pose: 'button[onclick="window.generateAI(\'pose\')"]',
+            mentor: 'button[onclick="window.generateAI(\'mentor\')"]'
+        }
+    };
+
     // --- ✅ 1. ADD THIS BLOCK HERE (Before Auth Listener) ---
     
     // Usage Tracking Functions (Hoisted)
     window.loadUsage = function() {
         if (!userId) return;
+        if (unsubscribeUsage) unsubscribeUsage();
         // Listen to changes in real-time
-        onSnapshot(doc(db, 'artifacts', appId, 'users', userId, 'usage', 'stats'), (docSnap) => {
+        unsubscribeUsage = onSnapshot(doc(db, 'artifacts', appId, 'users', userId, 'usage', 'stats'), (docSnap) => {
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 const cost = data.totalCost || 0;
@@ -810,6 +946,8 @@ button { transition: all 0.2s ease; }
             window.loadUsage();
         } else {
             userId = null;
+            if (unsubscribeUsage) { unsubscribeUsage(); unsubscribeUsage = null; }
+            if (unsubscribeHistory) { unsubscribeHistory(); unsubscribeHistory = null; }
             overlay.classList.remove('hidden');
             setTimeout(() => overlay.classList.remove('opacity-0', 'pointer-events-none'), 50);
         }
@@ -828,33 +966,29 @@ window.runAssistant = async function(type) {
 
   if (!prompt) return;
 
+  const triggerBtn = document.querySelector(`button[onclick="window.runAssistant('${type}')"]`);
+  setButtonBusy(triggerBtn, true, 'Generating...');
+
   try {
-    const res = await fetch("/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userMessage: prompt,
-        mode: "studio"
-      })
+    const data = await callGenerateAPI({
+      userMessage: prompt,
+      mode: "studio"
     });
 
-    if (!res.ok) throw new Error("API Error");
-
-    const data = await res.json();
-
-    // reuse FB output panel
     const out = document.getElementById("fbOutput");
     const area = document.getElementById("fbResultArea");
     if (out && area) {
       out.innerText = data.result;
       area.classList.remove("hidden");
     }
-
   } catch (e) {
     console.error(e);
-    window.showToast("Assistant error");
+    window.showToast(getApiErrorMessage(e, 'Assistant error'));
+  } finally {
+    setButtonBusy(triggerBtn, false);
   }
 };
+
 
     // --- GLOBAL EXPORTS ---
     window.currentView = 'dm'; 
@@ -903,25 +1037,29 @@ window.runAssistant = async function(type) {
         const container = document.getElementById('content-container');
         container.innerHTML = ''; 
 
-        let templateId = 'tpl-' + viewId;
-        
-        if(viewId === 'tiktok') container.innerHTML = getTikTokHTML();
-        else if(viewId === 'pose') container.innerHTML = getPoseHTML();
-        else if(viewId === 'creative') {
-             // Handle creative specially if template isn't found by standard logic (though it is defined)
-             const tpl = document.getElementById('tpl-creative');
-             if(tpl) container.appendChild(tpl.content.cloneNode(true));
-        }
-        else if(viewId === 'recent') {
-            const tpl = document.getElementById('tpl-recent');
-            if(tpl) container.appendChild(tpl.content.cloneNode(true));
-            renderHistoryList(); 
-        }
-        else {
+        const templateId = 'tpl-' + viewId;
+
+        const viewRenderers = {
+            tiktok: () => { container.innerHTML = getTikTokHTML(); },
+            pose: () => { container.innerHTML = getPoseHTML(); },
+            creative: () => {
+                const tpl = document.getElementById('tpl-creative');
+                if (tpl) container.appendChild(tpl.content.cloneNode(true));
+            },
+            recent: () => {
+                const tpl = document.getElementById('tpl-recent');
+                if (tpl) container.appendChild(tpl.content.cloneNode(true));
+                renderHistoryList();
+            }
+        };
+
+        if (viewRenderers[viewId]) {
+            viewRenderers[viewId]();
+        } else {
             const tpl = document.getElementById(templateId);
-            if(tpl) {
+            if (tpl) {
                 container.appendChild(tpl.content.cloneNode(true));
-                if(viewId === 'brand') loadBrandData(); 
+                if (viewId === 'brand') loadBrandData();
             }
         }
         window.currentView = viewId;
@@ -962,7 +1100,7 @@ window.runAssistant = async function(type) {
 
     // --- UPDATED SAVE FUNCTION WITH STATUS ---
     window.saveBrandData = async function() {
-        if (!userId) { window.showToast("Login required!"); return; }
+        if (!requireAuth()) return;
         const statusEl = document.getElementById('saveStatus');
         if(statusEl) statusEl.innerText = "Saving...";
         const ids = ['brandStyle', 'brandClient', 'brandPhone', 'brandViber', 'brandFB', 'brandTT', 'brandAddr', 'brandPackages'];
@@ -992,13 +1130,35 @@ window.runAssistant = async function(type) {
         if (!userId) return;
         const c = document.getElementById('historyListContainer');
         if(!c) return;
+        if (unsubscribeHistory) unsubscribeHistory();
         const q = query(collection(db, 'artifacts', appId, 'users', userId, 'history'), orderBy('timestamp', 'desc'), limit(30));
-        onSnapshot(q, (snapshot) => {
+        unsubscribeHistory = onSnapshot(q, (snapshot) => {
             const items = [];
             snapshot.forEach((doc) => { items.push({ id: doc.id, ...doc.data() }); });
-            c.innerHTML = items.length ? items.map(i=>`<div class="glass-panel p-6 rounded-lg border-l-4 border-green-500 mb-2 group relative"><div class="flex justify-between items-start mb-2"><div><span class="font-bold text-white text-sm block">${i.topic}</span><span class="text-[10px] text-slate-400 uppercase bg-slate-800 px-1.5 rounded">${i.type}</span></div><span class="text-[10px] text-slate-500">${i.date}</span></div><div class="text-sm text-slate-300 line-clamp-3 bg-slate-900/50 p-2 rounded cursor-pointer hover:bg-slate-900 transition" onclick="window.toggleExpand(this)">${i.content}</div><div class="mt-2 text-right flex justify-end gap-2"><button onclick="window.copyText('${i.content.replace(/'/g, "\\'").replace(/\n/g, "\\n")}')" class="text-blue-400 text-xs hover:text-white border border-blue-500/30 px-2 py-1 rounded">Copy</button></div></div>`).join('') : "<div class='text-center text-slate-500 py-10'>No recent activity on Cloud.</div>";
+            if (!items.length) {
+                c.innerHTML = "<div class='text-center text-slate-500 py-10'>No recent activity on Cloud.</div>";
+                return;
+            }
+            c.innerHTML = items.map(i => {
+                const topic = escapeHtml(i.topic || 'Generated Content');
+                const type = escapeHtml(i.type || 'general');
+                const date = escapeHtml(i.date || '');
+                const content = escapeHtml(i.content || '');
+                const encodedCopy = encodeURIComponent(i.content || '');
+                return `<div class="glass-panel p-6 rounded-lg border-l-4 border-green-500 mb-2 group relative">
+<div class="flex justify-between items-start mb-2">
+<div><span class="font-bold text-white text-sm block">${topic}</span><span class="text-[10px] text-slate-400 uppercase bg-slate-800 px-1.5 rounded">${type}</span></div>
+<span class="text-[10px] text-slate-500">${date}</span>
+</div>
+<div class="text-sm text-slate-300 line-clamp-3 bg-slate-900/50 p-2 rounded cursor-pointer hover:bg-slate-900 transition" onclick="window.toggleExpand(this)">${content}</div>
+<div class="mt-2 text-right flex justify-end gap-2">
+<button onclick="window.copyEncoded('${encodedCopy}')" class="text-blue-400 text-xs hover:text-white border border-blue-500/30 px-2 py-1 rounded">Copy</button>
+</div>
+</div>`;
+            }).join('');
         });
     }
+
 
     // --- NEW: CREATIVE DIRECTOR HELPERS ---
     window.setCreativeOption = function(type, value, btn) {
@@ -1109,16 +1269,10 @@ window.runAssistant = async function(type) {
         
         // 6. Send to API
         try {
-            const res = await fetch("/api/generate", {
-                method: "POST", headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    userMessage: systemPrompt + "\n\nUser Input: " + text + "\nAI Response:",
-                    mode: "auto-switch"
-                })
+            const d = await callGenerateAPI({
+                userMessage: systemPrompt + "\n\nUser Input: " + text + "\nAI Response:",
+                mode: "auto-switch"
             });
-            
-            if (!res.ok) throw new Error("Server Error " + res.status);
-            const d = await res.json();
             
             // 7. Success Handling
             const loadingEl = document.getElementById(loadingId);
@@ -1135,7 +1289,7 @@ window.runAssistant = async function(type) {
         } catch(e) {
             console.error(e);
             const loadingEl = document.getElementById(loadingId);
-            if(loadingEl) { loadingEl.innerHTML = "<span class='text-red-400'>Connection failed.</span>"; loadingEl.classList.remove('typing-dot'); }
+            if(loadingEl) { loadingEl.textContent = getApiErrorMessage(e); loadingEl.classList.add('text-red-400'); }
         } finally {
             // 8. Unlock UI
             isChatSubmitting = false;
@@ -1155,30 +1309,39 @@ window.runAssistant = async function(type) {
         const id = 'msg-' + Date.now();
         div.id = id;
         div.className = 'flex w-full ' + (role === 'user' ? 'justify-end' : 'justify-start');
-        
-        let content = text;
-        if(isLoading) content = `<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>`;
-        else content = text.replace(/\n/g, '<br>');
 
-        // --- FIX: Remove extra wrapper div for User ---
         if (role === 'user') {
-            // User Message: Direct Chat Bubble (Fixes Width Issue)
-            div.innerHTML = `<div class="chat-bubble-user max-w-[80%] text-left">${content}</div>`;
+            const bubble = document.createElement('div');
+            bubble.className = 'chat-bubble-user max-w-[80%] text-left';
+            bubble.textContent = text;
+            div.appendChild(bubble);
         } else {
-            // AI Message: With Icon
-            div.innerHTML = `
-                <div class="flex items-start gap-3 max-w-[85%]">
-                    <div class="w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-400 border border-yellow-500/30 shrink-0"><i class="ph ph-robot"></i></div>
-                    <div class="chat-bubble-ai">${content}</div>
-                </div>
-            `;
+            const wrap = document.createElement('div');
+            wrap.className = 'flex items-start gap-3 max-w-[85%]';
+
+            const iconWrap = document.createElement('div');
+            iconWrap.className = 'w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-400 border border-yellow-500/30 shrink-0';
+            iconWrap.innerHTML = '<i class="ph ph-robot"></i>';
+
+            const bubble = document.createElement('div');
+            bubble.className = 'chat-bubble-ai';
+
+            if (isLoading) {
+                bubble.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+            } else {
+                bubble.textContent = text;
+            }
+
+            wrap.appendChild(iconWrap);
+            wrap.appendChild(bubble);
+            div.appendChild(wrap);
         }
-        
+
         container.appendChild(div);
         container.scrollTop = container.scrollHeight;
         return id;
     }
-    
+
     function addSaveButton(msgId, content) {
         const msgEl = document.getElementById(msgId).querySelector('.chat-bubble-ai');
         const btn = document.createElement('button');
@@ -1189,7 +1352,7 @@ window.runAssistant = async function(type) {
     }
     
     window.saveDecision = async function(content, btnElement) {
-        if(!userId) return window.showToast("Login to save");
+        if(!requireAuth('Login to save')) return;
         try {
             await addDoc(collection(db, 'artifacts', appId, 'users', userId, 'decisions'), {
                 content: content,
@@ -1202,15 +1365,113 @@ window.runAssistant = async function(type) {
     }
 
 
-    window.generateAI = async function(type, isContinue = false) {
-        // UI IDs Setup
-        const outputIds = { 'fbpost': 'fbOutput', 'dm_best': 'dmOutput', 'timeline': 'tlOutput', 'tt_caption': 'ttOutput', 'tt_script': 'ttOutput','tt_post_full': 'ttOutput','pose': 'poseOutput', 'creative_director': 'crOutput', 'creative_post': 'crOutput', 'creative_tt_text': 'crOutput', 'dm_auto_detect': 'dmOutput', 'manager_daily': 'mgrOutput', 'mentor': 'mentorOutput' };
-        const areaIds = { 'fbpost': 'fbResultArea', 'dm_best': 'dmResultArea', 'timeline': 'tlResultArea', 'tt_caption': 'ttResultArea', 'tt_script': 'ttResultArea','tt_post_full': 'ttResultArea', 'pose': 'poseResultArea', 'creative_director': 'crResultArea', 'creative_post': 'crResultArea', 'creative_tt_text': 'crResultArea', 'dm_auto_detect': 'dmResultArea', 'manager_daily': 'mgrResultArea', 'mentor': 'mentorResultArea' };
-        const continueBtnIds = { 'fbpost': 'fbContinueBtn', 'dm_best': 'dmContinueBtn', 'timeline': 'tlContinueBtn', 'tt_caption': 'ttContinueBtn', 'tt_script': 'ttContinueBtn','tt_post_full': 'ttContinueBtn', 'manager_daily': 'mgrContinueBtn', 'dm_auto_detect': 'dmContinueBtn', 'mentor': 'mentorContinueBtn' }; 
+    function buildAIPrompt(type, outId, isContinue) {
+        let prompt = '';
+        let contextTopic = 'General Content';
 
-        const outId = outputIds[type];
-        const areaId = areaIds[type];
-        
+        if (type === 'manager_daily') {
+            const focus = getValue('mgrFocus') || 'General';
+            prompt = `Task: Daily Plan. Focus=${focus}. Output: 4 Sections (Priority, Content, Sales, Quick Win).`;
+            contextTopic = `Manager Plan (${focus})`;
+        } else if (type === 'creative_director') {
+            prompt = `Task: 3-Day Content Plan. Focus=${getValue('crFocus')}.`;
+            contextTopic = 'Creative Plan';
+        } else if (type === 'creative_post') {
+            prompt = `Task: Write FB Post about "${getValue('crFocus')}".`;
+            contextTopic = 'Creative Post';
+        } else if (type === 'creative_tt_text') {
+            const topic = getValue('crFocus');
+            prompt = `
+             Role: A Gen-Z Storyteller & Photographer (Not an AI).
+             Task: Write 2 "TikTok Text Mode" contents about "${topic}".
+             
+             CRITICAL INSTRUCTION:
+             - ❌ NO Robotic/Formal Language. (Do NOT use "မင်္ဂလာပါ", "ကြိုးစားပါ").
+             - ✅ Write like a HUMAN feeling a moment. Use "Spoken Burmese" (အပြောစကား).
+             - Use short phrases, not full sentences.
+             - Make it "Aesthetic", "Raw", and "Deep".
+             
+             OUTPUT FORMAT (Strictly text only):
+             
+             Option 1 (Sad/Moody Vibe):
+             (Write short, deep lines. Example style: "တခါတလေတော့လည်းလေ... 
+ ပြောမထွက်ခဲ့တာတွေက ပိုများတယ်")
+             
+             Option 2 (Hopeful/Sweet Vibe):
+             (Write warm, short lines. Example style: "ဒီနေ့လေးက 
+ မထင်မှတ်ဘဲ လှနေတယ် ✨")
+
+             Topic Context: ${topic}
+             `;
+            contextTopic = `TikTok Text Mode (${topic})`;
+        } else if (type === 'dm_auto_detect') {
+            prompt = `Task: Best DM Reply for "${getValue('dmInput')}".`;
+            contextTopic = 'Auto DM Reply';
+        } else if (type === 'dm_analyze') {
+            prompt = `Task: Analyze "${getValue('dmInput')}". Output: Status, Reason.`;
+        } else if (type === 'dm_best') {
+            prompt = `Task: 3 Sales Replies. Client: "${getValue('dmInput')}".`;
+            contextTopic = 'DM Sales';
+        } else if (type === 'fbpost') {
+            prompt = `Task: 3 FB Posts. Topic: ${getValue('fbInput')}.`;
+            contextTopic = 'FB Post';
+        } else if (type === 'timeline') {
+            prompt = `Task: Wedding Timeline. Place: ${getValue('tlPlace')}.`;
+            contextTopic = 'Timeline';
+        } else if (type === 'tt_post_full') {
+            const topic = getValue('ttInput');
+            prompt = `Role: TikTok Expert for a Photo Studio.
+             Task: Create a complete TikTok Post Package for topic: "${topic}".
+             OUTPUT FORMAT:
+             1. 📺 **Text on Video (Hook)**: (Short text to put on video cover)
+             2. 📝 **Caption**: (Engaging caption in Burmese, asking a question)
+             3. #️⃣ **Hashtags**: (5-10 Trending Myanmar Hashtags)
+             4. 🎵 **Song Vibe**: (Suggested music style)
+             `;
+            contextTopic = `TikTok Post (${topic})`;
+        } else if (type.includes('tt_')) {
+            const subType = type === 'tt_script' ? 'Video Script (Scene by Scene)' : '3 Viral Captions';
+            prompt = `Task: Write ${subType} for TikTok. Topic: ${getValue('ttInput')}. Style: ${getValue('ttStyle')}.`;
+            contextTopic = 'TikTok Content';
+            if (isContinue) prompt = `Context: Continue TikTok content from: "${document.getElementById(outId).innerText.slice(-50)}".`;
+        } else if (type === 'pose') {
+            prompt = `Task: 3 Pose Ideas. Context: ${getValue('poseInput')}.`;
+            contextTopic = 'Pose';
+        } else if (type === 'mentor') {
+            const topic = getValue('mentorInput');
+            prompt = `
+             ROLE: World-Class Photography Mentor & Senior Artist.
+             USER: Ko Sai (Professional Photographer).
+             TASK: Provide artistic advice on: "${topic}".
+             
+             GUIDELINES:
+             - Tone: Inspiring, Deep, Educational, Warm (Teacher to Student).
+             - Language: Natural Burmese (Unicode).
+             - Focus: Art, Emotion, Composition, Lighting, Mindset.
+             - RESTRICTION: Do NOT talk about pricing, packages, or business. Only Art.
+             
+             If asking about a specific master (e.g., Jerry Ghionis), explain their style and how Ko Sai can apply it.
+             `;
+            contextTopic = `Mentorship: ${topic}`;
+        }
+
+        if (isContinue) {
+            const currentText = document.getElementById(outId) ? document.getElementById(outId).innerText : '';
+            prompt = `Context: Continue correctly from: "${currentText.slice(-50)}". Finish the sentence/list.`;
+        }
+
+        return { prompt, contextTopic };
+    }
+
+
+    window.generateAI = async function(type, isContinue = false) {
+        const outId = AI_UI_CONFIG.outputIds[type];
+        const areaId = AI_UI_CONFIG.areaIds[type];
+        const triggerBtn = isContinue
+            ? document.getElementById(AI_UI_CONFIG.continueBtnIds[type])
+            : document.querySelector(AI_UI_CONFIG.actionButtonSelectors[type] || '');
+        setButtonBusy(triggerBtn, true, isContinue ? 'Continuing...' : 'Generating...');
+
 
         // UI Loading
         if(type !== 'dm_analyze') {
@@ -1219,7 +1480,7 @@ window.runAssistant = async function(type) {
             
             if(!isContinue) {
                 const outEl = document.getElementById(outId);
-                if(outEl) outEl.innerHTML = "<span class='animate-pulse text-purple-400'>✨ Thinking...</span>";
+                if(outEl) outEl.textContent = 'Thinking...';
                 // Mobile Scroll
                 if(window.innerWidth < 768) {
                     if((type.startsWith('creative'))) {
@@ -1235,7 +1496,7 @@ window.runAssistant = async function(type) {
              if(panel) { 
                  panel.classList.remove('hidden'); 
                  const content = document.getElementById('dmAnalysisContent');
-                 if(content) content.innerHTML = "<span class='animate-pulse text-indigo-400'>🔍 Analyzing...</span>"; 
+                 if(content) content.textContent = 'Analyzing...'; 
              }
         }
 
@@ -1279,108 +1540,16 @@ window.runAssistant = async function(type) {
 
         IMPORTANT: Always output COMPLETE responses. Do not cut off.
         `;
-
-        let prompt = ""; 
-        let contextTopic = "General Content"; // Default topic
-
-        
-        
-        // --- PROMPT LOGIC ---
-        if (type === 'manager_daily') { 
-            const focus = getValue('mgrFocus') || 'General';
-            prompt = `Task: Daily Plan. Focus=${focus}. Output: 4 Sections (Priority, Content, Sales, Quick Win).`; 
-            contextTopic = `Manager Plan (${focus})`; // Ensure Topic is set
-        }
-        else if (type === 'creative_director') { prompt = `Task: 3-Day Content Plan. Focus=${getValue('crFocus')}.`; contextTopic = `Creative Plan`; }
-        else if (type === 'creative_post') { prompt = `Task: Write FB Post about "${getValue('crFocus')}".`; contextTopic = `Creative Post`; }
-else if (type === 'creative_tt_text') {
-             const topic = getValue('crFocus');
-             prompt = `
-             Role: A Gen-Z Storyteller & Photographer (Not an AI).
-             Task: Write 2 "TikTok Text Mode" contents about "${topic}".
-             
-             CRITICAL INSTRUCTION:
-             - ❌ NO Robotic/Formal Language. (Do NOT use "မင်္ဂလာပါ", "ကြိုးစားပါ").
-             - ✅ Write like a HUMAN feeling a moment. Use "Spoken Burmese" (အပြောစကား).
-             - Use short phrases, not full sentences.
-             - Make it "Aesthetic", "Raw", and "Deep".
-             
-             OUTPUT FORMAT (Strictly text only):
-             
-             Option 1 (Sad/Moody Vibe):
-             (Write short, deep lines. Example style: "တခါတလေတော့လည်းလေ... \n ပြောမထွက်ခဲ့တာတွေက ပိုများတယ်")
-             
-             Option 2 (Hopeful/Sweet Vibe):
-             (Write warm, short lines. Example style: "ဒီနေ့လေးက \n မထင်မှတ်ဘဲ လှနေတယ် ✨")
-
-             Topic Context: ${topic}
-             `;
-             contextTopic = `TikTok Text Mode (${topic})`;
-        }    
-         else if (type === 'dm_auto_detect') { prompt = `Task: Best DM Reply for "${getValue('dmInput')}".`; contextTopic = `Auto DM Reply`; }
-        else if (type === 'dm_analyze') { prompt = `Task: Analyze "${getValue('dmInput')}". Output: Status, Reason.`; }
-        else if (type === 'dm_best') { prompt = `Task: 3 Sales Replies. Client: "${getValue('dmInput')}".`; contextTopic = `DM Sales`; }
-        else if (type === 'fbpost') { prompt = `Task: 3 FB Posts. Topic: ${getValue('fbInput')}.`; contextTopic = `FB Post`; }
-        else if (type === 'timeline') { prompt = `Task: Wedding Timeline. Place: ${getValue('tlPlace')}.`; contextTopic = `Timeline`; }
-// TikTok Logic Update
-        else if (type === 'tt_post_full') {
-             const topic = getValue('ttInput');
-             prompt = `Role: TikTok Expert for a Photo Studio.
-             Task: Create a complete TikTok Post Package for topic: "${topic}".
-             OUTPUT FORMAT:
-             1. 📺 **Text on Video (Hook)**: (Short text to put on video cover)
-             2. 📝 **Caption**: (Engaging caption in Burmese, asking a question)
-             3. #️⃣ **Hashtags**: (5-10 Trending Myanmar Hashtags)
-             4. 🎵 **Song Vibe**: (Suggested music style)
-             `;
-             contextTopic = `TikTok Post (${topic})`;
-        }
-        else if(type.includes('tt_')) {
-             // Script or Caption only
-             const subType = type === 'tt_script' ? "Video Script (Scene by Scene)" : "3 Viral Captions";
-             prompt = `Task: Write ${subType} for TikTok. Topic: ${getValue('ttInput')}. Style: ${getValue('ttStyle')}.`;
-             contextTopic = `TikTok Content`;
-             if(isContinue) prompt = `Context: Continue TikTok content from: "${document.getElementById(outId).innerText.slice(-50)}".`;
-        }        else if (type === 'pose') { prompt = `Task: 3 Pose Ideas. Context: ${getValue('poseInput')}.`; contextTopic = `Pose`; }
-
-        else if (type === 'mentor') {
-             const topic = getValue('mentorInput');
-             prompt = `
-             ROLE: World-Class Photography Mentor & Senior Artist.
-             USER: Ko Sai (Professional Photographer).
-             TASK: Provide artistic advice on: "${topic}".
-             
-             GUIDELINES:
-             - Tone: Inspiring, Deep, Educational, Warm (Teacher to Student).
-             - Language: Natural Burmese (Unicode).
-             - Focus: Art, Emotion, Composition, Lighting, Mindset.
-             - RESTRICTION: Do NOT talk about pricing, packages, or business. Only Art.
-             
-             If asking about a specific master (e.g., Jerry Ghionis), explain their style and how Ko Sai can apply it.
-             `;
-             contextTopic = `Mentorship: ${topic}`;
-        }
-        
-        if(isContinue) {
-            const currentText = document.getElementById(outId) ? document.getElementById(outId).innerText : "";
-            prompt = `Context: Continue correctly from: "${currentText.slice(-50)}". Finish the sentence/list.`;
-        }
+        const { prompt, contextTopic } = buildAIPrompt(type, outId, isContinue);
 
         try {
-            const res = await fetch("/api/generate", {
-                method: "POST", headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ 
-                    userMessage: systemPrompt + "\n\n" + prompt 
-                })
+            const d = await callGenerateAPI({
+                userMessage: systemPrompt + "\n\n" + prompt
             });
             
-            if(!res.ok) throw new Error("API Error " + res.status);
-
-            const d = await res.json();
-            
             if(type === 'dm_analyze') {
-                const html = `<div class='text-slate-300'>${d.result.replace(/\n/g, '<br>')}</div>`;
-                document.getElementById('dmAnalysisContent').innerHTML = html;
+                const analysisEl = document.getElementById('dmAnalysisContent');
+                if (analysisEl) analysisEl.textContent = d.result;
             } else {
                 const outEl = document.getElementById(outId);
                 if(outEl) {
@@ -1397,22 +1566,25 @@ else if (type === 'creative_tt_text') {
                          await saveToRecents(type, outEl.innerText, contextTopic);
                     }
                 }
-                const btn = document.getElementById(continueBtnIds[type]);
+                const btn = document.getElementById(AI_UI_CONFIG.continueBtnIds[type]);
                 if(btn) btn.classList.remove('hidden');
             }
             window.trackUsage(prompt, d.result);
         } catch(e) {
             console.error(e);
             const outEl = document.getElementById(outId);
-            if(outEl && !isContinue) outEl.innerText = "Connection Error: " + e.message;
+            if(outEl && !isContinue) outEl.innerText = "Connection Error: " + getApiErrorMessage(e);
+            window.showToast(getApiErrorMessage(e));
+        } finally {
+            setButtonBusy(triggerBtn, false);
         }
     };
 
     window.continueAI = (t) => window.generateAI(t, true);
     window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3000); };
     window.copyText = (id) => { navigator.clipboard.writeText(document.getElementById(id).innerText); window.showToast("Copied"); };
+    window.copyEncoded = (encoded) => { navigator.clipboard.writeText(decodeURIComponent(encoded)); window.showToast("Copied"); };
     window.setDmType = (t, b) => { document.getElementById('dmType').value = t; document.querySelectorAll('.tactic-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); };
-    window.setCreativeOption = (t, v, b) => { document.getElementById('crWorkload').value = v; document.querySelectorAll('.creative-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); };
     window.fillPose = (t) => { document.getElementById('poseInput').value = t === 'Shy' ? "အရမ်းရှက်တတ်တယ်" : "ဝတဲ့အတွဲ"; };
     window.startVoiceInput = (id, btn) => {
         const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1422,25 +1594,26 @@ else if (type === 'creative_tt_text') {
         r.onresult = (e) => { document.getElementById(id).value += " " + e.results[0][0].transcript; window.showToast("Heard!"); };
         r.onend = () => btn.classList.remove('listening-ring');
     };
-    window.clearHistory = () => { if(userId && confirm("Clear?")) window.showToast("Clearing local view (Cloud persists)"); };
+    window.clearHistory = async () => {
+        if (!requireAuth()) return;
+        if (!confirm('Clear all cloud history?')) return;
+        try {
+            const q = query(collection(db, 'artifacts', appId, 'users', userId, 'history'));
+            const snap = await getDocs(q);
+            await Promise.all(snap.docs.map((d) => deleteDoc(d.ref)));
+            window.showToast('Cloud history cleared');
+        } catch (e) {
+            console.error(e);
+            window.showToast('Clear failed');
+        }
+    };
     window.toggleExpand = (el) => { if(el.classList.contains('line-clamp-3')) el.classList.remove('line-clamp-3'); else el.classList.add('line-clamp-3'); };
     window.downloadFile = (n, id) => { const b = new Blob([document.getElementById(id).innerText],{type:'text/plain'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=n; a.click(); };
 
     window.loadView('creative'); // Start with Creative
 
-    // --- FIX: Missing Function (Error 4 Fix) ---
-    window.runAssistant = function(type) {
-        const inputEl = document.getElementById('fbInput');
-        
-        if (type === 'fb_ideas') {
-            if(inputEl) inputEl.value = "Pre-wedding ဓာတ်ပုံရိုက်ဖို့ ဆန်းသစ်တဲ့ Idea 5 ခု";
-            window.generateAI('fbpost');
-        } 
-        else if (type === 'fb_hooks') {
-            if(inputEl) inputEl.value = "Engagement တက်စေမယ့် ဖမ်းစားနိုင်တဲ့ ခေါင်းစဉ် (Hooks) များ";
-            window.generateAI('fbpost');
-        }
-    };
+
+
 
     // Mentor Mode Helper
 window.askMaster = function(name, style) {
