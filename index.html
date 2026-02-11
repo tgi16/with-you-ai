@@ -1988,8 +1988,13 @@ window.runAssistant = async function(type) {
 
         try {
             const packTypes = new Set(['studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm']);
-            const longFormTypes = new Set(['creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'fbpost']);
-            const maxOutputTokens = packTypes.has(type) ? 2200 : (longFormTypes.has(type) ? 1500 : 850);
+            const tiktokHeavyTypes = new Set(['tt_script', 'tt_caption', 'tt_post_full']);
+            const longFormTypes = new Set(['creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'fbpost', 'tt_post_full']);
+            const maxOutputTokens = packTypes.has(type)
+                ? 2200
+                : (tiktokHeavyTypes.has(type)
+                    ? (type === 'tt_caption' ? 1200 : 1700)
+                    : (longFormTypes.has(type) ? 1500 : 850));
             const d = await callGenerateAPI({
                 userMessage: systemPrompt + "\n\n" + prompt,
                 maxOutputTokens
@@ -1997,7 +2002,8 @@ window.runAssistant = async function(type) {
             let cleanedResult = sanitizeGeneratedOutput(type, d.result);
 
             const initialCut = typeof d.isCut === 'boolean' ? d.isCut : shouldShowContinue(type, cleanedResult);
-            if (!isContinue && initialCut && packTypes.has(type)) {
+            const autoContinueTypes = new Set(['studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'tt_script', 'tt_caption', 'tt_post_full']);
+            if (!isContinue && initialCut && autoContinueTypes.has(type)) {
                 try {
                     const follow = await callGenerateAPI({
                         userMessage: systemPrompt + "\n\nContext: Continue seamlessly from this ending without repeating:\n" + cleanedResult.slice(-500),
@@ -2031,6 +2037,7 @@ window.runAssistant = async function(type) {
                 }
                 const btn = document.getElementById(AI_UI_CONFIG.continueBtnIds[type]);
                 if (btn) {
+                    btn.onclick = () => window.continueAI(type);
                     const shouldContinue = typeof d.isCut === 'boolean' ? d.isCut : shouldShowContinue(type, cleanedResult);
                     if (shouldContinue) btn.classList.remove('hidden');
                     else btn.classList.add('hidden');
