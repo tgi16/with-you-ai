@@ -1042,13 +1042,23 @@ button { transition: all 0.2s ease; }
                 });
 
                 if (!res.ok) {
+                    let details = '';
+                    try {
+                        const errData = await res.json();
+                        if (errData?.error) details = ": " + errData.error;
+                    } catch (_) {}
+
                     if (res.status === 404 || res.status === 405) {
                         throw new Error(`API route unavailable (${res.status}). Start backend (e.g. vercel dev) or set localStorage apiBaseUrl. Endpoint: ${endpoint}`);
                     }
-                    throw new Error(`Server Error ${res.status}`);
+                    throw new Error(`Server Error ${res.status}${details}`);
                 }
 
-                return await res.json();
+                const data = await res.json();
+                if (data?.error) {
+                    throw new Error(data.error);
+                }
+                return data;
             } catch (err) {
                 const isLast = attempt === retries;
                 if (isLast) throw err;
@@ -1112,15 +1122,25 @@ button { transition: all 0.2s ease; }
     };
 
     const CONTINUE_ELIGIBLE_TYPES = new Set([
-        'fbpost', 'dm_best', 'tt_script', 'tt_caption', 'tt_post_full', 'mentor',
+        'fbpost', 'tt_script', 'tt_caption', 'tt_post_full',
         'creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm'
     ]);
     const shouldShowContinue = (type, resultText = '') => {
         if (!CONTINUE_ELIGIBLE_TYPES.has(type)) return false;
         const text = String(resultText || '').trim();
+        if (!text) return false;
+
+        const lines = text.split('\n').map((x) => x.trim()).filter(Boolean);
+        const lastLine = lines[lines.length - 1] || text;
+        const endsWithEmoji = /[\u{1F300}-\u{1FAFF}]$/u.test(lastLine);
+        const endsClean = /[။.!?…]$/.test(lastLine)
+            || /[\])}"'”’]$/.test(lastLine)
+            || endsWithEmoji
+            || /^#/.test(lastLine);
+
         return text.endsWith('...')
             || text.includes('[CONTINUE]')
-            || (text.length > 1000 && !/[။.!?]$/.test(text));
+            || (text.length > 1100 && !endsClean);
     };
 
     const DIRECT_CONTENT_TYPES = new Set([
@@ -2052,7 +2072,9 @@ window.runAssistant = async function(type) {
                 const btn = document.getElementById(AI_UI_CONFIG.continueBtnIds[type]);
                 if (btn) {
                     btn.onclick = () => window.continueAI(type);
-                    const shouldContinue = typeof d.isCut === 'boolean' ? d.isCut : shouldShowContinue(type, cleanedResult);
+                    const shouldContinue = CONTINUE_ELIGIBLE_TYPES.has(type)
+                        ? (typeof needsMore === 'boolean' ? needsMore : shouldShowContinue(type, cleanedResult))
+                        : false;
                     if (shouldContinue) btn.classList.remove('hidden');
                     else btn.classList.add('hidden');
                 }

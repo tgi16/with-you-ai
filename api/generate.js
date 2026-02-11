@@ -160,24 +160,33 @@ IMPORTANT:
     const genData = await genRes.json();
 
     if (!genRes.ok) {
-      return res.status(200).json({
+      return res.status(genRes.status || 502).json({
         error: genData?.error?.message || "Gemini API error"
       });
     }
 
-    const result = genData?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    const candidate = genData?.candidates?.[0] || {};
+    const result = candidate?.content?.parts?.[0]?.text || "";
 
     /* ===============================
        CUT-OFF DETECTION
     ================================ */
+    const finishReason = String(candidate?.finishReason || "").toUpperCase();
     const trimmed = result.trim();
-    const endsClean = /[။.!?]$/.test(trimmed) || trimmed.endsWith("**") || trimmed.endsWith(")") || trimmed.endsWith("]");
-    const isCut = trimmed.length >= 120 && !endsClean;
+    const lines = trimmed.split("\n").map((x) => x.trim()).filter(Boolean);
+    const lastLine = lines[lines.length - 1] || trimmed;
+    const endsClean = /[။.!?…]$/.test(lastLine)
+      || /[])}"'”’]$/.test(lastLine)
+      || /[🌀-🫿]$/u.test(lastLine)
+      || /^#/.test(lastLine);
+    const heuristicCut = trimmed.length > 1100 && !endsClean;
+    const isCut = finishReason === "MAX_TOKENS" ? true : heuristicCut;
 
     return res.status(200).json({
       intent,
       result,
-      isCut
+      isCut,
+      finishReason
     });
   } catch (err) {
     console.error("Backend error:", err);
