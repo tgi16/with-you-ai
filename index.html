@@ -756,6 +756,11 @@ button { transition: all 0.2s ease; }
             </div>
 
             <button onclick="window.generateAI('creative_studio')" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-3 rounded-xl shadow-lg transition">Generate Creative Studio Content</button>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <button onclick="window.generateAI('studio_pack_fb')" class="bg-blue-700 hover:bg-blue-600 text-white font-bold py-2.5 rounded-lg text-sm">FB Post Pack</button>
+                <button onclick="window.generateAI('studio_pack_tiktok')" class="bg-teal-700 hover:bg-teal-600 text-white font-bold py-2.5 rounded-lg text-sm">TikTok Pack</button>
+                <button onclick="window.generateAI('studio_pack_dm')" class="bg-purple-700 hover:bg-purple-600 text-white font-bold py-2.5 rounded-lg text-sm">DM Reply Pack</button>
+            </div>
         </div>
 
         <div id="studioResultArea" class="hidden glass-panel p-5 rounded-xl border border-cyan-500/30 space-y-3">
@@ -764,6 +769,11 @@ button { transition: all 0.2s ease; }
                 <button onclick="window.copyText('studioOutput')" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded px-3 py-1.5">Copy</button>
             </div>
             <div id="studioOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed"></div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+                <button onclick="window.downloadFile('CreativeStudio.txt', 'studioOutput')" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded py-2">Download TXT</button>
+                <button onclick="window.downloadMarkdownFile('CreativeStudio.md', 'studioOutput')" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded py-2">Download MD</button>
+                <button onclick="window.copyText('studioOutput')" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded py-2">Copy All</button>
+            </div>
             <button id="studioContinueBtn" onclick="window.continueAI('creative_studio')" class="hidden w-full py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded text-cyan-300 text-xs font-bold">Continue Writing</button>
         </div>
     </div>
@@ -864,6 +874,9 @@ button { transition: all 0.2s ease; }
                 <option value="studio_hooks">Studio Hooks</option>
                 <option value="studio_cta">Studio CTA</option>
                 <option value="studio_hashtags">Studio Hashtags</option>
+                <option value="studio_pack_fb">Studio FB Pack</option>
+                <option value="studio_pack_tiktok">Studio TikTok Pack</option>
+                <option value="studio_pack_dm">Studio DM Pack</option>
                 <option value="mentor">Mentor</option>
                 <option value="pose">Pose</option>
                 <option value="ai_chat">AI Chat</option>
@@ -1052,6 +1065,7 @@ button { transition: all 0.2s ease; }
             creative_post: 'crOutput', creative_tt_text: 'crOutput', dm_auto_detect: 'dmOutput',
             creative_studio: 'studioOutput', studio_ideas: 'studioOutput', studio_hooks: 'studioOutput',
             studio_cta: 'studioOutput', studio_hashtags: 'studioOutput',
+            studio_pack_fb: 'studioOutput', studio_pack_tiktok: 'studioOutput', studio_pack_dm: 'studioOutput',
             manager_daily: 'mgrOutput', mentor: 'mentorOutput'
         },
         areaIds: {
@@ -1060,6 +1074,7 @@ button { transition: all 0.2s ease; }
             creative_director: 'crResultArea', creative_post: 'crResultArea', creative_tt_text: 'crResultArea',
             creative_studio: 'studioResultArea', studio_ideas: 'studioResultArea', studio_hooks: 'studioResultArea',
             studio_cta: 'studioResultArea', studio_hashtags: 'studioResultArea',
+            studio_pack_fb: 'studioResultArea', studio_pack_tiktok: 'studioResultArea', studio_pack_dm: 'studioResultArea',
             dm_auto_detect: 'dmResultArea', manager_daily: 'mgrResultArea', mentor: 'mentorResultArea'
         },
         continueBtnIds: {
@@ -1085,9 +1100,19 @@ button { transition: all 0.2s ease; }
             studio_hooks: 'button[onclick="window.generateAI(\'studio_hooks\')"]',
             studio_cta: 'button[onclick="window.generateAI(\'studio_cta\')"]',
             studio_hashtags: 'button[onclick="window.generateAI(\'studio_hashtags\')"]',
+            studio_pack_fb: 'button[onclick="window.generateAI(\'studio_pack_fb\')"]',
+            studio_pack_tiktok: 'button[onclick="window.generateAI(\'studio_pack_tiktok\')"]',
+            studio_pack_dm: 'button[onclick="window.generateAI(\'studio_pack_dm\')"]',
             pose: 'button[onclick="window.generateAI(\'pose\')"]',
             mentor: 'button[onclick="window.generateAI(\'mentor\')"]'
         }
+    };
+
+    const CONTINUE_ELIGIBLE_TYPES = new Set(['fbpost', 'dm_best', 'tt_script', 'tt_caption', 'tt_post_full', 'mentor']);
+    const shouldShowContinue = (type, resultText = '') => {
+        if (!CONTINUE_ELIGIBLE_TYPES.has(type)) return false;
+        const text = String(resultText || '').trim();
+        return text.endsWith('...') || text.includes('[CONTINUE]') || text.length > 3500;
     };
 
     // --- ✅ 1. ADD THIS BLOCK HERE (Before Auth Listener) ---
@@ -1736,6 +1761,48 @@ window.runAssistant = async function(type) {
             const topic = getValue('csTopic') || getValue('csService') || 'photo studio';
             prompt = `Task: Generate 25 Burmese/English mixed hashtags for ${topic}. Group by reach type (broad, niche, local).`;
             contextTopic = 'Studio Hashtags';
+        } else if (type === 'studio_pack_fb') {
+            const topic = getValue('csTopic') || getValue('csService') || 'photo studio';
+            const tone = getValue('csTone') || 'emotional';
+            prompt = `
+            Task: Build a Facebook Post Creator Pack for "${topic}".
+            Output Sections:
+            1) 3 Hooks
+            2) Main Post (AIDA style, Burmese)
+            3) Short Caption
+            4) CTA Variants (5)
+            5) Hashtag set (15)
+            Tone=${tone}. Make it directly usable for posting today.
+            `;
+            contextTopic = 'Studio FB Pack';
+        } else if (type === 'studio_pack_tiktok') {
+            const topic = getValue('csTopic') || getValue('csService') || 'photo studio';
+            const tone = getValue('csTone') || 'emotional';
+            prompt = `
+            Task: Build a TikTok Content Pack for "${topic}".
+            Output Sections:
+            1) Cover Text (5 options)
+            2) Hook lines (10)
+            3) 30-45s Script with scene beats
+            4) Caption (3 options)
+            5) Hashtags (20)
+            6) CTA lines (5)
+            Tone=${tone}. Keep it short, punchy, and mobile-native.
+            `;
+            contextTopic = 'Studio TikTok Pack';
+        } else if (type === 'studio_pack_dm') {
+            const service = getValue('csService') || 'general';
+            prompt = `
+            Task: Build a DM Reply Pack for studio service: ${service}.
+            Output Sections:
+            1) New inquiry reply (3 tones)
+            2) Price objection reply (5)
+            3) Ghosting follow-up (4)
+            4) Booking close reply (4)
+            5) FAQ mini responses (10)
+            Must be natural Burmese and close-friendly.
+            `;
+            contextTopic = 'Studio DM Pack';
         } else if (type === 'dm_auto_detect') {
             prompt = `Task: Best DM Reply for "${getValue('dmInput')}".`;
             contextTopic = 'Auto DM Reply';
@@ -1903,7 +1970,10 @@ window.runAssistant = async function(type) {
                     }
                 }
                 const btn = document.getElementById(AI_UI_CONFIG.continueBtnIds[type]);
-                if(btn) btn.classList.remove('hidden');
+                if (btn) {
+                    if (shouldShowContinue(type, d.result)) btn.classList.remove('hidden');
+                    else btn.classList.add('hidden');
+                }
             }
             window.trackUsage(prompt, d.result);
         } catch(e) {
