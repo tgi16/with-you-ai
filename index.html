@@ -226,6 +226,9 @@ button { transition: all 0.2s ease; }
                 <button onclick="window.loadView('fbpost')" id="nav-fbpost" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
                     <i class="ph ph-facebook-logo text-lg"></i> Facebook Post
                 </button>
+                <button onclick="window.loadView('studio')" id="nav-studio" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i class="ph ph-sparkle text-lg text-cyan-400"></i> Creative Studio
+                </button>
                 <button onclick="window.loadView('tiktok')" id="nav-tiktok" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
                     <i class="ph ph-tiktok-logo text-lg"></i> TikTok Script
                 </button>
@@ -629,6 +632,143 @@ button { transition: all 0.2s ease; }
     </div>
   </template>
 
+
+  <template id="tpl-studio">
+    <div class="animate-fade-in space-y-6">
+        <div class="flex items-center justify-between">
+            <h2 class="text-xl md:text-2xl font-bold text-cyan-300 flex items-center gap-2"><i class="ph ph-sparkle"></i> Creative Studio</h2>
+            <span class="text-[10px] md:text-xs px-2 py-1 rounded border border-cyan-500/30 bg-cyan-900/20 text-cyan-300">Persona + Tone Engine</span>
+        </div>
+
+        <div class="glass-panel p-6 rounded-2xl border border-cyan-500/20 space-y-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Template</label>
+                    <select id="csTemplate" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white">
+                        <option value="default">Default Conversion Post</option>
+                        <option value="client_showcase">Client Showcase</option>
+                        <option value="behind_the_scenes">Behind The Scenes</option>
+                        <option value="promotion">Promotion / Offer</option>
+                        <option value="educational">Educational Tip</option>
+                        <option value="teaser">Teaser / Coming Soon</option>
+                        <option value="testimonial">Testimonial Post</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Service</label>
+                    <select id="csService" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white">
+                        <option value="general">General</option>
+                        <option value="pre-wedding">Pre-Wedding</option>
+                        <option value="wedding-day">Wedding Day</option>
+                        <option value="family">Family Portrait</option>
+                        <option value="solo-portrait">Solo Portrait</option>
+                        <option value="studio-promo">Studio Promotion</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Persona</label>
+                    <select id="csPersona" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white">
+                        <option value="sales_closer">Sales Closer</option>
+                        <option value="creative_director">Creative Director</option>
+                        <option value="warm_storyteller">Warm Storyteller</option>
+                        <option value="my_brand_voice">My Brand Voice</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Tone</label>
+                    <select id="csTone" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white">
+                        <option value="emotional">Emotional</option>
+                        <option value="professional">Professional</option>
+                        <option value="friendly">Friendly</option>
+                        <option value="urgent">Urgent</option>
+                        <option value="cinematic">Cinematic</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Length</label>
+                    <select id="csLength" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white">
+                        <option value="short">Short</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="long">Long</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Language</label>
+                    <select id="csLanguage" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white">
+                        <option value="burmese_default">Burmese Default</option>
+                        <option value="eng_header_burmese_body">English Header + Burmese Body</option>
+                        <option value="english_only">English Only</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Audience</label>
+                    <input id="csAudience" type="text" placeholder="e.g. Luxury couples, young professionals" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white" />
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Main Topic / Brief</label>
+                <textarea id="csTopic" rows="3" placeholder="Topic, mood, core message..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white resize-none"></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Keywords</label>
+                    <input id="csKeywords" type="text" placeholder="wedding, memories, cinematic" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white" />
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">CTA</label>
+                    <input id="csCTA" type="text" placeholder="Book now, send message..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white" />
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Avoid</label>
+                <input id="csAvoid" type="text" placeholder="robotic words, hard sell..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white" />
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Content Format</label>
+                <div id="csFormats" class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm text-slate-300">
+                    <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="fb_post" checked> FB Post</label>
+                    <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="caption"> Caption</label>
+                    <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="hook_set"> Hook Set</label>
+                    <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="hashtag_pack"> Hashtag Pack</label>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-2 text-sm">
+                <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded text-slate-300"><input id="csIncludeContact" type="checkbox"> Include Contact</label>
+                <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded text-slate-300"><input id="csIncludeDM" type="checkbox"> Include DM Link</label>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <button onclick="window.generateAI('studio_ideas')" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg py-2.5 text-xs font-bold text-slate-200">💡 Ideas</button>
+                <button onclick="window.generateAI('studio_hooks')" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg py-2.5 text-xs font-bold text-slate-200">🎣 Hooks</button>
+                <button onclick="window.generateAI('studio_cta')" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg py-2.5 text-xs font-bold text-slate-200">📣 CTA Variants</button>
+                <button onclick="window.generateAI('studio_hashtags')" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg py-2.5 text-xs font-bold text-slate-200"># Hashtags</button>
+            </div>
+
+            <button onclick="window.generateAI('creative_studio')" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-3 rounded-xl shadow-lg transition">Generate Creative Studio Content</button>
+        </div>
+
+        <div id="studioResultArea" class="hidden glass-panel p-5 rounded-xl border border-cyan-500/30 space-y-3">
+            <div class="flex items-center justify-between">
+                <span class="text-sm font-bold text-cyan-300">Creative Studio Output</span>
+                <button onclick="window.copyText('studioOutput')" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded px-3 py-1.5">Copy</button>
+            </div>
+            <div id="studioOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed"></div>
+            <button id="studioContinueBtn" onclick="window.continueAI('creative_studio')" class="hidden w-full py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded text-cyan-300 text-xs font-bold">Continue Writing</button>
+        </div>
+    </div>
+  </template>
+
   <template id="tpl-fbpost">
     <div class="animate-fade-in space-y-6">
         <div class="flex items-center justify-between">
@@ -719,6 +859,11 @@ button { transition: all 0.2s ease; }
                 <option value="tt_post_full">TikTok Full Post</option>
                 <option value="creative_post">Creative Post</option>
                 <option value="creative_director">Creative Plan</option>
+                <option value="creative_studio">Creative Studio</option>
+                <option value="studio_ideas">Studio Ideas</option>
+                <option value="studio_hooks">Studio Hooks</option>
+                <option value="studio_cta">Studio CTA</option>
+                <option value="studio_hashtags">Studio Hashtags</option>
                 <option value="mentor">Mentor</option>
                 <option value="pose">Pose</option>
                 <option value="ai_chat">AI Chat</option>
@@ -795,6 +940,9 @@ button { transition: all 0.2s ease; }
 
     const DRAFT_FIELDS = [
         'chatInput', 'mentorInput', 'dmInput', 'fbInput', 'ttInput', 'poseInput',
+        'csTopic', 'csAudience', 'csKeywords', 'csCTA', 'csAvoid',
+        'csTemplate', 'csService', 'csPersona', 'csTone', 'csLength', 'csLanguage',
+        'csIncludeContact', 'csIncludeDM',
         'brandPackages', 'brandStyle', 'brandClient', 'brandPhone', 'brandViber', 'brandFB', 'brandTT', 'brandAddr'
     ];
 
@@ -806,15 +954,25 @@ button { transition: all 0.2s ease; }
             if (!el) return;
 
             const stored = localStorage.getItem(draftKey(id));
-            if (stored !== null && el.value !== stored) {
-                el.value = stored;
+            if (stored !== null) {
+                if (el.type === 'checkbox') {
+                    el.checked = stored === '1';
+                } else if (el.value !== stored) {
+                    el.value = stored;
+                }
             }
 
             if (el.dataset.draftBound === '1') return;
             el.dataset.draftBound = '1';
-            el.addEventListener('input', () => {
-                localStorage.setItem(draftKey(id), el.value || '');
-            });
+            const persist = () => {
+                if (el.type === 'checkbox') {
+                    localStorage.setItem(draftKey(id), el.checked ? '1' : '0');
+                } else {
+                    localStorage.setItem(draftKey(id), el.value || '');
+                }
+            };
+            el.addEventListener('input', persist);
+            el.addEventListener('change', persist);
         });
     };
 
@@ -892,17 +1050,22 @@ button { transition: all 0.2s ease; }
             fbpost: 'fbOutput', dm_best: 'dmOutput', timeline: 'tlOutput', tt_caption: 'ttOutput',
             tt_script: 'ttOutput', tt_post_full: 'ttOutput', pose: 'poseOutput', creative_director: 'crOutput',
             creative_post: 'crOutput', creative_tt_text: 'crOutput', dm_auto_detect: 'dmOutput',
+            creative_studio: 'studioOutput', studio_ideas: 'studioOutput', studio_hooks: 'studioOutput',
+            studio_cta: 'studioOutput', studio_hashtags: 'studioOutput',
             manager_daily: 'mgrOutput', mentor: 'mentorOutput'
         },
         areaIds: {
             fbpost: 'fbResultArea', dm_best: 'dmResultArea', timeline: 'tlResultArea', tt_caption: 'ttResultArea',
             tt_script: 'ttResultArea', tt_post_full: 'ttResultArea', pose: 'poseResultArea',
             creative_director: 'crResultArea', creative_post: 'crResultArea', creative_tt_text: 'crResultArea',
+            creative_studio: 'studioResultArea', studio_ideas: 'studioResultArea', studio_hooks: 'studioResultArea',
+            studio_cta: 'studioResultArea', studio_hashtags: 'studioResultArea',
             dm_auto_detect: 'dmResultArea', manager_daily: 'mgrResultArea', mentor: 'mentorResultArea'
         },
         continueBtnIds: {
             fbpost: 'fbContinueBtn', dm_best: 'dmContinueBtn', timeline: 'tlContinueBtn', tt_caption: 'ttContinueBtn',
             tt_script: 'ttContinueBtn', tt_post_full: 'ttContinueBtn', manager_daily: 'mgrContinueBtn',
+            creative_studio: 'studioContinueBtn',
             dm_auto_detect: 'dmContinueBtn', mentor: 'mentorContinueBtn'
         },
         actionButtonSelectors: {
@@ -917,6 +1080,11 @@ button { transition: all 0.2s ease; }
             tt_script: 'button[onclick="window.generateAI(\'tt_script\')"]',
             tt_caption: 'button[onclick="window.generateAI(\'tt_caption\')"]',
             tt_post_full: 'button[onclick="window.generateAI(\'tt_post_full\')"]',
+            creative_studio: 'button[onclick="window.generateAI(\'creative_studio\')"]',
+            studio_ideas: 'button[onclick="window.generateAI(\'studio_ideas\')"]',
+            studio_hooks: 'button[onclick="window.generateAI(\'studio_hooks\')"]',
+            studio_cta: 'button[onclick="window.generateAI(\'studio_cta\')"]',
+            studio_hashtags: 'button[onclick="window.generateAI(\'studio_hashtags\')"]',
             pose: 'button[onclick="window.generateAI(\'pose\')"]',
             mentor: 'button[onclick="window.generateAI(\'mentor\')"]'
         }
@@ -1504,6 +1672,70 @@ window.runAssistant = async function(type) {
              Topic Context: ${topic}
              `;
             contextTopic = `TikTok Text Mode (${topic})`;
+        } else if (type === 'creative_studio') {
+            const persona = getValue('csPersona') || 'sales_closer';
+            const tone = getValue('csTone') || 'emotional';
+            const length = getValue('csLength') || 'medium';
+            const language = getValue('csLanguage') || 'burmese_default';
+            const template = getValue('csTemplate') || 'default';
+            const service = getValue('csService') || 'general';
+            const topic = getValue('csTopic');
+            const audience = getValue('csAudience');
+            const keywords = getValue('csKeywords');
+            const cta = getValue('csCTA');
+            const avoid = getValue('csAvoid');
+            const includeContact = document.getElementById('csIncludeContact')?.checked ? 'yes' : 'no';
+            const includeDM = document.getElementById('csIncludeDM')?.checked ? 'yes' : 'no';
+            const formats = Array.from(document.querySelectorAll('#csFormats input[type="checkbox"]:checked')).map((el) => el.value).join(', ') || 'fb_post';
+            if (!topic) {
+                prompt = 'Return this exact message in Burmese: "Creative Brief / Topic ထည့်ပါ"';
+            } else {
+                prompt = `
+                ROLE: You are Sales Master AI's Creative Studio engine for With You Studio.
+                TASK: Generate conversion-ready marketing content.
+
+                Persona: ${persona}
+                Tone: ${tone}
+                Length: ${length}
+                Language mode: ${language}
+                Template: ${template}
+                Service type: ${service}
+                Target audience: ${audience || 'General audience'}
+                Topic: ${topic}
+                Keywords: ${keywords || 'none'}
+                CTA: ${cta || 'Ask to message for booking'}
+                Avoid: ${avoid || 'robotic language'}
+                Include contact: ${includeContact}
+                Include direct message link: ${includeDM}
+                Formats required: ${formats}
+
+                RULES:
+                - Must feel human, persuasive, and natural Burmese.
+                - Adapt writing based on persona and tone exactly.
+                - Use brand voice if persona is my_brand_voice.
+                - Output clean sections by format.
+                - If format includes hook_set, provide at least 5 hooks.
+                - If format includes hashtag_pack, provide 10 relevant hashtags.
+                `;
+            }
+            contextTopic = `Creative Studio: ${topic || 'Untitled'}`;
+        } else if (type === 'studio_ideas') {
+            const service = getValue('csService') || 'general';
+            const tone = getValue('csTone') || 'emotional';
+            prompt = `Task: Give 8 social content ideas for ${service} in Burmese. Tone=${tone}. Add one-line hook for each.`;
+            contextTopic = 'Studio Ideas';
+        } else if (type === 'studio_hooks') {
+            const topic = getValue('csTopic') || getValue('csService') || 'photo studio';
+            prompt = `Task: Create 15 catchy Burmese hooks for topic: ${topic}. Mix emotional, curiosity, and authority styles.`;
+            contextTopic = 'Studio Hooks';
+        } else if (type === 'studio_cta') {
+            const service = getValue('csService') || 'general';
+            prompt = `Task: Write 12 Burmese CTA lines for ${service}. Include soft close and urgency variants.`;
+            contextTopic = 'Studio CTA';
+        } else if (type === 'studio_hashtags') {
+            const topic = getValue('csTopic') || getValue('csService') || 'photo studio';
+            prompt = `Task: Generate 25 Burmese/English mixed hashtags for ${topic}. Group by reach type (broad, niche, local).`;
+            contextTopic = 'Studio Hashtags';
         } else if (type === 'dm_auto_detect') {
             prompt = `Task: Best DM Reply for "${getValue('dmInput')}".`;
             contextTopic = 'Auto DM Reply';
@@ -1603,6 +1835,8 @@ window.runAssistant = async function(type) {
         // Data Loading
         let packages = "Not specified";
         let contactInfo = "Not set";
+        let brandStyle = "Cinematic, Emotional";
+        let brandClient = "Wedding clients";
         
         if (userId) { 
             try { 
@@ -1610,6 +1844,8 @@ window.runAssistant = async function(type) {
                 if(s.exists()) {
                     const d = s.data();
                     if(d.brandPackages) packages = d.brandPackages;
+                    if(d.brandStyle) brandStyle = d.brandStyle;
+                    if(d.brandClient) brandClient = d.brandClient;
                     contactInfo = `Phone: ${d.brandPhone || ''}, Viber: ${d.brandViber || ''}`;
                 }
             } catch(e){ console.log("Brand fetch error", e); } 
@@ -1629,7 +1865,7 @@ window.runAssistant = async function(type) {
         5. ✨ FORMATTING: Use Emojis (📸, ✨, 👰) strategically to break up text. Use Bullet points for readability.
 
         === 🧠 KNOWLEDGE BASE ===
-        - Studio Data: Packages=[${packages}], Contact=[${contactInfo}].
+        - Studio Data: Packages=[${packages}], Contact=[${contactInfo}], BrandStyle=[${brandStyle}], TargetClient=[${brandClient}].
         - Location context: Taunggyi, Inle, Kalaw (Shan State vibes).
 
         === 🎯 GOAL PER TYPE ===
