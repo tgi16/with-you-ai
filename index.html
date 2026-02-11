@@ -692,6 +692,7 @@ button { transition: all 0.2s ease; }
             <div id="tlOutput" class="whitespace-pre-wrap text-sm text-slate-200 font-mono"></div>
             <div class="mt-4 flex gap-2">
                 <button onclick="window.downloadFile('Schedule.txt', 'tlOutput')" class="text-sm text-blue-400 border border-blue-900 p-2 rounded">⬇️ Download</button>
+                <button onclick="window.downloadMarkdownFile('Schedule.md', 'tlOutput')" class="text-sm text-indigo-300 border border-indigo-900 p-2 rounded">📝 Markdown</button>
                 <button onclick="window.copyText('tlOutput')" class="text-sm text-slate-400 border border-slate-700 p-2 rounded">📋 Copy</button>
             </div>
         </div>
@@ -704,7 +705,30 @@ button { transition: all 0.2s ease; }
             <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2"><i class="ph ph-clock-counter-clockwise text-green-400"></i> Cloud History</h2>
             <button onclick="window.clearHistory()" class="text-red-400 text-xs border border-red-900/50 px-3 py-1.5 rounded">Clear All</button>
         </div>
-        <p class="text-sm text-slate-500 mb-4">Saved securely on Firebase.</p>
+        <p class="text-sm text-slate-500 mb-2">Saved securely on Firebase.</p>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4">
+            <input id="historySearch" type="text" placeholder="Search topic/content..." class="md:col-span-2 bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white" />
+            <select id="historyTypeFilter" class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+                <option value="all">All Types</option>
+                <option value="fbpost">FB Post</option>
+                <option value="dm_best">DM Sales</option>
+                <option value="dm_auto_detect">Auto DM</option>
+                <option value="timeline">Timeline</option>
+                <option value="tt_script">TikTok Script</option>
+                <option value="tt_caption">TikTok Caption</option>
+                <option value="tt_post_full">TikTok Full Post</option>
+                <option value="creative_post">Creative Post</option>
+                <option value="creative_director">Creative Plan</option>
+                <option value="mentor">Mentor</option>
+                <option value="pose">Pose</option>
+                <option value="ai_chat">AI Chat</option>
+            </select>
+            <select id="historySort" class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="az">Topic A-Z</option>
+            </select>
+        </div>
         <div id="historyListContainer" class="space-y-4 pb-20"></div>
     </div>
   </template>
@@ -737,6 +761,7 @@ button { transition: all 0.2s ease; }
 
     let unsubscribeUsage = null;
     let unsubscribeHistory = null;
+    let historyItemsCache = [];
 
     const escapeHtml = (str = "") => String(str)
       .replace(/&/g, '&amp;')
@@ -765,6 +790,32 @@ button { transition: all 0.2s ease; }
         }
 
         return '/api/generate';
+    };
+
+
+    const DRAFT_FIELDS = [
+        'chatInput', 'mentorInput', 'dmInput', 'fbInput', 'ttInput', 'poseInput',
+        'brandPackages', 'brandStyle', 'brandClient', 'brandPhone', 'brandViber', 'brandFB', 'brandTT', 'brandAddr'
+    ];
+
+    const draftKey = (id) => `draft:${id}`;
+
+    const setupDraftAutosave = () => {
+        DRAFT_FIELDS.forEach((id) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+
+            const stored = localStorage.getItem(draftKey(id));
+            if (stored !== null && el.value !== stored) {
+                el.value = stored;
+            }
+
+            if (el.dataset.draftBound === '1') return;
+            el.dataset.draftBound = '1';
+            el.addEventListener('input', () => {
+                localStorage.setItem(draftKey(id), el.value || '');
+            });
+        });
     };
 
     const requireAuth = (message = 'Login required!') => {
@@ -1050,6 +1101,7 @@ window.runAssistant = async function(type) {
                 const tpl = document.getElementById('tpl-recent');
                 if (tpl) container.appendChild(tpl.content.cloneNode(true));
                 renderHistoryList();
+                setupDraftAutosave();
             }
         };
 
@@ -1063,6 +1115,7 @@ window.runAssistant = async function(type) {
             }
         }
         window.currentView = viewId;
+        setupDraftAutosave();
     }
 
     // --- HTML STRINGS ---
@@ -1126,26 +1179,60 @@ window.runAssistant = async function(type) {
         if (!userId) return;
         try { await addDoc(collection(db, 'artifacts', appId, 'users', userId, 'history'), { type: type, topic: topic || "Generated Content", content: content, date: new Date().toLocaleString(), timestamp: Date.now() }); } catch(e) { console.error(e); }
     }
-    function renderHistoryList() {
-        if (!userId) return;
+    function bindHistoryControls() {
+        const searchEl = document.getElementById('historySearch');
+        const typeEl = document.getElementById('historyTypeFilter');
+        const sortEl = document.getElementById('historySort');
+        [searchEl, typeEl, sortEl].forEach((el) => {
+            if (!el || el.dataset.bound === '1') return;
+            el.dataset.bound = '1';
+            el.addEventListener('input', applyHistoryFilters);
+            el.addEventListener('change', applyHistoryFilters);
+        });
+    }
+
+    function applyHistoryFilters() {
         const c = document.getElementById('historyListContainer');
-        if(!c) return;
-        if (unsubscribeHistory) unsubscribeHistory();
-        const q = query(collection(db, 'artifacts', appId, 'users', userId, 'history'), orderBy('timestamp', 'desc'), limit(30));
-        unsubscribeHistory = onSnapshot(q, (snapshot) => {
-            const items = [];
-            snapshot.forEach((doc) => { items.push({ id: doc.id, ...doc.data() }); });
-            if (!items.length) {
-                c.innerHTML = "<div class='text-center text-slate-500 py-10'>No recent activity on Cloud.</div>";
-                return;
-            }
-            c.innerHTML = items.map(i => {
-                const topic = escapeHtml(i.topic || 'Generated Content');
-                const type = escapeHtml(i.type || 'general');
-                const date = escapeHtml(i.date || '');
-                const content = escapeHtml(i.content || '');
-                const encodedCopy = encodeURIComponent(i.content || '');
-                return `<div class="glass-panel p-6 rounded-lg border-l-4 border-green-500 mb-2 group relative">
+        if (!c) return;
+
+        const search = (document.getElementById('historySearch')?.value || '').trim().toLowerCase();
+        const typeFilter = document.getElementById('historyTypeFilter')?.value || 'all';
+        const sort = document.getElementById('historySort')?.value || 'newest';
+
+        let items = [...historyItemsCache];
+
+        if (search) {
+            items = items.filter((i) => {
+                const topic = (i.topic || '').toLowerCase();
+                const content = (i.content || '').toLowerCase();
+                return topic.includes(search) || content.includes(search);
+            });
+        }
+
+        if (typeFilter !== 'all') {
+            items = items.filter((i) => (i.type || '') === typeFilter);
+        }
+
+        if (sort === 'oldest') {
+            items.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+        } else if (sort === 'az') {
+            items.sort((a, b) => String(a.topic || '').localeCompare(String(b.topic || '')));
+        } else {
+            items.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+        }
+
+        if (!items.length) {
+            c.innerHTML = "<div class='text-center text-slate-500 py-10'>No matching history found.</div>";
+            return;
+        }
+
+        c.innerHTML = items.map(i => {
+            const topic = escapeHtml(i.topic || 'Generated Content');
+            const type = escapeHtml(i.type || 'general');
+            const date = escapeHtml(i.date || '');
+            const content = escapeHtml(i.content || '');
+            const encodedCopy = encodeURIComponent(i.content || '');
+            return `<div class="glass-panel p-6 rounded-lg border-l-4 border-green-500 mb-2 group relative">
 <div class="flex justify-between items-start mb-2">
 <div><span class="font-bold text-white text-sm block">${topic}</span><span class="text-[10px] text-slate-400 uppercase bg-slate-800 px-1.5 rounded">${type}</span></div>
 <span class="text-[10px] text-slate-500">${date}</span>
@@ -1155,7 +1242,20 @@ window.runAssistant = async function(type) {
 <button onclick="window.copyEncoded('${encodedCopy}')" class="text-blue-400 text-xs hover:text-white border border-blue-500/30 px-2 py-1 rounded">Copy</button>
 </div>
 </div>`;
-            }).join('');
+        }).join('');
+    }
+
+    function renderHistoryList() {
+        if (!userId) return;
+        const c = document.getElementById('historyListContainer');
+        if(!c) return;
+        bindHistoryControls();
+        if (unsubscribeHistory) unsubscribeHistory();
+        const q = query(collection(db, 'artifacts', appId, 'users', userId, 'history'), orderBy('timestamp', 'desc'), limit(80));
+        unsubscribeHistory = onSnapshot(q, (snapshot) => {
+            historyItemsCache = [];
+            snapshot.forEach((doc) => { historyItemsCache.push({ id: doc.id, ...doc.data() }); });
+            applyHistoryFilters();
         });
     }
 
@@ -1609,8 +1709,17 @@ window.runAssistant = async function(type) {
     };
     window.toggleExpand = (el) => { if(el.classList.contains('line-clamp-3')) el.classList.remove('line-clamp-3'); else el.classList.add('line-clamp-3'); };
     window.downloadFile = (n, id) => { const b = new Blob([document.getElementById(id).innerText],{type:'text/plain'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=n; a.click(); };
+    window.downloadMarkdownFile = (n, id) => {
+        const content = document.getElementById(id)?.innerText || '';
+        const b = new Blob([content], { type: 'text/markdown' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(b);
+        a.download = n;
+        a.click();
+    };
 
     window.loadView('creative'); // Start with Creative
+    setupDraftAutosave();
 
 
 
