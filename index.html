@@ -1120,6 +1120,32 @@ button { transition: all 0.2s ease; }
             || (text.length > 1000 && !/[။.!?]$/.test(text));
     };
 
+    const DIRECT_CONTENT_TYPES = new Set([
+        'fbpost', 'creative_post', 'creative_tt_text', 'creative_studio',
+        'studio_ideas', 'studio_hooks', 'studio_cta', 'studio_hashtags',
+        'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm',
+        'tt_script', 'tt_caption', 'tt_post_full', 'dm_best'
+    ]);
+
+    const sanitizeGeneratedOutput = (type, text = '') => {
+        let out = String(text || '');
+        if (!DIRECT_CONTENT_TYPES.has(type)) return out;
+
+        const lines = out.split('\n');
+        const leadNoise = /(မင်္ဂလာပါ|ကြိုဆိုပါတယ်|creative director|senior sales strategist|i am .*creative director|i'm .*creative director)/i;
+
+        while (lines.length) {
+            const head = (lines[0] || '').trim();
+            if (!head || leadNoise.test(head)) {
+                lines.shift();
+                continue;
+            }
+            break;
+        }
+
+        return lines.join('\n').trim();
+    };
+
     // --- ✅ 1. ADD THIS BLOCK HERE (Before Auth Listener) ---
     
     // Usage Tracking Functions (Hoisted)
@@ -1947,6 +1973,10 @@ window.runAssistant = async function(type) {
         - If TIMELINE: Be "Logical" & "Detailed".
 
         IMPORTANT: Always output COMPLETE responses. Do not cut off.
+        - Start directly with the requested deliverable content.
+        - Do NOT add greeting lines (e.g., "မင်္ဂလာပါ").
+        - Do NOT introduce yourself or mention any role/title.
+        - Do NOT write meta-intro text; output only usable post content.
         `;
         const { prompt, contextTopic } = buildAIPrompt(type, outId, isContinue);
 
@@ -1957,6 +1987,7 @@ window.runAssistant = async function(type) {
                 userMessage: systemPrompt + "\n\n" + prompt,
                 maxOutputTokens
             });
+            const cleanedResult = sanitizeGeneratedOutput(type, d.result);
             
             if(type === 'dm_analyze') {
                 const analysisEl = document.getElementById('dmAnalysisContent');
@@ -1964,27 +1995,27 @@ window.runAssistant = async function(type) {
             } else {
                 const outEl = document.getElementById(outId);
                 if(outEl) {
-                    if(isContinue) outEl.innerText += "\n" + d.result;
-                    else outEl.innerText = d.result;
+                    if(isContinue) outEl.innerText += "\n" + cleanedResult;
+                    else outEl.innerText = cleanedResult;
                     
                     if(type.startsWith('creative') && document.getElementById('crOutputMobile')) {
                         document.getElementById('crOutputMobile').innerText = outEl.innerText;
                     }
 
                     // --- SAVE TO RECENT LOGIC ---
-                    if(d.result && !d.result.includes("Error") && userId) {
+                    if(cleanedResult && !cleanedResult.includes("Error") && userId) {
                          // Manager Plan (သို့) အခြား result တွေကို Recent ထဲသိမ်းပါမယ်
                          await saveToRecents(type, outEl.innerText, contextTopic);
                     }
                 }
                 const btn = document.getElementById(AI_UI_CONFIG.continueBtnIds[type]);
                 if (btn) {
-                    const shouldContinue = typeof d.isCut === 'boolean' ? d.isCut : shouldShowContinue(type, d.result);
+                    const shouldContinue = typeof d.isCut === 'boolean' ? d.isCut : shouldShowContinue(type, cleanedResult);
                     if (shouldContinue) btn.classList.remove('hidden');
                     else btn.classList.add('hidden');
                 }
             }
-            window.trackUsage(prompt, d.result);
+            window.trackUsage(prompt, cleanedResult);
         } catch(e) {
             console.error(e);
             const outEl = document.getElementById(outId);

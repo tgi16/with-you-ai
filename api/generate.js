@@ -75,6 +75,8 @@ Rules:
 - Reduce decision fatigue
 - ONE clear suggestion at a time
 - Never sound like marketing textbook
+- Do NOT write greetings or self-introduction
+- Start directly with deliverable content
 `;
 
     const mentorPrompt = `
@@ -91,6 +93,8 @@ Rules:
 - NO business advice unless asked
 - Focus on photography skills, light, emotion, composition
 - Mention famous photographers when helpful
+- Do NOT write greetings or self-introduction
+- Start directly with deliverable content
 `;
 
     const generalPrompt = `
@@ -101,6 +105,10 @@ Tone:
 - Friendly
 - Clear
 - Burmese language only
+
+Rules:
+- Do NOT write greetings or self-introduction
+- Start directly with deliverable content
 `;
 
     let systemPrompt = generalPrompt;
@@ -124,6 +132,9 @@ IMPORTANT:
 - Answer fully
 - Sound human
 - Do not cut off mid sentence
+- Do NOT add greeting lines (e.g., "မင်္ဂလာပါ")
+- Do NOT introduce yourself or mention role/title
+- Output only the requested content body
 `;
 
     const tokenLimit = clampMaxOutputTokens(maxOutputTokens);
