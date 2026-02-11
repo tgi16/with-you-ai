@@ -929,7 +929,7 @@ button { transition: all 0.2s ease; }
       .replace(/'/g, '&#39;');
 
 
-    const API_TIMEOUT_MS = 20000;
+    const API_TIMEOUT_MS = 45000;
     const API_RETRY_COUNT = 1;
     const DEFAULT_DEV_API_BASE = 'http://localhost:3000';
 
@@ -1887,7 +1887,7 @@ window.runAssistant = async function(type) {
 
         if (isContinue) {
             const currentText = document.getElementById(outId) ? document.getElementById(outId).innerText : '';
-            prompt = `Context: Continue correctly from: "${currentText.slice(-50)}". Finish the sentence/list.`;
+            prompt = `Context: Continue correctly from this output tail: "${currentText.slice(-500)}". Continue seamlessly, do not repeat previous lines, and complete all unfinished sections.`;
         }
 
         return { prompt, contextTopic };
@@ -1982,12 +1982,26 @@ window.runAssistant = async function(type) {
 
         try {
             const longFormTypes = new Set(['creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'fbpost']);
-            const maxOutputTokens = longFormTypes.has(type) ? 1600 : 900;
+            const maxOutputTokens = longFormTypes.has(type) ? 2800 : 1000;
             const d = await callGenerateAPI({
                 userMessage: systemPrompt + "\n\n" + prompt,
                 maxOutputTokens
             });
-            const cleanedResult = sanitizeGeneratedOutput(type, d.result);
+            let cleanedResult = sanitizeGeneratedOutput(type, d.result);
+
+            const initialCut = typeof d.isCut === 'boolean' ? d.isCut : shouldShowContinue(type, cleanedResult);
+            if (!isContinue && initialCut && CONTINUE_ELIGIBLE_TYPES.has(type)) {
+                try {
+                    const follow = await callGenerateAPI({
+                        userMessage: systemPrompt + "\n\nContext: Continue seamlessly from this ending without repeating:\n" + cleanedResult.slice(-500),
+                        maxOutputTokens
+                    }, { timeoutMs: Math.max(API_TIMEOUT_MS, 50000), retries: 0 });
+                    const followText = sanitizeGeneratedOutput(type, follow.result);
+                    if (followText) cleanedResult = (cleanedResult + "\n" + followText).trim();
+                } catch (followErr) {
+                    console.warn('Auto-continue skipped:', followErr?.message || followErr);
+                }
+            }
             
             if(type === 'dm_analyze') {
                 const analysisEl = document.getElementById('dmAnalysisContent');

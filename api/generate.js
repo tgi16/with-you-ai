@@ -170,7 +170,9 @@ IMPORTANT:
     /* ===============================
        CUT-OFF DETECTION
     ================================ */
-    const isCut = result.length > 700 && !/[။.!?]$/.test(result.trim());
+    const trimmed = result.trim();
+    const endsClean = /[။.!?]$/.test(trimmed) || trimmed.endsWith("**") || trimmed.endsWith(")") || trimmed.endsWith("]");
+    const isCut = trimmed.length >= 120 && !endsClean;
 
     return res.status(200).json({
       intent,
