@@ -740,6 +740,9 @@ button { transition: all 0.2s ease; }
                     <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="caption"> Caption</label>
                     <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="hook_set"> Hook Set</label>
                     <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="hashtag_pack"> Hashtag Pack</label>
+                    <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="tiktok_cover"> TikTok Cover</label>
+                    <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="tiktok_script"> TikTok Script</label>
+                    <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="tiktok_caption"> TikTok Caption</label>
                 </div>
             </div>
 
@@ -929,7 +932,7 @@ button { transition: all 0.2s ease; }
       .replace(/'/g, '&#39;');
 
 
-    const API_TIMEOUT_MS = 45000;
+    const API_TIMEOUT_MS = 35000;
     const API_RETRY_COUNT = 1;
     const DEFAULT_DEV_API_BASE = 'http://localhost:3000';
 
@@ -1772,6 +1775,9 @@ window.runAssistant = async function(type) {
                 - Output clean sections by format.
                 - If format includes hook_set, provide at least 5 hooks.
                 - If format includes hashtag_pack, provide 10 relevant hashtags.
+                - If format includes tiktok_cover, provide 5 short on-screen cover texts.
+                - If format includes tiktok_script, provide one 30-45s scene-by-scene script.
+                - If format includes tiktok_caption, provide 3 TikTok captions + one hashtag set.
                 `;
             }
             contextTopic = `Creative Studio: ${topic || 'Untitled'}`;
@@ -1981,8 +1987,9 @@ window.runAssistant = async function(type) {
         const { prompt, contextTopic } = buildAIPrompt(type, outId, isContinue);
 
         try {
+            const packTypes = new Set(['studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm']);
             const longFormTypes = new Set(['creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'fbpost']);
-            const maxOutputTokens = longFormTypes.has(type) ? 2800 : 1000;
+            const maxOutputTokens = packTypes.has(type) ? 2200 : (longFormTypes.has(type) ? 1500 : 850);
             const d = await callGenerateAPI({
                 userMessage: systemPrompt + "\n\n" + prompt,
                 maxOutputTokens
@@ -1990,12 +1997,12 @@ window.runAssistant = async function(type) {
             let cleanedResult = sanitizeGeneratedOutput(type, d.result);
 
             const initialCut = typeof d.isCut === 'boolean' ? d.isCut : shouldShowContinue(type, cleanedResult);
-            if (!isContinue && initialCut && CONTINUE_ELIGIBLE_TYPES.has(type)) {
+            if (!isContinue && initialCut && packTypes.has(type)) {
                 try {
                     const follow = await callGenerateAPI({
                         userMessage: systemPrompt + "\n\nContext: Continue seamlessly from this ending without repeating:\n" + cleanedResult.slice(-500),
                         maxOutputTokens
-                    }, { timeoutMs: Math.max(API_TIMEOUT_MS, 50000), retries: 0 });
+                    }, { timeoutMs: Math.max(API_TIMEOUT_MS, 40000), retries: 0 });
                     const followText = sanitizeGeneratedOutput(type, follow.result);
                     if (followText) cleanedResult = (cleanedResult + "\n" + followText).trim();
                 } catch (followErr) {
