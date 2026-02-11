@@ -1108,11 +1108,16 @@ button { transition: all 0.2s ease; }
         }
     };
 
-    const CONTINUE_ELIGIBLE_TYPES = new Set(['fbpost', 'dm_best', 'tt_script', 'tt_caption', 'tt_post_full', 'mentor']);
+    const CONTINUE_ELIGIBLE_TYPES = new Set([
+        'fbpost', 'dm_best', 'tt_script', 'tt_caption', 'tt_post_full', 'mentor',
+        'creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm'
+    ]);
     const shouldShowContinue = (type, resultText = '') => {
         if (!CONTINUE_ELIGIBLE_TYPES.has(type)) return false;
         const text = String(resultText || '').trim();
-        return text.endsWith('...') || text.includes('[CONTINUE]') || text.length > 3500;
+        return text.endsWith('...')
+            || text.includes('[CONTINUE]')
+            || (text.length > 1000 && !/[။.!?]$/.test(text));
     };
 
     // --- ✅ 1. ADD THIS BLOCK HERE (Before Auth Listener) ---
@@ -1946,8 +1951,11 @@ window.runAssistant = async function(type) {
         const { prompt, contextTopic } = buildAIPrompt(type, outId, isContinue);
 
         try {
+            const longFormTypes = new Set(['creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'fbpost']);
+            const maxOutputTokens = longFormTypes.has(type) ? 1600 : 900;
             const d = await callGenerateAPI({
-                userMessage: systemPrompt + "\n\n" + prompt
+                userMessage: systemPrompt + "\n\n" + prompt,
+                maxOutputTokens
             });
             
             if(type === 'dm_analyze') {
@@ -1971,7 +1979,8 @@ window.runAssistant = async function(type) {
                 }
                 const btn = document.getElementById(AI_UI_CONFIG.continueBtnIds[type]);
                 if (btn) {
-                    if (shouldShowContinue(type, d.result)) btn.classList.remove('hidden');
+                    const shouldContinue = typeof d.isCut === 'boolean' ? d.isCut : shouldShowContinue(type, d.result);
+                    if (shouldContinue) btn.classList.remove('hidden');
                     else btn.classList.add('hidden');
                 }
             }
