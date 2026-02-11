@@ -6,7 +6,7 @@ export const config = {
    AUTO INTENT DETECTOR
 ================================ */
 function detectIntent(text = "") {
-  const t = text.toLowerCase();
+  const t = String(text || "").toLowerCase();
 
   if (/(mentor|ဓာတ်ပုံဆရာ|ဘယ်သူ|လေ့လာ|inspire|inspiration|artist)/i.test(t)) {
     return "mentor";
@@ -23,6 +23,12 @@ function detectIntent(text = "") {
   return "general";
 }
 
+function clampMaxOutputTokens(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return 1200;
+  return Math.min(Math.max(Math.floor(n), 500), 3000);
+}
+
 export default async function handler(req, res) {
   /* ---------- CORS ---------- */
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -35,10 +41,11 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { userMessage, mode } = req.body || {};
+    const { userMessage, prompt, mode, maxOutputTokens } = req.body || {};
+    const inputText = (userMessage || prompt || "").trim();
 
-    if (!userMessage || !userMessage.trim()) {
-      return res.status(400).json({ error: "userMessage is required" });
+    if (!inputText) {
+      return res.status(400).json({ error: "userMessage or prompt is required" });
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
@@ -49,7 +56,7 @@ export default async function handler(req, res) {
     /* ===============================
        FINAL MODE (AUTO SWITCH)
     ================================ */
-    const intent = mode || detectIntent(userMessage);
+    const intent = mode || detectIntent(inputText);
 
     /* ===============================
        SYSTEM PROMPTS
@@ -111,7 +118,7 @@ STUDIO MEMORY:
 With You Photo Studio, Taunggyi
 
 USER:
-${userMessage}
+${inputText}
 
 IMPORTANT:
 - Answer fully
@@ -119,12 +126,13 @@ IMPORTANT:
 - Do not cut off mid sentence
 `;
 
+    const tokenLimit = clampMaxOutputTokens(maxOutputTokens);
+
     /* ===============================
        GEMINI CALL
     ================================ */
     const genRes = await fetch(
-      "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" +
-        apiKey,
+      "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" + apiKey,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -132,7 +140,7 @@ IMPORTANT:
           contents: [{ role: "user", parts: [{ text: finalPrompt }] }],
           generationConfig: {
             temperature: 0.7,
-            maxOutputTokens: 3000
+            maxOutputTokens: tokenLimit
           }
         })
       }
@@ -146,23 +154,20 @@ IMPORTANT:
       });
     }
 
-    const result =
-      genData?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    const result = genData?.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
     /* ===============================
        CUT-OFF DETECTION
     ================================ */
-    const isCut =
-      result.length > 700 && !result.trim().endsWith("။");
+    const isCut = result.length > 700 && !/[။.!?]$/.test(result.trim());
 
     return res.status(200).json({
       intent,
       result,
       isCut
     });
-
   } catch (err) {
-    console.error("❌ Backend error:", err);
+    console.error("Backend error:", err);
     return res.status(500).json({ error: "Server error" });
   }
 }
