@@ -1185,7 +1185,11 @@ button { transition: all 0.2s ease; }
         'creative_director', 'creative_post', 'creative_tt_text', 'creative_brand_idea',
         'creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm'
     ]);
-    const END_MARKER_TYPES = new Set(['creative_director', 'creative_post', 'creative_tt_text', 'creative_brand_idea']);
+    const END_MARKER_TYPES = new Set([
+        'creative_director', 'creative_post', 'creative_tt_text', 'creative_brand_idea',
+        'creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm',
+        'tt_script', 'tt_post_full'
+    ]);
     const hasEndMarker = (type, text = '') => {
         if (!END_MARKER_TYPES.has(type)) return null;
         return /\[END\]\s*$/i.test(String(text || '').trim());
@@ -1229,6 +1233,19 @@ button { transition: all 0.2s ease; }
         while (lines.length) {
             const head = (lines[0] || '').trim();
             if (!head || leadNoise.test(head)) {
+                lines.shift();
+                continue;
+            }
+            break;
+        }
+
+        while (lines.length) {
+            const head = (lines[0] || '').trim();
+            if (!head) {
+                lines.shift();
+                continue;
+            }
+            if (/^(here('| i)?s|below is|final ready|requested content|output|ဒီမှာ|အောက်မှာ)/i.test(head)) {
                 lines.shift();
                 continue;
             }
@@ -1311,6 +1328,24 @@ button { transition: all 0.2s ease; }
     };
 
     const getMissingSections = (type, text = '') => {
+        if (type === 'creative_post') {
+            const { onFB, onTT } = getCreativePlatformSelection();
+            const hay = String(text || '');
+            const fbRules = [
+                { key: 'Facebook Final Post', test: /(facebook final post)/i },
+                { key: 'Facebook Caption', test: /(caption|စာညွှန်း)/i },
+                { key: 'Facebook Hashtags', test: /(hashtag|#)/i }
+            ];
+            const ttRules = [
+                { key: 'TikTok Final Pack', test: /(tiktok final pack)/i },
+                { key: 'TikTok Cover Text', test: /(cover text)/i },
+                { key: 'TikTok Caption', test: /(caption|စာညွှန်း)/i },
+                { key: 'TikTok Hashtags', test: /(hashtag|#)/i }
+            ];
+            const activeRules = onFB && onTT ? [...fbRules, ...ttRules] : (onFB ? fbRules : ttRules);
+            return activeRules.filter((r) => !r.test.test(hay)).map((r) => r.key);
+        }
+
         const rules = REQUIRED_SECTION_RULES[type];
         if (!rules || !rules.length) return [];
         const hay = String(text || '');
@@ -1880,6 +1915,15 @@ window.runAssistant = async function(type) {
     }
 
 
+    const getCreativePlatformSelection = () => {
+        const onFB = document.getElementById('crFB')?.checked !== false;
+        const onTT = document.getElementById('crTT')?.checked === true;
+        if (onFB && onTT) return { onFB: true, onTT: true, label: 'Facebook + TikTok' };
+        if (onFB) return { onFB: true, onTT: false, label: 'Facebook only' };
+        if (onTT) return { onFB: false, onTT: true, label: 'TikTok only' };
+        return { onFB: true, onTT: false, label: 'Facebook only' };
+    };
+
     function buildAIPrompt(type, outId, isContinue) {
         let prompt = '';
         let contextTopic = 'General Content';
@@ -1890,26 +1934,70 @@ window.runAssistant = async function(type) {
             contextTopic = `Manager Plan (${focus})`;
         } else if (type === 'creative_director') {
             const focus = getValue('crFocus') || 'Anything';
+            const { onFB, onTT, label } = getCreativePlatformSelection();
+            const perDay = onFB && onTT
+                ? 'Day X: Facebook idea (1), TikTok idea (1), Hook (2), CTA (2)'
+                : (onFB ? 'Day X: Facebook idea (2), Hook (3), CTA (2)' : 'Day X: TikTok idea (2), Hook (5), CTA (2)');
             prompt = `
             Task: Create a complete 3-Day Content Plan for "${focus}".
+            Platforms: ${label}
             Output format (strict):
-            Day 1: FB idea (1), TikTok idea (1), Hook (2), CTA (2)
-            Day 2: FB idea (1), TikTok idea (1), Hook (2), CTA (2)
-            Day 3: FB idea (1), TikTok idea (1), Hook (2), CTA (2)
+            Day 1: ${perDay.replace('Day X: ', '')}
+            Day 2: ${perDay.replace('Day X: ', '')}
+            Day 3: ${perDay.replace('Day X: ', '')}
             Execution checklist (5 bullets).
+            No explanation, no planning notes outside the required sections.
             `;
             contextTopic = 'Creative Plan';
         } else if (type === 'creative_post') {
             const focus = getValue('crFocus') || 'Anything';
+            const photo = getValue('crPhotoContext') || 'no photo context provided';
+            const { onFB, onTT, label } = getCreativePlatformSelection();
+            const outputSections = onFB && onTT
+                ? `
+            1) Facebook Final Post:
+            - Hook lines (3)
+            - Main Post (AIDA, one complete version)
+            - Caption (2 versions)
+            - CTA lines (4)
+            - Hashtag set (12)
+
+            2) TikTok Final Pack:
+            - Cover text (5)
+            - Hook lines (10)
+            - On-screen text flow (8 lines)
+            - Caption (3)
+            - Hashtag set (12)
+            - Comment pin (2)
+            `
+                : onFB
+                    ? `
+            1) Facebook Final Post:
+            - Hook lines (3)
+            - Main Post (AIDA, one complete version)
+            - Caption (2 versions)
+            - CTA lines (4)
+            - Hashtag set (12)
+            `
+                    : `
+            1) TikTok Final Pack:
+            - Cover text (5)
+            - Hook lines (10)
+            - On-screen text flow (8 lines)
+            - Caption (3)
+            - Hashtag set (12)
+            - Comment pin (2)
+            `;
             prompt = `
-            Task: Write a complete Facebook Post Pack about "${focus}".
+            Task: Generate FINAL READY-TO-POST content only.
+            Focus: ${focus}
+            Photo context: ${photo}
+            Platforms: ${label}
             Output sections (strict):
-            1) Hook lines (3)
-            2) Main Post (AIDA, one complete version)
-            3) Caption (2 versions)
-            4) CTA lines (4)
-            5) Hashtag set (12)
+            ${outputSections}
             Must be ready-to-post Burmese content.
+            Output only final content blocks (no explanation, no preface, no notes).
+            Start directly from the first required heading.
             `;
             contextTopic = 'Creative Post';
         } else if (type === 'creative_tt_text') {
@@ -2282,7 +2370,7 @@ window.runAssistant = async function(type) {
                 }
             }
 
-            const autoContinueTypes = new Set(['creative_director', 'creative_post', 'creative_tt_text', 'creative_brand_idea', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'tt_script', 'tt_caption', 'tt_post_full']);
+            const autoContinueTypes = new Set(['creative_director', 'creative_post', 'creative_tt_text', 'creative_brand_idea', 'creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'tt_script', 'tt_caption', 'tt_post_full']);
             let needsMore = typeof d.isCut === 'boolean' ? d.isCut : shouldShowContinue(type, cleanedResult);
 
             // Full mode: allow automatic continuation for completeness.

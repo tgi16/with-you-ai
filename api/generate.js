@@ -26,7 +26,25 @@ function detectIntent(text = "") {
 function clampMaxOutputTokens(value) {
   const n = Number(value);
   if (!Number.isFinite(n)) return 1200;
-  return Math.min(Math.max(Math.floor(n), 500), 3000);
+  return Math.min(Math.max(Math.floor(n), 500), 4096);
+}
+
+function extractTextFromCandidate(candidate = {}) {
+  return candidate?.content?.parts?.[0]?.text || "";
+}
+
+function looksIncomplete(text = "") {
+  const trimmed = String(text || "").trim();
+  if (!trimmed) return false;
+
+  const lines = trimmed.split("\n").map((x) => x.trim()).filter(Boolean);
+  const lastLine = lines[lines.length - 1] || trimmed;
+  const endsClean = /[။.!?…]$/.test(lastLine)
+    || /[\])}"'”’]$/.test(lastLine)
+    || /^#/.test(lastLine)
+    || /[:;]$/.test(lastLine);
+
+  return trimmed.length > 1100 && !endsClean;
 }
 
 export default async function handler(req, res) {
@@ -129,20 +147,20 @@ IMPORTANT:
 
     const tokenLimit = clampMaxOutputTokens(maxOutputTokens);
 
-    const genRes = await fetch(
-      "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" + apiKey,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ role: "user", parts: [{ text: finalPrompt }] }],
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: tokenLimit
-          }
-        })
-      }
-    );
+    const geminiUrl = "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" + apiKey;
+    const generationConfig = {
+      temperature: 0.7,
+      maxOutputTokens: tokenLimit
+    };
+
+    const genRes = await fetch(geminiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ role: "user", parts: [{ text: finalPrompt }] }],
+        generationConfig
+      })
+    });
 
     const raw = await genRes.text();
     let genData = {};
@@ -159,18 +177,50 @@ IMPORTANT:
     }
 
     const candidate = genData?.candidates?.[0] || {};
-    const result = candidate?.content?.parts?.[0]?.text || "";
+    let result = extractTextFromCandidate(candidate);
+    let finishReason = String(candidate?.finishReason || "").toUpperCase();
+    let trimmed = result.trim();
 
-    const finishReason = String(candidate?.finishReason || "").toUpperCase();
-    const trimmed = result.trim();
-    const lines = trimmed.split("\n").map((x) => x.trim()).filter(Boolean);
-    const lastLine = lines[lines.length - 1] || trimmed;
-    const endsClean = /[။.!?…]$/.test(lastLine)
-      || /[\])}"'”’]$/.test(lastLine)
-      || /^#/.test(lastLine)
-      || /[:;]$/.test(lastLine);
-    const heuristicCut = trimmed.length > 1100 && !endsClean;
-    const isCut = finishReason === "MAX_TOKENS" ? true : heuristicCut;
+    const likelyCut = finishReason === "MAX_TOKENS" || looksIncomplete(trimmed);
+    if (likelyCut && trimmed) {
+      try {
+        const continuationPrompt = `
+Continue the unfinished content below.
+Rules:
+- Return ONLY the missing remaining lines.
+- Do NOT repeat any line from existing content.
+- Keep same tone/language/format.
+- Finish all open sections fully.
+
+Existing content:
+${trimmed.slice(-1200)}
+`;
+
+        const contRes = await fetch(geminiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ role: "user", parts: [{ text: continuationPrompt }] }],
+            generationConfig
+          })
+        });
+
+        if (contRes.ok) {
+          const contData = await contRes.json();
+          const contCandidate = contData?.candidates?.[0] || {};
+          const contText = extractTextFromCandidate(contCandidate).trim();
+          if (contText) {
+            result = `${trimmed}\n${contText}`.trim();
+            trimmed = result.trim();
+            finishReason = String(contCandidate?.finishReason || finishReason || "").toUpperCase();
+          }
+        }
+      } catch (contErr) {
+        console.warn("Continuation pass skipped:", contErr?.message || contErr);
+      }
+    }
+
+    const isCut = finishReason === "MAX_TOKENS" ? true : looksIncomplete(trimmed);
 
     if (!trimmed) {
       return res.status(200).json({
