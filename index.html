@@ -1647,9 +1647,7 @@ Return STRICT JSON array only:
         studio_pack_tiktok: [
             { key: 'Cover Text', test: /(cover text)/i },
             { key: 'Hooks', test: /(hook|hooks)/i },
-            { key: 'Script', test: /(script|scene)/i },
-            { key: 'Caption', test: /(caption)/i },
-            { key: 'Hashtags', test: /(hashtag|#)/i }
+            { key: 'Caption', test: /(caption)/i }
         ],
         creative_studio: [
             { key: 'Facebook Content', test: /(facebook|fb post|fb)/i },
@@ -1657,7 +1655,10 @@ Return STRICT JSON array only:
         ],
         studio_campaign: [
             { key: 'Facebook Final Post', test: /(facebook final post)/i },
-            { key: 'TikTok Final Pack', test: /(tiktok final pack)/i }
+            { key: 'TikTok Final Pack', test: /(tiktok final pack)/i },
+            { key: 'TikTok Cover Text', test: /(cover text)/i },
+            { key: 'TikTok Hooks', test: /(hook|hooks)/i },
+            { key: 'TikTok Captions', test: /(caption|captions)/i }
         ],
         studio_hook_pro: [
             { key: 'Question Hooks', test: /(question hooks)/i },
@@ -2571,15 +2572,13 @@ Rules:
             const tone = getValue('csTone') || 'emotional';
             prompt = `
             Task: Build a TikTok Content Pack for "${topic}".
-            Output Sections:
-            1) Cover Text (5 options)
-            2) Hook lines (10)
-            3) 30-45s Script with scene beats
-            4) Caption (3 options)
-            5) Hashtags (20)
-            6) CTA lines (5)
+            Output Sections (hard-lock):
+            1) Cover Text (3 options only)
+            2) Hook lines (6 only)
+            3) Captions (2 only)
             Tone=${tone}. Keep it short, punchy, and mobile-native.
-            Return TikTok content only. No intro/preface. Do not add "Video Concept" section.
+            Return TikTok content only. No intro/preface.
+            Do not add "Video Concept", script, hashtag, CTA, or any extra section.
             `;
             contextTopic = 'Studio TikTok Pack';
         } else if (type === 'studio_pack_dm') {
@@ -2616,19 +2615,16 @@ Rules:
             - Hashtags (12)
 
             2) TikTok Final Pack:
-            - Cover Text (5)
-            - Hook lines (10)
-            - On-screen text flow (8 lines)
-            - Captions (3)
-            - Hashtags (12)
-            - Comment Pin (2)
+            - Cover Text (3 only)
+            - Hook lines (6 only)
+            - Captions (2 only)
 
             Rules:
             - Final ready-to-post content only
             - Natural Burmese, no greeting/self intro
             - No explanation or planning notes
             - No intro sentence before section 1
-            - Do not add "Video Concept" section
+            - Do not add "Video Concept", script, hashtag, CTA, comment pin, or extra section for TikTok
             - Output must contain only section 1 and section 2
             `;
             contextTopic = `One-Click Campaign: ${topic}`;
@@ -2896,6 +2892,65 @@ Rules:
                     } catch (refillErr) {
                         console.warn('Missing-sections refill skipped:', refillErr?.message || refillErr);
                     }
+                }
+            }
+
+            // Hard-lock gate for TikTok output shape to keep exact counts.
+            if (!isContinue && (type === 'studio_pack_tiktok' || type === 'studio_campaign')) {
+                try {
+                    const hardLockPrompt = type === 'studio_pack_tiktok'
+                        ? (
+`Reformat this draft into STRICT final output with exact shape.
+
+Required output (only these 3 sections):
+1) Cover Text:
+- exactly 3 lines
+2) Hook lines:
+- exactly 6 lines
+3) Captions:
+- exactly 2 lines
+
+Rules:
+- Keep persuasive Burmese suitable for converting photo clients.
+- No intro sentence, no explanation.
+- Do NOT include Video Concept, script, hashtags, CTA, comment pin, or any extra section.
+
+Draft:
+${cleanedResult}`
+                        )
+                        : (
+`Reformat this draft into STRICT final campaign output with exact sections.
+
+Required output:
+1) Facebook Final Post:
+- Hook lines (3)
+- Main Post (1 full AIDA version)
+- Caption (2)
+- CTA lines (3)
+- Hashtags (12)
+
+2) TikTok Final Pack:
+- Cover Text (exactly 3)
+- Hook lines (exactly 6)
+- Captions (exactly 2)
+
+Rules:
+- No intro sentence, no explanation.
+- Do NOT include Video Concept, script, hashtags in TikTok section, comment pin, or extra sections.
+- Output only section 1 and section 2.
+
+Draft:
+${cleanedResult}`
+                        );
+
+                    const hardLock = await callGenerateAPI({
+                        userMessage: systemPrompt + "\n\n" + hardLockPrompt,
+                        maxOutputTokens
+                    }, { timeoutMs: Math.max(API_TIMEOUT_MS, 40000), retries: 0 });
+                    const locked = sanitizeGeneratedOutput(type, hardLock.result);
+                    if (locked) cleanedResult = locked;
+                } catch (hardErr) {
+                    console.warn('Hard-lock pass skipped:', hardErr?.message || hardErr);
                 }
             }
             
