@@ -630,6 +630,15 @@ button { transition: all 0.2s ease; }
                                 <i class="ph ph-lightbulb"></i> အကြံဉာဏ်အသစ်များ ရယူရန်
                             </button>
                         </div>
+                        <div class="bg-slate-900/40 border border-slate-700 rounded-xl p-3 space-y-2">
+                            <div class="text-[11px] font-bold text-cyan-300 uppercase tracking-wide">3-Layer Assistants</div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                <button id="btnResearchAssistant" onclick="window.runResearchAssistant()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-100 font-bold py-2.5 rounded-lg text-xs transition active:scale-95">1) Research Assistant</button>
+                                <button id="btnStrategyAssistant" onclick="window.runStrategyAssistant()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-100 font-bold py-2.5 rounded-lg text-xs transition active:scale-95">2) Strategy Assistant</button>
+                            </div>
+                            <button id="btnAutoLayerAssistant" onclick="window.runLayeredAssistants()" class="w-full bg-cyan-700 hover:bg-cyan-600 border border-cyan-500 text-white font-bold py-2.5 rounded-lg text-xs transition active:scale-95">Auto Run (1 + 2 + Ideas)</button>
+                            <div class="text-[10px] text-slate-400">Flow: Research → Strategy → Idea Picker (3) → Final Generate</div>
+                        </div>
 
                         <div id="csIdeaPicker" class="hidden bg-slate-900/70 border border-cyan-500/30 rounded-xl p-4 space-y-3">
                             <div class="text-[11px] font-bold text-cyan-300 uppercase tracking-wide">ရွေးချယ်ရန် ခေါင်းစဉ် (၃ ခု)</div>
@@ -1201,6 +1210,8 @@ button { transition: all 0.2s ease; }
     };
 
     let currentTemplateGuide = '';
+    let latestResearchBrief = '';
+    let latestStrategyBrief = '';
     const TEMPLATE_PRESETS = {
         default: {
             tone: 'emotional',
@@ -1443,6 +1454,13 @@ Return STRICT JSON array only:
             btn.innerHTML = btn.dataset.originalLabel;
             delete btn.dataset.originalLabel;
         }
+    };
+
+    const setCreativeOutput = (text = '') => {
+        const out = document.getElementById('crOutput');
+        const area = document.getElementById('crResultArea');
+        if (out) out.innerText = String(text || '').trim();
+        if (area) area.classList.remove('hidden');
     };
 
     const callGenerateAPI = async (payload, opts = {}) => {
@@ -1915,6 +1933,8 @@ Platform target: ${platformLabel}
 Tone: ${tone}
 Template guide: ${currentTemplateGuide || 'none'}
 Context hint: ${hintTopic || 'none'}
+Research brief (if any): ${latestResearchBrief || 'none'}
+Strategy brief (if any): ${latestStrategyBrief || 'none'}
 
 Trend hints:
 - Use one trend angle each from: Storytelling Moment, Transformation/Before-After, Social Proof/Testimonial.
@@ -1993,6 +2013,150 @@ Return STRICT JSON array only:
     window.showToast(getApiErrorMessage(e, 'Idea generation failed'));
   } finally {
     setButtonBusy(triggerBtn, false);
+  }
+};
+
+window.runResearchAssistant = async function() {
+  const btn = document.getElementById('btnResearchAssistant');
+  setButtonBusy(btn, true, 'Researching...');
+  try {
+    const service = getServiceLabel(getValue('csService') || 'general');
+    const topic = normalizeIdeaTopic(getValue('csTopic')) || service;
+    const tone = getValue('csTone') || 'emotional';
+    const persona = getValue('csPersona') || 'sales_closer';
+    const prompt = `
+You are Research Assistant for a Myanmar photo studio.
+Build a practical social media research brief for immediate content execution.
+
+Inputs:
+- Service: ${service}
+- Topic: ${topic}
+- Tone: ${tone}
+- Persona: ${persona}
+- Template guide: ${currentTemplateGuide || 'none'}
+
+Output (Burmese, strict sections):
+1) Audience Signals (3 bullets)
+2) Trend Angles For Facebook (3 bullets)
+3) Trend Angles For TikTok (3 bullets)
+4) Hook Patterns That Convert (5 short lines)
+5) Risk To Avoid (3 bullets)
+
+Rules:
+- No greeting, no intro line
+- Actionable only, short and clear
+- Focus on getting photo clients to message/book
+`;
+    const data = await callGenerateAPI({
+      userMessage: prompt,
+      mode: 'studio',
+      maxOutputTokens: 900
+    });
+    latestResearchBrief = String(data?.result || '').trim();
+    setCreativeOutput(`Research Assistant Result\n\n${latestResearchBrief}`);
+    window.showToast('Research brief ready');
+  } catch (e) {
+    console.error(e);
+    window.showToast(getApiErrorMessage(e, 'Research failed'));
+  } finally {
+    setButtonBusy(btn, false);
+  }
+};
+
+window.runStrategyAssistant = async function() {
+  const btn = document.getElementById('btnStrategyAssistant');
+  setButtonBusy(btn, true, 'Planning...');
+  try {
+    const service = getServiceLabel(getValue('csService') || 'general');
+    const topic = normalizeIdeaTopic(getValue('csTopic')) || service;
+    const tone = getValue('csTone') || 'emotional';
+    const prompt = `
+You are Strategy Assistant for a photo studio.
+Using the research brief, produce a conversion-first content strategy.
+
+Context:
+- Service: ${service}
+- Topic: ${topic}
+- Tone: ${tone}
+- Template guide: ${currentTemplateGuide || 'none'}
+- Research brief: ${latestResearchBrief || 'none'}
+
+Return STRICT JSON only:
+{
+  "summary":"short Burmese strategy summary",
+  "options":[
+    {"title":"...","trendAngle":"...","guide":"..."},
+    {"title":"...","trendAngle":"...","guide":"..."},
+    {"title":"...","trendAngle":"...","guide":"..."}
+  ],
+  "best":"title text exactly matching one option"
+}
+`;
+    const data = await callGenerateAPI({
+      userMessage: prompt,
+      mode: 'studio',
+      maxOutputTokens: 900
+    });
+    const raw = String(data?.result || '').replace(/```json|```/gi, '').trim();
+    const start = raw.indexOf('{');
+    const end = raw.lastIndexOf('}');
+    let parsed = null;
+    if (start !== -1 && end > start) {
+      try { parsed = JSON.parse(raw.slice(start, end + 1)); } catch (_) {}
+    }
+
+    const options = Array.isArray(parsed?.options) ? parsed.options.slice(0, 3) : [];
+    if (options.length) {
+      const titles = options.map((x) => String(x?.title || '').trim()).filter(Boolean).slice(0, 3);
+      if (titles.length) {
+        const scored = await scoreCreativeIdeas(titles, {
+          service,
+          platform: 'Facebook + TikTok',
+          tone
+        });
+        const byId = new Map(scored.map((s) => [s.id, s]));
+        const items = titles.map((title, i) => {
+          const s = byId.get(i + 1);
+          const metrics = s
+            ? { engagement: s.engagement, conversion: s.conversion, brandFit: s.brandFit }
+            : { engagement: 6, conversion: 6, brandFit: 6 };
+          return {
+            title,
+            metrics,
+            total: (metrics.engagement + metrics.conversion + metrics.brandFit) / 3,
+            reason: s?.reason || '',
+            trendAngle: String(options[i]?.trendAngle || '').trim(),
+            guide: String(options[i]?.guide || '').trim()
+          };
+        });
+        renderCreativeIdeas(items);
+      }
+    }
+
+    latestStrategyBrief = String(parsed?.summary || '').trim() || 'Strategy updated.';
+    setCreativeOutput(`Strategy Assistant Result\n\n${latestStrategyBrief}`);
+    window.showToast('Strategy + 3 ideas ready');
+  } catch (e) {
+    console.error(e);
+    window.showToast(getApiErrorMessage(e, 'Strategy failed'));
+  } finally {
+    setButtonBusy(btn, false);
+  }
+};
+
+window.runLayeredAssistants = async function() {
+  const btn = document.getElementById('btnAutoLayerAssistant');
+  setButtonBusy(btn, true, 'Running 1 + 2 + Ideas...');
+  try {
+    await window.runResearchAssistant();
+    await window.runStrategyAssistant();
+    await window.generateCreativeTitles();
+    window.showToast('3-layer flow ready. Option တစ်ခုရွေးပြီး Generate လုပ်ပါ။');
+  } catch (e) {
+    console.error(e);
+    window.showToast(getApiErrorMessage(e, 'Auto flow failed'));
+  } finally {
+    setButtonBusy(btn, false);
   }
 };
 
