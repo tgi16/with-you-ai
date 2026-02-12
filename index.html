@@ -469,7 +469,7 @@ button { transition: all 0.2s ease; }
                         </div>
                         
                         <button onclick="window.generateAI('creative_tt_text')" class="w-full bg-slate-800 border border-teal-500/50 hover:bg-slate-700 text-teal-400 font-bold py-3.5 rounded-xl transition active:scale-95 flex items-center justify-center gap-2 shadow-md">
-                            <i class="ph ph-text-t text-lg"></i> TikTok Text Mode (250 chars)
+                            <i class="ph ph-text-t text-lg"></i> TikTok Text Pack
                         </button>
                     </div>
                 </div>
@@ -1094,7 +1094,7 @@ button { transition: all 0.2s ease; }
         continueBtnIds: {
             fbpost: 'fbContinueBtn', dm_best: 'dmContinueBtn', timeline: 'tlContinueBtn', tt_caption: 'ttContinueBtn',
             tt_script: 'ttContinueBtn', tt_post_full: 'ttContinueBtn', manager_daily: 'mgrContinueBtn',
-            creative_director: 'crContinueBtn', creative_post: 'crContinueBtn',
+            creative_director: 'crContinueBtn', creative_post: 'crContinueBtn', creative_tt_text: 'crContinueBtn',
             creative_studio: 'studioContinueBtn',
             dm_auto_detect: 'dmContinueBtn', mentor: 'mentorContinueBtn'
         },
@@ -1125,13 +1125,22 @@ button { transition: all 0.2s ease; }
 
     const CONTINUE_ELIGIBLE_TYPES = new Set([
         'fbpost', 'tt_script', 'tt_caption', 'tt_post_full',
-        'creative_director', 'creative_post',
+        'creative_director', 'creative_post', 'creative_tt_text',
         'creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm'
     ]);
+    const END_MARKER_TYPES = new Set(['creative_director', 'creative_post', 'creative_tt_text']);
+    const hasEndMarker = (type, text = '') => {
+        if (!END_MARKER_TYPES.has(type)) return null;
+        return /\[END\]\s*$/i.test(String(text || '').trim());
+    };
+
     const shouldShowContinue = (type, resultText = '') => {
         if (!CONTINUE_ELIGIBLE_TYPES.has(type)) return false;
         const text = String(resultText || '').trim();
         if (!text) return false;
+
+        const markerState = hasEndMarker(type, text);
+        if (markerState !== null) return !markerState;
 
         const lines = text.split('\n').map((x) => x.trim()).filter(Boolean);
         const lastLine = lines[lines.length - 1] || text;
@@ -1169,7 +1178,9 @@ button { transition: all 0.2s ease; }
             break;
         }
 
-        return lines.join('\n').trim();
+        out = lines.join('\n').trim();
+        out = out.replace(/\n?\[END\]\s*$/i, '').trim();
+        return out;
     };
 
     // --- ✅ 1. ADD THIS BLOCK HERE (Before Auth Listener) ---
@@ -1724,34 +1735,56 @@ window.runAssistant = async function(type) {
             prompt = `Task: Daily Plan. Focus=${focus}. Output: 4 Sections (Priority, Content, Sales, Quick Win).`;
             contextTopic = `Manager Plan (${focus})`;
         } else if (type === 'creative_director') {
-            prompt = `Task: 3-Day Content Plan. Focus=${getValue('crFocus')}.`;
+            const focus = getValue('crFocus') || 'Anything';
+            prompt = `
+            Task: Create a complete 3-Day Content Plan for "${focus}".
+            Output format (strict):
+            Day 1:
+            - FB Post Idea
+            - TikTok Idea
+            - Hook (2)
+            - CTA (2)
+            Day 2:
+            - FB Post Idea
+            - TikTok Idea
+            - Hook (2)
+            - CTA (2)
+            Day 3:
+            - FB Post Idea
+            - TikTok Idea
+            - Hook (2)
+            - CTA (2)
+            End with a short execution checklist (5 bullets).
+            `;
             contextTopic = 'Creative Plan';
         } else if (type === 'creative_post') {
-            prompt = `Task: Write FB Post about "${getValue('crFocus')}".`;
+            const focus = getValue('crFocus') || 'Anything';
+            prompt = `
+            Task: Write a full Facebook Post Pack about "${focus}".
+            Output sections (strict):
+            1) Hook lines (3)
+            2) Main Post (AIDA, complete)
+            3) Caption (2 versions)
+            4) CTA lines (4)
+            5) Hashtag set (12)
+            Must be ready-to-post Burmese content.
+            `;
             contextTopic = 'Creative Post';
         } else if (type === 'creative_tt_text') {
-            const topic = getValue('crFocus');
+            const topic = getValue('crFocus') || 'Anything';
             prompt = `
-             Role: A Gen-Z Storyteller & Photographer (Not an AI).
-             Task: Write 2 "TikTok Text Mode" contents about "${topic}".
-             
-             CRITICAL INSTRUCTION:
-             - ❌ NO Robotic/Formal Language. (Do NOT use "မင်္ဂလာပါ", "ကြိုးစားပါ").
-             - ✅ Write like a HUMAN feeling a moment. Use "Spoken Burmese" (အပြောစကား).
-             - Use short phrases, not full sentences.
-             - Make it "Aesthetic", "Raw", and "Deep".
-             
-             OUTPUT FORMAT (Strictly text only):
-             
-             Option 1 (Sad/Moody Vibe):
-             (Write short, deep lines. Example style: "တခါတလေတော့လည်းလေ... 
- ပြောမထွက်ခဲ့တာတွေက ပိုများတယ်")
-             
-             Option 2 (Hopeful/Sweet Vibe):
-             (Write warm, short lines. Example style: "ဒီနေ့လေးက 
- မထင်မှတ်ဘဲ လှနေတယ် ✨")
+             Task: Build a complete TikTok Text Pack about "${topic}".
+             Output format (strict):
+             1) Cover text options (5)
+             2) Hook text lines (10)
+             3) On-screen text flow for 30s video (scene by scene, 8 lines)
+             4) Captions (3)
+             5) Hashtags (15)
 
-             Topic Context: ${topic}
+             Rules:
+             - Natural spoken Burmese
+             - No greeting, no self intro
+             - Mobile-native, short punchy lines
              `;
             contextTopic = `TikTok Text Mode (${topic})`;
         } else if (type === 'creative_studio') {
@@ -2008,23 +2041,28 @@ window.runAssistant = async function(type) {
         - Do NOT write meta-intro text; output only usable post content.
         `;
         const { prompt, contextTopic } = buildAIPrompt(type, outId, isContinue);
+        const promptWithCompletionRule = END_MARKER_TYPES.has(type)
+            ? (prompt + "\n\nCompletion rule: end the final line with [END] only when output is fully complete.")
+            : prompt;
 
         try {
             const packTypes = new Set(['studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm']);
             const tiktokHeavyTypes = new Set(['tt_script', 'tt_caption', 'tt_post_full']);
-            const longFormTypes = new Set(['creative_director', 'creative_post', 'creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'fbpost', 'tt_post_full']);
+            const longFormTypes = new Set(['creative_director', 'creative_post', 'creative_tt_text', 'creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'fbpost', 'tt_post_full']);
             const maxOutputTokens = packTypes.has(type)
                 ? 2200
                 : (tiktokHeavyTypes.has(type)
                     ? (type === 'tt_caption' ? 1200 : 1700)
-                    : (longFormTypes.has(type) ? (type === 'creative_director' ? 1800 : 1500) : 850));
+                    : (longFormTypes.has(type)
+                        ? (type === 'creative_director' ? 1800 : (type === 'creative_tt_text' ? 1700 : 1500))
+                        : 850));
             const d = await callGenerateAPI({
-                userMessage: systemPrompt + "\n\n" + prompt,
+                userMessage: systemPrompt + "\n\n" + promptWithCompletionRule,
                 maxOutputTokens
             });
             let cleanedResult = sanitizeGeneratedOutput(type, d.result);
 
-            const autoContinueTypes = new Set(['creative_director', 'creative_post', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'tt_script', 'tt_caption', 'tt_post_full']);
+            const autoContinueTypes = new Set(['creative_director', 'creative_post', 'creative_tt_text', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'tt_script', 'tt_caption', 'tt_post_full']);
             let needsMore = typeof d.isCut === 'boolean' ? d.isCut : shouldShowContinue(type, cleanedResult);
 
             if (!isContinue && needsMore && autoContinueTypes.has(type)) {
