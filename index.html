@@ -2158,6 +2158,11 @@ window.runAssistant = async function(type) {
                 maxOutputTokens
             });
             let cleanedResult = sanitizeGeneratedOutput(type, d.result);
+            if (!cleanedResult) {
+                throw new Error(d.finishReason
+                    ? `No content returned (finishReason: ${d.finishReason}). Try simpler input.`
+                    : 'No content returned. Try simpler input.');
+            }
 
             const autoContinueTypes = new Set(['creative_director', 'creative_post', 'creative_tt_text', 'creative_brand_idea', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'tt_script', 'tt_caption', 'tt_post_full']);
             let needsMore = typeof d.isCut === 'boolean' ? d.isCut : shouldShowContinue(type, cleanedResult);
@@ -2218,7 +2223,9 @@ window.runAssistant = async function(type) {
                     else btn.classList.add('hidden');
                 }
             }
-            window.trackUsage(prompt, cleanedResult);
+            if (cleanedResult && !cleanedResult.includes("No content returned")) {
+                window.trackUsage(prompt, cleanedResult);
+            }
         } catch(e) {
             console.error(e);
             const outEl = document.getElementById(outId);

@@ -172,6 +172,13 @@ IMPORTANT:
     const heuristicCut = trimmed.length > 1100 && !endsClean;
     const isCut = finishReason === "MAX_TOKENS" ? true : heuristicCut;
 
+    if (!trimmed) {
+      return res.status(200).json({
+        error: `No content returned from model (finishReason=${finishReason || "UNKNOWN"}). Try a shorter prompt.`,
+        finishReason
+      });
+    }
+
     return res.status(200).json({
       intent,
       result,
