@@ -1212,6 +1212,7 @@ button { transition: all 0.2s ease; }
     let currentTemplateGuide = '';
     let latestResearchBrief = '';
     let latestStrategyBrief = '';
+    let latestIdeaItems = [];
     const TEMPLATE_PRESETS = {
         default: {
             tone: 'emotional',
@@ -1337,6 +1338,18 @@ button { transition: all 0.2s ease; }
         const raw = String(text || '').replace(/```json|```/gi, '').trim();
         const start = raw.indexOf('[');
         const end = raw.lastIndexOf(']');
+        if (start === -1 || end === -1 || end <= start) return null;
+        try {
+            return JSON.parse(raw.slice(start, end + 1));
+        } catch (_) {
+            return null;
+        }
+    };
+
+    const parseJsonObjectFromText = (text = '') => {
+        const raw = String(text || '').replace(/```json|```/gi, '').trim();
+        const start = raw.indexOf('{');
+        const end = raw.lastIndexOf('}');
         if (start === -1 || end === -1 || end <= start) return null;
         try {
             return JSON.parse(raw.slice(start, end + 1));
@@ -2007,10 +2020,13 @@ Return STRICT JSON array only:
         guide: trendMeta[i]?.guide || ''
       };
     });
+    latestIdeaItems = items;
     renderCreativeIdeas(items);
+    return items;
   } catch (e) {
     console.error(e);
     window.showToast(getApiErrorMessage(e, 'Idea generation failed'));
+    return [];
   } finally {
     setButtonBusy(triggerBtn, false);
   }
@@ -2097,13 +2113,7 @@ Return STRICT JSON only:
       mode: 'studio',
       maxOutputTokens: 900
     });
-    const raw = String(data?.result || '').replace(/```json|```/gi, '').trim();
-    const start = raw.indexOf('{');
-    const end = raw.lastIndexOf('}');
-    let parsed = null;
-    if (start !== -1 && end > start) {
-      try { parsed = JSON.parse(raw.slice(start, end + 1)); } catch (_) {}
-    }
+    const parsed = parseJsonObjectFromText(data?.result || '');
 
     const options = Array.isArray(parsed?.options) ? parsed.options.slice(0, 3) : [];
     if (options.length) {
@@ -2131,9 +2141,11 @@ Return STRICT JSON only:
         });
         renderCreativeIdeas(items);
       }
+    } else {
+      await window.generateCreativeTitles();
     }
 
-    latestStrategyBrief = String(parsed?.summary || '').trim() || 'Strategy updated.';
+    latestStrategyBrief = String(parsed?.summary || '').trim() || String(data?.result || '').trim() || 'Strategy updated.';
     setCreativeOutput(`Strategy Assistant Result\n\n${latestStrategyBrief}`);
     window.showToast('Strategy + 3 ideas ready');
   } catch (e) {
@@ -2150,8 +2162,18 @@ window.runLayeredAssistants = async function() {
   try {
     await window.runResearchAssistant();
     await window.runStrategyAssistant();
-    await window.generateCreativeTitles();
-    window.showToast('3-layer flow ready. Option တစ်ခုရွေးပြီး Generate လုပ်ပါ။');
+    const items = latestIdeaItems.length ? latestIdeaItems : await window.generateCreativeTitles();
+    const best = Array.isArray(items) && items.length
+      ? [...items].sort((a, b) => (b.total || 0) - (a.total || 0))[0]
+      : null;
+    const topicEl = document.getElementById('csTopic');
+    if (best?.title && topicEl) topicEl.value = best.title;
+    if (best?.title) {
+      window.showToast('Best idea ကို auto ရွေးပြီး final result generate လုပ်နေပါတယ်...');
+      await window.generateAI('studio_campaign');
+    } else {
+      window.showToast('Ideas ready. Option တစ်ခုရွေးပြီး Generate လုပ်ပါ။');
+    }
   } catch (e) {
     console.error(e);
     window.showToast(getApiErrorMessage(e, 'Auto flow failed'));
