@@ -570,15 +570,7 @@ button { transition: all 0.2s ease; }
 
              <div class="grid grid-cols-1 gap-6 relative z-10">
                 <div class="space-y-5">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2 tracking-wider">Today's Workload</label>
-                        <div class="grid grid-cols-3 gap-3">
-                            <button onclick="window.setCreativeOption('workload', 'Busy', this)" class="creative-btn p-3 rounded-xl border border-slate-600 bg-slate-800/50 hover:bg-slate-700 text-xs font-bold text-center transition">Busy<br>🥵</button>
-                            <button onclick="window.setCreativeOption('workload', 'Normal', this)" class="creative-btn active p-3 rounded-xl border border-slate-600 bg-slate-800/50 hover:bg-slate-700 text-xs font-bold text-center transition">Normal<br>🙂</button>
-                            <button onclick="window.setCreativeOption('workload', 'Free', this)" class="creative-btn p-3 rounded-xl border border-slate-600 bg-slate-800/50 hover:bg-slate-700 text-xs font-bold text-center transition">Motivated<br>🤩</button>
-                        </div>
-                        <input type="hidden" id="crWorkload" value="Normal">
-                    </div>
+                    <input type="hidden" id="crWorkload" value="Normal">
 
                     <div>
                         <label class="block text-xs font-bold text-slate-400 uppercase mb-2 tracking-wider">Focus Area</label>
@@ -621,7 +613,7 @@ button { transition: all 0.2s ease; }
                             </button>
                         </div>
                         <button onclick="window.generateAI('studio_campaign')" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-3 rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2">
-                            <i class="ph ph-rocket-launch text-lg"></i> One-Click Campaign (FB+TikTok+DM)
+                            <i class="ph ph-rocket-launch text-lg"></i> One-Click Campaign (FB+TikTok)
                         </button>
                         <button onclick="window.generateAI('creative_brand_idea')" class="w-full bg-yellow-700/80 hover:bg-yellow-600 text-white font-bold py-3 rounded-xl transition active:scale-95 flex items-center justify-center gap-2">
                             <i class="ph ph-lightbulb-filament text-lg"></i> Content + Idea (Brand Brain)
@@ -633,9 +625,8 @@ button { transition: all 0.2s ease; }
                             <i class="ph ph-lightning text-lg"></i> Hook Generator Pro (10)
                         </button>
 
-                        <details class="bg-slate-900/60 border border-slate-700 rounded-xl p-3">
-                            <summary class="cursor-pointer text-xs font-bold text-cyan-300 uppercase tracking-wider">Advanced Studio Controls (All-in-One)</summary>
-                            <div class="mt-3 space-y-3">
+                        <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-3 space-y-3">
+                            <div class="text-xs font-bold text-cyan-300 uppercase tracking-wider">Advanced Studio Controls (All-in-One)</div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <div>
                                         <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Persona</label>
@@ -674,8 +665,16 @@ button { transition: all 0.2s ease; }
                                 <div id="csIdeaPicker" class="hidden bg-slate-900/70 border border-cyan-500/30 rounded-xl p-4 space-y-3">
                                     <div class="text-[11px] font-bold text-cyan-300 uppercase tracking-wide">ရွေးချယ်ရန် ခေါင်းစဉ် (၃ ခု)</div>
                                     <div id="csIdeaList" class="grid grid-cols-1 lg:grid-cols-3 gap-3"></div>
-                                    <div class="text-[10px] text-slate-400">တစ်ခုနှိပ်လိုက်တာနဲ့ Topic Override ထဲ auto ထည့်ပြီး One-Click Campaign (FB+TikTok+DM) ကို auto run လုပ်မယ်။</div>
+                                    <div class="text-[10px] text-slate-400">တစ်ခုနှိပ်လိုက်တာနဲ့ Topic Override ထဲ auto ထည့်ပြီး One-Click Campaign (FB+TikTok) ကို auto run လုပ်မယ်။</div>
                                 </div>
+                                <details class="bg-slate-800/50 border border-slate-700 rounded-lg p-3">
+                                    <summary class="cursor-pointer text-[11px] font-bold text-slate-300 uppercase tracking-wide">Today's Workload</summary>
+                                    <div class="grid grid-cols-3 gap-2 mt-3">
+                                        <button onclick="window.setCreativeOption('workload', 'Busy', this)" class="creative-btn p-2 rounded-lg border border-slate-600 bg-slate-800/50 hover:bg-slate-700 text-[11px] font-bold text-center transition">Busy<br>🥵</button>
+                                        <button onclick="window.setCreativeOption('workload', 'Normal', this)" class="creative-btn active p-2 rounded-lg border border-slate-600 bg-slate-800/50 hover:bg-slate-700 text-[11px] font-bold text-center transition">Normal<br>🙂</button>
+                                        <button onclick="window.setCreativeOption('workload', 'Free', this)" class="creative-btn p-2 rounded-lg border border-slate-600 bg-slate-800/50 hover:bg-slate-700 text-[11px] font-bold text-center transition">Motivated<br>🤩</button>
+                                    </div>
+                                </details>
                                 <div>
                                     <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Topic Override</label>
                                     <input id="csTopic" type="text" placeholder="မထည့်လည်းရတယ် (Focus Area ကိုသုံးမယ်)" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-sm text-white" />
@@ -701,8 +700,7 @@ button { transition: all 0.2s ease; }
                                     <button onclick="window.generateAI('studio_pack_fb')" class="bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 rounded-lg text-xs">FB Pack</button>
                                     <button onclick="window.generateAI('studio_pack_tiktok')" class="bg-teal-700 hover:bg-teal-600 text-white font-bold py-2 rounded-lg text-xs">TikTok Pack</button>
                                 </div>
-                            </div>
-                        </details>
+                        </div>
                     </div>
                 </div>
 
@@ -1607,6 +1605,9 @@ Return STRICT JSON array only:
                 if (/^[-]{3,}$/.test(t)) return false;
                 if (/^ဒီတစ်ခါ.*(ဆက်လုပ်လို့ရပါပြီ|အဆင်သင့်ပြင်ပေးထား)/i.test(t)) return false;
                 if (/^pre-wedding အတွက်.*content idea/i.test(t)) return false;
+                if (/^ဒီနေရာမှာ.*(campaign pack|with you photo studio)/i.test(t)) return false;
+                if (/^(here('| i)?s|below is).*(campaign pack|final result|final post)/i.test(t)) return false;
+                if (/^\**\s*video concept\s*:?\**$/i.test(t)) return false;
                 return !metaPatterns.some((re) => re.test(t));
             })
             .join('\n')
@@ -1656,8 +1657,7 @@ Return STRICT JSON array only:
         ],
         studio_campaign: [
             { key: 'Facebook Final Post', test: /(facebook final post)/i },
-            { key: 'TikTok Final Pack', test: /(tiktok final pack)/i },
-            { key: 'DM Follow-up Pack', test: /(dm follow-up pack|dm follow up pack)/i }
+            { key: 'TikTok Final Pack', test: /(tiktok final pack)/i }
         ],
         studio_hook_pro: [
             { key: 'Question Hooks', test: /(question hooks)/i },
@@ -2579,6 +2579,7 @@ Rules:
             5) Hashtags (20)
             6) CTA lines (5)
             Tone=${tone}. Keep it short, punchy, and mobile-native.
+            Return TikTok content only. No intro/preface. Do not add "Video Concept" section.
             `;
             contextTopic = 'Studio TikTok Pack';
         } else if (type === 'studio_pack_dm') {
@@ -2622,15 +2623,13 @@ Rules:
             - Hashtags (12)
             - Comment Pin (2)
 
-            3) DM Follow-up Pack:
-            - New inquiry replies (3)
-            - Price objection replies (3)
-            - Booking close replies (3)
-
             Rules:
             - Final ready-to-post content only
             - Natural Burmese, no greeting/self intro
             - No explanation or planning notes
+            - No intro sentence before section 1
+            - Do not add "Video Concept" section
+            - Output must contain only section 1 and section 2
             `;
             contextTopic = `One-Click Campaign: ${topic}`;
         } else if (type === 'studio_hook_pro') {
