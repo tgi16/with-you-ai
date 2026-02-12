@@ -1131,25 +1131,27 @@ button { transition: all 0.2s ease; }
             fbpost: 'fbOutput', dm_best: 'dmOutput', timeline: 'tlOutput', tt_caption: 'ttOutput',
             tt_script: 'ttOutput', tt_post_full: 'ttOutput', pose: 'poseOutput', creative_director: 'crOutput',
             creative_post: 'crOutput', creative_tt_text: 'crOutput', creative_brand_idea: 'crOutput', dm_auto_detect: 'dmOutput',
-            creative_studio: 'studioOutput', studio_ideas: 'studioOutput', studio_hooks: 'studioOutput',
-            studio_cta: 'studioOutput', studio_hashtags: 'studioOutput',
-            studio_pack_fb: 'studioOutput', studio_pack_tiktok: 'studioOutput', studio_pack_dm: 'studioOutput',
+            creative_studio: 'crOutput', studio_ideas: 'crOutput', studio_hooks: 'crOutput',
+            studio_cta: 'crOutput', studio_hashtags: 'crOutput',
+            studio_pack_fb: 'crOutput', studio_pack_tiktok: 'crOutput', studio_pack_dm: 'crOutput',
             manager_daily: 'mgrOutput', mentor: 'mentorOutput'
         },
         areaIds: {
             fbpost: 'fbResultArea', dm_best: 'dmResultArea', timeline: 'tlResultArea', tt_caption: 'ttResultArea',
             tt_script: 'ttResultArea', tt_post_full: 'ttResultArea', pose: 'poseResultArea',
             creative_director: 'crResultArea', creative_post: 'crResultArea', creative_tt_text: 'crResultArea', creative_brand_idea: 'crResultArea',
-            creative_studio: 'studioResultArea', studio_ideas: 'studioResultArea', studio_hooks: 'studioResultArea',
-            studio_cta: 'studioResultArea', studio_hashtags: 'studioResultArea',
-            studio_pack_fb: 'studioResultArea', studio_pack_tiktok: 'studioResultArea', studio_pack_dm: 'studioResultArea',
+            creative_studio: 'crResultArea', studio_ideas: 'crResultArea', studio_hooks: 'crResultArea',
+            studio_cta: 'crResultArea', studio_hashtags: 'crResultArea',
+            studio_pack_fb: 'crResultArea', studio_pack_tiktok: 'crResultArea', studio_pack_dm: 'crResultArea',
             dm_auto_detect: 'dmResultArea', manager_daily: 'mgrResultArea', mentor: 'mentorResultArea'
         },
         continueBtnIds: {
             fbpost: 'fbContinueBtn', dm_best: 'dmContinueBtn', timeline: 'tlContinueBtn', tt_caption: 'ttContinueBtn',
             tt_script: 'ttContinueBtn', tt_post_full: 'ttContinueBtn', manager_daily: 'mgrContinueBtn',
             creative_director: 'crContinueBtn', creative_post: 'crContinueBtn', creative_tt_text: 'crContinueBtn', creative_brand_idea: 'crContinueBtn',
-            creative_studio: 'studioContinueBtn',
+            creative_studio: 'crContinueBtn',
+            studio_pack_fb: 'crContinueBtn', studio_pack_tiktok: 'crContinueBtn', studio_pack_dm: 'crContinueBtn',
+            studio_ideas: 'crContinueBtn', studio_hooks: 'crContinueBtn', studio_cta: 'crContinueBtn', studio_hashtags: 'crContinueBtn',
             dm_auto_detect: 'dmContinueBtn', mentor: 'mentorContinueBtn'
         },
         actionButtonSelectors: {
@@ -2062,7 +2064,7 @@ window.runAssistant = async function(type) {
                         const mobEl = document.getElementById('crResultAreaMobile');
                         if (mobEl) mobEl.classList.remove('hidden');
                     }
-                    const scrollTarget = (type.startsWith('creative')) ? document.getElementById('crResultAreaMobile') : document.getElementById(areaId);
+                    const scrollTarget = (type.startsWith('creative') || type.startsWith('studio_')) ? document.getElementById('crResultAreaMobile') : document.getElementById(areaId);
                     if(scrollTarget) setTimeout(() => { scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
                 }
             }
@@ -2183,7 +2185,7 @@ window.runAssistant = async function(type) {
                     if(isContinue) outEl.innerText += "\n" + cleanedResult;
                     else outEl.innerText = cleanedResult;
                     
-                    if(type.startsWith('creative') && document.getElementById('crOutputMobile')) {
+                    if((type.startsWith('creative') || type.startsWith('studio_')) && document.getElementById('crOutputMobile')) {
                         document.getElementById('crOutputMobile').innerText = outEl.innerText;
                     }
 
