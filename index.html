@@ -1245,6 +1245,48 @@ button { transition: all 0.2s ease; }
         return out;
     };
 
+    const REQUIRED_SECTION_RULES = {
+        creative_brand_idea: [
+            { key: 'Core Idea', test: /(core idea|အဓိကအိုင်ဒီယာ)/i },
+            { key: 'FB Post', test: /(fb post|facebook)/i },
+            { key: 'TikTok', test: /(tiktok|tik tok)/i },
+            { key: 'CTA', test: /(cta|action|message|inbox)/i },
+            { key: 'Hashtags', test: /(hashtag|#)/i }
+        ],
+        creative_post: [
+            { key: 'Hook', test: /(hook|ချိတ်ဆက်)/i },
+            { key: 'Main Post', test: /(main post|aida)/i },
+            { key: 'Caption', test: /(caption|ခေါင်းစဉ်)/i },
+            { key: 'CTA', test: /(cta|message|inbox)/i },
+            { key: 'Hashtags', test: /(hashtag|#)/i }
+        ],
+        studio_pack_fb: [
+            { key: 'Hooks', test: /(hook|hooks)/i },
+            { key: 'Main Post', test: /(main post|aida)/i },
+            { key: 'Caption', test: /(caption)/i },
+            { key: 'CTA', test: /(cta)/i },
+            { key: 'Hashtags', test: /(hashtag|#)/i }
+        ],
+        studio_pack_tiktok: [
+            { key: 'Cover Text', test: /(cover text)/i },
+            { key: 'Hooks', test: /(hook|hooks)/i },
+            { key: 'Script', test: /(script|scene)/i },
+            { key: 'Caption', test: /(caption)/i },
+            { key: 'Hashtags', test: /(hashtag|#)/i }
+        ],
+        creative_studio: [
+            { key: 'Facebook Content', test: /(facebook|fb post|fb)/i },
+            { key: 'TikTok Content', test: /(tiktok|tik tok)/i }
+        ]
+    };
+
+    const getMissingSections = (type, text = '') => {
+        const rules = REQUIRED_SECTION_RULES[type];
+        if (!rules || !rules.length) return [];
+        const hay = String(text || '');
+        return rules.filter((r) => !r.test.test(hay)).map((r) => r.key);
+    };
+
     // --- ✅ 1. ADD THIS BLOCK HERE (Before Auth Listener) ---
     
     // Usage Tracking Functions (Hoisted)
@@ -2192,6 +2234,23 @@ window.runAssistant = async function(type) {
                     if (expanded) cleanedResult = (cleanedResult + "\n" + expanded).trim();
                 } catch (expandErr) {
                     console.warn('Expand pass skipped:', expandErr?.message || expandErr);
+                }
+            }
+
+            // Quality gate: if required sections are missing, request only missing sections once.
+            if (!isContinue) {
+                const missing = getMissingSections(type, cleanedResult);
+                if (missing.length) {
+                    try {
+                        const refill = await callGenerateAPI({
+                            userMessage: systemPrompt + "\n\nThe draft is missing these sections: " + missing.join(', ') + ". Return ONLY those missing sections in Burmese, ready-to-use, without repeating existing sections.\n\nDraft:\n" + cleanedResult,
+                            maxOutputTokens
+                        }, { timeoutMs: Math.max(API_TIMEOUT_MS, 40000), retries: 0 });
+                        const refillText = sanitizeGeneratedOutput(type, refill.result);
+                        if (refillText) cleanedResult = (cleanedResult + "\n\n" + refillText).trim();
+                    } catch (refillErr) {
+                        console.warn('Missing-sections refill skipped:', refillErr?.message || refillErr);
+                    }
                 }
             }
             
