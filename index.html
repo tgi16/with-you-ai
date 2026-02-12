@@ -612,19 +612,11 @@ button { transition: all 0.2s ease; }
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Ideas</label>
-                                <button onclick="window.generateCreativeTitles()" class="w-full bg-slate-700 hover:bg-slate-600 border border-slate-600 text-slate-100 font-bold py-2.5 rounded-lg text-xs transition active:scale-95 flex items-center justify-center gap-1">
-                                    <i class="ph ph-lightbulb"></i> အကြံဉာဏ်အသစ်များ ရယူရန်
-                                </button>
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Quick Pack</label>
-                                <button onclick="window.generateAI('studio_campaign')" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-2.5 rounded-lg text-xs transition active:scale-95 flex items-center justify-center gap-2">
-                                    <i class="ph ph-rocket-launch text-base"></i> One-Click Campaign (FB+TikTok)
-                                </button>
-                            </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Ideas</label>
+                            <button onclick="window.generateCreativeTitles()" class="w-full bg-slate-700 hover:bg-slate-600 border border-slate-600 text-slate-100 font-bold py-2.5 rounded-lg text-xs transition active:scale-95 flex items-center justify-center gap-1">
+                                <i class="ph ph-lightbulb"></i> အကြံဉာဏ်အသစ်များ ရယူရန်
+                            </button>
                         </div>
 
                         <div id="csIdeaPicker" class="hidden bg-slate-900/70 border border-cyan-500/30 rounded-xl p-4 space-y-3">
@@ -634,7 +626,7 @@ button { transition: all 0.2s ease; }
                         </div>
 
                         <details class="bg-slate-800/50 border border-slate-700 rounded-lg p-3">
-                            <summary class="cursor-pointer text-[11px] font-bold text-slate-300 uppercase tracking-wide">More Controls (Focus / Platform / Workload / Formats)</summary>
+                            <summary class="cursor-pointer text-[11px] font-bold text-slate-300 uppercase tracking-wide">More Controls (Focus / Platform / Photo)</summary>
                             <div class="space-y-3 mt-3">
                                 <div>
                                     <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Focus Area</label>
@@ -663,54 +655,15 @@ button { transition: all 0.2s ease; }
                                         </label>
                                     </div>
                                 </div>
-                                <div>
-                                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Today's Workload</label>
-                                    <div class="grid grid-cols-3 gap-2">
-                                        <button onclick="window.setCreativeOption('workload', 'Busy', this)" class="creative-btn p-2 rounded-lg border border-slate-600 bg-slate-800/50 hover:bg-slate-700 text-[11px] font-bold text-center transition">Busy<br>🥵</button>
-                                        <button onclick="window.setCreativeOption('workload', 'Normal', this)" class="creative-btn active p-2 rounded-lg border border-slate-600 bg-slate-800/50 hover:bg-slate-700 text-[11px] font-bold text-center transition">Normal<br>🙂</button>
-                                        <button onclick="window.setCreativeOption('workload', 'Free', this)" class="creative-btn p-2 rounded-lg border border-slate-600 bg-slate-800/50 hover:bg-slate-700 text-[11px] font-bold text-center transition">Motivated<br>🤩</button>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Formats</label>
-                                    <div id="csFormats" class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs text-slate-300">
-                                        <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="fb_post" checked> FB Post</label>
-                                        <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="caption"> Caption</label>
-                                        <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="hook_set"> Hook Set</label>
-                                        <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="hashtag_pack"> Hashtags</label>
-                                        <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="tiktok_cover"> TikTok Cover</label>
-                                        <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="tiktok_script"> TikTok Script</label>
-                                        <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="tiktok_caption" checked> TikTok Caption</label>
-                                    </div>
-                                </div>
                             </div>
                         </details>
                     </div>
 
-                    <!-- Multi Action Buttons -->
+                    <!-- Single Final Action -->
                     <div class="space-y-3 mt-2">
-                        <div class="grid grid-cols-2 gap-3">
-                            <button onclick="window.generateAI('creative_director')" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 font-bold py-3.5 rounded-xl transition active:scale-95 flex items-center justify-center gap-2 shadow-md">
-                                <i class="ph ph-calendar-plus text-lg"></i> 3-Day Plan
-                            </button>
-                            <button onclick="window.generateAI('creative_post')" class="bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-500 hover:to-orange-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-yellow-900/30 transition active:scale-95 flex items-center justify-center gap-2">
-                                <i class="ph ph-pen-nib text-lg"></i> Write Post Now
-                            </button>
-                        </div>
-                        <button onclick="window.generateAI('creative_brand_idea')" class="w-full bg-yellow-700/80 hover:bg-yellow-600 text-white font-bold py-3 rounded-xl transition active:scale-95 flex items-center justify-center gap-2">
-                            <i class="ph ph-lightbulb-filament text-lg"></i> Content + Idea (Brand Brain)
+                        <button onclick="window.generateAI('studio_campaign')" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-3.5 rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2 text-sm">
+                            <i class="ph ph-rocket-launch text-lg"></i> Generate Final Result (Facebook + TikTok)
                         </button>
-                        <button onclick="window.generateAI('creative_tt_text')" class="w-full bg-slate-800 border border-teal-500/50 hover:bg-slate-700 text-teal-400 font-bold py-3.5 rounded-xl transition active:scale-95 flex items-center justify-center gap-2 shadow-md">
-                            <i class="ph ph-text-t text-lg"></i> TikTok Text Pack
-                        </button>
-                        <button onclick="window.generateAI('studio_hook_pro')" class="w-full bg-slate-800 border border-indigo-500/50 hover:bg-slate-700 text-indigo-300 font-bold py-3 rounded-xl transition active:scale-95 flex items-center justify-center gap-2 shadow-md">
-                            <i class="ph ph-lightning text-lg"></i> Hook Generator Pro (10)
-                        </button>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
-                            <button onclick="window.generateAI('creative_studio')" class="bg-cyan-700 hover:bg-cyan-600 text-white font-bold py-2 rounded-lg text-xs">Generate All-in-One</button>
-                            <button onclick="window.generateAI('studio_pack_fb')" class="bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 rounded-lg text-xs">FB Pack</button>
-                            <button onclick="window.generateAI('studio_pack_tiktok')" class="bg-teal-700 hover:bg-teal-600 text-white font-bold py-2 rounded-lg text-xs">TikTok Pack</button>
-                        </div>
                     </div>
                 </div>
 
