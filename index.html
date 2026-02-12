@@ -510,11 +510,11 @@ button { transition: all 0.2s ease; }
                                     <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Formats</label>
                                     <div id="csFormats" class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs text-slate-300">
                                         <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="fb_post" checked> FB Post</label>
-                                        <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="caption" checked> Caption</label>
-                                        <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="hook_set" checked> Hook Set</label>
-                                        <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="hashtag_pack" checked> Hashtags</label>
-                                        <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="tiktok_cover" checked> TikTok Cover</label>
-                                        <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="tiktok_script" checked> TikTok Script</label>
+                                        <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="caption"> Caption</label>
+                                        <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="hook_set"> Hook Set</label>
+                                        <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="hashtag_pack"> Hashtags</label>
+                                        <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="tiktok_cover"> TikTok Cover</label>
+                                        <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="tiktok_script"> TikTok Script</label>
                                         <label class="flex items-center gap-2 bg-slate-800 border border-slate-700 p-2 rounded"><input type="checkbox" value="tiktok_caption" checked> TikTok Caption</label>
                                     </div>
                                 </div>
@@ -1237,6 +1237,23 @@ button { transition: all 0.2s ease; }
 
         out = lines.join('\n').trim();
         out = out.replace(/\n?\[END\]\s*$/i, '').trim();
+
+        // Remove raw format label lines like **fb_post**
+        const rows = out.split('\n').filter((r) => !/^\*\*[a-z0-9_ ]+\*\*$/i.test(r.trim()));
+        out = rows.join('\n').trim();
+
+        // If output ends mid-sentence, cut back to last complete sentence.
+        if (out && !/[။.!?…]$/.test(out)) {
+            const lastStop = Math.max(
+                out.lastIndexOf('။'),
+                out.lastIndexOf('.'),
+                out.lastIndexOf('!'),
+                out.lastIndexOf('?'),
+                out.lastIndexOf('…')
+            );
+            if (lastStop > 40) out = out.slice(0, lastStop + 1).trim();
+        }
+
         return out;
     };
 
@@ -1908,7 +1925,10 @@ window.runAssistant = async function(type) {
                 - If format includes hashtag_pack, provide 10 relevant hashtags.
                 - If format includes tiktok_cover, provide 5 short on-screen cover texts.
                 - If format includes tiktok_script, provide one 30-45s scene-by-scene script.
-                - If format includes tiktok_caption, provide 3 TikTok captions + one hashtag set.
+                - If format includes tiktok_caption, provide 2 TikTok captions + one hashtag set (max 8 hashtags).
+                - Keep total output under 220 words.
+                - If multiple formats are selected, give only ONE compact result per format.
+                - Never leave any sentence unfinished.
                 `;
             }
             contextTopic = `Creative Studio: ${topic || 'Untitled'}`;
