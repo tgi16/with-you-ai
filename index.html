@@ -1242,7 +1242,33 @@ button { transition: all 0.2s ease; }
         const rows = out.split('\n').filter((r) => !/^\*\*[a-z0-9_ ]+\*\*$/i.test(r.trim()));
         out = rows.join('\n').trim();
 
+        // Remove prompt/meta leakage lines from model output.
+        const metaPatterns = [
+            /^(system:|important:)/i,
+            /^[-*]\s*(focus on bookings|reduce decision fatigue|one clear suggestion|never sound like marketing textbook)/i,
+            /^[-*]\s*(do not|don't)\s/i,
+            /(rules?:|goal per type|knowledge base|role & identity|writing rules)/i,
+            /\bmarketing textbook\b/i,
+            /\boutput format\b/i,
+            /\bcompletion rule\b/i,
+            /\(nor\).*\(shin\)/i
+        ];
+        out = out
+            .split('\n')
+            .filter((line) => {
+                const t = line.trim();
+                if (!t) return true;
+                return !metaPatterns.some((re) => re.test(t));
+            })
+            .join('\n')
+            .trim();
+
         return out;
+    };
+
+    const hasMetaLeak = (text = '') => {
+        const t = String(text || '');
+        return /(system:|important:|writing rules|goal per type|knowledge base|marketing textbook|completion rule|focus on bookings|reduce decision fatigue)/i.test(t);
     };
 
     const REQUIRED_SECTION_RULES = {
@@ -2189,6 +2215,20 @@ window.runAssistant = async function(type) {
                 throw new Error(d.finishReason
                     ? `No content returned (finishReason: ${d.finishReason}). Try simpler input.`
                     : 'No content returned. Try simpler input.');
+            }
+
+            // If model leaked internal instructions, force one clean rewrite pass.
+            if (hasMetaLeak(cleanedResult)) {
+                try {
+                    const rewrite = await callGenerateAPI({
+                        userMessage: systemPrompt + "\n\nRewrite the following as FINAL READY-TO-POST CONTENT ONLY. Remove all explanations/rules/meta text. Keep Burmese natural and complete.\n\n" + cleanedResult,
+                        maxOutputTokens
+                    }, { timeoutMs: Math.max(API_TIMEOUT_MS, 40000), retries: 0 });
+                    const rewritten = sanitizeGeneratedOutput(type, rewrite.result);
+                    if (rewritten) cleanedResult = rewritten;
+                } catch (rewriteErr) {
+                    console.warn('Meta-clean rewrite skipped:', rewriteErr?.message || rewriteErr);
+                }
             }
 
             const autoContinueTypes = new Set(['creative_director', 'creative_post', 'creative_tt_text', 'creative_brand_idea', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'tt_script', 'tt_caption', 'tt_post_full']);
