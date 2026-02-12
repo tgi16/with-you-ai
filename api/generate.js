@@ -30,7 +30,6 @@ function clampMaxOutputTokens(value) {
 }
 
 export default async function handler(req, res) {
-  /* ---------- CORS ---------- */
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -50,17 +49,11 @@ export default async function handler(req, res) {
 
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-      return res.status(500).json({ error: "API key missing" });
+      return res.status(500).json({ error: "API key missing (GEMINI_API_KEY)" });
     }
 
-    /* ===============================
-       FINAL MODE (AUTO SWITCH)
-    ================================ */
     const intent = mode || detectIntent(inputText);
 
-    /* ===============================
-       SYSTEM PROMPTS
-    ================================ */
     const businessPrompt = `
 You are AI Manager for "With You Photo Studio, Taunggyi".
 
@@ -115,9 +108,6 @@ Rules:
     if (intent === "business" || intent === "manager") systemPrompt = businessPrompt;
     if (intent === "mentor") systemPrompt = mentorPrompt;
 
-    /* ===============================
-       FINAL PROMPT
-    ================================ */
     const finalPrompt = `
 SYSTEM:
 ${systemPrompt}
@@ -139,9 +129,6 @@ IMPORTANT:
 
     const tokenLimit = clampMaxOutputTokens(maxOutputTokens);
 
-    /* ===============================
-       GEMINI CALL
-    ================================ */
     const genRes = await fetch(
       "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" + apiKey,
       {
@@ -157,28 +144,31 @@ IMPORTANT:
       }
     );
 
-    const genData = await genRes.json();
+    const raw = await genRes.text();
+    let genData = {};
+    try {
+      genData = raw ? JSON.parse(raw) : {};
+    } catch {
+      genData = {};
+    }
 
     if (!genRes.ok) {
       return res.status(genRes.status || 502).json({
-        error: genData?.error?.message || "Gemini API error"
+        error: genData?.error?.message || `Gemini API error (${genRes.status})`
       });
     }
 
     const candidate = genData?.candidates?.[0] || {};
     const result = candidate?.content?.parts?.[0]?.text || "";
 
-    /* ===============================
-       CUT-OFF DETECTION
-    ================================ */
     const finishReason = String(candidate?.finishReason || "").toUpperCase();
     const trimmed = result.trim();
     const lines = trimmed.split("\n").map((x) => x.trim()).filter(Boolean);
     const lastLine = lines[lines.length - 1] || trimmed;
     const endsClean = /[။.!?…]$/.test(lastLine)
-      || /[])}"'”’]$/.test(lastLine)
-      || /[🌀-🫿]$/u.test(lastLine)
-      || /^#/.test(lastLine);
+      || /[\])}"'”’]$/.test(lastLine)
+      || /^#/.test(lastLine)
+      || /[:;]$/.test(lastLine);
     const heuristicCut = trimmed.length > 1100 && !endsClean;
     const isCut = finishReason === "MAX_TOKENS" ? true : heuristicCut;
 
@@ -190,6 +180,8 @@ IMPORTANT:
     });
   } catch (err) {
     console.error("Backend error:", err);
-    return res.status(500).json({ error: "Server error" });
+    return res.status(500).json({
+      error: err?.message || "Server error"
+    });
   }
 }
