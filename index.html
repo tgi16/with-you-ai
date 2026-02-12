@@ -215,6 +215,83 @@ button { transition: all 0.2s ease; }
     #content-container {
       max-width: 72rem;
     }
+
+    .theme-chip {
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(15, 23, 42, 0.55);
+      color: #cbd5e1;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 6px 8px;
+      border-radius: 999px;
+      transition: all 0.2s ease;
+    }
+    .theme-chip:hover { border-color: rgba(56, 189, 248, 0.6); color: #f8fafc; }
+    .theme-chip.active {
+      color: #fff;
+      border-color: rgba(56, 189, 248, 0.8);
+      background: linear-gradient(90deg, #0ea5e9, #2563eb);
+      box-shadow: 0 6px 14px rgba(37, 99, 235, 0.32);
+    }
+
+    body[data-theme="studio-blue"] {
+      --wy-bg-0: #050b1a;
+      --wy-bg-1: #0c1530;
+      --wy-card: rgba(18, 28, 52, 0.72);
+      --wy-card-strong: rgba(14, 23, 44, 0.86);
+      --wy-border: rgba(135, 168, 255, 0.18);
+    }
+
+    body[data-theme="dark"] {
+      --wy-bg-0: #020617;
+      --wy-bg-1: #0b1223;
+      --wy-card: rgba(15, 23, 42, 0.8);
+      --wy-card-strong: rgba(10, 15, 30, 0.9);
+      --wy-border: rgba(100, 116, 139, 0.25);
+    }
+
+    body[data-theme="light"] {
+      --wy-bg-0: #f8fafc;
+      --wy-bg-1: #e2e8f0;
+      --wy-card: rgba(255, 255, 255, 0.88);
+      --wy-card-strong: rgba(248, 250, 252, 0.92);
+      --wy-border: rgba(15, 23, 42, 0.16);
+      color: #0f172a !important;
+    }
+    body[data-theme="light"] #sidebar {
+      background: linear-gradient(180deg, rgba(248, 250, 252, 0.98), rgba(241, 245, 249, 0.96)) !important;
+      border-right-color: rgba(15, 23, 42, 0.12) !important;
+    }
+    body[data-theme="light"] .glass-panel {
+      box-shadow:
+        inset 0 1px 0 rgba(15, 23, 42, 0.03),
+        0 10px 26px rgba(15, 23, 42, 0.08),
+        0 0 0 1px rgba(15, 23, 42, 0.04);
+    }
+    body[data-theme="light"] input,
+    body[data-theme="light"] select,
+    body[data-theme="light"] textarea {
+      color: #0f172a !important;
+      background: rgba(255, 255, 255, 0.96) !important;
+      border-color: rgba(15, 23, 42, 0.16) !important;
+    }
+    body[data-theme="light"] .text-white,
+    body[data-theme="light"] .text-slate-200,
+    body[data-theme="light"] .text-slate-300,
+    body[data-theme="light"] .text-slate-400,
+    body[data-theme="light"] .text-slate-500,
+    body[data-theme="light"] .text-slate-600 {
+      color: #0f172a !important;
+    }
+    body[data-theme="light"] .bg-slate-800,
+    body[data-theme="light"] .bg-slate-800\/50,
+    body[data-theme="light"] .bg-slate-900,
+    body[data-theme="light"] .bg-slate-900\/50,
+    body[data-theme="light"] .bg-slate-900\/60,
+    body[data-theme="light"] .bg-slate-950\/30 {
+      background: rgba(241, 245, 249, 0.9) !important;
+      color: #0f172a !important;
+    }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-200 h-screen h-[100dvh] flex overflow-hidden">
@@ -330,6 +407,16 @@ button { transition: all 0.2s ease; }
             <div class="flex justify-between text-[10px] text-slate-400 font-mono">
                <span><span id="usageCost" class="text-slate-200 font-bold">$0.00</span> / $5.00</span>
                <span id="usageRequests" class="text-slate-500">0 reqs</span>
+            </div>
+        </div>
+        <div class="mt-3 bg-slate-900/70 rounded-xl p-3 border border-slate-700">
+            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2 flex items-center gap-1">
+                <i class="ph ph-palette"></i> Theme
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+                <button class="theme-chip" data-theme-btn="studio-blue" onclick="window.setTheme('studio-blue')">Studio Blue</button>
+                <button class="theme-chip" data-theme-btn="dark" onclick="window.setTheme('dark')">Dark</button>
+                <button class="theme-chip" data-theme-btn="light" onclick="window.setTheme('light')">Light</button>
             </div>
         </div>
     </div>
@@ -481,7 +568,7 @@ button { transition: all 0.2s ease; }
         <div class="glass-panel p-6 rounded-2xl border border-yellow-500/20 shadow-xl relative overflow-hidden">
              <i class="ph ph-sparkle absolute -top-4 -right-4 text-9xl text-yellow-500 opacity-5 rotate-12"></i>
 
-             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+             <div class="grid grid-cols-1 gap-6 relative z-10">
                 <div class="space-y-5">
                     <div>
                         <label class="block text-xs font-bold text-slate-400 uppercase mb-2 tracking-wider">Today's Workload</label>
@@ -496,7 +583,7 @@ button { transition: all 0.2s ease; }
                     <div>
                         <label class="block text-xs font-bold text-slate-400 uppercase mb-2 tracking-wider">Focus Area</label>
                         <select id="crFocus" class="w-full bg-slate-800/50 border border-slate-600 rounded-xl p-3 text-sm text-white focus:border-yellow-500 outline-none appearance-none">
-                            <option value="Anything">🎲 Anything (Best Choice)</option>
+                            <option value="Auto Mix">🎲 Auto Mix (Best Choice)</option>
                             <option value="Pre-Wedding">💍 Pre-Wedding Focus</option>
                             <option value="Wedding Day">👰 Wedding Day</option>
                             <option value="Studio Branding">🏢 Studio Branding</option>
@@ -584,9 +671,9 @@ button { transition: all 0.2s ease; }
                                         </button>
                                     </div>
                                 </div>
-                                <div id="csIdeaPicker" class="hidden bg-slate-900/70 border border-cyan-500/30 rounded-lg p-3 space-y-2">
+                                <div id="csIdeaPicker" class="hidden bg-slate-900/70 border border-cyan-500/30 rounded-xl p-4 space-y-3">
                                     <div class="text-[11px] font-bold text-cyan-300 uppercase tracking-wide">ရွေးချယ်ရန် ခေါင်းစဉ် (၃ ခု)</div>
-                                    <div id="csIdeaList" class="grid grid-cols-1 md:grid-cols-3 gap-2"></div>
+                                    <div id="csIdeaList" class="grid grid-cols-1 lg:grid-cols-3 gap-3"></div>
                                     <div class="text-[10px] text-slate-400">တစ်ခုနှိပ်လိုက်တာနဲ့ Topic Override ထဲ auto ထည့်ပြီး One-Click Campaign (FB+TikTok+DM) ကို auto run လုပ်မယ်။</div>
                                 </div>
                                 <div>
@@ -620,7 +707,7 @@ button { transition: all 0.2s ease; }
                 </div>
 
                 <!-- Output Area (Desktop) -->
-                <div id="crResultArea" class="hidden md:block h-full">
+                <div id="crResultArea" class="hidden h-full">
                      <div class="bg-slate-900/50 rounded-xl border border-slate-700 p-5 h-full flex flex-col shadow-inner">
                         <div class="flex justify-between items-center mb-4">
                             <span class="text-sm font-bold text-yellow-400 uppercase flex items-center gap-2"><i class="ph ph-check-circle"></i> Generated Content</span>
@@ -629,17 +716,6 @@ button { transition: all 0.2s ease; }
                         <div id="crOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 custom-scroll pr-2"></div>
                      </div>
                 </div>
-            </div>
-            
-            <!-- Output Area (Mobile) -->
-            <div id="crResultAreaMobile" class="md:hidden hidden mt-4">
-                 <div class="bg-slate-900/50 rounded-xl border border-slate-700 p-5 shadow-inner">
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-sm font-bold text-yellow-400 uppercase">Result</span>
-                        <button onclick="window.copyText('crOutputMobile')" class="text-sm bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-600 text-white transition">Copy</button>
-                    </div>
-                    <div id="crOutputMobile" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed"></div>
-                 </div>
             </div>
             <button id="crContinueBtn" onclick="window.continueAI('creative_director')" class="hidden w-full mt-3 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded text-yellow-300 text-xs font-bold">Continue Writing</button>
         </div>
@@ -1150,6 +1226,24 @@ button { transition: all 0.2s ease; }
         return err.message || fallback;
     };
 
+    const THEME_KEY = 'wy:theme';
+    const applyTheme = (theme = 'studio-blue') => {
+        const normalized = ['studio-blue', 'dark', 'light'].includes(theme) ? theme : 'studio-blue';
+        document.body.dataset.theme = normalized;
+        localStorage.setItem(THEME_KEY, normalized);
+        document.querySelectorAll('[data-theme-btn]').forEach((btn) => {
+            btn.classList.toggle('active', btn.dataset.themeBtn === normalized);
+        });
+    };
+    window.setTheme = (theme) => applyTheme(theme);
+
+    const normalizeIdeaTopic = (value = '') => {
+        const t = String(value || '').trim();
+        if (!t) return '';
+        if (/^anything$/i.test(t) || /^auto mix$/i.test(t)) return '';
+        return t;
+    };
+
     const serviceLabelMap = {
         pre_wedding: 'Pre-Wedding',
         wedding_day: 'Wedding Day',
@@ -1263,15 +1357,15 @@ Return STRICT JSON array only:
             const isBest = title === bestTitle;
             const btn = document.createElement('button');
             btn.type = 'button';
-            btn.className = `text-left bg-slate-800 hover:bg-cyan-700/30 border ${isBest ? 'border-cyan-400' : 'border-slate-700'} hover:border-cyan-400 text-slate-100 p-2 rounded text-xs font-medium transition`;
+            btn.className = `text-left bg-slate-800 hover:bg-cyan-700/30 border ${isBest ? 'border-cyan-400' : 'border-slate-700'} hover:border-cyan-400 text-slate-100 p-4 rounded-xl text-sm font-medium transition min-h-[180px]`;
             btn.innerHTML = `
                 <div class="flex items-center justify-between">
-                    <span class="text-cyan-300 text-[10px] font-bold">Option ${idx + 1}</span>
-                    <span class="text-[10px] ${isBest ? 'text-emerald-300' : 'text-slate-300'}">${isBest ? 'Recommended' : `Score ${total.toFixed(1)}/10`}</span>
+                    <span class="text-cyan-300 text-xs font-bold">Option ${idx + 1}</span>
+                    <span class="text-xs ${isBest ? 'text-emerald-300' : 'text-slate-300'}">${isBest ? 'Recommended' : `Score ${total.toFixed(1)}/10`}</span>
                 </div>
-                <div class="mt-1">${escapeHtml(title)}</div>
-                <div class="mt-1 text-[10px] text-slate-400">E ${metrics.engagement}/10 • C ${metrics.conversion}/10 • B ${metrics.brandFit}/10</div>
-                ${item.reason ? `<div class="mt-1 text-[10px] text-slate-500">${escapeHtml(item.reason)}</div>` : ''}
+                <div class="mt-2 leading-relaxed">${escapeHtml(title)}</div>
+                <div class="mt-2 text-xs text-slate-400">E ${metrics.engagement}/10 • C ${metrics.conversion}/10 • B ${metrics.brandFit}/10</div>
+                ${item.reason ? `<div class="mt-2 text-xs text-slate-500 leading-relaxed">${escapeHtml(item.reason)}</div>` : ''}
             `;
             btn.addEventListener('click', async () => {
                 const topicEl = document.getElementById('csTopic');
@@ -1740,7 +1834,8 @@ window.generateCreativeTitles = async function() {
 
   try {
     const service = getServiceLabel(getValue('csService') || 'general');
-    const hintTopic = (getValue('csTopic') || getValue('crFocus') || '').trim();
+    const focus = normalizeIdeaTopic(getValue('crFocus'));
+    const hintTopic = normalizeIdeaTopic(getValue('csTopic')) || focus;
     const { label: platformLabel } = getCreativePlatformSelection();
     const tone = getValue('csTone') || 'emotional';
 
@@ -2247,7 +2342,7 @@ Rules:
             prompt = `Task: Daily Plan. Focus=${focus}. Output: 4 Sections (Priority, Content, Sales, Quick Win).`;
             contextTopic = `Manager Plan (${focus})`;
         } else if (type === 'creative_director') {
-            const focus = getValue('crFocus') || 'Anything';
+            const focus = normalizeIdeaTopic(getValue('crFocus')) || getServiceLabel(getValue('csService') || 'general');
             const { onFB, onTT, label } = getCreativePlatformSelection();
             const perDay = onFB && onTT
                 ? 'Day X: Facebook idea (1), TikTok idea (1), Hook (2), CTA (2)'
@@ -2265,7 +2360,7 @@ Rules:
             contextTopic = 'Creative Plan';
         } else if (type === 'creative_post') {
             const selectedTitle = (getValue('csTopic') || '').trim();
-            const focus = selectedTitle || getValue('crFocus') || 'Anything';
+            const focus = selectedTitle || normalizeIdeaTopic(getValue('crFocus')) || getServiceLabel(getValue('csService') || 'general');
             const photo = getValue('crPhotoContext') || selectedTitle || 'no photo context provided';
             const { onFB, onTT, label } = getCreativePlatformSelection();
             const outputSections = onFB && onTT
@@ -2317,7 +2412,7 @@ Rules:
             `;
             contextTopic = 'Creative Post';
         } else if (type === 'creative_tt_text') {
-            const topic = getValue('crFocus') || 'Anything';
+            const topic = normalizeIdeaTopic(getValue('crFocus')) || getServiceLabel(getValue('csService') || 'general');
             prompt = `
              Task: Build a complete TikTok Text Pack about "${topic}".
              Output format (strict):
@@ -2331,10 +2426,10 @@ Rules:
              - Natural spoken Burmese
              - No greeting, no self intro
              - Mobile-native, short punchy lines
-             `;
+            `;
             contextTopic = `TikTok Text Mode (${topic})`;
         } else if (type === 'creative_brand_idea') {
-            const focus = getValue('crFocus') || 'Pre-Wedding';
+            const focus = normalizeIdeaTopic(getValue('crFocus')) || 'Pre-Wedding';
             const photo = getValue('crPhotoContext') || 'no photo context provided';
             const onFB = document.getElementById('crFB')?.checked;
             const onTT = document.getElementById('crTT')?.checked;
@@ -2395,7 +2490,7 @@ Rules:
             const language = getValue('csLanguage') || 'burmese_default';
             const template = getValue('csTemplate') || 'default';
             const service = getValue('csService') || 'general';
-            const topic = getValue('csTopic') || getValue('crFocus');
+            const topic = getValue('csTopic') || normalizeIdeaTopic(getValue('crFocus'));
             const audience = getValue('csAudience');
             const keywords = getValue('csKeywords');
             const cta = getValue('csCTA');
@@ -2500,7 +2595,7 @@ Rules:
             `;
             contextTopic = 'Studio DM Pack';
         } else if (type === 'studio_campaign') {
-            const topic = (getValue('csTopic') || getValue('crFocus') || getValue('csService') || 'photo studio').trim();
+            const topic = (getValue('csTopic') || normalizeIdeaTopic(getValue('crFocus')) || getValue('csService') || 'photo studio').trim();
             const service = getServiceLabel(getValue('csService') || 'general');
             const tone = getValue('csTone') || 'emotional';
             const cta = getValue('csCTA') || 'Inbox for booking';
@@ -2539,7 +2634,7 @@ Rules:
             `;
             contextTopic = `One-Click Campaign: ${topic}`;
         } else if (type === 'studio_hook_pro') {
-            const topic = (getValue('csTopic') || getValue('crFocus') || getValue('csService') || 'photo studio').trim();
+            const topic = (getValue('csTopic') || normalizeIdeaTopic(getValue('crFocus')) || getValue('csService') || 'photo studio').trim();
             const service = getServiceLabel(getValue('csService') || 'general');
             prompt = `
             Task: Generate Hook Generator Pro output for this idea.
@@ -2638,11 +2733,7 @@ Rules:
                 if(outEl) outEl.textContent = 'Thinking...';
                 // Mobile Scroll
                 if(window.innerWidth < 768) {
-                    if((type.startsWith('creative'))) {
-                        const mobEl = document.getElementById('crResultAreaMobile');
-                        if (mobEl) mobEl.classList.remove('hidden');
-                    }
-                    const scrollTarget = (type.startsWith('creative') || type.startsWith('studio_')) ? document.getElementById('crResultAreaMobile') : document.getElementById(areaId);
+                    const scrollTarget = document.getElementById(areaId);
                     if(scrollTarget) setTimeout(() => { scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
                 }
             }
@@ -2817,10 +2908,6 @@ Rules:
                 if(outEl) {
                     if(isContinue) outEl.innerText += "\n" + cleanedResult;
                     else outEl.innerText = cleanedResult;
-                    
-                    if((type.startsWith('creative') || type.startsWith('studio_')) && document.getElementById('crOutputMobile')) {
-                        document.getElementById('crOutputMobile').innerText = outEl.innerText;
-                    }
 
                     // --- SAVE TO RECENT LOGIC ---
                     if(cleanedResult && !cleanedResult.includes("Error") && userId) {
@@ -2891,6 +2978,7 @@ Rules:
 
     window.loadView('creative'); // Start with Creative
     setupDraftAutosave();
+    applyTheme(localStorage.getItem(THEME_KEY) || 'studio-blue');
 
 
 
