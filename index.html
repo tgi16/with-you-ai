@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>With You Studio - Sales Master AI v6.8</title>
+  <title>With You Studio - Sales Master Content AI</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <!-- Phosphor Icons -->
@@ -141,6 +141,80 @@ button { transition: all 0.2s ease; }
     /* Toast Animation */
     .toast { visibility: hidden; min-width: 250px; background-color: #1e293b; color: #fff; text-align: center; border-radius: 50px; padding: 12px 24px; position: fixed; z-index: 100; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; opacity: 0; }
     .toast.show { visibility: visible; bottom: 40px; opacity: 1; }
+
+    /* Rebrand UI (With You Studio - Sales Master Content AI) */
+    :root {
+      --wy-bg-0: #050b1a;
+      --wy-bg-1: #0c1530;
+      --wy-card: rgba(18, 28, 52, 0.72);
+      --wy-card-strong: rgba(14, 23, 44, 0.86);
+      --wy-border: rgba(135, 168, 255, 0.18);
+      --wy-glow: rgba(56, 189, 248, 0.2);
+      --wy-accent: #38bdf8;
+      --wy-accent-2: #60a5fa;
+    }
+
+    body {
+      background:
+        radial-gradient(1200px 700px at -10% -20%, rgba(56, 189, 248, 0.14), transparent 60%),
+        radial-gradient(800px 500px at 100% 0%, rgba(99, 102, 241, 0.16), transparent 55%),
+        linear-gradient(145deg, var(--wy-bg-0), var(--wy-bg-1));
+      position: relative;
+    }
+
+    #sidebar {
+      background: linear-gradient(180deg, rgba(9, 17, 36, 0.96), rgba(7, 13, 28, 0.94)) !important;
+      border-right-color: rgba(135, 168, 255, 0.18) !important;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .glass-panel {
+      background: linear-gradient(165deg, var(--wy-card), var(--wy-card-strong));
+      border-color: var(--wy-border) !important;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        0 12px 30px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(56, 189, 248, 0.05);
+    }
+
+    input, select, textarea {
+      border-color: rgba(148, 163, 184, 0.3) !important;
+      background-color: rgba(17, 24, 39, 0.75) !important;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: rgba(56, 189, 248, 0.65) !important;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12) !important;
+      outline: none !important;
+    }
+
+    button {
+      border-radius: 12px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    button:hover {
+      filter: saturate(1.08);
+    }
+
+    .nav-item {
+      border: 1px solid transparent;
+    }
+
+    .nav-item:hover {
+      border-color: rgba(148, 163, 184, 0.25);
+      background: rgba(30, 41, 59, 0.55);
+    }
+
+    .nav-item.active, .mobile-nav-item.active {
+      background: linear-gradient(95deg, #0ea5e9 0%, #2563eb 100%) !important;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.32);
+    }
+
+    #content-container {
+      max-width: 72rem;
+    }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-200 h-screen h-[100dvh] flex overflow-hidden">
@@ -153,7 +227,7 @@ button { transition: all 0.2s ease; }
                 <i class="ph ph-lock-key text-3xl text-blue-400"></i>
             </div>
             <h2 class="text-2xl font-bold text-white">With You Studio</h2>
-            <p class="text-sm text-slate-400 mt-1">AI Sales Assistant Login</p>
+            <p class="text-sm text-slate-400 mt-1">Sales Master Content AI Login</p>
         </div>
         
         <div class="w-full space-y-4">
@@ -191,7 +265,7 @@ button { transition: all 0.2s ease; }
             <h1 class="text-xl font-bold text-white tracking-tight flex items-center gap-2">
                 <i class="ph ph-camera text-blue-400"></i> With You Studio
             </h1>
-            <div class="text-[10px] text-slate-400 bg-slate-800 px-2 py-1 rounded">Sales Master AI v6.8</div>
+            <div class="text-[10px] text-sky-300 bg-sky-900/30 px-2 py-1 rounded border border-sky-500/30">Sales Master Content AI</div>
             <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1 flex items-center gap-1">
                 <span id="connectionStatus" class="w-2 h-2 rounded-full bg-red-500"></span> Online
             </p>
@@ -272,7 +346,7 @@ button { transition: all 0.2s ease; }
   <div class="flex-1 flex flex-col h-full relative w-full">
     <header class="md:hidden h-14 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-4 z-30 shrink-0">
         <button onclick="window.toggleSidebar()" class="text-white p-2"><i class="ph ph-list text-2xl"></i></button>
-        <span class="font-bold text-blue-400 text-lg">With You Studio</span>
+        <span class="font-bold text-blue-300 text-lg">With You Studio</span>
         <div class="w-8"></div>
     </header>
 
@@ -291,7 +365,7 @@ button { transition: all 0.2s ease; }
   <template id="tpl-manager">
     <div class="animate-fade-in space-y-4 h-full flex flex-col">
         <div class="flex items-center justify-between shrink-0">
-            <h2 class="text-xl md:text-3xl font-bold text-yellow-400 flex items-center gap-3"><i class="ph ph-robot"></i> AI Partner</h2>
+            <h2 class="text-xl md:text-3xl font-bold text-sky-300 flex items-center gap-3"><i class="ph ph-robot"></i> Strategy Partner</h2>
             <div class="text-[10px] text-slate-400 bg-slate-800/50 border border-slate-700 px-3 py-1 rounded-full">Today's Direction</div>
         </div>
         
@@ -401,7 +475,7 @@ button { transition: all 0.2s ease; }
   <template id="tpl-creative">
     <div class="animate-fade-in space-y-6">
         <div class="flex items-center justify-between">
-            <h2 class="text-xl md:text-3xl font-bold text-yellow-400 flex items-center gap-3"><i class="ph ph-lightbulb"></i> Content & Ideas HQ</h2>
+            <h2 class="text-xl md:text-3xl font-bold text-cyan-300 flex items-center gap-3"><i class="ph ph-lightbulb"></i> Content Command Center</h2>
             
         </div>
         <div class="glass-panel p-6 rounded-2xl border border-yellow-500/20 shadow-xl relative overflow-hidden">
@@ -576,8 +650,8 @@ button { transition: all 0.2s ease; }
   <template id="tpl-dm">
     <div class="animate-fade-in space-y-6">
         <div class="flex items-center justify-between">
-            <h2 class="text-xl md:text-3xl font-bold text-purple-400 flex items-center gap-3">
-                <i class="ph ph-chat-circle-text"></i> DM Sales Master
+            <h2 class="text-xl md:text-3xl font-bold text-indigo-300 flex items-center gap-3">
+                <i class="ph ph-chat-circle-text"></i> DM Conversion Desk
             </h2>
         </div>
         
@@ -2333,7 +2407,7 @@ Rules:
                 prompt = 'Return this exact message in Burmese: "Creative Brief / Topic ထည့်ပါ"';
             } else {
                 prompt = `
-                ROLE: You are Sales Master AI's Creative Studio engine for With You Studio.
+                ROLE: You are Sales Master Content AI's Creative Studio engine for With You Studio.
                 TASK: Generate conversion-ready marketing content.
 
                 Persona: ${persona}
