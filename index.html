@@ -498,13 +498,24 @@ button { transition: all 0.2s ease; }
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">CTA</label>
-                                        <input id="csCTA" type="text" placeholder="ဥပမာ - Inbox for booking" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-sm text-white" />
+                                        <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Ideas</label>
+                                        <button onclick="window.generateCreativeTitles()" class="w-full bg-slate-700 hover:bg-slate-600 border border-slate-600 text-slate-100 font-bold py-2 rounded-lg text-xs transition active:scale-95 flex items-center justify-center gap-1">
+                                            <i class="ph ph-lightbulb"></i> အကြံဉာဏ်အသစ်များ ရယူရန်
+                                        </button>
                                     </div>
+                                </div>
+                                <div id="csIdeaPicker" class="hidden bg-slate-900/70 border border-cyan-500/30 rounded-lg p-3 space-y-2">
+                                    <div class="text-[11px] font-bold text-cyan-300 uppercase tracking-wide">ရွေးချယ်ရန် ခေါင်းစဉ် (၃ ခု)</div>
+                                    <div id="csIdeaList" class="grid grid-cols-1 md:grid-cols-3 gap-2"></div>
+                                    <div class="text-[10px] text-slate-400">တစ်ခုနှိပ်လိုက်တာနဲ့ Topic Override ထဲ auto ထည့်ပြီး Platform ရွေးထားသလို content auto generate လုပ်မယ်။</div>
                                 </div>
                                 <div>
                                     <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Topic Override</label>
                                     <input id="csTopic" type="text" placeholder="မထည့်လည်းရတယ် (Focus Area ကိုသုံးမယ်)" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-sm text-white" />
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">CTA</label>
+                                    <input id="csCTA" type="text" placeholder="ဥပမာ - Inbox for booking" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-sm text-white" />
                                 </div>
                                 <div>
                                     <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Formats</label>
@@ -1059,6 +1070,71 @@ button { transition: all 0.2s ease; }
         return err.message || fallback;
     };
 
+    const serviceLabelMap = {
+        pre_wedding: 'Pre-Wedding',
+        wedding_day: 'Wedding Day',
+        family_portrait: 'Family Portrait',
+        general: 'General',
+        'pre-wedding': 'Pre-Wedding',
+        'wedding-day': 'Wedding Day',
+        family: 'Family Portrait',
+        'solo-portrait': 'Solo Portrait',
+        'studio-promo': 'Studio Promotion'
+    };
+
+    const getServiceLabel = (raw = '') => serviceLabelMap[String(raw || '').trim()] || (raw || 'General');
+
+    const extractIdeaTitles = (text = '') => {
+        const rows = String(text || '')
+            .split('\n')
+            .map((r) => r.trim())
+            .filter(Boolean)
+            .map((r) => r.replace(/^[\-\*\d\.\)\s]+/, '').replace(/^["'“”]+|["'“”]+$/g, '').trim())
+            .filter((r) => r && r.length > 3);
+
+        const out = [];
+        const seen = new Set();
+        for (const row of rows) {
+            const key = row.toLowerCase();
+            if (seen.has(key)) continue;
+            seen.add(key);
+            out.push(row);
+            if (out.length >= 3) break;
+        }
+        return out;
+    };
+
+    const renderCreativeIdeas = (titles = []) => {
+        const wrap = document.getElementById('csIdeaPicker');
+        const list = document.getElementById('csIdeaList');
+        if (!wrap || !list) return;
+
+        list.innerHTML = '';
+        if (!titles.length) {
+            wrap.classList.add('hidden');
+            return;
+        }
+
+        titles.forEach((title, idx) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'text-left bg-slate-800 hover:bg-cyan-700/30 border border-slate-700 hover:border-cyan-400 text-slate-100 p-2 rounded text-xs font-medium transition';
+            btn.innerHTML = `<span class="text-cyan-300 text-[10px] font-bold">Option ${idx + 1}</span><br>${escapeHtml(title)}`;
+            btn.addEventListener('click', async () => {
+                const topicEl = document.getElementById('csTopic');
+                if (topicEl) {
+                    topicEl.value = title;
+                    topicEl.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+                window.showToast('ရွေးထားတဲ့ခေါင်းစဉ်နဲ့ content generate လုပ်နေပါတယ်...');
+                await window.generateAI('creative_post');
+            });
+            list.appendChild(btn);
+        });
+
+        wrap.classList.remove('hidden');
+    };
+
     const setButtonBusy = (btn, busy, busyText = 'Working...') => {
         if (!btn) return;
         if (busy) {
@@ -1482,6 +1558,54 @@ window.runAssistant = async function(type) {
   } catch (e) {
     console.error(e);
     window.showToast(getApiErrorMessage(e, 'Assistant error'));
+  } finally {
+    setButtonBusy(triggerBtn, false);
+  }
+};
+
+window.generateCreativeTitles = async function() {
+  const triggerBtn = document.querySelector('button[onclick="window.generateCreativeTitles()"]');
+  setButtonBusy(triggerBtn, true, 'Generating ideas...');
+
+  try {
+    const service = getServiceLabel(getValue('csService') || 'general');
+    const hintTopic = (getValue('csTopic') || getValue('crFocus') || '').trim();
+    const { label: platformLabel } = getCreativePlatformSelection();
+    const tone = getValue('csTone') || 'emotional';
+
+    const prompt = `
+Task: Give exactly 3 powerful Burmese content title ideas for a photo studio.
+Service: ${service}
+Platform target: ${platformLabel}
+Tone: ${tone}
+Context hint: ${hintTopic || 'none'}
+
+Rules:
+- Return exactly 3 lines only.
+- Each line should be one ready-to-use title/headline (no numbering, no explanation).
+- Titles must be specific, emotional, and conversion-friendly.
+`;
+
+    const data = await callGenerateAPI({
+      userMessage: prompt,
+      mode: 'studio',
+      maxOutputTokens: 600
+    });
+
+    let titles = extractIdeaTitles(data?.result || '');
+    if (titles.length < 3) {
+      const fallbackBase = hintTopic || service;
+      titles = [
+        `${fallbackBase} မှာ တစ်သက်မမေ့မိတဲ့ moment ကို ဓာတ်ပုံတစ်ပုံနဲ့ ထိန်းသိမ်းမယ်`,
+        `${fallbackBase} ရိုက်ကွင်းမှာ mood နဲ့ emotion ကို တကယ်ပေါ်အောင် ဘယ်လိုဖန်တီးမလဲ`,
+        `${fallbackBase} အတွက် ယနေ့တင် အသုံးချလို့ရတဲ့ pose + story idea`
+      ];
+    }
+
+    renderCreativeIdeas(titles.slice(0, 3));
+  } catch (e) {
+    console.error(e);
+    window.showToast(getApiErrorMessage(e, 'Idea generation failed'));
   } finally {
     setButtonBusy(triggerBtn, false);
   }
@@ -1950,8 +2074,9 @@ window.runAssistant = async function(type) {
             `;
             contextTopic = 'Creative Plan';
         } else if (type === 'creative_post') {
-            const focus = getValue('crFocus') || 'Anything';
-            const photo = getValue('crPhotoContext') || 'no photo context provided';
+            const selectedTitle = (getValue('csTopic') || '').trim();
+            const focus = selectedTitle || getValue('crFocus') || 'Anything';
+            const photo = getValue('crPhotoContext') || selectedTitle || 'no photo context provided';
             const { onFB, onTT, label } = getCreativePlatformSelection();
             const outputSections = onFB && onTT
                 ? `
@@ -1991,6 +2116,7 @@ window.runAssistant = async function(type) {
             prompt = `
             Task: Generate FINAL READY-TO-POST content only.
             Focus: ${focus}
+            Service: ${getServiceLabel(getValue('csService') || 'general')}
             Photo context: ${photo}
             Platforms: ${label}
             Output sections (strict):
