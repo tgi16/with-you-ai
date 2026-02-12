@@ -444,6 +444,11 @@ button { transition: all 0.2s ease; }
                     </div>
 
                     <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2 tracking-wider">Photo Context (Optional)</label>
+                        <input id="crPhotoContext" type="text" placeholder="ဥပမာ - indoor studio, white curtain, soft light, couple looking at each other" class="w-full bg-slate-800/50 border border-slate-600 rounded-xl p-3 text-sm text-white focus:border-yellow-500 outline-none" />
+                    </div>
+
+                    <div>
                          <label class="block text-xs font-bold text-slate-400 uppercase mb-2 tracking-wider">Platforms</label>
                          <div class="flex gap-4">
                              <label class="flex items-center gap-2 cursor-pointer bg-slate-800/50 px-4 py-2 rounded-lg border border-slate-700 hover:border-blue-500 transition select-none">
@@ -467,6 +472,9 @@ button { transition: all 0.2s ease; }
                                 <i class="ph ph-pen-nib text-lg"></i> Write Post Now
                             </button>
                         </div>
+                        <button onclick="window.generateAI('creative_brand_idea')" class="w-full bg-yellow-700/80 hover:bg-yellow-600 text-white font-bold py-3 rounded-xl transition active:scale-95 flex items-center justify-center gap-2">
+                            <i class="ph ph-lightbulb-filament text-lg"></i> Smart Idea (Brand Brain)
+                        </button>
                         
                         <button onclick="window.generateAI('creative_tt_text')" class="w-full bg-slate-800 border border-teal-500/50 hover:bg-slate-700 text-teal-400 font-bold py-3.5 rounded-xl transition active:scale-95 flex items-center justify-center gap-2 shadow-md">
                             <i class="ph ph-text-t text-lg"></i> TikTok Text Pack
@@ -1076,7 +1084,7 @@ button { transition: all 0.2s ease; }
         outputIds: {
             fbpost: 'fbOutput', dm_best: 'dmOutput', timeline: 'tlOutput', tt_caption: 'ttOutput',
             tt_script: 'ttOutput', tt_post_full: 'ttOutput', pose: 'poseOutput', creative_director: 'crOutput',
-            creative_post: 'crOutput', creative_tt_text: 'crOutput', dm_auto_detect: 'dmOutput',
+            creative_post: 'crOutput', creative_tt_text: 'crOutput', creative_brand_idea: 'crOutput', dm_auto_detect: 'dmOutput',
             creative_studio: 'studioOutput', studio_ideas: 'studioOutput', studio_hooks: 'studioOutput',
             studio_cta: 'studioOutput', studio_hashtags: 'studioOutput',
             studio_pack_fb: 'studioOutput', studio_pack_tiktok: 'studioOutput', studio_pack_dm: 'studioOutput',
@@ -1085,7 +1093,7 @@ button { transition: all 0.2s ease; }
         areaIds: {
             fbpost: 'fbResultArea', dm_best: 'dmResultArea', timeline: 'tlResultArea', tt_caption: 'ttResultArea',
             tt_script: 'ttResultArea', tt_post_full: 'ttResultArea', pose: 'poseResultArea',
-            creative_director: 'crResultArea', creative_post: 'crResultArea', creative_tt_text: 'crResultArea',
+            creative_director: 'crResultArea', creative_post: 'crResultArea', creative_tt_text: 'crResultArea', creative_brand_idea: 'crResultArea',
             creative_studio: 'studioResultArea', studio_ideas: 'studioResultArea', studio_hooks: 'studioResultArea',
             studio_cta: 'studioResultArea', studio_hashtags: 'studioResultArea',
             studio_pack_fb: 'studioResultArea', studio_pack_tiktok: 'studioResultArea', studio_pack_dm: 'studioResultArea',
@@ -1094,7 +1102,7 @@ button { transition: all 0.2s ease; }
         continueBtnIds: {
             fbpost: 'fbContinueBtn', dm_best: 'dmContinueBtn', timeline: 'tlContinueBtn', tt_caption: 'ttContinueBtn',
             tt_script: 'ttContinueBtn', tt_post_full: 'ttContinueBtn', manager_daily: 'mgrContinueBtn',
-            creative_director: 'crContinueBtn', creative_post: 'crContinueBtn', creative_tt_text: 'crContinueBtn',
+            creative_director: 'crContinueBtn', creative_post: 'crContinueBtn', creative_tt_text: 'crContinueBtn', creative_brand_idea: 'crContinueBtn',
             creative_studio: 'studioContinueBtn',
             dm_auto_detect: 'dmContinueBtn', mentor: 'mentorContinueBtn'
         },
@@ -1102,6 +1110,7 @@ button { transition: all 0.2s ease; }
             creative_director: 'button[onclick="window.generateAI(\'creative_director\')"]',
             creative_post: 'button[onclick="window.generateAI(\'creative_post\')"]',
             creative_tt_text: 'button[onclick="window.generateAI(\'creative_tt_text\')"]',
+            creative_brand_idea: 'button[onclick="window.generateAI(\'creative_brand_idea\')"]',
             dm_analyze: 'button[onclick="window.generateAI(\'dm_analyze\')"]',
             dm_best: 'button[onclick="window.generateAI(\'dm_best\')"]',
             dm_auto_detect: 'button[onclick="window.generateAI(\'dm_auto_detect\')"]',
@@ -1125,10 +1134,10 @@ button { transition: all 0.2s ease; }
 
     const CONTINUE_ELIGIBLE_TYPES = new Set([
         'fbpost', 'tt_script', 'tt_caption', 'tt_post_full',
-        'creative_director', 'creative_post', 'creative_tt_text',
+        'creative_director', 'creative_post', 'creative_tt_text', 'creative_brand_idea',
         'creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm'
     ]);
-    const END_MARKER_TYPES = new Set(['creative_director', 'creative_post', 'creative_tt_text']);
+    const END_MARKER_TYPES = new Set(['creative_director', 'creative_post', 'creative_tt_text', 'creative_brand_idea']);
     const hasEndMarker = (type, text = '') => {
         if (!END_MARKER_TYPES.has(type)) return null;
         return /\[END\]\s*$/i.test(String(text || '').trim());
@@ -1156,7 +1165,7 @@ button { transition: all 0.2s ease; }
     };
 
     const DIRECT_CONTENT_TYPES = new Set([
-        'fbpost', 'creative_post', 'creative_tt_text', 'creative_studio',
+        'fbpost', 'creative_post', 'creative_tt_text', 'creative_brand_idea', 'creative_studio',
         'studio_ideas', 'studio_hooks', 'studio_cta', 'studio_hashtags',
         'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm',
         'tt_script', 'tt_caption', 'tt_post_full', 'dm_best'
@@ -1787,6 +1796,31 @@ window.runAssistant = async function(type) {
              - Mobile-native, short punchy lines
              `;
             contextTopic = `TikTok Text Mode (${topic})`;
+        } else if (type === 'creative_brand_idea') {
+            const focus = getValue('crFocus') || 'Pre-Wedding';
+            const photo = getValue('crPhotoContext') || 'no photo context provided';
+            const onFB = document.getElementById('crFB')?.checked ? 'yes' : 'no';
+            const onTT = document.getElementById('crTT')?.checked ? 'yes' : 'no';
+            prompt = `
+            Task: Generate a smart content idea pack using Brand Brain context.
+            Focus: ${focus}
+            Photo context: ${photo}
+            Platforms: Facebook=${onFB}, TikTok=${onTT}
+
+            Output format (strict):
+            1) Core Idea (1)
+            2) FB Post (ready to post, 1 long + 1 short caption)
+            3) TikTok Caption (3)
+            4) TikTok On-screen Text Flow (8 lines)
+            5) CTA lines (4)
+            6) Hashtags (12)
+
+            Rules:
+            - Must match a photo studio brand voice
+            - Natural Burmese, no greeting/self intro
+            - Conversion-focused and directly usable today
+            `;
+            contextTopic = `Brand Idea: ${focus}`;
         } else if (type === 'creative_studio') {
             const persona = getValue('csPersona') || 'sales_closer';
             const tone = getValue('csTone') || 'emotional';
@@ -2048,13 +2082,13 @@ window.runAssistant = async function(type) {
         try {
             const packTypes = new Set(['studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm']);
             const tiktokHeavyTypes = new Set(['tt_script', 'tt_caption', 'tt_post_full']);
-            const longFormTypes = new Set(['creative_director', 'creative_post', 'creative_tt_text', 'creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'fbpost', 'tt_post_full']);
+            const longFormTypes = new Set(['creative_director', 'creative_post', 'creative_tt_text', 'creative_brand_idea', 'creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'fbpost', 'tt_post_full']);
             const maxOutputTokens = packTypes.has(type)
                 ? 2200
                 : (tiktokHeavyTypes.has(type)
                     ? (type === 'tt_caption' ? 1200 : 1700)
                     : (longFormTypes.has(type)
-                        ? (type === 'creative_director' ? 1800 : (type === 'creative_tt_text' ? 1700 : 1500))
+                        ? (type === 'creative_director' ? 1800 : (type === 'creative_tt_text' ? 1700 : (type === 'creative_brand_idea' ? 1900 : 1500)))
                         : 850));
             const d = await callGenerateAPI({
                 userMessage: systemPrompt + "\n\n" + promptWithCompletionRule,
@@ -2062,7 +2096,7 @@ window.runAssistant = async function(type) {
             });
             let cleanedResult = sanitizeGeneratedOutput(type, d.result);
 
-            const autoContinueTypes = new Set(['creative_director', 'creative_post', 'creative_tt_text', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'tt_script', 'tt_caption', 'tt_post_full']);
+            const autoContinueTypes = new Set(['creative_director', 'creative_post', 'creative_tt_text', 'creative_brand_idea', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'tt_script', 'tt_caption', 'tt_post_full']);
             let needsMore = typeof d.isCut === 'boolean' ? d.isCut : shouldShowContinue(type, cleanedResult);
 
             if (!isContinue && needsMore && autoContinueTypes.has(type)) {
