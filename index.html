@@ -1242,18 +1242,6 @@ button { transition: all 0.2s ease; }
         const rows = out.split('\n').filter((r) => !/^\*\*[a-z0-9_ ]+\*\*$/i.test(r.trim()));
         out = rows.join('\n').trim();
 
-        // If output ends mid-sentence, cut back to last complete sentence.
-        if (out && !/[။.!?…]$/.test(out)) {
-            const lastStop = Math.max(
-                out.lastIndexOf('။'),
-                out.lastIndexOf('.'),
-                out.lastIndexOf('!'),
-                out.lastIndexOf('?'),
-                out.lastIndexOf('…')
-            );
-            if (lastStop > 40) out = out.slice(0, lastStop + 1).trim();
-        }
-
         return out;
     };
 
@@ -1814,38 +1802,37 @@ window.runAssistant = async function(type) {
         } else if (type === 'creative_director') {
             const focus = getValue('crFocus') || 'Anything';
             prompt = `
-            Task: Create a concise 3-Day Content Plan for "${focus}".
+            Task: Create a complete 3-Day Content Plan for "${focus}".
             Output format (strict):
-            Day 1: FB idea (1), TikTok idea (1), Hook (1), CTA (1)
-            Day 2: FB idea (1), TikTok idea (1), Hook (1), CTA (1)
-            Day 3: FB idea (1), TikTok idea (1), Hook (1), CTA (1)
-            Execution checklist (3 bullets max).
-            Keep total output under 220 words and finish completely.
+            Day 1: FB idea (1), TikTok idea (1), Hook (2), CTA (2)
+            Day 2: FB idea (1), TikTok idea (1), Hook (2), CTA (2)
+            Day 3: FB idea (1), TikTok idea (1), Hook (2), CTA (2)
+            Execution checklist (5 bullets).
             `;
             contextTopic = 'Creative Plan';
         } else if (type === 'creative_post') {
             const focus = getValue('crFocus') || 'Anything';
             prompt = `
-            Task: Write a concise Facebook Post Pack about "${focus}".
+            Task: Write a complete Facebook Post Pack about "${focus}".
             Output sections (strict):
-            1) Hook lines (2)
-            2) Main Post (AIDA, one complete version, 90-130 words)
-            3) Caption (1 short version)
-            4) CTA lines (2)
-            5) Hashtag set (8)
-            Must be ready-to-post Burmese content and end cleanly.
+            1) Hook lines (3)
+            2) Main Post (AIDA, one complete version)
+            3) Caption (2 versions)
+            4) CTA lines (4)
+            5) Hashtag set (12)
+            Must be ready-to-post Burmese content.
             `;
             contextTopic = 'Creative Post';
         } else if (type === 'creative_tt_text') {
             const topic = getValue('crFocus') || 'Anything';
             prompt = `
-             Task: Build a concise TikTok Text Pack about "${topic}".
+             Task: Build a complete TikTok Text Pack about "${topic}".
              Output format (strict):
-             1) Cover text options (3)
-             2) Hook text lines (5)
-             3) On-screen text flow for 20-30s video (5 lines)
-             4) Captions (2)
-             5) Hashtags (8)
+             1) Cover text options (5)
+             2) Hook text lines (10)
+             3) On-screen text flow for 30s video (8 lines)
+             4) Captions (3)
+             5) Hashtags (15)
 
              Rules:
              - Natural spoken Burmese
@@ -1859,19 +1846,18 @@ window.runAssistant = async function(type) {
             const onFB = document.getElementById('crFB')?.checked ? 'yes' : 'no';
             const onTT = document.getElementById('crTT')?.checked ? 'yes' : 'no';
             prompt = `
-            Task: Generate a concise smart content + idea pack using Brand Brain context.
+            Task: Generate a complete smart content + idea pack using Brand Brain context.
             Focus: ${focus}
             Photo context: ${photo}
             Platforms: Facebook=${onFB}, TikTok=${onTT}
 
             Output format (strict):
             1) Core Idea (1)
-            2) FB Post (ready to post, 1 complete medium post)
-            3) TikTok Caption (2)
-            4) TikTok On-screen Text Flow (5 lines)
-            5) CTA lines (2)
-            6) Hashtags (8)
-            Keep total output under 260 words and finish all sections.
+            2) FB Post (ready to post, 1 long + 1 short caption)
+            3) TikTok Caption (3)
+            4) TikTok On-screen Text Flow (8 lines)
+            5) CTA lines (4)
+            6) Hashtags (12)
 
             Rules:
             - Must match a photo studio brand voice
@@ -1925,9 +1911,8 @@ window.runAssistant = async function(type) {
                 - If format includes hashtag_pack, provide 10 relevant hashtags.
                 - If format includes tiktok_cover, provide 5 short on-screen cover texts.
                 - If format includes tiktok_script, provide one 30-45s scene-by-scene script.
-                - If format includes tiktok_caption, provide 2 TikTok captions + one hashtag set (max 8 hashtags).
-                - Keep total output under 220 words.
-                - If multiple formats are selected, give only ONE compact result per format.
+                - If format includes tiktok_caption, provide 3 TikTok captions + one hashtag set.
+                - If multiple formats are selected, give complete output per format.
                 - Never leave any sentence unfinished.
                 `;
             }
@@ -2134,8 +2119,8 @@ window.runAssistant = async function(type) {
         - Do NOT add greeting lines (e.g., "မင်္ဂလာပါ").
         - Do NOT introduce yourself or mention any role/title.
         - Do NOT write meta-intro text; output only usable post content.
-        - Keep output concise and fully finished in one response.
-        - Prefer short, complete sections over long incomplete text.
+        - Prefer complete detailed output over overly short output.
+        - Ensure every requested section is present before finishing.
         `;
         const { prompt, contextTopic } = buildAIPrompt(type, outId, isContinue);
         const promptWithCompletionRule = END_MARKER_TYPES.has(type)
@@ -2147,12 +2132,12 @@ window.runAssistant = async function(type) {
             const tiktokHeavyTypes = new Set(['tt_script', 'tt_caption', 'tt_post_full']);
             const longFormTypes = new Set(['creative_director', 'creative_post', 'creative_tt_text', 'creative_brand_idea', 'creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'fbpost', 'tt_post_full']);
             const maxOutputTokens = packTypes.has(type)
-                ? 1300
+                ? 2200
                 : (tiktokHeavyTypes.has(type)
-                    ? (type === 'tt_caption' ? 850 : 1100)
+                    ? (type === 'tt_caption' ? 1200 : 1700)
                     : (longFormTypes.has(type)
-                        ? (type === 'creative_brand_idea' ? 1300 : 1100)
-                        : 750));
+                        ? (type === 'creative_brand_idea' ? 2000 : 1700)
+                        : 900));
             const d = await callGenerateAPI({
                 userMessage: systemPrompt + "\n\n" + promptWithCompletionRule,
                 maxOutputTokens
@@ -2167,7 +2152,8 @@ window.runAssistant = async function(type) {
             const autoContinueTypes = new Set(['creative_director', 'creative_post', 'creative_tt_text', 'creative_brand_idea', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'tt_script', 'tt_caption', 'tt_post_full']);
             let needsMore = typeof d.isCut === 'boolean' ? d.isCut : shouldShowContinue(type, cleanedResult);
 
-            const ENABLE_AUTO_CONTINUE = false;
+            // Full mode: allow automatic continuation for completeness.
+            const ENABLE_AUTO_CONTINUE = true;
             if (ENABLE_AUTO_CONTINUE && !isContinue && needsMore && autoContinueTypes.has(type)) {
                 const maxPasses = type === 'tt_caption' ? 3 : 2;
                 let pass = 0;
@@ -2191,6 +2177,21 @@ window.runAssistant = async function(type) {
                         console.warn('Auto-continue skipped:', followErr?.message || followErr);
                         break;
                     }
+                }
+            }
+
+            // If output is still too short for content types, do one expansion pass.
+            const minLengthTypes = new Set(['creative_brand_idea', 'creative_post', 'creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'fbpost']);
+            if (!isContinue && minLengthTypes.has(type) && cleanedResult.length < 180) {
+                try {
+                    const expand = await callGenerateAPI({
+                        userMessage: systemPrompt + "\n\nExpand and complete all missing sections from this draft without repeating:\n" + cleanedResult,
+                        maxOutputTokens
+                    }, { timeoutMs: Math.max(API_TIMEOUT_MS, 40000), retries: 0 });
+                    const expanded = sanitizeGeneratedOutput(type, expand.result);
+                    if (expanded) cleanedResult = (cleanedResult + "\n" + expanded).trim();
+                } catch (expandErr) {
+                    console.warn('Expand pass skipped:', expandErr?.message || expandErr);
                 }
             }
             
