@@ -496,6 +496,7 @@ button { transition: all 0.2s ease; }
                     <div id="crOutputMobile" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed"></div>
                  </div>
             </div>
+            <button id="crContinueBtn" onclick="window.continueAI('creative_director')" class="hidden w-full mt-3 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded text-yellow-300 text-xs font-bold">Continue Writing</button>
         </div>
     </div>
   </template>
@@ -1093,6 +1094,7 @@ button { transition: all 0.2s ease; }
         continueBtnIds: {
             fbpost: 'fbContinueBtn', dm_best: 'dmContinueBtn', timeline: 'tlContinueBtn', tt_caption: 'ttContinueBtn',
             tt_script: 'ttContinueBtn', tt_post_full: 'ttContinueBtn', manager_daily: 'mgrContinueBtn',
+            creative_director: 'crContinueBtn', creative_post: 'crContinueBtn',
             creative_studio: 'studioContinueBtn',
             dm_auto_detect: 'dmContinueBtn', mentor: 'mentorContinueBtn'
         },
@@ -1123,6 +1125,7 @@ button { transition: all 0.2s ease; }
 
     const CONTINUE_ELIGIBLE_TYPES = new Set([
         'fbpost', 'tt_script', 'tt_caption', 'tt_post_full',
+        'creative_director', 'creative_post',
         'creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm'
     ]);
     const shouldShowContinue = (type, resultText = '') => {
@@ -2009,19 +2012,19 @@ window.runAssistant = async function(type) {
         try {
             const packTypes = new Set(['studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm']);
             const tiktokHeavyTypes = new Set(['tt_script', 'tt_caption', 'tt_post_full']);
-            const longFormTypes = new Set(['creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'fbpost', 'tt_post_full']);
+            const longFormTypes = new Set(['creative_director', 'creative_post', 'creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'fbpost', 'tt_post_full']);
             const maxOutputTokens = packTypes.has(type)
                 ? 2200
                 : (tiktokHeavyTypes.has(type)
                     ? (type === 'tt_caption' ? 1200 : 1700)
-                    : (longFormTypes.has(type) ? 1500 : 850));
+                    : (longFormTypes.has(type) ? (type === 'creative_director' ? 1800 : 1500) : 850));
             const d = await callGenerateAPI({
                 userMessage: systemPrompt + "\n\n" + prompt,
                 maxOutputTokens
             });
             let cleanedResult = sanitizeGeneratedOutput(type, d.result);
 
-            const autoContinueTypes = new Set(['studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'tt_script', 'tt_caption', 'tt_post_full']);
+            const autoContinueTypes = new Set(['creative_director', 'creative_post', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'tt_script', 'tt_caption', 'tt_post_full']);
             let needsMore = typeof d.isCut === 'boolean' ? d.isCut : shouldShowContinue(type, cleanedResult);
 
             if (!isContinue && needsMore && autoContinueTypes.has(type)) {
