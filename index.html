@@ -662,8 +662,16 @@ button { transition: all 0.2s ease; }
                     <!-- Single Final Action -->
                     <div class="space-y-3 mt-2">
                         <button onclick="window.generateAI('studio_campaign')" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-3.5 rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2 text-sm">
-                            <i class="ph ph-rocket-launch text-lg"></i> Generate Final Result (Facebook + TikTok)
+                            <i class="ph ph-rocket-launch text-lg"></i> Generate Final Result (Follow Platform Selection)
                         </button>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <button onclick="window.generateAI('studio_campaign_fb')" class="bg-blue-700 hover:bg-blue-600 text-white font-bold py-2.5 rounded-lg text-xs transition active:scale-95 flex items-center justify-center gap-2">
+                                <i class="ph ph-facebook-logo text-base"></i> Facebook Only
+                            </button>
+                            <button onclick="window.generateAI('studio_campaign_tiktok')" class="bg-teal-700 hover:bg-teal-600 text-white font-bold py-2.5 rounded-lg text-xs transition active:scale-95 flex items-center justify-center gap-2">
+                                <i class="ph ph-tiktok-logo text-base"></i> TikTok Only
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -1325,6 +1333,8 @@ Return STRICT JSON array only:
                     <span class="text-xs ${isBest ? 'text-emerald-300' : 'text-slate-300'}">${isBest ? 'Recommended' : `Score ${total.toFixed(1)}/10`}</span>
                 </div>
                 <div class="mt-2 leading-relaxed">${escapeHtml(title)}</div>
+                ${item.trendAngle ? `<div class="mt-2 text-[11px] text-cyan-300 font-bold">Trend: ${escapeHtml(item.trendAngle)}</div>` : ''}
+                ${item.guide ? `<div class="mt-1 text-[11px] text-slate-400 leading-relaxed">Guide: ${escapeHtml(item.guide)}</div>` : ''}
                 <div class="mt-2 text-xs text-slate-400">E ${metrics.engagement}/10 • C ${metrics.conversion}/10 • B ${metrics.brandFit}/10</div>
                 ${item.reason ? `<div class="mt-2 text-xs text-slate-500 leading-relaxed">${escapeHtml(item.reason)}</div>` : ''}
             `;
@@ -1418,7 +1428,7 @@ Return STRICT JSON array only:
             creative_studio: 'crOutput', studio_ideas: 'crOutput', studio_hooks: 'crOutput',
             studio_cta: 'crOutput', studio_hashtags: 'crOutput',
             studio_pack_fb: 'crOutput', studio_pack_tiktok: 'crOutput', studio_pack_dm: 'crOutput',
-            studio_campaign: 'crOutput', studio_hook_pro: 'crOutput',
+            studio_campaign: 'crOutput', studio_campaign_fb: 'crOutput', studio_campaign_tiktok: 'crOutput', studio_hook_pro: 'crOutput',
             manager_daily: 'mgrOutput', mentor: 'mentorOutput'
         },
         areaIds: {
@@ -1428,7 +1438,7 @@ Return STRICT JSON array only:
             creative_studio: 'crResultArea', studio_ideas: 'crResultArea', studio_hooks: 'crResultArea',
             studio_cta: 'crResultArea', studio_hashtags: 'crResultArea',
             studio_pack_fb: 'crResultArea', studio_pack_tiktok: 'crResultArea', studio_pack_dm: 'crResultArea',
-            studio_campaign: 'crResultArea', studio_hook_pro: 'crResultArea',
+            studio_campaign: 'crResultArea', studio_campaign_fb: 'crResultArea', studio_campaign_tiktok: 'crResultArea', studio_hook_pro: 'crResultArea',
             dm_auto_detect: 'dmResultArea', manager_daily: 'mgrResultArea', mentor: 'mentorResultArea'
         },
         continueBtnIds: {
@@ -1437,7 +1447,7 @@ Return STRICT JSON array only:
             creative_director: 'crContinueBtn', creative_post: 'crContinueBtn', creative_tt_text: 'crContinueBtn', creative_brand_idea: 'crContinueBtn',
             creative_studio: 'crContinueBtn',
             studio_pack_fb: 'crContinueBtn', studio_pack_tiktok: 'crContinueBtn', studio_pack_dm: 'crContinueBtn',
-            studio_campaign: 'crContinueBtn', studio_hook_pro: 'crContinueBtn',
+            studio_campaign: 'crContinueBtn', studio_campaign_fb: 'crContinueBtn', studio_campaign_tiktok: 'crContinueBtn', studio_hook_pro: 'crContinueBtn',
             studio_ideas: 'crContinueBtn', studio_hooks: 'crContinueBtn', studio_cta: 'crContinueBtn', studio_hashtags: 'crContinueBtn',
             dm_auto_detect: 'dmContinueBtn', mentor: 'mentorContinueBtn'
         },
@@ -1445,6 +1455,8 @@ Return STRICT JSON array only:
             creative_director: 'button[onclick="window.generateAI(\'creative_director\')"]',
             creative_post: 'button[onclick="window.generateAI(\'creative_post\')"]',
             studio_campaign: 'button[onclick="window.generateAI(\'studio_campaign\')"]',
+            studio_campaign_fb: 'button[onclick="window.generateAI(\'studio_campaign_fb\')"]',
+            studio_campaign_tiktok: 'button[onclick="window.generateAI(\'studio_campaign_tiktok\')"]',
             studio_hook_pro: 'button[onclick="window.generateAI(\'studio_hook_pro\')"]',
             creative_tt_text: 'button[onclick="window.generateAI(\'creative_tt_text\')"]',
             creative_brand_idea: 'button[onclick="window.generateAI(\'creative_brand_idea\')"]',
@@ -1473,7 +1485,7 @@ Return STRICT JSON array only:
         'fbpost', 'tt_script', 'tt_caption', 'tt_post_full',
         'creative_director', 'creative_post', 'creative_tt_text', 'creative_brand_idea',
         'creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm',
-        'studio_campaign', 'studio_hook_pro'
+        'studio_campaign', 'studio_campaign_fb', 'studio_campaign_tiktok', 'studio_hook_pro'
     ]);
     const END_MARKER_TYPES = new Set([
         'creative_director', 'creative_post', 'creative_tt_text', 'creative_brand_idea',
@@ -1509,7 +1521,7 @@ Return STRICT JSON array only:
     const DIRECT_CONTENT_TYPES = new Set([
         'fbpost', 'creative_post', 'creative_tt_text', 'creative_brand_idea', 'creative_studio',
         'studio_ideas', 'studio_hooks', 'studio_cta', 'studio_hashtags',
-        'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'studio_campaign', 'studio_hook_pro',
+        'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'studio_campaign', 'studio_campaign_fb', 'studio_campaign_tiktok', 'studio_hook_pro',
         'tt_script', 'tt_caption', 'tt_post_full', 'dm_best'
     ]);
 
@@ -1558,7 +1570,9 @@ Return STRICT JSON array only:
             /\bmarketing textbook\b/i,
             /\boutput format\b/i,
             /\bcompletion rule\b/i,
-            /\(nor\).*\(shin\)/i
+            /\(nor\).*\(shin\)/i,
+            /\badapted for mentor persona\b/i,
+            /\bmentor persona\b/i
         ];
         out = out
             .split('\n')
@@ -1571,6 +1585,7 @@ Return STRICT JSON array only:
                 if (/^ဒီနေရာမှာ.*(campaign pack|with you photo studio)/i.test(t)) return false;
                 if (/^(here('| i)?s|below is).*(campaign pack|final result|final post)/i.test(t)) return false;
                 if (/^\**\s*video concept\s*:?\**$/i.test(t)) return false;
+                if (/^\**\s*main post.*mentor persona/i.test(t)) return false;
                 return !metaPatterns.some((re) => re.test(t));
             })
             .join('\n')
@@ -1622,6 +1637,20 @@ Return STRICT JSON array only:
             { key: 'TikTok Cover Text', test: /(cover text)/i },
             { key: 'TikTok Hooks', test: /(hook|hooks)/i },
             { key: 'TikTok Captions', test: /(caption|captions)/i }
+        ],
+        studio_campaign_fb: [
+            { key: 'Facebook Final Post', test: /(facebook final post)/i },
+            { key: 'Hook', test: /(hook|hooks)/i },
+            { key: 'Main Post', test: /(main post|aida)/i },
+            { key: 'Caption', test: /(caption)/i },
+            { key: 'CTA', test: /(cta)/i },
+            { key: 'Hashtags', test: /(hashtag|#)/i }
+        ],
+        studio_campaign_tiktok: [
+            { key: 'TikTok Final Pack', test: /(tiktok final pack)/i },
+            { key: 'Cover Text', test: /(cover text)/i },
+            { key: 'Hooks', test: /(hook|hooks)/i },
+            { key: 'Captions', test: /(caption|captions)/i }
         ],
         studio_hook_pro: [
             { key: 'Question Hooks', test: /(question hooks)/i },
@@ -1804,16 +1833,23 @@ window.generateCreativeTitles = async function() {
     const tone = getValue('csTone') || 'emotional';
 
     const prompt = `
-Task: Give exactly 3 powerful Burmese content title ideas for a photo studio.
+You are a senior social strategist for a photo studio.
+Create 3 powerful, trend-aligned idea titles in Burmese.
 Service: ${service}
 Platform target: ${platformLabel}
 Tone: ${tone}
 Context hint: ${hintTopic || 'none'}
 
-Rules:
-- Return exactly 3 lines only.
-- Each line should be one ready-to-use title/headline (no numbering, no explanation).
-- Titles must be specific, emotional, and conversion-friendly.
+Trend hints:
+- Use one trend angle each from: Storytelling Moment, Transformation/Before-After, Social Proof/Testimonial.
+- Keep titles practical for immediate posting.
+
+Return STRICT JSON array only:
+[
+  {"title":"...","trendAngle":"...","guide":"..."},
+  {"title":"...","trendAngle":"...","guide":"..."},
+  {"title":"...","trendAngle":"...","guide":"..."}
+]
 `;
 
     const data = await callGenerateAPI({
@@ -1822,13 +1858,35 @@ Rules:
       maxOutputTokens: 600
     });
 
-    let titles = extractIdeaTitles(data?.result || '');
+    let titles = [];
+    let trendMeta = [];
+    const jsonIdeas = parseJsonArrayFromText(data?.result || '');
+    if (Array.isArray(jsonIdeas)) {
+      for (const row of jsonIdeas.slice(0, 3)) {
+        const title = String(row?.title || '').trim();
+        if (!title) continue;
+        titles.push(title);
+        trendMeta.push({
+          trendAngle: String(row?.trendAngle || '').trim(),
+          guide: String(row?.guide || '').trim()
+        });
+      }
+    }
+    if (titles.length < 3) {
+      titles = extractIdeaTitles(data?.result || '');
+      trendMeta = [];
+    }
     if (titles.length < 3) {
       const fallbackBase = hintTopic || service;
       titles = [
         `${fallbackBase} မှာ တစ်သက်မမေ့မိတဲ့ moment ကို ဓာတ်ပုံတစ်ပုံနဲ့ ထိန်းသိမ်းမယ်`,
         `${fallbackBase} ရိုက်ကွင်းမှာ mood နဲ့ emotion ကို တကယ်ပေါ်အောင် ဘယ်လိုဖန်တီးမလဲ`,
         `${fallbackBase} အတွက် ယနေ့တင် အသုံးချလို့ရတဲ့ pose + story idea`
+      ];
+      trendMeta = [
+        { trendAngle: 'Storytelling Moment', guide: 'emotion နဲ့ moment ကို headline ထဲတင်' },
+        { trendAngle: 'Transformation', guide: 'before/after feel ကို တိုတောင်းပြ' },
+        { trendAngle: 'Social Proof', guide: 'client reaction style wording ထည့်' }
       ];
     }
 
@@ -1848,7 +1906,9 @@ Rules:
         title,
         metrics,
         total: (metrics.engagement + metrics.conversion + metrics.brandFit) / 3,
-        reason: s?.reason || ''
+        reason: s?.reason || '',
+        trendAngle: trendMeta[i]?.trendAngle || '',
+        guide: trendMeta[i]?.guide || ''
       };
     });
     renderCreativeIdeas(items);
@@ -2557,30 +2617,47 @@ Rules:
             Must be natural Burmese and close-friendly.
             `;
             contextTopic = 'Studio DM Pack';
-        } else if (type === 'studio_campaign') {
+        } else if (type === 'studio_campaign' || type === 'studio_campaign_fb' || type === 'studio_campaign_tiktok') {
             const topic = (getValue('csTopic') || normalizeIdeaTopic(getValue('crFocus')) || getValue('csService') || 'photo studio').trim();
             const service = getServiceLabel(getValue('csService') || 'general');
             const tone = getValue('csTone') || 'emotional';
             const cta = getValue('csCTA') || 'Inbox for booking';
-            prompt = `
-            Task: Build one complete campaign pack from one idea.
-            Idea title: ${topic}
-            Service: ${service}
-            Tone: ${tone}
-            CTA: ${cta}
-
-            Output sections (strict):
+            const { onFB, onTT } = getCreativePlatformSelection();
+            const forceFB = type === 'studio_campaign_fb';
+            const forceTT = type === 'studio_campaign_tiktok';
+            const finalFB = forceFB ? true : forceTT ? false : onFB;
+            const finalTT = forceTT ? true : forceFB ? false : onTT;
+            const safeFB = finalFB || !finalTT;
+            const safeTT = finalTT;
+            const sectionFB = `
             1) Facebook Final Post:
             - Hook lines (3)
             - Main Post (AIDA, one full version)
             - Caption (2)
             - CTA lines (3)
             - Hashtags (12)
-
+            `;
+            const sectionTT = `
             2) TikTok Final Pack:
             - Cover Text (3 only)
             - Hook lines (6 only)
             - Captions (2 only)
+            `;
+            const outputSections = safeFB && safeTT ? `${sectionFB}\n${sectionTT}` : (safeFB ? sectionFB : `
+            1) TikTok Final Pack:
+            - Cover Text (3 only)
+            - Hook lines (6 only)
+            - Captions (2 only)
+            `);
+            prompt = `
+            Task: Build final campaign result from one idea.
+            Idea title: ${topic}
+            Service: ${service}
+            Tone: ${tone}
+            CTA: ${cta}
+
+            Output sections (strict):
+            ${outputSections}
 
             Rules:
             - Final ready-to-post content only
@@ -2588,9 +2665,11 @@ Rules:
             - No explanation or planning notes
             - No intro sentence before section 1
             - Do not add "Video Concept", script, hashtag, CTA, comment pin, or extra section for TikTok
-            - Output must contain only section 1 and section 2
+            - If TikTok section exists, enforce Cover=3, Hooks=6, Captions=2 exactly
+            - Output must contain only requested section headings above
             `;
-            contextTopic = `One-Click Campaign: ${topic}`;
+            const modeTag = type === 'studio_campaign_fb' ? 'Facebook' : (type === 'studio_campaign_tiktok' ? 'TikTok' : (safeFB && safeTT ? 'FB+TikTok' : (safeFB ? 'Facebook' : 'TikTok')));
+            contextTopic = `Final Campaign (${modeTag}): ${topic}`;
         } else if (type === 'studio_hook_pro') {
             const topic = (getValue('csTopic') || normalizeIdeaTopic(getValue('crFocus')) || getValue('csService') || 'photo studio').trim();
             const service = getServiceLabel(getValue('csService') || 'general');
@@ -2760,11 +2839,11 @@ Rules:
             : prompt;
 
         try {
-            const packTypes = new Set(['studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'studio_campaign']);
+            const packTypes = new Set(['studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'studio_campaign', 'studio_campaign_fb', 'studio_campaign_tiktok']);
             const tiktokHeavyTypes = new Set(['tt_script', 'tt_caption', 'tt_post_full']);
-            const longFormTypes = new Set(['creative_director', 'creative_post', 'creative_tt_text', 'creative_brand_idea', 'creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'studio_campaign', 'studio_hook_pro', 'fbpost', 'tt_post_full']);
+            const longFormTypes = new Set(['creative_director', 'creative_post', 'creative_tt_text', 'creative_brand_idea', 'creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'studio_campaign', 'studio_campaign_fb', 'studio_campaign_tiktok', 'studio_hook_pro', 'fbpost', 'tt_post_full']);
             const maxOutputTokens = packTypes.has(type)
-                ? (type === 'studio_campaign' ? 3000 : 2200)
+                ? ((type === 'studio_campaign' || type === 'studio_campaign_fb' || type === 'studio_campaign_tiktok') ? 3000 : 2200)
                 : (tiktokHeavyTypes.has(type)
                     ? (type === 'tt_caption' ? 1200 : 1700)
                     : (longFormTypes.has(type)
@@ -2795,7 +2874,7 @@ Rules:
                 }
             }
 
-            const autoContinueTypes = new Set(['creative_director', 'creative_post', 'creative_tt_text', 'creative_brand_idea', 'creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'studio_campaign', 'studio_hook_pro', 'tt_script', 'tt_caption', 'tt_post_full']);
+            const autoContinueTypes = new Set(['creative_director', 'creative_post', 'creative_tt_text', 'creative_brand_idea', 'creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'studio_campaign', 'studio_campaign_fb', 'studio_campaign_tiktok', 'studio_hook_pro', 'tt_script', 'tt_caption', 'tt_post_full']);
             let needsMore = typeof d.isCut === 'boolean' ? d.isCut : shouldShowContinue(type, cleanedResult);
 
             // Full mode: allow automatic continuation for completeness.
@@ -2827,7 +2906,7 @@ Rules:
             }
 
             // If output is still too short for content types, do one expansion pass.
-            const minLengthTypes = new Set(['creative_brand_idea', 'creative_post', 'creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'studio_campaign', 'studio_hook_pro', 'fbpost']);
+            const minLengthTypes = new Set(['creative_brand_idea', 'creative_post', 'creative_studio', 'studio_pack_fb', 'studio_pack_tiktok', 'studio_pack_dm', 'studio_campaign', 'studio_campaign_fb', 'studio_campaign_tiktok', 'studio_hook_pro', 'fbpost']);
             if (!isContinue && minLengthTypes.has(type) && cleanedResult.length < 180) {
                 try {
                     const expand = await callGenerateAPI({
@@ -2859,9 +2938,9 @@ Rules:
             }
 
             // Hard-lock gate for TikTok output shape to keep exact counts.
-            if (!isContinue && (type === 'studio_pack_tiktok' || type === 'studio_campaign')) {
+            if (!isContinue && (type === 'studio_pack_tiktok' || type === 'studio_campaign' || type === 'studio_campaign_fb' || type === 'studio_campaign_tiktok')) {
                 try {
-                    const hardLockPrompt = type === 'studio_pack_tiktok'
+                    const hardLockPrompt = (type === 'studio_pack_tiktok' || type === 'studio_campaign_tiktok')
                         ? (
 `Reformat this draft into STRICT final output with exact shape.
 
@@ -2877,6 +2956,26 @@ Rules:
 - Keep persuasive Burmese suitable for converting photo clients.
 - No intro sentence, no explanation.
 - Do NOT include Video Concept, script, hashtags, CTA, comment pin, or any extra section.
+
+Draft:
+${cleanedResult}`
+                        )
+                        : (type === 'studio_campaign_fb'
+                        ? (
+`Reformat this draft into STRICT final output for Facebook only.
+
+Required output:
+1) Facebook Final Post:
+- Hook lines (3)
+- Main Post (1 full AIDA version)
+- Caption (2)
+- CTA lines (3)
+- Hashtags (12)
+
+Rules:
+- No intro sentence, no explanation.
+- Do NOT include any TikTok section.
+- Output only section 1.
 
 Draft:
 ${cleanedResult}`
@@ -2904,7 +3003,7 @@ Rules:
 
 Draft:
 ${cleanedResult}`
-                        );
+                        ));
 
                     const hardLock = await callGenerateAPI({
                         userMessage: systemPrompt + "\n\n" + hardLockPrompt,
