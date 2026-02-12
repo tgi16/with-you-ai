@@ -2667,6 +2667,9 @@ Return STRICT JSON array only:
             - Do not add "Video Concept", script, hashtag, CTA, comment pin, or extra section for TikTok
             - If TikTok section exists, enforce Cover=3, Hooks=6, Captions=2 exactly
             - Output must contain only requested section headings above
+            - Facebook Main Post must be exactly one short paragraph (90-140 Burmese words), conversion-focused.
+            - Do NOT write tutorial/teaching content, tips, numbered lessons, or long explanations.
+            - Do NOT mention mentor/artist/photographer names or quotes.
             `;
             const modeTag = type === 'studio_campaign_fb' ? 'Facebook' : (type === 'studio_campaign_tiktok' ? 'TikTok' : (safeFB && safeTT ? 'FB+TikTok' : (safeFB ? 'Facebook' : 'TikTok')));
             contextTopic = `Final Campaign (${modeTag}): ${topic}`;
@@ -2976,6 +2979,8 @@ Rules:
 - No intro sentence, no explanation.
 - Do NOT include any TikTok section.
 - Output only section 1.
+- Main Post must be exactly one short paragraph (90-140 Burmese words).
+- Do NOT include tutorial tips, numbered lessons, mentor voice, famous quotes, or photographer names.
 
 Draft:
 ${cleanedResult}`
@@ -3000,6 +3005,8 @@ Rules:
 - No intro sentence, no explanation.
 - Do NOT include Video Concept, script, hashtags in TikTok section, comment pin, or extra sections.
 - Output only section 1 and section 2.
+- Facebook Main Post must be exactly one short paragraph (90-140 Burmese words).
+- Do NOT include tutorial tips, numbered lessons, mentor voice, famous quotes, or photographer names.
 
 Draft:
 ${cleanedResult}`
