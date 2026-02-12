@@ -561,129 +561,99 @@ button { transition: all 0.2s ease; }
   <!-- CREATIVE DIRECTOR TEMPLATE -->
   <template id="tpl-creative">
     <div class="animate-fade-in space-y-6">
-        <div class="flex items-center justify-between">
-            <h2 class="text-xl md:text-3xl font-bold text-cyan-300 flex items-center gap-3"><i class="ph ph-lightbulb"></i> Content Command Center</h2>
-            
-        </div>
-        <div class="glass-panel p-6 rounded-2xl border border-yellow-500/20 shadow-xl relative overflow-hidden">
-             <i class="ph ph-sparkle absolute -top-4 -right-4 text-9xl text-yellow-500 opacity-5 rotate-12"></i>
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl md:text-3xl font-bold text-cyan-300 flex items-center gap-3"><i class="ph ph-lightbulb"></i> Content Command Center Lite</h2>
+      </div>
 
-             <div class="grid grid-cols-1 gap-6 relative z-10">
-                <div class="space-y-5">
-                    <input type="hidden" id="crWorkload" value="Normal">
-                    <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 space-y-4">
-                        <div class="text-sm font-bold text-cyan-300 uppercase tracking-wider">Advanced Studio Controls (All-in-One)</div>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Persona</label>
-                                <select id="csPersona" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
-                                    <option value="sales_closer">Sales Closer</option>
-                                    <option value="my_brand_voice">My Brand Voice</option>
-                                    <option value="storyteller">Storyteller</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Tone</label>
-                                <select id="csTone" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
-                                    <option value="emotional">Emotional</option>
-                                    <option value="friendly">Friendly</option>
-                                    <option value="premium">Premium</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Service</label>
-                                <select id="csService" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
-                                    <option value="pre_wedding">Pre-Wedding</option>
-                                    <option value="wedding_day">Wedding Day</option>
-                                    <option value="family_portrait">Family Portrait</option>
-                                    <option value="general">General</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Content Template (Optional)</label>
-                                <select id="csTemplate" onchange="window.applyTemplatePreset()" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
-                                    <option value="default">Default</option>
-                                    <option value="client_showcase">Client Showcase</option>
-                                    <option value="behind_the_scenes">Behind The Scenes</option>
-                                    <option value="promotion">Promotion</option>
-                                    <option value="educational">Educational Tip</option>
-                                    <option value="teaser">Teaser / Coming Soon</option>
-                                    <option value="testimonial">Client Testimonial</option>
-                                </select>
-                            </div>
-                        </div>
+      <div class="glass-panel p-6 rounded-2xl border border-cyan-500/20 shadow-xl relative overflow-hidden">
+        <i class="ph ph-sparkle absolute -top-4 -right-4 text-8xl text-cyan-400 opacity-10 rotate-12"></i>
+        <div class="relative z-10 space-y-5">
+          <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-4 space-y-4">
+            <div class="text-sm font-bold text-cyan-300 uppercase tracking-wide">Quick Copy-Ready Generator</div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Topic Override</label>
-                                <input id="csTopic" type="text" placeholder="Topic မထည့်လည်းရတယ်" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white" />
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">CTA</label>
-                                <input id="csCTA" type="text" placeholder="ဥပမာ - Inbox for booking" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white" />
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Ideas</label>
-                            <button onclick="window.generateCreativeTitles()" class="w-full bg-slate-700 hover:bg-slate-600 border border-slate-600 text-slate-100 font-bold py-2.5 rounded-lg text-xs transition active:scale-95 flex items-center justify-center gap-1">
-                                <i class="ph ph-lightbulb"></i> အကြံဉာဏ်အသစ်များ ရယူရန်
-                            </button>
-                        </div>
-                        <div class="bg-slate-900/40 border border-slate-700 rounded-xl p-3 space-y-2">
-                            <div class="text-[11px] font-bold text-cyan-300 uppercase tracking-wide">3-Layer Assistants</div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                <button id="btnResearchAssistant" onclick="window.runResearchAssistant()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-100 font-bold py-2.5 rounded-lg text-xs transition active:scale-95">1) Research Assistant</button>
-                                <button id="btnStrategyAssistant" onclick="window.runStrategyAssistant()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-100 font-bold py-2.5 rounded-lg text-xs transition active:scale-95">2) Strategy Assistant</button>
-                            </div>
-                            <button id="btnAutoLayerAssistant" onclick="window.runLayeredAssistants()" class="w-full bg-cyan-700 hover:bg-cyan-600 border border-cyan-500 text-white font-bold py-2.5 rounded-lg text-xs transition active:scale-95">Auto Run (1 + 2 + Ideas)</button>
-                            <div class="text-[10px] text-slate-400">Flow: Research → Strategy → Idea Picker (3) → Final Generate</div>
-                        </div>
-
-                        <div id="csIdeaPicker" class="hidden bg-slate-900/70 border border-cyan-500/30 rounded-xl p-4 space-y-3">
-                            <div class="text-[11px] font-bold text-cyan-300 uppercase tracking-wide">ရွေးချယ်ရန် ခေါင်းစဉ် (၃ ခု)</div>
-                            <div id="csIdeaList" class="grid grid-cols-1 lg:grid-cols-3 gap-3"></div>
-                            <div class="text-[10px] text-slate-400">တစ်ခုနှိပ်လိုက်တာနဲ့ Topic Override ထဲ auto ထည့်ပြီး One-Click Campaign (FB+TikTok) ကို auto run လုပ်မယ်။</div>
-                        </div>
-                        <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-3">
-                            <div class="text-[11px] font-bold text-slate-300 uppercase tracking-wide mb-1">Creative Assistant (Auto by Template)</div>
-                            <div id="csTemplateGuide" class="text-xs text-slate-400 leading-relaxed">Template ရွေးလိုက်တာနဲ့ tone/angle/cta တွေ auto optimize လုပ်ပေးမယ်။</div>
-                        </div>
-                        <input type="checkbox" id="crFB" checked class="hidden" />
-                        <input type="checkbox" id="crTT" checked class="hidden" />
-                        <input type="hidden" id="crPhotoContext" value="" />
-                        <input type="hidden" id="crFocus" value="Auto Mix" />
-                    </div>
-
-                    <!-- Single Final Action -->
-                    <div class="space-y-3 mt-2">
-                        <button onclick="window.generateAI('studio_campaign')" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-3.5 rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2 text-sm">
-                            <i class="ph ph-rocket-launch text-lg"></i> Generate Final Result (Facebook + TikTok)
-                        </button>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                            <button onclick="window.generateAI('studio_campaign_fb')" class="bg-blue-700 hover:bg-blue-600 text-white font-bold py-2.5 rounded-lg text-xs transition active:scale-95 flex items-center justify-center gap-2">
-                                <i class="ph ph-facebook-logo text-base"></i> Facebook Only
-                            </button>
-                            <button onclick="window.generateAI('studio_campaign_tiktok')" class="bg-teal-700 hover:bg-teal-600 text-white font-bold py-2.5 rounded-lg text-xs transition active:scale-95 flex items-center justify-center gap-2">
-                                <i class="ph ph-tiktok-logo text-base"></i> TikTok Only
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Output Area (Desktop) -->
-                <div id="crResultArea" class="hidden h-full">
-                     <div class="bg-slate-900/50 rounded-xl border border-slate-700 p-5 h-full flex flex-col shadow-inner">
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="text-sm font-bold text-yellow-400 uppercase flex items-center gap-2"><i class="ph ph-check-circle"></i> Generated Content</span>
-                            <button onclick="window.copyText('crOutput')" class="text-sm bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-600 text-white transition">Copy</button>
-                        </div>
-                        <div id="crOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed flex-1 custom-scroll pr-2"></div>
-                     </div>
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Service</label>
+                <select id="liteService" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+                  <option value="pre_wedding">Pre-Wedding</option>
+                  <option value="wedding_day">Wedding Day</option>
+                  <option value="family_portrait">Family Portrait</option>
+                  <option value="general">General</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Platform</label>
+                <select id="litePlatform" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+                  <option value="both">Facebook + TikTok</option>
+                  <option value="facebook">Facebook Only</option>
+                  <option value="tiktok">TikTok Only</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Goal</label>
+                <select id="liteGoal" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+                  <option value="booking">Booking</option>
+                  <option value="awareness">Awareness</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Tone</label>
+                <select id="liteTone" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+                  <option value="premium">Premium</option>
+                  <option value="emotional">Emotional</option>
+                  <option value="friendly">Friendly</option>
+                </select>
+              </div>
             </div>
-            <button id="crContinueBtn" onclick="window.continueAI('creative_director')" class="hidden w-full mt-3 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded text-yellow-300 text-xs font-bold">Continue Writing</button>
+
+            <div>
+              <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Topic / Guideline</label>
+              <textarea id="liteTopicGuideline" rows="4" placeholder="ဥပမာ - Pre-Wedding mood ရင်ခုန်ဖွယ် style, booking CTA ကိုရှင်းရှင်းလင်းလင်း ထည့်ပါ" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white resize-y"></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+              <button id="liteSuggestBtn" onclick="window.liteSuggestTopics()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold py-3 rounded-lg text-xs transition">Suggest 3 Topics</button>
+              <button id="liteGenerateBtn" onclick="window.liteGenerateFinal(false)" class="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-3 rounded-lg text-xs transition shadow">Generate Final</button>
+              <button id="liteRegenerateBtn" onclick="window.liteGenerateFinal(true)" class="bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 rounded-lg text-xs transition">Regenerate Stronger</button>
+            </div>
+          </div>
+
+          <div id="liteIdeaWrap" class="hidden bg-slate-900/60 border border-cyan-500/30 rounded-xl p-4 space-y-3">
+            <div class="text-[11px] font-bold text-cyan-300 uppercase tracking-wide">Suggested Topics (3)</div>
+            <div id="liteIdeaList" class="grid grid-cols-1 md:grid-cols-3 gap-3"></div>
+          </div>
+
+          <div id="liteResultArea" class="hidden space-y-4">
+            <div id="liteFBBlock" class="bg-slate-900/60 border border-blue-500/30 rounded-xl p-4">
+              <div class="flex items-center justify-between mb-2">
+                <div class="text-sm font-bold text-blue-300 uppercase">Facebook Final</div>
+                <button onclick="window.copyText('liteFBOutput')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded border border-slate-600">Copy</button>
+              </div>
+              <div id="liteFBOutput" class="whitespace-pre-wrap text-sm text-slate-100 leading-relaxed"></div>
+            </div>
+
+            <div id="liteTTBlock" class="bg-slate-900/60 border border-teal-500/30 rounded-xl p-4">
+              <div class="flex items-center justify-between mb-2">
+                <div class="text-sm font-bold text-teal-300 uppercase">TikTok Final</div>
+                <button onclick="window.copyText('liteTTOutput')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded border border-slate-600">Copy</button>
+              </div>
+              <div id="liteTTOutput" class="whitespace-pre-wrap text-sm text-slate-100 leading-relaxed"></div>
+            </div>
+          </div>
+
+          <input type="hidden" id="csService" value="pre_wedding" />
+          <input type="hidden" id="csTone" value="premium" />
+          <input type="hidden" id="csTopic" value="" />
+          <input type="hidden" id="csCTA" value="Inbox for booking" />
+          <input type="hidden" id="crFocus" value="Auto Mix" />
+          <input type="checkbox" id="crFB" class="hidden" checked />
+          <input type="checkbox" id="crTT" class="hidden" checked />
+          <input type="hidden" id="crPhotoContext" value="" />
+          <input type="hidden" id="crWorkload" value="Normal" />
+          <div id="crResultArea" class="hidden"><div id="crOutput"></div></div>
+          <button id="crContinueBtn" class="hidden"></button>
         </div>
+      </div>
     </div>
   </template>
 
@@ -1146,6 +1116,7 @@ button { transition: all 0.2s ease; }
         'csTopic', 'csAudience', 'csKeywords', 'csCTA', 'csAvoid',
         'csTemplate', 'csService', 'csPersona', 'csTone', 'csLength', 'csLanguage',
         'csIncludeContact', 'csIncludeDM',
+        'liteService', 'litePlatform', 'liteGoal', 'liteTone', 'liteTopicGuideline',
         'brandPackages', 'brandStyle', 'brandClient', 'brandPhone', 'brandViber', 'brandFB', 'brandTT', 'brandAddr'
     ];
 
@@ -1927,260 +1898,300 @@ window.runAssistant = async function(type) {
   }
 };
 
-window.generateCreativeTitles = async function() {
-  const triggerBtn = document.querySelector('button[onclick="window.generateCreativeTitles()"]');
-  setButtonBusy(triggerBtn, true, 'Generating ideas...');
+    const getLiteInputs = () => {
+        const platform = getValue('litePlatform') || 'both';
+        const serviceRaw = getValue('liteService') || 'pre_wedding';
+        const topicGuideline = (getValue('liteTopicGuideline') || '').trim();
+        const inputs = {
+            serviceRaw,
+            service: getServiceLabel(serviceRaw),
+            platform,
+            goal: getValue('liteGoal') || 'booking',
+            tone: getValue('liteTone') || 'premium',
+            topicGuideline: topicGuideline || `${getServiceLabel(serviceRaw)} အတွက် booking တက်စေမယ့် post`
+        };
 
-  try {
-    const service = getServiceLabel(getValue('csService') || 'general');
-    const focus = normalizeIdeaTopic(getValue('crFocus'));
-    const hintTopic = normalizeIdeaTopic(getValue('csTopic')) || focus;
-    const { label: platformLabel } = getCreativePlatformSelection();
-    const tone = getValue('csTone') || 'emotional';
+        const csServiceEl = document.getElementById('csService');
+        const csToneEl = document.getElementById('csTone');
+        const csTopicEl = document.getElementById('csTopic');
+        const fbEl = document.getElementById('crFB');
+        const ttEl = document.getElementById('crTT');
+        if (csServiceEl) csServiceEl.value = serviceRaw;
+        if (csToneEl) csToneEl.value = inputs.tone;
+        if (csTopicEl) csTopicEl.value = inputs.topicGuideline;
+        if (fbEl) fbEl.checked = platform === 'both' || platform === 'facebook';
+        if (ttEl) ttEl.checked = platform === 'both' || platform === 'tiktok';
 
-    const prompt = `
-You are a senior social strategist for a photo studio.
-Create 3 powerful, trend-aligned idea titles in Burmese.
-Service: ${service}
-Platform target: ${platformLabel}
-Tone: ${tone}
-Template guide: ${currentTemplateGuide || 'none'}
-Context hint: ${hintTopic || 'none'}
-Research brief (if any): ${latestResearchBrief || 'none'}
-Strategy brief (if any): ${latestStrategyBrief || 'none'}
+        return inputs;
+    };
 
-Trend hints:
-- Use one trend angle each from: Storytelling Moment, Transformation/Before-After, Social Proof/Testimonial.
-- Keep titles practical for immediate posting.
+    const cleanFinalText = (text = '') => String(text || '')
+        .replace(/```json|```/gi, '')
+        .replace(/^\s*(facebook final post|tiktok final pack)\s*:?\s*$/gim, '')
+        .replace(/^\s*\d+\)\s*/gm, '')
+        .replace(/^\s*[\-\*]\s+/gm, '')
+        .trim();
 
-Return STRICT JSON array only:
-[
-  {"title":"...","trendAngle":"...","guide":"..."},
-  {"title":"...","trendAngle":"...","guide":"..."},
-  {"title":"...","trendAngle":"...","guide":"..."}
-]
-`;
-
-    const data = await callGenerateAPI({
-      userMessage: prompt,
-      mode: 'studio',
-      maxOutputTokens: 600
-    });
-
-    let titles = [];
-    let trendMeta = [];
-    const jsonIdeas = parseJsonArrayFromText(data?.result || '');
-    if (Array.isArray(jsonIdeas)) {
-      for (const row of jsonIdeas.slice(0, 3)) {
-        const title = String(row?.title || '').trim();
-        if (!title) continue;
-        titles.push(title);
-        trendMeta.push({
-          trendAngle: String(row?.trendAngle || '').trim(),
-          guide: String(row?.guide || '').trim()
+    const normalizeTikTokFinal = (text = '') => {
+        const src = cleanFinalText(text);
+        if (!src) return '';
+        const lines = src.split('\n').map((x) => x.trim()).filter(Boolean);
+        let cover = '';
+        let hook = '';
+        let caption = '';
+        lines.forEach((line) => {
+            if (!cover && /^cover\s*:?\s*/i.test(line)) cover = line.replace(/^cover\s*:?\s*/i, '').trim();
+            else if (!hook && /^hook\s*:?\s*/i.test(line)) hook = line.replace(/^hook\s*:?\s*/i, '').trim();
+            else if (!caption && /^caption\s*:?\s*/i.test(line)) caption = line.replace(/^caption\s*:?\s*/i, '').trim();
         });
-      }
-    }
-    if (titles.length < 3) {
-      titles = extractIdeaTitles(data?.result || '');
-      trendMeta = [];
-    }
-    if (titles.length < 3) {
-      const fallbackBase = hintTopic || service;
-      titles = [
-        `${fallbackBase} မှာ တစ်သက်မမေ့မိတဲ့ moment ကို ဓာတ်ပုံတစ်ပုံနဲ့ ထိန်းသိမ်းမယ်`,
-        `${fallbackBase} ရိုက်ကွင်းမှာ mood နဲ့ emotion ကို တကယ်ပေါ်အောင် ဘယ်လိုဖန်တီးမလဲ`,
-        `${fallbackBase} အတွက် ယနေ့တင် အသုံးချလို့ရတဲ့ pose + story idea`
-      ];
-      trendMeta = [
-        { trendAngle: 'Storytelling Moment', guide: 'emotion နဲ့ moment ကို headline ထဲတင်' },
-        { trendAngle: 'Transformation', guide: 'before/after feel ကို တိုတောင်းပြ' },
-        { trendAngle: 'Social Proof', guide: 'client reaction style wording ထည့်' }
-      ];
-    }
+        if (!cover) cover = lines[0] || '';
+        if (!hook) hook = lines[1] || '';
+        if (!caption) caption = lines.slice(2).join(' ').trim() || lines[lines.length - 1] || '';
+        return `Cover: ${cover}\nHook: ${hook}\nCaption: ${caption}`.trim();
+    };
 
-    titles = titles.slice(0, 3);
-    const scored = await scoreCreativeIdeas(titles, {
-      service,
-      platform: platformLabel,
-      tone
-    });
-    const byId = new Map(scored.map((s) => [s.id, s]));
-    const items = titles.map((title, i) => {
-      const s = byId.get(i + 1);
-      const metrics = s
-        ? { engagement: s.engagement, conversion: s.conversion, brandFit: s.brandFit }
-        : { engagement: 6, conversion: 6, brandFit: 6 };
-      return {
-        title,
-        metrics,
-        total: (metrics.engagement + metrics.conversion + metrics.brandFit) / 3,
-        reason: s?.reason || '',
-        trendAngle: trendMeta[i]?.trendAngle || '',
-        guide: trendMeta[i]?.guide || ''
-      };
-    });
-    latestIdeaItems = items;
-    renderCreativeIdeas(items);
-    return items;
-  } catch (e) {
-    console.error(e);
-    window.showToast(getApiErrorMessage(e, 'Idea generation failed'));
-    return [];
-  } finally {
-    setButtonBusy(triggerBtn, false);
-  }
-};
+    const renderLiteIdeas = (titles = []) => {
+        const wrap = document.getElementById('liteIdeaWrap');
+        const list = document.getElementById('liteIdeaList');
+        if (!wrap || !list) return;
+        list.innerHTML = '';
 
-window.runResearchAssistant = async function() {
-  const btn = document.getElementById('btnResearchAssistant');
-  setButtonBusy(btn, true, 'Researching...');
-  try {
-    const service = getServiceLabel(getValue('csService') || 'general');
-    const topic = normalizeIdeaTopic(getValue('csTopic')) || service;
-    const tone = getValue('csTone') || 'emotional';
-    const persona = getValue('csPersona') || 'sales_closer';
-    const prompt = `
-You are Research Assistant for a Myanmar photo studio.
-Build a practical social media research brief for immediate content execution.
+        if (!titles.length) {
+            wrap.classList.add('hidden');
+            return;
+        }
+
+        titles.slice(0, 3).forEach((title, index) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'text-left bg-slate-800 hover:bg-cyan-700/25 border border-slate-700 hover:border-cyan-400 p-3 rounded-lg transition min-h-[112px]';
+            btn.innerHTML = `
+                <div class="text-[11px] text-cyan-300 font-bold uppercase">Option ${index + 1}</div>
+                <div class="mt-1 text-sm text-slate-100 leading-relaxed">${escapeHtml(title)}</div>
+            `;
+            btn.addEventListener('click', () => {
+                const guideEl = document.getElementById('liteTopicGuideline');
+                if (guideEl) guideEl.value = title;
+                window.showToast('Topic ရွေးပြီးပါပြီ။ Generate Final ကိုနှိပ်ပါ။');
+            });
+            list.appendChild(btn);
+        });
+
+        wrap.classList.remove('hidden');
+    };
+
+    const renderLiteFinalResult = (payload = {}, platform = 'both') => {
+        const resultArea = document.getElementById('liteResultArea');
+        const fbBlock = document.getElementById('liteFBBlock');
+        const ttBlock = document.getElementById('liteTTBlock');
+        const fbOutput = document.getElementById('liteFBOutput');
+        const ttOutput = document.getElementById('liteTTOutput');
+        if (!resultArea || !fbBlock || !ttBlock || !fbOutput || !ttOutput) return;
+
+        const wantsFB = platform === 'both' || platform === 'facebook';
+        const wantsTT = platform === 'both' || platform === 'tiktok';
+        const fbText = cleanFinalText(payload.facebook || '');
+        const ttText = normalizeTikTokFinal(payload.tiktok || '');
+
+        fbBlock.classList.toggle('hidden', !wantsFB);
+        ttBlock.classList.toggle('hidden', !wantsTT);
+        fbOutput.innerText = wantsFB ? fbText : '';
+        ttOutput.innerText = wantsTT ? ttText : '';
+
+        const combined = [
+            wantsFB && fbText ? `Facebook Final\n${fbText}` : '',
+            wantsTT && ttText ? `TikTok Final\n${ttText}` : ''
+        ].filter(Boolean).join('\n\n');
+
+        const legacyOut = document.getElementById('crOutput');
+        if (legacyOut) legacyOut.innerText = combined;
+        resultArea.classList.remove('hidden');
+    };
+
+    const buildLiteFinalPrompt = (inputs, stronger = false) => {
+        const wantsFB = inputs.platform === 'both' || inputs.platform === 'facebook';
+        const wantsTT = inputs.platform === 'both' || inputs.platform === 'tiktok';
+        const schema = wantsFB && wantsTT
+            ? `{"facebook":"...", "tiktok":"..."}`
+            : (wantsFB ? `{"facebook":"..."}` : `{"tiktok":"..."}`);
+        const strongerRule = stronger
+            ? '- Make hook and CTA more aggressive for conversion while staying natural Burmese.\n'
+            : '';
+        return `
+You are senior social copywriter for With You Photo Studio (Taunggyi).
+Goal: Return FINAL ready-to-post content only.
 
 Inputs:
-- Service: ${service}
-- Topic: ${topic}
-- Tone: ${tone}
-- Persona: ${persona}
-- Template guide: ${currentTemplateGuide || 'none'}
-
-Output (Burmese, strict sections):
-1) Audience Signals (3 bullets)
-2) Trend Angles For Facebook (3 bullets)
-3) Trend Angles For TikTok (3 bullets)
-4) Hook Patterns That Convert (5 short lines)
-5) Risk To Avoid (3 bullets)
-
-Rules:
-- No greeting, no intro line
-- Actionable only, short and clear
-- Focus on getting photo clients to message/book
-`;
-    const data = await callGenerateAPI({
-      userMessage: prompt,
-      mode: 'studio',
-      maxOutputTokens: 900
-    });
-    latestResearchBrief = String(data?.result || '').trim();
-    setCreativeOutput(`Research Assistant Result\n\n${latestResearchBrief}`);
-    window.showToast('Research brief ready');
-  } catch (e) {
-    console.error(e);
-    window.showToast(getApiErrorMessage(e, 'Research failed'));
-  } finally {
-    setButtonBusy(btn, false);
-  }
-};
-
-window.runStrategyAssistant = async function() {
-  const btn = document.getElementById('btnStrategyAssistant');
-  setButtonBusy(btn, true, 'Planning...');
-  try {
-    const service = getServiceLabel(getValue('csService') || 'general');
-    const topic = normalizeIdeaTopic(getValue('csTopic')) || service;
-    const tone = getValue('csTone') || 'emotional';
-    const prompt = `
-You are Strategy Assistant for a photo studio.
-Using the research brief, produce a conversion-first content strategy.
-
-Context:
-- Service: ${service}
-- Topic: ${topic}
-- Tone: ${tone}
-- Template guide: ${currentTemplateGuide || 'none'}
-- Research brief: ${latestResearchBrief || 'none'}
+- Service: ${inputs.service}
+- Platform target: ${inputs.platform}
+- Goal: ${inputs.goal}
+- Tone: ${inputs.tone}
+- Topic/Guideline: ${inputs.topicGuideline}
 
 Return STRICT JSON only:
-{
-  "summary":"short Burmese strategy summary",
-  "options":[
-    {"title":"...","trendAngle":"...","guide":"..."},
-    {"title":"...","trendAngle":"...","guide":"..."},
-    {"title":"...","trendAngle":"...","guide":"..."}
-  ],
-  "best":"title text exactly matching one option"
-}
+${schema}
+
+Rules:
+- Burmese language only.
+- No greeting, no intro, no explanation, no numbering.
+- No mentor/analysis/tutorial text.
+${strongerRule}${wantsFB ? `
+- facebook value: one final post ready to publish.
+- Include: opening hook + body + CTA + hashtags in one block.
+- Body should be concise, conversion-focused, natural.
+` : ''}${wantsTT ? `
+- tiktok value: exactly 3 lines only:
+  Cover: ...
+  Hook: ...
+  Caption: ...
+- No extra lines, no hashtags section heading.
+` : ''}
 `;
-    const data = await callGenerateAPI({
-      userMessage: prompt,
-      mode: 'studio',
-      maxOutputTokens: 900
-    });
-    const parsed = parseJsonObjectFromText(data?.result || '');
+    };
 
-    const options = Array.isArray(parsed?.options) ? parsed.options.slice(0, 3) : [];
-    if (options.length) {
-      const titles = options.map((x) => String(x?.title || '').trim()).filter(Boolean).slice(0, 3);
-      if (titles.length) {
-        const scored = await scoreCreativeIdeas(titles, {
-          service,
-          platform: 'Facebook + TikTok',
-          tone
-        });
-        const byId = new Map(scored.map((s) => [s.id, s]));
-        const items = titles.map((title, i) => {
-          const s = byId.get(i + 1);
-          const metrics = s
-            ? { engagement: s.engagement, conversion: s.conversion, brandFit: s.brandFit }
-            : { engagement: 6, conversion: 6, brandFit: 6 };
-          return {
-            title,
-            metrics,
-            total: (metrics.engagement + metrics.conversion + metrics.brandFit) / 3,
-            reason: s?.reason || '',
-            trendAngle: String(options[i]?.trendAngle || '').trim(),
-            guide: String(options[i]?.guide || '').trim()
-          };
-        });
-        renderCreativeIdeas(items);
-      }
-    } else {
-      await window.generateCreativeTitles();
-    }
+    const buildLiteFallbackPrompt = (inputs, channel = 'facebook') => {
+        if (channel === 'tiktok') {
+            return `
+Write TikTok final output only for With You Photo Studio.
+Service: ${inputs.service}
+Goal: ${inputs.goal}
+Tone: ${inputs.tone}
+Topic/Guideline: ${inputs.topicGuideline}
 
-    latestStrategyBrief = String(parsed?.summary || '').trim() || String(data?.result || '').trim() || 'Strategy updated.';
-    setCreativeOutput(`Strategy Assistant Result\n\n${latestStrategyBrief}`);
-    window.showToast('Strategy + 3 ideas ready');
-  } catch (e) {
-    console.error(e);
-    window.showToast(getApiErrorMessage(e, 'Strategy failed'));
-  } finally {
-    setButtonBusy(btn, false);
-  }
-};
+Output exactly 3 lines:
+Cover: ...
+Hook: ...
+Caption: ...
 
-window.runLayeredAssistants = async function() {
-  const btn = document.getElementById('btnAutoLayerAssistant');
-  setButtonBusy(btn, true, 'Running 1 + 2 + Ideas...');
-  try {
-    await window.runResearchAssistant();
-    await window.runStrategyAssistant();
-    const items = latestIdeaItems.length ? latestIdeaItems : await window.generateCreativeTitles();
-    const best = Array.isArray(items) && items.length
-      ? [...items].sort((a, b) => (b.total || 0) - (a.total || 0))[0]
-      : null;
-    const topicEl = document.getElementById('csTopic');
-    if (best?.title && topicEl) topicEl.value = best.title;
-    if (best?.title) {
-      window.showToast('Best idea ကို auto ရွေးပြီး final result generate လုပ်နေပါတယ်...');
-      await window.generateAI('studio_campaign');
-    } else {
-      window.showToast('Ideas ready. Option တစ်ခုရွေးပြီး Generate လုပ်ပါ။');
-    }
-  } catch (e) {
-    console.error(e);
-    window.showToast(getApiErrorMessage(e, 'Auto flow failed'));
-  } finally {
-    setButtonBusy(btn, false);
-  }
-};
+Rules:
+- Burmese only
+- No extra text
+- No heading
+`;
+        }
+        return `
+Write one Facebook final post only for With You Photo Studio.
+Service: ${inputs.service}
+Goal: ${inputs.goal}
+Tone: ${inputs.tone}
+Topic/Guideline: ${inputs.topicGuideline}
+
+Rules:
+- Burmese only
+- Final ready-to-post text only
+- Include hook + body + CTA + hashtags in one block
+- No heading, no explanation
+`;
+    };
+
+    window.liteSuggestTopics = async function() {
+        const btn = document.getElementById('liteSuggestBtn');
+        setButtonBusy(btn, true, 'Suggesting...');
+        try {
+            const inputs = getLiteInputs();
+            const prompt = `
+Create 3 strong topic ideas for a Myanmar photo studio.
+Service: ${inputs.service}
+Goal: ${inputs.goal}
+Tone: ${inputs.tone}
+Platform: ${inputs.platform}
+User guideline: ${inputs.topicGuideline}
+
+Return STRICT JSON array only:
+["topic 1","topic 2","topic 3"]
+`;
+            const d = await callGenerateAPI({
+                userMessage: prompt,
+                mode: 'studio_lite',
+                maxOutputTokens: 450
+            });
+            let titles = [];
+            const parsed = parseJsonArrayFromText(d?.result || '');
+            if (Array.isArray(parsed)) {
+                titles = parsed.map((x) => String(x || '').trim()).filter(Boolean).slice(0, 3);
+            }
+            if (titles.length < 3) titles = extractIdeaTitles(d?.result || '').slice(0, 3);
+            if (titles.length < 3) {
+                titles = [
+                    `${inputs.service} အတွက် ရင်ခုန်ဖွယ် moment ကို premium mood နဲ့ဖမ်းမယ်`,
+                    `${inputs.service} မှာ client ကို အရင်ဆုံးယုံကြည်စေမယ့် visual story`,
+                    `${inputs.service} booking တက်စေမယ့် offer + emotion post idea`
+                ];
+            }
+            renderLiteIdeas(titles.slice(0, 3));
+        } catch (e) {
+            console.error(e);
+            window.showToast(getApiErrorMessage(e, 'Topic suggest failed'));
+        } finally {
+            setButtonBusy(btn, false);
+        }
+    };
+
+    window.liteGenerateFinal = async function(stronger = false) {
+        const btn = stronger ? document.getElementById('liteRegenerateBtn') : document.getElementById('liteGenerateBtn');
+        setButtonBusy(btn, true, stronger ? 'Regenerating...' : 'Generating...');
+        try {
+            const inputs = getLiteInputs();
+            const wantsFB = inputs.platform === 'both' || inputs.platform === 'facebook';
+            const wantsTT = inputs.platform === 'both' || inputs.platform === 'tiktok';
+
+            const draft = await callGenerateAPI({
+                userMessage: buildLiteFinalPrompt(inputs, stronger),
+                mode: 'studio_lite',
+                maxOutputTokens: 1800
+            });
+
+            let payload = parseJsonObjectFromText(draft?.result || '') || {};
+            const hasFB = !!String(payload?.facebook || '').trim();
+            const hasTT = !!String(payload?.tiktok || '').trim();
+
+            if ((wantsFB && !hasFB) || (wantsTT && !hasTT)) {
+                const fixSchema = wantsFB && wantsTT
+                    ? `{"facebook":"...", "tiktok":"..."}`
+                    : (wantsFB ? `{"facebook":"..."}` : `{"tiktok":"..."}`);
+                const fix = await callGenerateAPI({
+                    userMessage: `Convert draft to STRICT JSON only.\nSchema: ${fixSchema}\nDraft:\n${draft?.result || ''}`,
+                    mode: 'studio_lite',
+                    maxOutputTokens: 1400
+                });
+                payload = parseJsonObjectFromText(fix?.result || '') || payload;
+            }
+
+            if (wantsFB && !String(payload?.facebook || '').trim()) {
+                const fbFallback = await callGenerateAPI({
+                    userMessage: buildLiteFallbackPrompt(inputs, 'facebook'),
+                    mode: 'studio_lite',
+                    maxOutputTokens: 900
+                });
+                payload.facebook = cleanFinalText(fbFallback?.result || '');
+            }
+
+            if (wantsTT && !String(payload?.tiktok || '').trim()) {
+                const ttFallback = await callGenerateAPI({
+                    userMessage: buildLiteFallbackPrompt(inputs, 'tiktok'),
+                    mode: 'studio_lite',
+                    maxOutputTokens: 500
+                });
+                payload.tiktok = normalizeTikTokFinal(ttFallback?.result || '');
+            }
+
+            renderLiteFinalResult(payload, inputs.platform);
+            window.showToast('Final content ready. Copy and post.');
+        } catch (e) {
+            console.error(e);
+            window.showToast(getApiErrorMessage(e, 'Generate failed'));
+        } finally {
+            setButtonBusy(btn, false);
+        }
+    };
+
+    window.generateCreativeTitles = window.liteSuggestTopics;
+    window.runResearchAssistant = window.liteSuggestTopics;
+    window.runStrategyAssistant = window.liteSuggestTopics;
+    window.runLayeredAssistants = async () => {
+        await window.liteSuggestTopics();
+        await window.liteGenerateFinal(false);
+    };
 
 
     // --- GLOBAL EXPORTS ---

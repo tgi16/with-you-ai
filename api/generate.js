@@ -2,9 +2,6 @@ export const config = {
   runtime: "nodejs"
 };
 
-/* ===============================
-   AUTO INTENT DETECTOR
-================================ */
 function detectIntent(text = "") {
   const t = String(text || "").toLowerCase();
 
@@ -12,7 +9,7 @@ function detectIntent(text = "") {
     return "mentor";
   }
 
-  if (/(ဈေး|price|package|booking|ရက်|date|client|dm)/i.test(t)) {
+  if (/(ဈေး|price|package|booking|ရက်|date|client|dm|sale|campaign)/i.test(t)) {
     return "business";
   }
 
@@ -26,11 +23,15 @@ function detectIntent(text = "") {
 function clampMaxOutputTokens(value) {
   const n = Number(value);
   if (!Number.isFinite(n)) return 1200;
-  return Math.min(Math.max(Math.floor(n), 500), 4096);
+  return Math.min(Math.max(Math.floor(n), 300), 4096);
 }
 
 function extractTextFromCandidate(candidate = {}) {
   return candidate?.content?.parts?.[0]?.text || "";
+}
+
+function stripCodeFence(text = "") {
+  return String(text || "").replace(/```json|```/gi, "").trim();
 }
 
 function looksIncomplete(text = "") {
@@ -45,6 +46,110 @@ function looksIncomplete(text = "") {
     || /[:;]$/.test(lastLine);
 
   return trimmed.length > 1100 && !endsClean;
+}
+
+function isStructuredRequest(text = "") {
+  const t = String(text || "");
+  return /strict json|json only|return json|\{\s*"|\[\s*"/i.test(t);
+}
+
+function getSystemPrompt(mode, intent) {
+  if (mode === "studio_lite") {
+    return `
+You are copy engine for "With You Photo Studio, Taunggyi".
+
+Rules:
+- Final ready-to-post output only
+- Burmese language only
+- No greetings, no self-intro, no explanation
+- No mentor text, no planning notes
+- Keep copy natural, concise, conversion-focused
+- If user asks JSON, return strict JSON only
+- Do not cut off sections
+`;
+  }
+
+  const businessPrompt = `
+You are AI Manager for "With You Photo Studio, Taunggyi".
+
+Tone:
+- Calm
+- Warm
+- Trustworthy
+- Natural Burmese
+
+Rules:
+- Focus on bookings, clients, and content
+- Reduce decision fatigue
+- Do NOT write greetings or self-introduction
+- Start directly with deliverable content
+`;
+
+  const mentorPrompt = `
+You are a senior photography mentor.
+
+Tone:
+- Calm
+- Inspiring
+- Experienced
+- Burmese language only
+
+Rules:
+- NO selling
+- Focus on photography skills and direction
+- Do NOT write greetings or self-introduction
+- Start directly with deliverable content
+`;
+
+  const generalPrompt = `
+You are a trusted colleague.
+
+Tone:
+- Natural
+- Friendly
+- Clear
+- Burmese language only
+
+Rules:
+- Do NOT write greetings or self-introduction
+- Start directly with deliverable content
+`;
+
+  if (intent === "mentor") return mentorPrompt;
+  if (intent === "business" || intent === "manager") return businessPrompt;
+  return generalPrompt;
+}
+
+async function callGemini(geminiUrl, finalPrompt, generationConfig) {
+  const res = await fetch(geminiUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      contents: [{ role: "user", parts: [{ text: finalPrompt }] }],
+      generationConfig
+    })
+  });
+
+  const raw = await res.text();
+  let data = {};
+  try {
+    data = raw ? JSON.parse(raw) : {};
+  } catch {
+    data = {};
+  }
+
+  if (!res.ok) {
+    const msg = data?.error?.message || `Gemini API error (${res.status})`;
+    const err = new Error(msg);
+    err.statusCode = res.status || 502;
+    throw err;
+  }
+
+  const candidate = data?.candidates?.[0] || {};
+  return {
+    text: extractTextFromCandidate(candidate),
+    finishReason: String(candidate?.finishReason || "").toUpperCase()
+  };
 }
 
 export default async function handler(req, res) {
@@ -71,60 +176,7 @@ export default async function handler(req, res) {
     }
 
     const intent = mode || detectIntent(inputText);
-
-    const businessPrompt = `
-You are AI Manager for "With You Photo Studio, Taunggyi".
-
-Tone:
-- Calm
-- Warm
-- Trustworthy
-- Natural Burmese (spoken)
-
-Rules:
-- Focus on bookings, clients, content
-- Reduce decision fatigue
-- ONE clear suggestion at a time
-- Never sound like marketing textbook
-- Do NOT write greetings or self-introduction
-- Start directly with deliverable content
-`;
-
-    const mentorPrompt = `
-You are a senior photography mentor.
-
-Tone:
-- Calm
-- Inspiring
-- Experienced
-- Burmese language only
-
-Rules:
-- NO selling
-- NO business advice unless asked
-- Focus on photography skills, light, emotion, composition
-- Mention famous photographers when helpful
-- Do NOT write greetings or self-introduction
-- Start directly with deliverable content
-`;
-
-    const generalPrompt = `
-You are a trusted colleague.
-
-Tone:
-- Natural
-- Friendly
-- Clear
-- Burmese language only
-
-Rules:
-- Do NOT write greetings or self-introduction
-- Start directly with deliverable content
-`;
-
-    let systemPrompt = generalPrompt;
-    if (intent === "business" || intent === "manager") systemPrompt = businessPrompt;
-    if (intent === "mentor") systemPrompt = mentorPrompt;
+    const systemPrompt = getSystemPrompt(mode, intent);
 
     const finalPrompt = `
 SYSTEM:
@@ -138,88 +190,50 @@ ${inputText}
 
 IMPORTANT:
 - Answer fully
-- Sound human
 - Do not cut off mid sentence
-- Do NOT add greeting lines (e.g., "မင်္ဂလာပါ")
-- Do NOT introduce yourself or mention role/title
-- Output only the requested content body
+- Output only requested content body
+- If request asks strict JSON, return strict JSON only
 `;
 
     const tokenLimit = clampMaxOutputTokens(maxOutputTokens);
+    const structured = isStructuredRequest(inputText);
 
     const geminiUrl = "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" + apiKey;
     const generationConfig = {
-      temperature: 0.7,
+      temperature: mode === "studio_lite" || structured ? 0.45 : 0.7,
       maxOutputTokens: tokenLimit
     };
 
-    const genRes = await fetch(geminiUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ role: "user", parts: [{ text: finalPrompt }] }],
-        generationConfig
-      })
-    });
+    const first = await callGemini(geminiUrl, finalPrompt, generationConfig);
+    let result = stripCodeFence(first.text);
+    let finishReason = first.finishReason;
 
-    const raw = await genRes.text();
-    let genData = {};
-    try {
-      genData = raw ? JSON.parse(raw) : {};
-    } catch {
-      genData = {};
-    }
-
-    if (!genRes.ok) {
-      return res.status(genRes.status || 502).json({
-        error: genData?.error?.message || `Gemini API error (${genRes.status})`
-      });
-    }
-
-    const candidate = genData?.candidates?.[0] || {};
-    let result = extractTextFromCandidate(candidate);
-    let finishReason = String(candidate?.finishReason || "").toUpperCase();
-    let trimmed = result.trim();
-
-    const likelyCut = finishReason === "MAX_TOKENS" || looksIncomplete(trimmed);
-    if (likelyCut && trimmed) {
+    const likelyCut = finishReason === "MAX_TOKENS" || looksIncomplete(result);
+    if (likelyCut && result) {
       try {
         const continuationPrompt = `
 Continue the unfinished content below.
 Rules:
-- Return ONLY the missing remaining lines.
-- Do NOT repeat any line from existing content.
+- Return ONLY missing remaining lines.
+- Do NOT repeat existing lines.
 - Keep same tone/language/format.
-- Finish all open sections fully.
+- Finish all open sections completely.
 
 Existing content:
-${trimmed.slice(-1200)}
+${result.slice(-1400)}
 `;
-
-        const contRes = await fetch(geminiUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ role: "user", parts: [{ text: continuationPrompt }] }],
-            generationConfig
-          })
-        });
-
-        if (contRes.ok) {
-          const contData = await contRes.json();
-          const contCandidate = contData?.candidates?.[0] || {};
-          const contText = extractTextFromCandidate(contCandidate).trim();
-          if (contText) {
-            result = `${trimmed}\n${contText}`.trim();
-            trimmed = result.trim();
-            finishReason = String(contCandidate?.finishReason || finishReason || "").toUpperCase();
-          }
+        const cont = await callGemini(geminiUrl, continuationPrompt, generationConfig);
+        const contText = stripCodeFence(cont.text);
+        if (contText) {
+          result = `${result}\n${contText}`.trim();
+          finishReason = cont.finishReason || finishReason;
         }
       } catch (contErr) {
         console.warn("Continuation pass skipped:", contErr?.message || contErr);
       }
     }
 
+    const trimmed = result.trim();
     const isCut = finishReason === "MAX_TOKENS" ? true : looksIncomplete(trimmed);
 
     if (!trimmed) {
@@ -231,13 +245,13 @@ ${trimmed.slice(-1200)}
 
     return res.status(200).json({
       intent,
-      result,
+      result: trimmed,
       isCut,
       finishReason
     });
   } catch (err) {
     console.error("Backend error:", err);
-    return res.status(500).json({
+    return res.status(err?.statusCode || 500).json({
       error: err?.message || "Server error"
     });
   }
