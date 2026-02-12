@@ -599,6 +599,18 @@ button { transition: all 0.2s ease; }
                                     <option value="general">General</option>
                                 </select>
                             </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Content Template (Optional)</label>
+                                <select id="csTemplate" onchange="window.applyTemplatePreset()" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+                                    <option value="default">Default</option>
+                                    <option value="client_showcase">Client Showcase</option>
+                                    <option value="behind_the_scenes">Behind The Scenes</option>
+                                    <option value="promotion">Promotion</option>
+                                    <option value="educational">Educational Tip</option>
+                                    <option value="teaser">Teaser / Coming Soon</option>
+                                    <option value="testimonial">Client Testimonial</option>
+                                </select>
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -624,39 +636,15 @@ button { transition: all 0.2s ease; }
                             <div id="csIdeaList" class="grid grid-cols-1 lg:grid-cols-3 gap-3"></div>
                             <div class="text-[10px] text-slate-400">တစ်ခုနှိပ်လိုက်တာနဲ့ Topic Override ထဲ auto ထည့်ပြီး One-Click Campaign (FB+TikTok) ကို auto run လုပ်မယ်။</div>
                         </div>
+                        <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-3">
+                            <div class="text-[11px] font-bold text-slate-300 uppercase tracking-wide mb-1">Creative Assistant (Auto by Template)</div>
+                            <div id="csTemplateGuide" class="text-xs text-slate-400 leading-relaxed">Template ရွေးလိုက်တာနဲ့ tone/angle/cta တွေ auto optimize လုပ်ပေးမယ်။</div>
+                        </div>
 
-                        <details class="bg-slate-800/50 border border-slate-700 rounded-lg p-3">
-                            <summary class="cursor-pointer text-[11px] font-bold text-slate-300 uppercase tracking-wide">More Controls (Focus / Platform / Photo)</summary>
-                            <div class="space-y-3 mt-3">
-                                <div>
-                                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Focus Area</label>
-                                    <select id="crFocus" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
-                                        <option value="Auto Mix">🎲 Auto Mix (Best Choice)</option>
-                                        <option value="Pre-Wedding">💍 Pre-Wedding Focus</option>
-                                        <option value="Wedding Day">👰 Wedding Day</option>
-                                        <option value="Studio Branding">🏢 Studio Branding</option>
-                                        <option value="Family Portrait">👨‍👩‍👧‍👦 Family / Portrait</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Photo Context (Optional)</label>
-                                    <input id="crPhotoContext" type="text" placeholder="ဥပမာ - indoor studio, soft light, couple look" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white" />
-                                </div>
-                                <div>
-                                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Platforms</label>
-                                    <div class="flex gap-3">
-                                        <label class="flex items-center gap-2 cursor-pointer bg-slate-800/50 px-3 py-2 rounded-lg border border-slate-700 hover:border-blue-500 transition select-none">
-                                            <input type="checkbox" id="crFB" checked class="w-4 h-4 rounded bg-slate-700 border-slate-600 text-blue-500 focus:ring-0">
-                                            <span class="text-sm text-slate-300 font-bold">Facebook</span>
-                                        </label>
-                                        <label class="flex items-center gap-2 cursor-pointer bg-slate-800/50 px-3 py-2 rounded-lg border border-slate-700 hover:border-teal-500 transition select-none">
-                                            <input type="checkbox" id="crTT" checked class="w-4 h-4 rounded bg-slate-700 border-slate-600 text-teal-500 focus:ring-0">
-                                            <span class="text-sm text-slate-300 font-bold">TikTok</span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </details>
+                        <input type="hidden" id="crFocus" value="Auto Mix" />
+                        <input type="hidden" id="crPhotoContext" value="" />
+                        <input type="checkbox" id="crFB" checked class="hidden" />
+                        <input type="checkbox" id="crTT" checked class="hidden" />
                     </div>
 
                     <!-- Single Final Action -->
@@ -1211,6 +1199,66 @@ button { transition: all 0.2s ease; }
         if (!t) return '';
         if (/^anything$/i.test(t) || /^auto mix$/i.test(t)) return '';
         return t;
+    };
+
+    let currentTemplateGuide = '';
+    const TEMPLATE_PRESETS = {
+        default: {
+            tone: 'emotional',
+            persona: 'sales_closer',
+            cta: 'Inbox for booking',
+            guide: 'General conversion mode: emotion + clear CTA.'
+        },
+        client_showcase: {
+            tone: 'premium',
+            persona: 'storyteller',
+            cta: 'Message us to plan your shoot',
+            guide: 'Client spotlight mode: trust-building + social proof + transformation angle.'
+        },
+        behind_the_scenes: {
+            tone: 'friendly',
+            persona: 'storyteller',
+            cta: 'Follow & message for full package details',
+            guide: 'BTS mode: authenticity + process reveal + relatable vibe.'
+        },
+        promotion: {
+            tone: 'premium',
+            persona: 'sales_closer',
+            cta: 'Limited slots: send message now',
+            guide: 'Offer mode: urgency + value stack + easy booking step.'
+        },
+        educational: {
+            tone: 'friendly',
+            persona: 'storyteller',
+            cta: 'Want us to create this for you? Message now',
+            guide: 'Tip mode but conversion-first: short practical insight + direct booking CTA.'
+        },
+        teaser: {
+            tone: 'emotional',
+            persona: 'my_brand_voice',
+            cta: 'Stay tuned and message to reserve early',
+            guide: 'Teaser mode: curiosity hook + mystery + anticipation.'
+        },
+        testimonial: {
+            tone: 'premium',
+            persona: 'sales_closer',
+            cta: 'Message us to create your story',
+            guide: 'Testimonial mode: outcomes + quotes + proof-driven conversion.'
+        }
+    };
+
+    window.applyTemplatePreset = function() {
+        const tpl = getValue('csTemplate') || 'default';
+        const preset = TEMPLATE_PRESETS[tpl] || TEMPLATE_PRESETS.default;
+        const toneEl = document.getElementById('csTone');
+        const personaEl = document.getElementById('csPersona');
+        const ctaEl = document.getElementById('csCTA');
+        const guideEl = document.getElementById('csTemplateGuide');
+        if (toneEl) toneEl.value = preset.tone;
+        if (personaEl) personaEl.value = preset.persona;
+        if (ctaEl && !String(ctaEl.value || '').trim()) ctaEl.value = preset.cta;
+        if (guideEl) guideEl.textContent = preset.guide;
+        currentTemplateGuide = preset.guide;
     };
 
     const serviceLabelMap = {
@@ -1838,6 +1886,7 @@ Create 3 powerful, trend-aligned idea titles in Burmese.
 Service: ${service}
 Platform target: ${platformLabel}
 Tone: ${tone}
+Template guide: ${currentTemplateGuide || 'none'}
 Context hint: ${hintTopic || 'none'}
 
 Trend hints:
@@ -1999,6 +2048,9 @@ Return STRICT JSON array only:
         }
         window.currentView = viewId;
         setupDraftAutosave();
+        if (viewId === 'creative' && typeof window.applyTemplatePreset === 'function') {
+            window.applyTemplatePreset();
+        }
     }
 
     // --- HTML STRINGS ---
@@ -2622,6 +2674,7 @@ Return STRICT JSON array only:
             const service = getServiceLabel(getValue('csService') || 'general');
             const tone = getValue('csTone') || 'emotional';
             const cta = getValue('csCTA') || 'Inbox for booking';
+            const templateGuide = currentTemplateGuide || 'none';
             const { onFB, onTT } = getCreativePlatformSelection();
             const forceFB = type === 'studio_campaign_fb';
             const forceTT = type === 'studio_campaign_tiktok';
@@ -2655,6 +2708,7 @@ Return STRICT JSON array only:
             Service: ${service}
             Tone: ${tone}
             CTA: ${cta}
+            Template guide: ${templateGuide}
 
             Output sections (strict):
             ${outputSections}
@@ -3102,6 +3156,7 @@ ${cleanedResult}`
     window.loadView('creative'); // Start with Creative
     setupDraftAutosave();
     applyTheme(localStorage.getItem(THEME_KEY) || 'studio-blue');
+    if (typeof window.applyTemplatePreset === 'function') window.applyTemplatePreset();
 
 
 
