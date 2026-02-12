@@ -1258,10 +1258,16 @@ button { transition: all 0.2s ease; }
             .filter((line) => {
                 const t = line.trim();
                 if (!t) return true;
+                if (/^[-]{3,}$/.test(t)) return false;
+                if (/^ဒီတစ်ခါ.*(ဆက်လုပ်လို့ရပါပြီ|အဆင်သင့်ပြင်ပေးထား)/i.test(t)) return false;
+                if (/^pre-wedding အတွက်.*content idea/i.test(t)) return false;
                 return !metaPatterns.some((re) => re.test(t));
             })
             .join('\n')
             .trim();
+
+        // Remove duplicated lines/paragraphs that sometimes appear in model output.
+        out = removeDuplicateParagraphs(out);
 
         return out;
     };
@@ -1273,10 +1279,8 @@ button { transition: all 0.2s ease; }
 
     const REQUIRED_SECTION_RULES = {
         creative_brand_idea: [
-            { key: 'Core Idea', test: /(core idea|အဓိကအိုင်ဒီယာ)/i },
-            { key: 'FB Post', test: /(fb post|facebook)/i },
-            { key: 'TikTok', test: /(tiktok|tik tok)/i },
-            { key: 'CTA', test: /(cta|action|message|inbox)/i },
+            { key: 'Facebook Final Post or TikTok Final Pack', test: /(facebook final post|tiktok final pack)/i },
+            { key: 'Caption', test: /(caption|စာညွှန်း)/i },
             { key: 'Hashtags', test: /(hashtag|#)/i }
         ],
         creative_post: [
@@ -1311,6 +1315,23 @@ button { transition: all 0.2s ease; }
         if (!rules || !rules.length) return [];
         const hay = String(text || '');
         return rules.filter((r) => !r.test.test(hay)).map((r) => r.key);
+    };
+
+    const removeDuplicateParagraphs = (text = '') => {
+        const parts = String(text || '').split('\n').map((x) => x.trim());
+        const seen = new Set();
+        const out = [];
+        for (const p of parts) {
+            const key = p.toLowerCase();
+            if (!p) {
+                out.push('');
+                continue;
+            }
+            if (seen.has(key)) continue;
+            seen.add(key);
+            out.push(p);
+        }
+        return out.join('\n').replace(/\n{3,}/g, '\n\n').trim();
     };
 
     // --- ✅ 1. ADD THIS BLOCK HERE (Before Auth Listener) ---
@@ -1911,26 +1932,56 @@ window.runAssistant = async function(type) {
         } else if (type === 'creative_brand_idea') {
             const focus = getValue('crFocus') || 'Pre-Wedding';
             const photo = getValue('crPhotoContext') || 'no photo context provided';
-            const onFB = document.getElementById('crFB')?.checked ? 'yes' : 'no';
-            const onTT = document.getElementById('crTT')?.checked ? 'yes' : 'no';
+            const onFB = document.getElementById('crFB')?.checked;
+            const onTT = document.getElementById('crTT')?.checked;
+            const platformSummary = onFB && onTT ? 'Facebook + TikTok' : (onFB ? 'Facebook only' : (onTT ? 'TikTok only' : 'Facebook only'));
+            const outputSections = onFB && onTT
+                ? `
+            1) Facebook Final Post:
+            - Hook lines (3)
+            - Main Post (AIDA, full)
+            - Caption (2)
+            - Hashtags (12)
+
+            2) TikTok Final Pack:
+            - Cover Text (5)
+            - On-screen Text Flow (8 lines)
+            - Caption (3)
+            - Hashtags (12)
+            - Comment Pin (2)
+            `
+                : onFB
+                    ? `
+            1) Facebook Final Post:
+            - Hook lines (3)
+            - Main Post (AIDA, full)
+            - Caption (2)
+            - Hashtags (12)
+            `
+                    : `
+            1) TikTok Final Pack:
+            - Cover Text (5)
+            - On-screen Text Flow (8 lines)
+            - Caption (3)
+            - Hashtags (12)
+            - Comment Pin (2)
+            `;
             prompt = `
-            Task: Generate a complete smart content + idea pack using Brand Brain context.
+            Task: Generate FINAL READY-TO-POST content only.
             Focus: ${focus}
             Photo context: ${photo}
-            Platforms: Facebook=${onFB}, TikTok=${onTT}
+            Platforms: ${platformSummary}
 
             Output format (strict):
-            1) Core Idea (1)
-            2) FB Post (ready to post, 1 long + 1 short caption)
-            3) TikTok Caption (3)
-            4) TikTok On-screen Text Flow (8 lines)
-            5) CTA lines (4)
-            6) Hashtags (12)
+            ${outputSections}
 
             Rules:
             - Must match a photo studio brand voice
             - Natural Burmese, no greeting/self intro
             - Conversion-focused and directly usable today
+            - Output only final content blocks (no explanation, no preface, no notes)
+            - Do not include "Core Idea" or planning text
+            - Start directly with the first final section heading
             `;
             contextTopic = `Brand Idea: ${focus}`;
         } else if (type === 'creative_studio') {
