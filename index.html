@@ -641,6 +641,17 @@ button { transition: all 0.2s ease; }
                   </button>
                 </div>
               </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2">
+                <button onclick="window.applyLitePreset('tg_indoor_cinematic')" class="bg-slate-900/60 hover:bg-slate-800 border border-slate-700 text-slate-100 font-bold py-2.5 rounded-lg text-xs transition">
+                  Taunggyi Indoor: Cinematic
+                </button>
+                <button onclick="window.applyLitePreset('tg_indoor_soft')" class="bg-slate-900/60 hover:bg-slate-800 border border-slate-700 text-slate-100 font-bold py-2.5 rounded-lg text-xs transition">
+                  Taunggyi Indoor: Soft Romantic
+                </button>
+                <button onclick="window.applyLitePreset('tg_indoor_clean')" class="bg-slate-900/60 hover:bg-slate-800 border border-slate-700 text-slate-100 font-bold py-2.5 rounded-lg text-xs transition">
+                  Taunggyi Indoor: Clean Modern
+                </button>
+              </div>
               <div id="liteDayHint" class="text-[11px] text-slate-400 mb-2"></div>
               <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Topic / Guideline</label>
               <textarea id="liteTopicGuideline" rows="4" placeholder="ဥပမာ - Pre-Wedding mood ရင်ခုန်ဖွယ် style, booking CTA ကိုရှင်းရှင်းလင်းလင်း ထည့်ပါ" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white resize-y"></textarea>
@@ -2500,6 +2511,71 @@ Return STRICT JSON array only:
         if (locEl && !String(locEl.value || '').trim()) locEl.value = 'both';
 
         window.showToast('Day plan applied. Generate Final ကိုနှိပ်ပါ။');
+    };
+
+    const LITE_PRESETS = {
+        tg_indoor_cinematic: {
+            label: 'Taunggyi Indoor: Cinematic',
+            serviceRaw: 'pre_wedding',
+            tone: 'premium',
+            voice: 'premium',
+            goal: 'booking',
+            platform: 'facebook',
+            locationTarget: 'taunggyi',
+            locationNote: 'Taunggyi indoor studio (moody / cinematic)',
+            guideline: "Taunggyi Indoor Pre-Wedding (Cinematic)\n- Mood: moody, cinematic, premium indoor vibe\n- Lighting: window light + soft shadow feel (no technical talk)\n- Focus: emotion + eye contact + slow moments\n- Include: 1 question only, 1 CTA: DM 'BOOK'\n- Hashtags: 3-6 (Taunggyi/PreWedding/WithYouStudio style)\n- Do NOT include address/phone in body (contact will be last line only)"
+        },
+        tg_indoor_soft: {
+            label: 'Taunggyi Indoor: Soft Romantic',
+            serviceRaw: 'pre_wedding',
+            tone: 'emotional',
+            voice: 'friendly',
+            goal: 'booking',
+            platform: 'facebook',
+            locationTarget: 'taunggyi',
+            locationNote: 'Taunggyi indoor studio (soft / romantic)',
+            guideline: "Taunggyi Indoor Pre-Wedding (Soft Romantic)\n- Mood: soft, warm, romantic\n- Focus: gentle touch + real smiles + cozy indoor frames\n- Write: short human lines + warm local Burmese\n- Include: 1 question only, 1 CTA: DM 'BOOK'\n- Hashtags: 3-6\n- Do NOT include address/phone in body (contact will be last line only)"
+        },
+        tg_indoor_clean: {
+            label: 'Taunggyi Indoor: Clean Modern',
+            serviceRaw: 'pre_wedding',
+            tone: 'friendly',
+            voice: 'premium',
+            goal: 'booking',
+            platform: 'facebook',
+            locationTarget: 'taunggyi',
+            locationNote: 'Taunggyi indoor studio (clean / modern)',
+            guideline: "Taunggyi Indoor Pre-Wedding (Clean Modern)\n- Mood: clean, modern, minimal\n- Focus: style + confidence + sharp framing\n- Keep copy concise, not poetic\n- Include: 1 question only, 1 CTA: DM 'BOOK'\n- Hashtags: 3-6\n- Do NOT include address/phone in body (contact will be last line only)"
+        }
+    };
+
+    window.applyLitePreset = function(presetId = '') {
+        const preset = LITE_PRESETS[String(presetId || '').trim()] || null;
+        if (!preset) return;
+
+        const serviceEl = document.getElementById('liteService');
+        const platformEl = document.getElementById('litePlatform');
+        const goalEl = document.getElementById('liteGoal');
+        const toneEl = document.getElementById('liteTone');
+        const voiceEl = document.getElementById('liteVoice');
+        const locTargetEl = document.getElementById('liteLocationTarget');
+        const locNoteEl = document.getElementById('liteLocation');
+        const guideEl = document.getElementById('liteTopicGuideline');
+
+        if (serviceEl) serviceEl.value = preset.serviceRaw;
+        if (platformEl) platformEl.value = preset.platform;
+        if (goalEl) goalEl.value = preset.goal;
+        if (toneEl) toneEl.value = preset.tone;
+        if (voiceEl) voiceEl.value = preset.voice;
+        if (locTargetEl) locTargetEl.value = preset.locationTarget;
+        if (locNoteEl) locNoteEl.value = preset.locationNote;
+
+        if (guideEl) {
+            guideEl.value = preset.guideline;
+            guideEl.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+
+        window.showToast(`Preset applied: ${preset.label}`);
     };
 
     window.liteGenerateFinal = async function(stronger = false) {
