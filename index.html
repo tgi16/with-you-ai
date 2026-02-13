@@ -607,6 +607,27 @@ button { transition: all 0.2s ease; }
             </div>
 
             <div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2">
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">7-Day Plan (FB)</label>
+                  <select id="liteDayPlan" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+                    <option value="day1">Day 1: Re-Introduce</option>
+                    <option value="day2">Day 2: BTS Reel</option>
+                    <option value="day3">Day 3: Before/After</option>
+                    <option value="day4">Day 4: Review/Proof</option>
+                    <option value="day5">Day 5: Education</option>
+                    <option value="day6">Day 6: Mini Offer</option>
+                    <option value="day7">Day 7: Live/Recap</option>
+                  </select>
+                </div>
+                <div class="md:col-span-2">
+                  <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Apply Helper</label>
+                  <button id="liteApplyDayBtn" onclick="window.applyLiteDayPlan()" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold py-2.5 rounded-lg text-xs transition">
+                    Apply Day Plan to Topic/Guideline
+                  </button>
+                </div>
+              </div>
+              <div id="liteDayHint" class="text-[11px] text-slate-400 mb-2"></div>
               <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Topic / Guideline</label>
               <textarea id="liteTopicGuideline" rows="4" placeholder="ဥပမာ - Pre-Wedding mood ရင်ခုန်ဖွယ် style, booking CTA ကိုရှင်းရှင်းလင်းလင်း ထည့်ပါ" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white resize-y"></textarea>
             </div>
@@ -2246,6 +2267,61 @@ Return STRICT JSON array only:
         } finally {
             setButtonBusy(btn, false);
         }
+    };
+
+    const LITE_DAY_PLANS = {
+        day1: {
+            hint: 'Format: Carousel (5-10 photos). Goal: re-introduce + trust.',
+            guideline: "Day 1 - Re-Introduce\n- Carousel (5-10 photos) best shots\n- Short story: studio vibe/style\n- CTA: DM 'BOOK'\n- Ask 1 question: A/B style preference"
+        },
+        day2: {
+            hint: 'Format: Reel (10-25 sec). Goal: BTS + retention.',
+            guideline: "Day 2 - BTS Reel\n- Reel 10-25 sec: 1 setup, 3 looks\n- Add subtitle idea in caption\n- CTA: DM 'BOOK'\n- Ask 1 question about outfit/pose"
+        },
+        day3: {
+            hint: 'Format: Before/After carousel. Goal: proof of quality.',
+            guideline: "Day 3 - Before/After\n- Before/After carousel + natural retouch policy\n- Keep it honest and specific\n- CTA: DM 'PRICE' or DM 'BOOK'\n- Ask 1 question: natural vs glam?"
+        },
+        day4: {
+            hint: 'Format: Review/Proof post. Goal: social proof.',
+            guideline: "Day 4 - Client Proof\n- Client review/quote + delivery days\n- Mention experience (on-time, direction, comfort)\n- CTA: DM 'BOOK'\n- Ask 1 question: what shoot type next?"
+        },
+        day5: {
+            hint: 'Format: Educational checklist. Goal: saves/shares.',
+            guideline: "Day 5 - Education\n- Shoot day checklist (5 items)\n- Outfit + arrive early + reference poses\n- CTA: Save this post + DM 'BOOK'\n- Ask 1 question: what worries you most?"
+        },
+        day6: {
+            hint: 'Format: Mini offer. Goal: urgency without hard-sell.',
+            guideline: "Day 6 - Mini Offer\n- Weekend mini-session details (minutes, photos, delivery)\n- Keep terms clear: deposit/slots\n- CTA: Comment 'MINI' or DM 'BOOK'\n- Ask 1 question: which day/time works?"
+        },
+        day7: {
+            hint: 'Format: Live/Recap. Goal: community + booking push.',
+            guideline: "Day 7 - Live/Recap\n- Live 10-15 min or recap reel\n- Show setup + quick Q&A prompt\n- CTA: Next week booking open, DM 'BOOK'\n- Ask 1 question: what content next week?"
+        }
+    };
+
+    window.applyLiteDayPlan = function() {
+        const day = (getValue('liteDayPlan') || 'day1').toString().trim();
+        const plan = LITE_DAY_PLANS[day] || LITE_DAY_PLANS.day1;
+        const hintEl = document.getElementById('liteDayHint');
+        const guideEl = document.getElementById('liteTopicGuideline');
+        const platformEl = document.getElementById('litePlatform');
+        const goalEl = document.getElementById('liteGoal');
+
+        if (hintEl) hintEl.textContent = plan.hint || '';
+
+        // Keep user edits; only overwrite when empty.
+        if (guideEl) {
+            const cur = String(guideEl.value || '').trim();
+            guideEl.value = cur ? (cur + "\n\n" + plan.guideline) : plan.guideline;
+            guideEl.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+
+        // Default to Facebook for re-activation plan unless user already selected.
+        if (platformEl && !String(platformEl.value || '').trim()) platformEl.value = 'facebook';
+        if (goalEl && !String(goalEl.value || '').trim()) goalEl.value = 'booking';
+
+        window.showToast('Day plan applied. Generate Final ကိုနှိပ်ပါ။');
     };
 
     window.liteGenerateFinal = async function(stronger = false) {
