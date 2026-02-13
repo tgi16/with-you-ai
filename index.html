@@ -1981,7 +1981,7 @@ window.runAssistant = async function(type) {
             /mentor/i,
             /analysis/i
         ],
-        tiktokLinePattern: /^((Cover|Hook|Caption)\s*:)/i
+        tiktokLinePattern: /^(cover|hook|caption)\s*:/i
     };
 
     const cleanFinalText = (text = '') => String(text || '')
@@ -2006,7 +2006,7 @@ window.runAssistant = async function(type) {
         if (!cover) cover = lines[0] || '';
         if (!hook) hook = lines[1] || '';
         if (!caption) caption = lines.slice(2).join(' ').trim() || lines[lines.length - 1] || '';
-        return `Cover: ${cover}\nHook: ${hook}\nCaption: ${caption}`.trim();
+        return [cover, hook, caption].filter(Boolean).join('\n').trim();
     };
 
     const hasBannedMeta = (text = '') => WITH_YOU_COPY_READY_CONTRACT.bannedPatterns.some((rx) => rx.test(String(text || '')));
@@ -2026,7 +2026,9 @@ window.runAssistant = async function(type) {
         if (hasBannedMeta(t)) return false;
         const lines = t.split('\n').map((x) => x.trim()).filter(Boolean);
         if (lines.length !== 3) return false;
-        return lines.every((line) => WITH_YOU_COPY_READY_CONTRACT.tiktokLinePattern.test(line));
+        if (lines.some((line) => WITH_YOU_COPY_READY_CONTRACT.tiktokLinePattern.test(line))) return false;
+        const hasConversionCue = /(message|inbox|booking|book|ဆက်သွယ်|viber|slot|အခုပဲ|reserve)/i.test(t);
+        return hasConversionCue;
     };
 
     const renderLiteIdeas = (titles = []) => {
@@ -2124,11 +2126,12 @@ ${strongerRule}${wantsFB ? `
 - Include: opening hook + body + CTA + hashtags in one block.
 - Body should be concise, conversion-focused, natural.
 ` : ''}${wantsTT ? `
-- tiktok value: exactly 3 lines only:
-  Cover: ...
-  Hook: ...
-  Caption: ...
-- No extra lines, no hashtags section heading.
+- tiktok value: exactly 3 plain lines only (NO labels):
+  1) short opening line
+  2) strong hook line
+  3) caption line with clear booking CTA
+- Do NOT write "Cover:", "Hook:", "Caption:".
+- No extra lines, no section heading.
 ` : ''}
 `;
     };
@@ -2156,10 +2159,9 @@ Rules:
 ${stronger ? '- Make wording more conversion-aggressive but natural.\n' : ''}${wantsFB ? `
 - facebook must include hook + body + CTA + hashtags in one final block
 ` : ''}${wantsTT ? `
-- tiktok must be exactly 3 lines:
-  Cover: ...
-  Hook: ...
-  Caption: ...
+- tiktok must be exactly 3 plain lines
+- line 3 must include booking CTA cue
+- Do NOT write "Cover:", "Hook:", "Caption:"
 ` : ''}
 `;
     };
@@ -2173,15 +2175,16 @@ Goal: ${inputs.goal}
 Tone: ${inputs.tone}
 Topic/Guideline: ${inputs.topicGuideline}
 
-Output exactly 3 lines:
-Cover: ...
-Hook: ...
-Caption: ...
+Output exactly 3 plain lines:
+line 1 = short opening line
+line 2 = strong hook line
+line 3 = caption line with booking CTA
 
 Rules:
 - Burmese only
 - No extra text
 - No heading
+- Do NOT write "Cover:", "Hook:", "Caption:"
 `;
         }
         return `
