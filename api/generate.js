@@ -53,6 +53,11 @@ function isStructuredRequest(text = "") {
   return /strict json|json only|return json|\{\s*"|\[\s*"/i.test(t);
 }
 
+function isLikelyCopywritingRequest(text = "") {
+  const t = String(text || "");
+  return /(caption|post|content|fb|facebook|reel|carousel|ad|ads|promotion|promo|script|ရေး|တင်|စာသား|ကော်ပီ|copy)/i.test(t);
+}
+
 function getSystemPrompt(mode, intent) {
   if (mode === "studio_lite") {
     return `
@@ -83,6 +88,26 @@ Rules:
 - Reduce decision fatigue
 - Do NOT write greetings or self-introduction
 - Start directly with deliverable content
+`;
+
+  const copywriterPrompt = `
+You are a Myanmar FB copywriter for "With You Photo Studio, Taunggyi".
+
+Tone:
+- Natural
+- Human
+- Short lines
+- Local, conversational Burmese (not corporate)
+
+Rules:
+- No greetings, no self-intro, no explanations
+- Avoid buzzwords and generic marketing clichés
+- Be specific and concrete (time/slots/deliverables) when possible
+- Ask exactly ONE question
+- Include exactly ONE soft CTA to DM (prefer: DM 'BOOK')
+- No emojis unless the user explicitly asks
+- No hashtags unless the user explicitly asks
+- If user asks JSON, return strict JSON only (no markdown, no code fences)
 `;
 
   const mentorPrompt = `
@@ -116,8 +141,70 @@ Rules:
 `;
 
   if (intent === "mentor") return mentorPrompt;
-  if (intent === "business" || intent === "manager") return businessPrompt;
+  if (intent === "business" || intent === "manager") {
+    // When routed into fb_copywriter mode, default to copywriter voice.
+    return mode === "fb_copywriter" ? copywriterPrompt : businessPrompt;
+  }
   return generalPrompt;
+}
+
+function extractFirstJson(text = "") {
+  const s = String(text || "");
+  const idxObj = s.indexOf("{");
+  const idxArr = s.indexOf("[");
+  const start = idxObj === -1 ? idxArr : (idxArr === -1 ? idxObj : Math.min(idxObj, idxArr));
+  if (start < 0) return "";
+
+  const open = s[start];
+  const close = open === "{" ? "}" : "]";
+  let depth = 0;
+  let inString = false;
+  let escape = false;
+
+  for (let i = start; i < s.length; i++) {
+    const ch = s[i];
+    if (inString) {
+      if (escape) {
+        escape = false;
+      } else if (ch === "\\") {
+        escape = true;
+      } else if (ch === "\"") {
+        inString = false;
+      }
+      continue;
+    }
+
+    if (ch === "\"") {
+      inString = true;
+      continue;
+    }
+
+    if (ch === open) depth++;
+    if (ch === close) depth--;
+    if (depth === 0) return s.slice(start, i + 1);
+  }
+
+  return "";
+}
+
+function coerceStrictJson(text = "") {
+  const cleaned = stripCodeFence(text);
+  try {
+    const obj = JSON.parse(cleaned);
+    return { ok: true, jsonText: JSON.stringify(obj) };
+  } catch {
+    // Try extracting the first JSON object/array from mixed text.
+    const extracted = extractFirstJson(cleaned);
+    if (extracted) {
+      try {
+        const obj = JSON.parse(extracted);
+        return { ok: true, jsonText: JSON.stringify(obj) };
+      } catch {
+        // fallthrough
+      }
+    }
+    return { ok: false, jsonText: "" };
+  }
 }
 
 async function callGemini(geminiUrl, finalPrompt, generationConfig) {
@@ -176,7 +263,10 @@ export default async function handler(req, res) {
     }
 
     const intent = mode || detectIntent(inputText);
-    const systemPrompt = getSystemPrompt(mode, intent);
+    // If the user didn't pass a mode, we can still route copywriting requests to a more human prompt.
+    const wantsCopy = isLikelyCopywritingRequest(inputText);
+    const effectiveMode = mode || (wantsCopy ? "fb_copywriter" : "");
+    const systemPrompt = getSystemPrompt(effectiveMode, intent);
 
     const finalPrompt = `
 SYSTEM:
@@ -195,12 +285,13 @@ IMPORTANT:
 - If request asks strict JSON, return strict JSON only
 `;
 
-    const tokenLimit = clampMaxOutputTokens(maxOutputTokens);
     const structured = isStructuredRequest(inputText);
+    const tokenLimitInput = structured ? Math.max(Number(maxOutputTokens || 0), 1200) : maxOutputTokens;
+    const tokenLimit = clampMaxOutputTokens(tokenLimitInput);
 
     const geminiUrl = "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" + apiKey;
     const generationConfig = {
-      temperature: mode === "studio_lite" || structured ? 0.45 : 0.7,
+      temperature: (mode === "studio_lite" || structured) ? 0.35 : (wantsCopy ? 0.55 : 0.7),
       maxOutputTokens: tokenLimit
     };
 
@@ -209,7 +300,7 @@ IMPORTANT:
     let finishReason = first.finishReason;
 
     const likelyCut = finishReason === "MAX_TOKENS" || looksIncomplete(result);
-    if (likelyCut && result) {
+    if (!structured && likelyCut && result) {
       try {
         const continuationPrompt = `
 Continue the unfinished content below.
@@ -230,6 +321,32 @@ ${result.slice(-1400)}
         }
       } catch (contErr) {
         console.warn("Continuation pass skipped:", contErr?.message || contErr);
+      }
+    }
+
+    // Enforce strict JSON when requested.
+    if (structured && result) {
+      const coerced = coerceStrictJson(result);
+      if (coerced.ok) {
+        result = coerced.jsonText;
+      } else {
+        // Ask the model to repair into valid JSON only.
+        const repairPrompt = `
+Return ONLY valid JSON.
+Rules:
+- No markdown, no code fences, no commentary.
+- Preserve the intended meaning and keys as much as possible.
+
+Bad output to repair:
+${result.slice(0, 6000)}
+`;
+        const repaired = await callGemini(geminiUrl, repairPrompt, {
+          temperature: 0.2,
+          maxOutputTokens: tokenLimit
+        });
+        const repairedText = stripCodeFence(repaired.text);
+        const repairedCoerced = coerceStrictJson(repairedText);
+        result = repairedCoerced.ok ? repairedCoerced.jsonText : repairedText.trim();
       }
     }
 
