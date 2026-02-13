@@ -2390,6 +2390,20 @@ Return STRICT JSON array only:
             }
 
             renderLiteFinalResult(payload, inputs.platform);
+            // Save Lite output to Cloud History (manual copy/post flow still benefits from history).
+            if (userId) {
+                const fbText = wantsFB ? cleanFinalText(payload.facebook || '') : '';
+                const ttText = wantsTT ? normalizeTikTokFinal(payload.tiktok || '') : '';
+                const combined = [
+                    fbText ? `Facebook Final\n${fbText}` : '',
+                    ttText ? `TikTok Final\n${ttText}` : ''
+                ].filter(Boolean).join('\n\n').trim();
+
+                if (combined) {
+                    const historyType = wantsFB && wantsTT ? 'lite_final_both' : (wantsFB ? 'lite_final_facebook' : 'lite_final_tiktok');
+                    await saveToRecents(historyType, combined, inputs.topicGuideline || 'Lite Final');
+                }
+            }
             window.showToast('Final content ready. Copy and post.');
             return payload;
         } catch (e) {
