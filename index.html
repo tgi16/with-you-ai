@@ -650,7 +650,14 @@ button { transition: all 0.2s ease; }
               <summary class="cursor-pointer text-[11px] font-bold text-slate-300 uppercase">Studio Context (Optional)</summary>
               <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-2">
                 <input id="liteOffer" type="text" placeholder="Offer (ဥပမာ - 15% Off + 3 outfit)" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white" />
-                <input id="liteLocation" type="text" placeholder="Location (ဥပမာ - Taunggyi Indoor Studio)" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white" />
+                <div class="grid grid-cols-1 gap-2">
+                  <select id="liteLocationTarget" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+                    <option value="taunggyi">Target: Taunggyi</option>
+                    <option value="inle">Target: Inle</option>
+                    <option value="both">Target: Taunggyi + Inle</option>
+                  </select>
+                  <input id="liteLocation" type="text" placeholder="Location note (optional) (ဥပမာ - Inle sunset, Taunggyi indoor)" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white" />
+                </div>
                 <input id="liteContact" type="text" placeholder="Contact (ဥပမာ - 09255521464 Viber)" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white" />
               </div>
             </details>
@@ -1204,6 +1211,7 @@ button { transition: all 0.2s ease; }
         'csIncludeContact', 'csIncludeDM',
         'liteService', 'litePlatform', 'liteGoal', 'liteTone', 'liteVoice', 'liteEmojis', 'liteDayPlan', 'liteTopicGuideline',
         'liteOffer', 'liteLocation', 'liteContact', 'liteAutoPublishFB', 'liteAutoPublishTT',
+        'liteLocationTarget',
         'brandPackages', 'brandStyle', 'brandClient', 'brandPhone', 'brandViber', 'brandFB', 'brandTT', 'brandAddr'
     ];
 
@@ -1992,6 +2000,10 @@ window.runAssistant = async function(type) {
         const topicGuideline = (getValue('liteTopicGuideline') || '').trim();
         const voice = (getValue('liteVoice') || '').trim() || 'premium';
         const useEmojis = document.getElementById('liteEmojis')?.checked === true;
+        const locationTarget = (getValue('liteLocationTarget') || '').trim() || 'taunggyi';
+        const locationTargetLabel = locationTarget === 'inle'
+            ? 'Inle'
+            : (locationTarget === 'both' ? 'Taunggyi + Inle' : 'Taunggyi');
         const inputs = {
             serviceRaw,
             service: getServiceLabel(serviceRaw),
@@ -2000,9 +2012,11 @@ window.runAssistant = async function(type) {
             tone: getValue('liteTone') || 'premium',
             voice,
             useEmojis,
+            locationTarget,
+            locationTargetLabel,
             topicGuideline: topicGuideline || `${getServiceLabel(serviceRaw)} အတွက် booking တက်စေမယ့် post`,
             offer: (getValue('liteOffer') || '').trim(),
-            location: (getValue('liteLocation') || '').trim() || 'Taunggyi',
+            location: (getValue('liteLocation') || '').trim() || locationTargetLabel,
             contact: (getValue('liteContact') || '').trim() || '09255521464 (Viber)'
         };
 
@@ -2202,6 +2216,7 @@ Inputs:
 - Goal: ${inputs.goal}
 - Tone: ${inputs.tone}
 - Page voice: ${inputs.voice}
+- Target area: ${inputs.locationTargetLabel}
 - Topic/Guideline: ${inputs.topicGuideline}
 - Offer (optional): ${inputs.offer || 'none'}
 - Location: ${inputs.location}
@@ -2252,6 +2267,7 @@ Inputs:
 - Goal: ${inputs.goal}
 - Tone: ${inputs.tone}
 - Page voice: ${inputs.voice}
+- Target area: ${inputs.locationTargetLabel}
 - Topic/Guideline: ${inputs.topicGuideline}
 - Offer (optional): ${inputs.offer || 'none'}
 - Location: ${inputs.location}
@@ -2466,6 +2482,7 @@ Return STRICT JSON array only:
         const guideEl = document.getElementById('liteTopicGuideline');
         const platformEl = document.getElementById('litePlatform');
         const goalEl = document.getElementById('liteGoal');
+        const locEl = document.getElementById('liteLocationTarget');
 
         if (hintEl) hintEl.textContent = plan.hint || '';
 
@@ -2479,6 +2496,8 @@ Return STRICT JSON array only:
         // Default to Facebook for re-activation plan unless user already selected.
         if (platformEl && !String(platformEl.value || '').trim()) platformEl.value = 'facebook';
         if (goalEl && !String(goalEl.value || '').trim()) goalEl.value = 'booking';
+        // Default to your main markets if not selected.
+        if (locEl && !String(locEl.value || '').trim()) locEl.value = 'both';
 
         window.showToast('Day plan applied. Generate Final ကိုနှိပ်ပါ။');
     };
@@ -2676,6 +2695,7 @@ Inputs:
 - Goal: ${inputs.goal}
 - Tone: ${inputs.tone}
 - Page voice: ${inputs.voice}
+- Target area: ${inputs.locationTargetLabel}
 - Topic/Guideline: ${inputs.topicGuideline}
 - Offer (optional): ${inputs.offer || 'none'}
 
