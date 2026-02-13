@@ -1234,7 +1234,7 @@ button { transition: all 0.2s ease; }
         'liteService', 'litePlatform', 'liteGoal', 'liteTone', 'liteVoice', 'liteEmojis', 'liteDayPlan', 'liteTopicGuideline',
         'liteOffer', 'liteLocation', 'liteContact', 'liteAutoPublishFB', 'liteAutoPublishTT',
         'liteLocationTarget',
-        'brandPackages', 'brandStyle', 'brandClient', 'brandPhone', 'brandViber', 'brandFB', 'brandTT', 'brandAddr'
+        'brandPackages', 'brandStyle', 'brandClient', 'brandPhone', 'brandViber', 'brandFB', 'brandTT', 'brandAddr', 'brandportfolio'
     ];
 
     const draftKey = (id) => `draft:${id}`;
@@ -3199,7 +3199,7 @@ Return the pinned comment text only (no labels).
         if (!requireAuth()) return;
         const statusEl = document.getElementById('saveStatus');
         if(statusEl) statusEl.innerText = "Saving...";
-        const ids = ['brandStyle', 'brandClient', 'brandPhone', 'brandViber', 'brandFB', 'brandTT', 'brandAddr', 'brandPackages'];
+        const ids = ['brandStyle', 'brandClient', 'brandPhone', 'brandViber', 'brandFB', 'brandTT', 'brandAddr', 'brandPackages', 'brandportfolio'];
         const data = {};
         ids.forEach(id => { const el = document.getElementById(id); if(el) data[id] = el.value; });
         try { 
