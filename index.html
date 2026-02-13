@@ -2390,6 +2390,20 @@ Return STRICT JSON array only:
             }
 
             renderLiteFinalResult(payload, inputs.platform);
+            // Save Lite output to Cloud History (manual copy/post flow still benefits from history).
+            if (userId) {
+                const fbText = wantsFB ? cleanFinalText(payload.facebook || '') : '';
+                const ttText = wantsTT ? normalizeTikTokFinal(payload.tiktok || '') : '';
+                const combined = [
+                    fbText ? `Facebook Final\n${fbText}` : '',
+                    ttText ? `TikTok Final\n${ttText}` : ''
+                ].filter(Boolean).join('\n\n').trim();
+
+                if (combined) {
+                    const historyType = wantsFB && wantsTT ? 'lite_final_both' : (wantsFB ? 'lite_final_facebook' : 'lite_final_tiktok');
+                    await saveToRecents(historyType, combined, inputs.topicGuideline || 'Lite Final');
+                }
+            }
             window.showToast('Final content ready. Copy and post.');
             return payload;
         } catch (e) {
@@ -2665,7 +2679,19 @@ Return STRICT JSON array only:
     }
     async function saveToRecents(type, content, topic) {
         if (!userId) return;
-        try { await addDoc(collection(db, 'artifacts', appId, 'users', userId, 'history'), { type: type, topic: topic || "Generated Content", content: content, date: new Date().toLocaleString(), timestamp: Date.now() }); } catch(e) { console.error(e); }
+        try {
+            await addDoc(collection(db, 'artifacts', appId, 'users', userId, 'history'), {
+                type: type,
+                topic: topic || "Generated Content",
+                content: content,
+                date: new Date().toLocaleString(),
+                timestamp: Date.now()
+            });
+        } catch (e) {
+            console.error(e);
+            // Don't spam; but do inform if user is actively using the app.
+            try { window.showToast('Cloud History save failed (check login/permissions).'); } catch (_) {}
+        }
     }
     function bindHistoryControls() {
         const searchEl = document.getElementById('historySearch');
@@ -2734,17 +2760,36 @@ Return STRICT JSON array only:
     }
 
     function renderHistoryList() {
-        if (!userId) return;
         const c = document.getElementById('historyListContainer');
         if(!c) return;
+        if (!userId) {
+            c.innerHTML = "<div class='text-center text-slate-500 py-10'>Login required to view Cloud History.</div>";
+            return;
+        }
         bindHistoryControls();
         if (unsubscribeHistory) unsubscribeHistory();
+        c.innerHTML = "<div class='text-center text-slate-500 py-10'>Loading history...</div>";
         const q = query(collection(db, 'artifacts', appId, 'users', userId, 'history'), orderBy('timestamp', 'desc'), limit(80));
-        unsubscribeHistory = onSnapshot(q, (snapshot) => {
-            historyItemsCache = [];
-            snapshot.forEach((doc) => { historyItemsCache.push({ id: doc.id, ...doc.data() }); });
-            applyHistoryFilters();
-        });
+        unsubscribeHistory = onSnapshot(
+            q,
+            (snapshot) => {
+                historyItemsCache = [];
+                snapshot.forEach((doc) => { historyItemsCache.push({ id: doc.id, ...doc.data() }); });
+                if (!historyItemsCache.length) {
+                    c.innerHTML = "<div class='text-center text-slate-500 py-10'>No cloud history yet. Generate something first.</div>";
+                    return;
+                }
+                applyHistoryFilters();
+            },
+            (err) => {
+                console.error('Cloud history snapshot error:', err);
+                const msg = err?.code === 'permission-denied'
+                    ? 'Cloud History permission denied. Please log in again.'
+                    : (err?.message || 'Cloud History failed to load.');
+                c.innerHTML = `<div class='text-center text-slate-500 py-10'>${escapeHtml(msg)}</div>`;
+                try { window.showToast(msg); } catch (_) {}
+            }
+        );
     }
 
 
