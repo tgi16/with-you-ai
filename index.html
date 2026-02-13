@@ -604,6 +604,13 @@ button { transition: all 0.2s ease; }
                   <option value="friendly">Friendly</option>
                 </select>
               </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Page Voice</label>
+                <select id="liteVoice" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+                  <option value="premium">Premium Cinematic</option>
+                  <option value="friendly">Friendly Local</option>
+                </select>
+              </div>
             </div>
 
             <div>
@@ -1083,6 +1090,9 @@ button { transition: all 0.2s ease; }
                 <option value="studio_pack_fb">Studio FB Pack</option>
                 <option value="studio_pack_tiktok">Studio TikTok Pack</option>
                 <option value="studio_pack_dm">Studio DM Pack</option>
+                <option value="lite_final_facebook">Lite Final (FB)</option>
+                <option value="lite_final_tiktok">Lite Final (TikTok)</option>
+                <option value="lite_final_both">Lite Final (Both)</option>
                 <option value="mentor">Mentor</option>
                 <option value="pose">Pose</option>
                 <option value="ai_chat">AI Chat</option>
@@ -1178,7 +1188,7 @@ button { transition: all 0.2s ease; }
         'csTopic', 'csAudience', 'csKeywords', 'csCTA', 'csAvoid',
         'csTemplate', 'csService', 'csPersona', 'csTone', 'csLength', 'csLanguage',
         'csIncludeContact', 'csIncludeDM',
-        'liteService', 'litePlatform', 'liteGoal', 'liteTone', 'liteTopicGuideline',
+        'liteService', 'litePlatform', 'liteGoal', 'liteTone', 'liteVoice', 'liteTopicGuideline',
         'liteOffer', 'liteLocation', 'liteContact', 'liteAutoPublishFB', 'liteAutoPublishTT',
         'brandPackages', 'brandStyle', 'brandClient', 'brandPhone', 'brandViber', 'brandFB', 'brandTT', 'brandAddr'
     ];
@@ -1966,12 +1976,14 @@ window.runAssistant = async function(type) {
         const platform = getValue('litePlatform') || 'both';
         const serviceRaw = getValue('liteService') || 'pre_wedding';
         const topicGuideline = (getValue('liteTopicGuideline') || '').trim();
+        const voice = (getValue('liteVoice') || '').trim() || 'premium';
         const inputs = {
             serviceRaw,
             service: getServiceLabel(serviceRaw),
             platform,
             goal: getValue('liteGoal') || 'booking',
             tone: getValue('liteTone') || 'premium',
+            voice,
             topicGuideline: topicGuideline || `${getServiceLabel(serviceRaw)} အတွက် booking တက်စေမယ့် post`,
             offer: (getValue('liteOffer') || '').trim(),
             location: (getValue('liteLocation') || '').trim() || 'Taunggyi',
@@ -2011,6 +2023,44 @@ window.runAssistant = async function(type) {
         .replace(/^\s*\d+\)\s*/gm, '')
         .replace(/^\s*[\-\*]\s+/gm, '')
         .trim();
+
+    const normalizeLiteFacebookFinal = (text = '', contact = '') => {
+        const src = cleanFinalText(text);
+        if (!src) return '';
+
+        // Keep captions human: remove address/phone lines from body, add contact as final line only.
+        const contactRaw = String(contact || '').trim();
+        const phoneLike = /(\+?95)?\s*0?9\d{7,}/;
+        const contactLike = /(viber|ph|phone|call|092|09\d{7,})/i;
+        const addressLike = /(တောင်ကြီး|taunggyi|လမ်း|လမ်းသွယ်|အမှတ်|LA\/|ဘုရင့်နောင်|address)/i;
+
+        let lines = src.split('\n').map((x) => x.trim()).filter(Boolean);
+        lines = lines.filter((line) => {
+            if (phoneLike.test(line)) return false;
+            if (contactLike.test(line) && line.length < 80) return false;
+            if (addressLike.test(line) && /[0-9]/.test(line)) return false;
+            return true;
+        });
+
+        let out = lines.join('\n').trim();
+
+        // Enforce single question mark.
+        const firstQ = out.indexOf('?');
+        if (firstQ !== -1) {
+            out = out.slice(0, firstQ + 1) + out.slice(firstQ + 1).replaceAll('?', '။');
+        }
+
+        // Enforce a single, clear CTA.
+        if (!/DM\s*'BOOK'/i.test(out)) {
+            out = (out ? (out + "\n\n") : "") + "DM 'BOOK' လို့ပို့ပြီး date/time/style ပြောပေးပါ။";
+        }
+
+        if (contactRaw) {
+            out = (out ? (out + "\n") : "") + `ဆက်သွယ်ရန်: ${contactRaw}`;
+        }
+
+        return out.trim();
+    };
 
     const normalizeTikTokFinal = (text = '') => {
         const src = cleanFinalText(text);
@@ -2120,6 +2170,9 @@ window.runAssistant = async function(type) {
         const strongerRule = stronger
             ? '- Make hook and CTA more aggressive for conversion while staying natural Burmese.\n'
             : '';
+        const voiceRule = inputs.voice === 'friendly'
+            ? '- Voice: Friendly local Burmese, conversational, warm. Avoid overly poetic lines.\n'
+            : '- Voice: Premium cinematic Burmese, clean and confident. Avoid salesy phrases.\n';
         return `
 You are senior social copywriter for With You Photo Studio (Taunggyi).
 Goal: Return FINAL ready-to-post content only.
@@ -2129,6 +2182,7 @@ Inputs:
 - Platform target: ${inputs.platform}
 - Goal: ${inputs.goal}
 - Tone: ${inputs.tone}
+- Page voice: ${inputs.voice}
 - Topic/Guideline: ${inputs.topicGuideline}
 - Offer (optional): ${inputs.offer || 'none'}
 - Location: ${inputs.location}
@@ -2142,6 +2196,12 @@ Rules:
 - No greeting, no intro, no explanation, no numbering.
 - No mentor/analysis/tutorial text.
 - Return only copy-ready final content.
+${voiceRule}- Short lines (use line breaks) and natural human Burmese.
+- Ask exactly ONE question in the whole Facebook post.
+- Include exactly ONE soft CTA to DM (prefer: DM 'BOOK').
+- Do NOT include address/phone in the body; put contact as FINAL line only.
+- No emojis unless user explicitly asks.
+- Hashtags: 3 to 6 only (no spam).
 ${strongerRule}${wantsFB ? `
 - facebook value: one final post ready to publish.
 - Include: opening hook + body + CTA + hashtags in one block.
@@ -2177,6 +2237,9 @@ Rules:
 - No intro/meta/tutorial text
 - Remove any mentoring/explanation sentences
 - Keep persuasive and booking-focused
+ - Ask exactly ONE question in the Facebook post
+ - Exactly ONE CTA (prefer: DM 'BOOK')
+ - Do NOT include address/phone in the body; put contact as FINAL line only
 ${stronger ? '- Make wording more conversion-aggressive but natural.\n' : ''}${wantsFB ? `
 - facebook must include hook + body + CTA + hashtags in one final block
 ` : ''}${wantsTT ? `
@@ -2360,7 +2423,7 @@ Return STRICT JSON array only:
                     mode: 'studio_lite',
                     maxOutputTokens: 900
                 });
-                payload.facebook = cleanFinalText(fbFallback?.result || '');
+                payload.facebook = normalizeLiteFacebookFinal(fbFallback?.result || '', inputs.contact);
             }
 
             if (wantsTT && !String(payload?.tiktok || '').trim()) {
@@ -2382,17 +2445,21 @@ Return STRICT JSON array only:
                 });
                 const rewritePayload = parseJsonObjectFromText(rewrite?.result || '') || {};
                 if (wantsFB && isValidFacebookFinal(rewritePayload?.facebook || '')) {
-                    payload.facebook = cleanFinalText(rewritePayload.facebook || '');
+                    payload.facebook = normalizeLiteFacebookFinal(rewritePayload.facebook || '', inputs.contact);
                 }
                 if (wantsTT && isValidTikTokFinal(rewritePayload?.tiktok || '')) {
                     payload.tiktok = normalizeTikTokFinal(rewritePayload.tiktok || '');
                 }
             }
 
+            if (wantsFB && String(payload?.facebook || '').trim()) {
+                payload.facebook = normalizeLiteFacebookFinal(payload.facebook || '', inputs.contact);
+            }
+
             renderLiteFinalResult(payload, inputs.platform);
             // Save Lite output to Cloud History (manual copy/post flow still benefits from history).
             if (userId) {
-                const fbText = wantsFB ? cleanFinalText(payload.facebook || '') : '';
+                const fbText = wantsFB ? normalizeLiteFacebookFinal(payload.facebook || '', inputs.contact) : '';
                 const ttText = wantsTT ? normalizeTikTokFinal(payload.tiktok || '') : '';
                 const combined = [
                     fbText ? `Facebook Final\n${fbText}` : '',
