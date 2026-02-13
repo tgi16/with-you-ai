@@ -58,6 +58,13 @@ function isLikelyCopywritingRequest(text = "") {
   return /(caption|post|content|fb|facebook|reel|carousel|ad|ads|promotion|promo|script|ရေး|တင်|စာသား|ကော်ပီ|copy)/i.test(t);
 }
 
+function hasEmbeddedInstructionBlock(text = "") {
+  const t = String(text || "");
+  // The UI often sends a big "system prompt" inside the userMessage.
+  // In that case, we should NOT override with our own copywriter system prompt.
+  return /(===\s*🎭\s*role\s*&\s*identity\s*===|===\s*✍️\s*writing rules|goal per type|knowledge base|completion rule|system:|important:)/i.test(t);
+}
+
 function getSystemPrompt(mode, intent) {
   if (mode === "studio_lite") {
     return `
@@ -263,8 +270,9 @@ export default async function handler(req, res) {
     }
 
     const intent = mode || detectIntent(inputText);
-    // If the user didn't pass a mode, we can still route copywriting requests to a more human prompt.
-    const wantsCopy = isLikelyCopywritingRequest(inputText);
+    // Only auto-route to fb_copywriter for plain, short user prompts.
+    // If caller already includes a detailed instruction block (UI), don't override it.
+    const wantsCopy = isLikelyCopywritingRequest(inputText) && !hasEmbeddedInstructionBlock(inputText);
     const effectiveMode = mode || (wantsCopy ? "fb_copywriter" : "");
     const systemPrompt = getSystemPrompt(effectiveMode, intent);
 
