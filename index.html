@@ -648,10 +648,11 @@ button { transition: all 0.2s ease; }
               </div>
             </details>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
               <button id="liteSuggestBtn" onclick="window.liteSuggestTopics()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold py-3 rounded-lg text-xs transition">Suggest 3 Topics</button>
               <button id="liteGenerateBtn" onclick="window.liteGenerateFinal(false)" class="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-3 rounded-lg text-xs transition shadow">Generate Final</button>
               <button id="liteRegenerateBtn" onclick="window.liteGenerateFinal(true)" class="bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 rounded-lg text-xs transition">Regenerate Stronger</button>
+              <button id="liteVariantsBtn" onclick="window.liteGenerateVariants()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold py-3 rounded-lg text-xs transition">3 FB Variants</button>
             </div>
 
             <div class="bg-slate-900/40 border border-emerald-500/20 rounded-lg p-3 space-y-2">
@@ -1093,6 +1094,7 @@ button { transition: all 0.2s ease; }
                 <option value="lite_final_facebook">Lite Final (FB)</option>
                 <option value="lite_final_tiktok">Lite Final (TikTok)</option>
                 <option value="lite_final_both">Lite Final (Both)</option>
+                <option value="lite_variants_facebook">Lite Variants (FB)</option>
                 <option value="mentor">Mentor</option>
                 <option value="pose">Pose</option>
                 <option value="ai_chat">AI Chat</option>
@@ -1188,7 +1190,7 @@ button { transition: all 0.2s ease; }
         'csTopic', 'csAudience', 'csKeywords', 'csCTA', 'csAvoid',
         'csTemplate', 'csService', 'csPersona', 'csTone', 'csLength', 'csLanguage',
         'csIncludeContact', 'csIncludeDM',
-        'liteService', 'litePlatform', 'liteGoal', 'liteTone', 'liteVoice', 'liteTopicGuideline',
+        'liteService', 'litePlatform', 'liteGoal', 'liteTone', 'liteVoice', 'liteDayPlan', 'liteTopicGuideline',
         'liteOffer', 'liteLocation', 'liteContact', 'liteAutoPublishFB', 'liteAutoPublishTT',
         'brandPackages', 'brandStyle', 'brandClient', 'brandPhone', 'brandViber', 'brandFB', 'brandTT', 'brandAddr'
     ];
@@ -2217,6 +2219,37 @@ ${strongerRule}${wantsFB ? `
 `;
     };
 
+    const buildLiteVariantsPrompt = (inputs) => {
+        return `
+You are a Myanmar Facebook copywriter for With You Photo Studio (Taunggyi).
+
+Task:
+Create 3 different Facebook caption variants for the same topic.
+
+Inputs:
+- Service: ${inputs.service}
+- Goal: ${inputs.goal}
+- Tone: ${inputs.tone}
+- Page voice: ${inputs.voice}
+- Topic/Guideline: ${inputs.topicGuideline}
+- Offer (optional): ${inputs.offer || 'none'}
+- Location: ${inputs.location}
+
+Return STRICT JSON only:
+{"variants":["...","...","..."]}
+
+Rules:
+- Burmese only
+- Natural human short lines
+- Each variant must ask exactly ONE question (only one "?" total)
+- Each variant must include exactly ONE CTA: DM 'BOOK'
+- No address/phone in the body (contact will be added separately)
+- No emojis unless asked
+- Hashtags: 3 to 6 only
+- Make each variant meaningfully different (hook angle + body angle + CTA phrasing)
+`;
+    };
+
     const buildLiteRewritePrompt = (inputs, payload, stronger = false) => {
         const wantsFB = inputs.platform === 'both' || inputs.platform === 'facebook';
         const wantsTT = inputs.platform === 'both' || inputs.platform === 'tiktok';
@@ -2248,6 +2281,37 @@ ${stronger ? '- Make wording more conversion-aggressive but natural.\n' : ''}${w
 - Do NOT write "Cover:", "Hook:", "Caption:"
 ` : ''}
 `;
+    };
+
+    const renderLiteFacebookVariants = (variants = [], inputs) => {
+        const resultArea = document.getElementById('liteResultArea');
+        const fbBlock = document.getElementById('liteFBBlock');
+        const ttBlock = document.getElementById('liteTTBlock');
+        const fbOutput = document.getElementById('liteFBOutput');
+        const ttOutput = document.getElementById('liteTTOutput');
+        if (!resultArea || !fbBlock || !ttBlock || !fbOutput || !ttOutput) return;
+
+        ttBlock.classList.add('hidden');
+        ttOutput.innerText = '';
+        fbBlock.classList.remove('hidden');
+
+        const cleaned = (variants || [])
+            .map((v) => normalizeLiteFacebookFinal(String(v || ''), inputs?.contact || ''))
+            .filter(Boolean)
+            .slice(0, 3);
+
+        if (!cleaned.length) {
+            fbOutput.innerText = 'No variants returned. Try again with a simpler guideline.';
+            resultArea.classList.remove('hidden');
+            return;
+        }
+
+        fbOutput.innerText = cleaned
+            .map((v, i) => `Option ${i + 1}\n${v}`)
+            .join('\n\n---\n\n')
+            .trim();
+
+        resultArea.classList.remove('hidden');
     };
 
     const buildLiteFallbackPrompt = (inputs, channel = 'facebook') => {
@@ -2476,6 +2540,61 @@ Return STRICT JSON array only:
         } catch (e) {
             console.error(e);
             window.showToast(getApiErrorMessage(e, 'Generate failed'));
+            return null;
+        } finally {
+            setButtonBusy(btn, false);
+        }
+    };
+
+    window.liteGenerateVariants = async function() {
+        const btn = document.getElementById('liteVariantsBtn');
+        setButtonBusy(btn, true, 'Generating...');
+        try {
+            const inputs = getLiteInputs();
+            const wantsFB = inputs.platform === 'both' || inputs.platform === 'facebook';
+            if (!wantsFB) {
+                window.showToast('FB Variants သုံးချင်ရင် Platform ကို Facebook (သို့) Both ရွေးပါ။');
+                return null;
+            }
+
+            const d = await callGenerateAPI({
+                userMessage: buildLiteVariantsPrompt(inputs),
+                mode: 'studio_lite',
+                maxOutputTokens: 1200
+            });
+
+            const payload = parseJsonObjectFromText(d?.result || '') || {};
+            let variants = Array.isArray(payload?.variants) ? payload.variants : [];
+            variants = variants.map((x) => String(x || '').trim()).filter(Boolean);
+
+            if (variants.length < 3) {
+                // Fallback: try to convert whatever came back into strict JSON.
+                const fix = await callGenerateAPI({
+                    userMessage: "Return STRICT JSON only: {\"variants\":[\"...\",\"...\",\"...\"]}\n\nDraft:\n" + (d?.result || ''),
+                    mode: 'studio_lite',
+                    maxOutputTokens: 900
+                });
+                const fixed = parseJsonObjectFromText(fix?.result || '') || {};
+                variants = Array.isArray(fixed?.variants) ? fixed.variants.map((x) => String(x || '').trim()).filter(Boolean) : variants;
+            }
+
+            renderLiteFacebookVariants(variants, inputs);
+
+            if (userId) {
+                const combined = (variants || [])
+                    .map((v, i) => `Option ${i + 1}\n${normalizeLiteFacebookFinal(String(v || ''), inputs.contact)}`)
+                    .filter(Boolean)
+                    .slice(0, 3)
+                    .join('\n\n---\n\n')
+                    .trim();
+                if (combined) await saveToRecents('lite_variants_facebook', combined, inputs.topicGuideline || 'Lite Variants');
+            }
+
+            window.showToast('3 variants ready. Choose and post.');
+            return variants;
+        } catch (e) {
+            console.error(e);
+            window.showToast(getApiErrorMessage(e, 'Variants failed'));
             return null;
         } finally {
             setButtonBusy(btn, false);
