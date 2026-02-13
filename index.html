@@ -1971,6 +1971,19 @@ window.runAssistant = async function(type) {
         return inputs;
     };
 
+    const WITH_YOU_COPY_READY_CONTRACT = {
+        bannedPatterns: [
+            /မင်္ဂလာပါ/i,
+            /ဒီနေရာမှာ/i,
+            /အောက်မှာ/i,
+            /here is/i,
+            /tutorial/i,
+            /mentor/i,
+            /analysis/i
+        ],
+        tiktokLinePattern: /^((Cover|Hook|Caption)\s*:)/i
+    };
+
     const cleanFinalText = (text = '') => String(text || '')
         .replace(/```json|```/gi, '')
         .replace(/^\s*(facebook final post|tiktok final pack)\s*:?\s*$/gim, '')
@@ -1994,6 +2007,26 @@ window.runAssistant = async function(type) {
         if (!hook) hook = lines[1] || '';
         if (!caption) caption = lines.slice(2).join(' ').trim() || lines[lines.length - 1] || '';
         return `Cover: ${cover}\nHook: ${hook}\nCaption: ${caption}`.trim();
+    };
+
+    const hasBannedMeta = (text = '') => WITH_YOU_COPY_READY_CONTRACT.bannedPatterns.some((rx) => rx.test(String(text || '')));
+
+    const isValidFacebookFinal = (text = '') => {
+        const t = cleanFinalText(text);
+        if (!t) return false;
+        if (hasBannedMeta(t)) return false;
+        const hasHashtag = /#/.test(t);
+        const hasCTA = /(message|inbox|booking|book|ဆက်သွယ်|viber|call)/i.test(t);
+        return hasHashtag && hasCTA && t.length >= 60;
+    };
+
+    const isValidTikTokFinal = (text = '') => {
+        const t = normalizeTikTokFinal(text);
+        if (!t) return false;
+        if (hasBannedMeta(t)) return false;
+        const lines = t.split('\n').map((x) => x.trim()).filter(Boolean);
+        if (lines.length !== 3) return false;
+        return lines.every((line) => WITH_YOU_COPY_READY_CONTRACT.tiktokLinePattern.test(line));
     };
 
     const renderLiteIdeas = (titles = []) => {
@@ -2085,6 +2118,7 @@ Rules:
 - Burmese language only.
 - No greeting, no intro, no explanation, no numbering.
 - No mentor/analysis/tutorial text.
+- Return only copy-ready final content.
 ${strongerRule}${wantsFB ? `
 - facebook value: one final post ready to publish.
 - Include: opening hook + body + CTA + hashtags in one block.
@@ -2095,6 +2129,37 @@ ${strongerRule}${wantsFB ? `
   Hook: ...
   Caption: ...
 - No extra lines, no hashtags section heading.
+` : ''}
+`;
+    };
+
+    const buildLiteRewritePrompt = (inputs, payload, stronger = false) => {
+        const wantsFB = inputs.platform === 'both' || inputs.platform === 'facebook';
+        const wantsTT = inputs.platform === 'both' || inputs.platform === 'tiktok';
+        const schema = wantsFB && wantsTT
+            ? `{"facebook":"...", "tiktok":"..."}`
+            : (wantsFB ? `{"facebook":"..."}` : `{"tiktok":"..."}`);
+        return `
+Rewrite this draft into strict With You Studio copy-ready format.
+
+Input draft JSON:
+${JSON.stringify(payload || {}, null, 2)}
+
+Return STRICT JSON only:
+${schema}
+
+Rules:
+- Burmese only
+- No intro/meta/tutorial text
+- Remove any mentoring/explanation sentences
+- Keep persuasive and booking-focused
+${stronger ? '- Make wording more conversion-aggressive but natural.\n' : ''}${wantsFB ? `
+- facebook must include hook + body + CTA + hashtags in one final block
+` : ''}${wantsTT ? `
+- tiktok must be exactly 3 lines:
+  Cover: ...
+  Hook: ...
+  Caption: ...
 ` : ''}
 `;
     };
@@ -2226,6 +2291,23 @@ Return STRICT JSON array only:
                     maxOutputTokens: 500
                 });
                 payload.tiktok = normalizeTikTokFinal(ttFallback?.result || '');
+            }
+
+            const invalidFB = wantsFB && !isValidFacebookFinal(payload?.facebook || '');
+            const invalidTT = wantsTT && !isValidTikTokFinal(payload?.tiktok || '');
+            if (invalidFB || invalidTT) {
+                const rewrite = await callGenerateAPI({
+                    userMessage: buildLiteRewritePrompt(inputs, payload, stronger),
+                    mode: 'studio_lite',
+                    maxOutputTokens: 1400
+                });
+                const rewritePayload = parseJsonObjectFromText(rewrite?.result || '') || {};
+                if (wantsFB && isValidFacebookFinal(rewritePayload?.facebook || '')) {
+                    payload.facebook = cleanFinalText(rewritePayload.facebook || '');
+                }
+                if (wantsTT && isValidTikTokFinal(rewritePayload?.tiktok || '')) {
+                    payload.tiktok = normalizeTikTokFinal(rewritePayload.tiktok || '');
+                }
             }
 
             renderLiteFinalResult(payload, inputs.platform);
