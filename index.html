@@ -1615,6 +1615,22 @@ Return STRICT JSON array only:
         throw new Error('Unknown request failure');
     };
 
+    // Lite mode budget tracking: generateAI() already tracks usage, but Lite used to bypass it.
+    // Use this wrapper ONLY in Lite flows to avoid double-counting.
+    const callGenerateLiteAPI = async (payload, opts = {}) => {
+        const data = await callGenerateAPI(payload, opts);
+        try {
+            if (userId && typeof window.trackUsage === 'function') {
+                const inText = String(payload?.userMessage || payload?.prompt || '');
+                const outText = String(data?.result || '');
+                await window.trackUsage(inText, outText);
+            }
+        } catch (e) {
+            console.warn('Lite usage tracking skipped:', e?.message || e);
+        }
+        return data;
+    };
+
     const AI_UI_CONFIG = {
         outputIds: {
             fbpost: 'fbOutput', dm_best: 'dmOutput', timeline: 'tlOutput', tt_caption: 'ttOutput',
@@ -1997,7 +2013,7 @@ window.runAssistant = async function(type) {
   setButtonBusy(triggerBtn, true, 'Generating...');
 
   try {
-    const data = await callGenerateAPI({
+    const data = await callGenerateLiteAPI({
       userMessage: prompt,
       mode: "studio"
     });
@@ -2042,6 +2058,13 @@ window.runAssistant = async function(type) {
             contact: (getValue('liteContact') || '').trim() || '09255521464 (Viber)'
         };
 
+        // Event-specific CTA keyword auto-switch:
+        // - Pre-wedding / Wedding day: BOOK
+        // - Aluhpwe day / Hsun kap day: INFO (so it doesn't feel too hard-sell)
+        const guide = String(inputs.topicGuideline || '');
+        const isReligiousEvent = /(အလှူပွဲနေ့|ဆွမ်းကပ်နေ့|မင်္ဂလာဆွမ်းကပ်)/i.test(guide);
+        inputs.ctaKeyword = isReligiousEvent ? 'INFO' : 'BOOK';
+
         const csServiceEl = document.getElementById('csService');
         const csToneEl = document.getElementById('csTone');
         const csTopicEl = document.getElementById('csTopic');
@@ -2076,7 +2099,7 @@ window.runAssistant = async function(type) {
         .replace(/^\s*[\-\*]\s+/gm, '')
         .trim();
 
-    const normalizeLiteFacebookFinal = (text = '', contact = '') => {
+    const normalizeLiteFacebookFinal = (text = '', contact = '', ctaKeyword = 'BOOK') => {
         const src = cleanFinalText(text);
         if (!src) return '';
 
@@ -2094,6 +2117,9 @@ window.runAssistant = async function(type) {
             return true;
         });
 
+        // Remove any CTA lines so we can enforce exactly one CTA consistently.
+        lines = lines.filter((line) => !/(^|\s)(dm|inbox|message)\b/i.test(line));
+
         let out = lines.join('\n').trim();
 
         // Enforce single question mark.
@@ -2103,8 +2129,10 @@ window.runAssistant = async function(type) {
         }
 
         // Enforce a single, clear CTA.
-        if (!/DM\s*'BOOK'/i.test(out)) {
-            out = (out ? (out + "\n\n") : "") + "DM 'BOOK' လို့ပို့ပြီး date/time/style ပြောပေးပါ။";
+        const ctaKey = String(ctaKeyword || 'BOOK').trim().toUpperCase() === 'INFO' ? 'INFO' : 'BOOK';
+        const ctaRe = new RegExp(`DM\\s*['"]?${ctaKey}['"]?`, 'i');
+        if (!ctaRe.test(out)) {
+            out = (out ? (out + "\n\n") : "") + `DM '${ctaKey}' လို့ပို့ပြီး date/time/style ပြောပေးပါ။`;
         }
 
         if (contactRaw) {
@@ -2139,7 +2167,7 @@ window.runAssistant = async function(type) {
         if (!t) return false;
         if (hasBannedMeta(t)) return false;
         const hasHashtag = /#/.test(t);
-        const hasCTA = /(message|inbox|booking|book|ဆက်သွယ်|viber|call)/i.test(t);
+        const hasCTA = /(message|inbox|dm|booking|book|info|ဆက်သွယ်|viber|call)/i.test(t);
         return hasHashtag && hasCTA && t.length >= 60;
     };
 
@@ -2254,7 +2282,7 @@ Rules:
 - Return only copy-ready final content.
 ${voiceRule}- Short lines (use line breaks) and natural human Burmese.
 - Ask exactly ONE question in the whole Facebook post.
-- Include exactly ONE soft CTA to DM (prefer: DM 'BOOK').
+- Include exactly ONE soft CTA to DM (use: DM '${inputs.ctaKeyword || 'BOOK'}').
 - Do NOT include address/phone in the body; put contact as FINAL line only.
 - No emojis unless user explicitly asks.
 ${emojiRule}
@@ -2301,7 +2329,7 @@ Rules:
 - Burmese only
 - Natural human short lines
 - Each variant must ask exactly ONE question (only one "?" total)
-- Each variant must include exactly ONE CTA: DM 'BOOK'
+- Each variant must include exactly ONE CTA: DM '${inputs.ctaKeyword || 'BOOK'}'
 - No address/phone in the body (contact will be added separately)
 - No emojis unless asked
 ${emojiRule}
@@ -2331,7 +2359,7 @@ Rules:
 - Remove any mentoring/explanation sentences
 - Keep persuasive and booking-focused
  - Ask exactly ONE question in the Facebook post
- - Exactly ONE CTA (prefer: DM 'BOOK')
+ - Exactly ONE CTA (use: DM '${inputs.ctaKeyword || 'BOOK'}')
  - Do NOT include address/phone in the body; put contact as FINAL line only
 ${stronger ? '- Make wording more conversion-aggressive but natural.\n' : ''}${wantsFB ? `
 - facebook must include hook + body + CTA + hashtags in one final block
@@ -2356,7 +2384,7 @@ ${stronger ? '- Make wording more conversion-aggressive but natural.\n' : ''}${w
         fbBlock.classList.remove('hidden');
 
         const cleaned = (variants || [])
-            .map((v) => normalizeLiteFacebookFinal(String(v || ''), inputs?.contact || ''))
+            .map((v) => normalizeLiteFacebookFinal(String(v || ''), inputs?.contact || '', inputs?.ctaKeyword || 'BOOK'))
             .filter(Boolean)
             .slice(0, 3);
 
@@ -2436,7 +2464,7 @@ User guideline: ${inputs.topicGuideline}
 Return STRICT JSON array only:
 ["topic 1","topic 2","topic 3"]
 `;
-            const d = await callGenerateAPI({
+            const d = await callGenerateLiteAPI({
                 userMessage: prompt,
                 mode: 'studio_lite',
                 maxOutputTokens: 450
@@ -2578,7 +2606,7 @@ Return STRICT JSON array only:
             platform: 'facebook',
             locationTarget: 'taunggyi',
             locationNote: 'Taunggyi (အလှူပွဲနေ့ coverage)',
-            guideline: "အလှူပွဲနေ့ ရိုက်ကူးရေး (Respectful)\n- Mood: ဂုဏ်သိက္ခာရှိ၊ သာယာတိတ်ဆိတ်တဲ့ vibe\n- Focus: မိသားစုရဲ့ပျော်ရွှင်မှု + ပွဲရဲ့အရေးပါတဲ့ moment တွေ\n- Copy: သဘာဝဆန်၊ အလွန်အကျွံ marketing မလုပ်\n- Include: 1 question only, 1 CTA: DM 'BOOK'\n- Emojis: if enabled, 1-3 max (🙏✨)\n- Hashtags: 3-6\n- Do NOT include address/phone in body (contact will be last line only)"
+            guideline: "အလှူပွဲနေ့ ရိုက်ကူးရေး (Respectful)\n- Mood: ဂုဏ်သိက္ခာရှိ၊ သာယာတိတ်ဆိတ်တဲ့ vibe\n- Focus: မိသားစုရဲ့ပျော်ရွှင်မှု + ပွဲရဲ့အရေးပါတဲ့ moment တွေ\n- Copy: သဘာဝဆန်၊ အလွန်အကျွံ marketing မလုပ်\n- Include: 1 question only, 1 CTA: DM 'INFO'\n- Emojis: if enabled, 1-3 max (🙏✨)\n- Hashtags: 3-6\n- Do NOT include address/phone in body (contact will be last line only)"
         },
         hsun_kap_day: {
             label: 'ဆွမ်းကပ်နေ့: Calm',
@@ -2589,7 +2617,7 @@ Return STRICT JSON array only:
             platform: 'facebook',
             locationTarget: 'taunggyi',
             locationNote: 'Taunggyi (မင်္ဂလာဆွမ်းကပ်နေ့ coverage)',
-            guideline: "မင်္ဂလာဆွမ်းကပ်နေ့ ရိုက်ကူးရေး (Calm)\n- Mood: တိတ်ဆိတ်ပြီး အဓိပ္ပါယ်ရှိတဲ့ morning moments\n- Focus: မိသားစုနဲ့အတူ သာသနာအတွက်ကောင်းမှု၊ လေးစားမှု\n- Copy: gentle, clean, respectful\n- Include: 1 question only, 1 CTA: DM 'BOOK'\n- Emojis: if enabled, 1-3 max (🙏💛✨)\n- Hashtags: 3-6\n- Do NOT include address/phone in body (contact will be last line only)"
+            guideline: "မင်္ဂလာဆွမ်းကပ်နေ့ ရိုက်ကူးရေး (Calm)\n- Mood: တိတ်ဆိတ်ပြီး အဓိပ္ပါယ်ရှိတဲ့ morning moments\n- Focus: မိသားစုနဲ့အတူ သာသနာအတွက်ကောင်းမှု၊ လေးစားမှု\n- Copy: gentle, clean, respectful\n- Include: 1 question only, 1 CTA: DM 'INFO'\n- Emojis: if enabled, 1-3 max (🙏💛✨)\n- Hashtags: 3-6\n- Do NOT include address/phone in body (contact will be last line only)"
         }
     };
 
@@ -2630,7 +2658,7 @@ Return STRICT JSON array only:
             const wantsFB = inputs.platform === 'both' || inputs.platform === 'facebook';
             const wantsTT = inputs.platform === 'both' || inputs.platform === 'tiktok';
 
-            const draft = await callGenerateAPI({
+            const draft = await callGenerateLiteAPI({
                 userMessage: buildLiteFinalPrompt(inputs, stronger),
                 mode: 'studio_lite',
                 maxOutputTokens: 1800
@@ -2644,7 +2672,7 @@ Return STRICT JSON array only:
                 const fixSchema = wantsFB && wantsTT
                     ? `{"facebook":"...", "tiktok":"..."}`
                     : (wantsFB ? `{"facebook":"..."}` : `{"tiktok":"..."}`);
-                const fix = await callGenerateAPI({
+                const fix = await callGenerateLiteAPI({
                     userMessage: `Convert draft to STRICT JSON only.\nSchema: ${fixSchema}\nDraft:\n${draft?.result || ''}`,
                     mode: 'studio_lite',
                     maxOutputTokens: 1400
@@ -2653,16 +2681,16 @@ Return STRICT JSON array only:
             }
 
             if (wantsFB && !String(payload?.facebook || '').trim()) {
-                const fbFallback = await callGenerateAPI({
+                const fbFallback = await callGenerateLiteAPI({
                     userMessage: buildLiteFallbackPrompt(inputs, 'facebook'),
                     mode: 'studio_lite',
                     maxOutputTokens: 900
                 });
-                payload.facebook = normalizeLiteFacebookFinal(fbFallback?.result || '', inputs.contact);
+                payload.facebook = normalizeLiteFacebookFinal(fbFallback?.result || '', inputs.contact, inputs.ctaKeyword);
             }
 
             if (wantsTT && !String(payload?.tiktok || '').trim()) {
-                const ttFallback = await callGenerateAPI({
+                const ttFallback = await callGenerateLiteAPI({
                     userMessage: buildLiteFallbackPrompt(inputs, 'tiktok'),
                     mode: 'studio_lite',
                     maxOutputTokens: 500
@@ -2673,14 +2701,14 @@ Return STRICT JSON array only:
             const invalidFB = wantsFB && !isValidFacebookFinal(payload?.facebook || '');
             const invalidTT = wantsTT && !isValidTikTokFinal(payload?.tiktok || '');
             if (invalidFB || invalidTT) {
-                const rewrite = await callGenerateAPI({
+                const rewrite = await callGenerateLiteAPI({
                     userMessage: buildLiteRewritePrompt(inputs, payload, stronger),
                     mode: 'studio_lite',
                     maxOutputTokens: 1400
                 });
                 const rewritePayload = parseJsonObjectFromText(rewrite?.result || '') || {};
                 if (wantsFB && isValidFacebookFinal(rewritePayload?.facebook || '')) {
-                    payload.facebook = normalizeLiteFacebookFinal(rewritePayload.facebook || '', inputs.contact);
+                    payload.facebook = normalizeLiteFacebookFinal(rewritePayload.facebook || '', inputs.contact, inputs.ctaKeyword);
                 }
                 if (wantsTT && isValidTikTokFinal(rewritePayload?.tiktok || '')) {
                     payload.tiktok = normalizeTikTokFinal(rewritePayload.tiktok || '');
@@ -2688,13 +2716,13 @@ Return STRICT JSON array only:
             }
 
             if (wantsFB && String(payload?.facebook || '').trim()) {
-                payload.facebook = normalizeLiteFacebookFinal(payload.facebook || '', inputs.contact);
+                payload.facebook = normalizeLiteFacebookFinal(payload.facebook || '', inputs.contact, inputs.ctaKeyword);
             }
 
             renderLiteFinalResult(payload, inputs.platform);
             // Save Lite output to Cloud History (manual copy/post flow still benefits from history).
             if (userId) {
-                const fbText = wantsFB ? normalizeLiteFacebookFinal(payload.facebook || '', inputs.contact) : '';
+                const fbText = wantsFB ? normalizeLiteFacebookFinal(payload.facebook || '', inputs.contact, inputs.ctaKeyword) : '';
                 const ttText = wantsTT ? normalizeTikTokFinal(payload.tiktok || '') : '';
                 const combined = [
                     fbText ? `Facebook Final\n${fbText}` : '',
@@ -2728,7 +2756,7 @@ Return STRICT JSON array only:
                 return null;
             }
 
-            const d = await callGenerateAPI({
+            const d = await callGenerateLiteAPI({
                 userMessage: buildLiteVariantsPrompt(inputs),
                 mode: 'studio_lite',
                 maxOutputTokens: 1200
@@ -2740,7 +2768,7 @@ Return STRICT JSON array only:
 
             if (variants.length < 3) {
                 // Fallback: try to convert whatever came back into strict JSON.
-                const fix = await callGenerateAPI({
+                const fix = await callGenerateLiteAPI({
                     userMessage: "Return STRICT JSON only: {\"variants\":[\"...\",\"...\",\"...\"]}\n\nDraft:\n" + (d?.result || ''),
                     mode: 'studio_lite',
                     maxOutputTokens: 900
@@ -2753,7 +2781,7 @@ Return STRICT JSON array only:
 
             if (userId) {
                 const combined = (variants || [])
-                    .map((v, i) => `Option ${i + 1}\n${normalizeLiteFacebookFinal(String(v || ''), inputs.contact)}`)
+                    .map((v, i) => `Option ${i + 1}\n${normalizeLiteFacebookFinal(String(v || ''), inputs.contact, inputs.ctaKeyword)}`)
                     .filter(Boolean)
                     .slice(0, 3)
                     .join('\n\n---\n\n')
@@ -2783,15 +2811,16 @@ Return STRICT JSON array only:
         const picked = parts[idx] || parts[0] || '';
         if (!picked) return;
 
-        // Remove "Option X" header if present.
-        const cleaned = picked.replace(/^Option\s+\d+\s*\n/i, '').trim();
+        // Remove "Option X" header if present, then normalize to enforce CTA/contact rules.
+        const raw = picked.replace(/^Option\s+\d+\s*\n/i, '').trim();
+        const inputs = getLiteInputs();
+        const cleaned = normalizeLiteFacebookFinal(raw, inputs.contact, inputs.ctaKeyword);
         outEl.innerText = cleaned;
 
         const actions = document.getElementById('liteFBActions');
         if (actions) actions.classList.add('hidden');
 
         try {
-            const inputs = getLiteInputs();
             if (userId && cleaned) {
                 await saveToRecents('lite_final_facebook', cleaned, inputs.topicGuideline || 'Lite Picked Variant');
             }
@@ -2808,7 +2837,7 @@ Return STRICT JSON array only:
 You are a Myanmar social media copywriter for With You Photo Studio (Taunggyi).
 
 Task:
-Create a 3-frame Facebook Story pack that drives DMs for booking.
+Create a 3-frame Facebook Story pack that drives DMs for booking (or info, depending on CTA keyword).
 
 Inputs:
 - Service: ${inputs.service}
@@ -2826,7 +2855,7 @@ Rules:
 - Burmese only
 - Each frame: 1 to 2 short lines max
 - Frame 2 must include 1 question
-- Frame 3 must include CTA: DM 'BOOK'
+- Frame 3 must include CTA: DM '${inputs.ctaKeyword || 'BOOK'}'
 - No phone/address
 ${emojiRule}
 `;
@@ -2837,7 +2866,7 @@ ${emojiRule}
         setButtonBusy(btn, true, 'Generating...');
         try {
             const inputs = getLiteInputs();
-            const d = await callGenerateAPI({
+            const d = await callGenerateLiteAPI({
                 userMessage: buildLiteStoryPackPrompt(inputs),
                 mode: 'studio_lite',
                 maxOutputTokens: 650
@@ -2881,7 +2910,7 @@ ${postText}
 Rules:
 - Burmese only
 - 2 to 4 short lines
-- Include CTA: DM 'BOOK'
+- Include CTA: DM '${inputs.ctaKeyword || 'BOOK'}'
 - No phone/address
 ${emojiRule}
 Return the pinned comment text only (no labels).
@@ -2899,7 +2928,7 @@ Return the pinned comment text only (no labels).
                 return null;
             }
 
-            const d = await callGenerateAPI({
+            const d = await callGenerateLiteAPI({
                 userMessage: buildLitePinnedCommentPrompt(inputs, postText.slice(0, 1800)),
                 mode: 'studio_lite',
                 maxOutputTokens: 350
