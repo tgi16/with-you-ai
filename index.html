@@ -663,6 +663,25 @@ button { transition: all 0.2s ease; }
                   ဆွမ်းကပ်နေ့: Calm
                 </button>
               </div>
+              <div class="bg-slate-900/40 border border-slate-700 rounded-lg p-3 mb-2">
+                <div class="flex items-center justify-between">
+                  <div class="text-[11px] font-bold text-slate-300 uppercase">TikTok Hook Angle</div>
+                  <div id="liteHookAngleHint" class="text-[11px] text-slate-400"></div>
+                </div>
+                <div class="mt-2 grid grid-cols-2 md:grid-cols-5 gap-2">
+                  <button class="hook-angle-btn bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-100 font-bold py-2 rounded-lg text-xs transition"
+                          onclick="window.setLiteHookAngle('cinematic', this)">Cinematic</button>
+                  <button class="hook-angle-btn bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-100 font-bold py-2 rounded-lg text-xs transition"
+                          onclick="window.setLiteHookAngle('funny', this)">Funny</button>
+                  <button class="hook-angle-btn bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-100 font-bold py-2 rounded-lg text-xs transition"
+                          onclick="window.setLiteHookAngle('relatable', this)">Relatable</button>
+                  <button class="hook-angle-btn bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-100 font-bold py-2 rounded-lg text-xs transition"
+                          onclick="window.setLiteHookAngle('controversial', this)">Controversial</button>
+                  <button class="hook-angle-btn bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-100 font-bold py-2 rounded-lg text-xs transition"
+                          onclick="window.setLiteHookAngle('pov', this)">POV</button>
+                </div>
+                <input type="hidden" id="liteHookAngle" value="cinematic" />
+              </div>
               <div id="liteDayHint" class="text-[11px] text-slate-400 mb-2"></div>
               <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Topic / Guideline</label>
               <textarea id="liteTopicGuideline" rows="4" placeholder="ဥပမာ - Pre-Wedding mood ရင်ခုန်ဖွယ် style, booking CTA ကိုရှင်းရှင်းလင်းလင်း ထည့်ပါ" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm text-white resize-y"></textarea>
@@ -1233,7 +1252,7 @@ button { transition: all 0.2s ease; }
         'csTopic', 'csAudience', 'csKeywords', 'csCTA', 'csAvoid',
         'csTemplate', 'csService', 'csPersona', 'csTone', 'csLength', 'csLanguage',
         'csIncludeContact', 'csIncludeDM',
-        'liteService', 'litePlatform', 'liteGoal', 'liteTone', 'liteVoice', 'liteEmojis', 'liteDayPlan', 'liteTopicGuideline',
+        'liteService', 'litePlatform', 'liteGoal', 'liteTone', 'liteVoice', 'liteEmojis', 'liteHookAngle', 'liteDayPlan', 'liteTopicGuideline',
         'liteOffer', 'liteLocation', 'liteContact', 'liteAutoPublishFB', 'liteAutoPublishTT',
         'liteLocationTarget',
         'brandPackages', 'brandStyle', 'brandClient', 'brandPhone', 'brandViber', 'brandFB', 'brandTT', 'brandAddr', 'brandportfolio'
@@ -2040,6 +2059,7 @@ window.runAssistant = async function(type) {
         const topicGuideline = (getValue('liteTopicGuideline') || '').trim();
         const voice = (getValue('liteVoice') || '').trim() || 'premium';
         const useEmojis = document.getElementById('liteEmojis')?.checked === true;
+        const hookAngle = (getValue('liteHookAngle') || '').trim() || 'cinematic';
         const locationTarget = (getValue('liteLocationTarget') || '').trim() || 'taunggyi';
         const locationTargetLabel = locationTarget === 'inle'
             ? 'Inle'
@@ -2052,6 +2072,7 @@ window.runAssistant = async function(type) {
             tone: getValue('liteTone') || 'premium',
             voice,
             useEmojis,
+            hookAngle,
             locationTarget,
             locationTargetLabel,
             topicGuideline: topicGuideline || `${getServiceLabel(serviceRaw)} အတွက် booking တက်စေမယ့် post`,
@@ -2354,7 +2375,7 @@ ${strongerRule}${wantsFB ? `
 ` : ''}${wantsTT ? `
 - tiktok value: exactly 3 plain lines only (NO labels):
   1) Scene line (visual + ${inputs.locationTargetLabel} vibe)
-  2) Hook line (curiosity or bold claim, 6-10 words)
+  2) Hook line angle: ${inputs.hookAngle} (curiosity/bold/POV/relatable/funny as requested), 6-12 words
   3) CTA line must include: DM '${inputs.ctaKeyword || 'BOOK'}' + 2-4 hashtags (same line)
 - Keep it natural Burmese spoken style, not formal.
 - No phone/address.
@@ -2714,6 +2735,28 @@ Return STRICT JSON array only:
         window.showToast(`Preset applied: ${preset.label}`);
     };
 
+    const LITE_HOOK_ANGLE_HINTS = {
+        cinematic: 'Cinematic: mood + emotion + visual words',
+        funny: 'Funny: light joke + relatable tease',
+        relatable: 'Relatable: "အဲဒီခံစားချက်" ကိုထိမိ',
+        controversial: 'Controversial: hot take (မလွန်ကဲဘဲ)',
+        pov: 'POV: viewer ကို role ထဲဝင်စေ'
+    };
+
+    window.setLiteHookAngle = function(angle = 'cinematic', btn) {
+        const el = document.getElementById('liteHookAngle');
+        if (el) el.value = String(angle || 'cinematic');
+
+        document.querySelectorAll('.hook-angle-btn').forEach((b) => b.classList.remove('active', 'ring-2', 'ring-cyan-400'));
+        if (btn) btn.classList.add('active', 'ring-2', 'ring-cyan-400');
+
+        const hint = document.getElementById('liteHookAngleHint');
+        if (hint) hint.textContent = LITE_HOOK_ANGLE_HINTS[String(angle || 'cinematic')] || '';
+
+        // Persist for drafts.
+        try { localStorage.setItem('draft:liteHookAngle', String(angle || 'cinematic')); } catch (_) {}
+    };
+
     window.liteGenerateFinal = async function(stronger = false) {
         const btn = stronger ? document.getElementById('liteRegenerateBtn') : document.getElementById('liteGenerateBtn');
         setButtonBusy(btn, true, stronger ? 'Regenerating...' : 'Generating...');
@@ -2882,6 +2925,7 @@ Inputs:
 - Goal: ${inputs.goal}
 - Tone: ${inputs.tone}
 - Page voice: ${inputs.voice}
+- Hook angle: ${inputs.hookAngle}
 - Topic/Guideline: ${inputs.topicGuideline}
 - Offer (optional): ${inputs.offer || 'none'}
 
@@ -2892,7 +2936,7 @@ Rules:
 - Burmese only, spoken style
 - Exactly 3 lines per variant
 - Line 1: scene + location vibe (${inputs.locationTargetLabel})
-- Line 2: hook (curiosity/bold claim)
+- Line 2: hook must follow angle: ${inputs.hookAngle}
 - Line 3: must include DM '${inputs.ctaKeyword || 'BOOK'}' + 2-4 hashtags (same line)
 - No phone/address
 ${emojiRule}
@@ -3217,10 +3261,12 @@ Return the pinned comment text only (no labels).
             ['litePlatform', !!document.getElementById('litePlatform')],
             ['liteGoal', !!document.getElementById('liteGoal')],
             ['liteTone', !!document.getElementById('liteTone')],
+            ['liteHookAngle', !!document.getElementById('liteHookAngle')],
             ['liteTopicGuideline', !!document.getElementById('liteTopicGuideline')],
             ['liteSuggestBtn', !!document.getElementById('liteSuggestBtn')],
             ['liteGenerateBtn', !!document.getElementById('liteGenerateBtn')],
             ['liteRegenerateBtn', !!document.getElementById('liteRegenerateBtn')],
+            ['liteTTVariantsBtn', !!document.getElementById('liteTTVariantsBtn')],
             ['liteFBOutput', !!document.getElementById('liteFBOutput')],
             ['liteTTOutput', !!document.getElementById('liteTTOutput')],
             ['liteAgentBtn', !!document.getElementById('liteAgentBtn')]
@@ -3317,6 +3363,13 @@ Return the pinned comment text only (no labels).
         setupDraftAutosave();
         if (viewId === 'creative' && typeof window.applyTemplatePreset === 'function') {
             window.applyTemplatePreset();
+        }
+        // Ensure Lite hook angle UI reflects persisted value when the Creative/Lite view mounts.
+        if (viewId === 'creative' && typeof window.setLiteHookAngle === 'function') {
+            const stored = (localStorage.getItem('draft:liteHookAngle') || '').toString().trim();
+            const val = (document.getElementById('liteHookAngle')?.value || stored || 'cinematic').toString().trim();
+            const btn = document.querySelector(`.hook-angle-btn[onclick*="setLiteHookAngle('${val}'"]`);
+            window.setLiteHookAngle(val, btn || undefined);
         }
     }
 
