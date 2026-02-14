@@ -684,11 +684,12 @@ button { transition: all 0.2s ease; }
               </div>
             </details>
 
-            <div class="grid grid-cols-1 md:grid-cols-6 gap-2">
+            <div class="grid grid-cols-1 md:grid-cols-7 gap-2">
               <button id="liteSuggestBtn" onclick="window.liteSuggestTopics()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold py-3 rounded-lg text-xs transition">Suggest 3 Topics</button>
               <button id="liteGenerateBtn" onclick="window.liteGenerateFinal(false)" class="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-3 rounded-lg text-xs transition shadow">Generate Final</button>
               <button id="liteRegenerateBtn" onclick="window.liteGenerateFinal(true)" class="bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 rounded-lg text-xs transition">Regenerate Stronger</button>
               <button id="liteVariantsBtn" onclick="window.liteGenerateVariants()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold py-3 rounded-lg text-xs transition">3 FB Variants</button>
+              <button id="liteTTVariantsBtn" onclick="window.liteGenerateTikTokVariants()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold py-3 rounded-lg text-xs transition">3 TikTok Variants</button>
               <button id="liteStoryBtn" onclick="window.liteGenerateStoryPack()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold py-3 rounded-lg text-xs transition">Story Pack</button>
               <button id="litePinnedBtn" onclick="window.liteGeneratePinnedComment()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold py-3 rounded-lg text-xs transition">Pinned Comment</button>
             </div>
@@ -1134,6 +1135,7 @@ button { transition: all 0.2s ease; }
                 <option value="lite_final_tiktok">Lite Final (TikTok)</option>
                 <option value="lite_final_both">Lite Final (Both)</option>
                 <option value="lite_variants_facebook">Lite Variants (FB)</option>
+                <option value="lite_variants_tiktok">Lite Variants (TikTok)</option>
                 <option value="lite_story_pack">Lite Story Pack</option>
                 <option value="lite_pinned_comment">Lite Pinned Comment</option>
                 <option value="mentor">Mentor</option>
@@ -2160,6 +2162,63 @@ window.runAssistant = async function(type) {
         return [cover, hook, caption].filter(Boolean).join('\n').trim();
     };
 
+    const normalizeLiteTikTokFinal = (text = '', inputs = {}) => {
+        const src = normalizeTikTokFinal(text);
+        if (!src) return '';
+
+        const lines = src.split('\n').map((x) => x.trim()).filter(Boolean);
+        let l1 = lines[0] || '';
+        let l2 = lines[1] || '';
+        let l3 = (lines.slice(2).join(' ') || '').trim();
+
+        const ctaKey = String(inputs?.ctaKeyword || 'BOOK').trim().toUpperCase() === 'INFO' ? 'INFO' : 'BOOK';
+        const ctaRe = new RegExp(`DM\\s*['"]?${ctaKey}['"]?`, 'i');
+
+        // Keep TikTok clean: no phone/address lines.
+        const phoneLike = /(\+?95)?\s*0?9\d{7,}/;
+        const addressLike = /(တောင်ကြီး|taunggyi|လမ်း|လမ်းသွယ်|အမှတ်|LA\/|ဘုရင့်နောင်|address)/i;
+        [l1, l2, l3] = [l1, l2, l3].map((x) => String(x || '').replace(/```/g, '').trim());
+        if (phoneLike.test(l1) || addressLike.test(l1)) l1 = '';
+        if (phoneLike.test(l2) || addressLike.test(l2)) l2 = '';
+        if (phoneLike.test(l3) || addressLike.test(l3)) l3 = '';
+
+        const loc = String(inputs?.locationTargetLabel || '').trim();
+        const service = String(inputs?.service || '').trim();
+        if (l1 && loc && !new RegExp(loc, 'i').test(l1) && l1.length < 40) {
+            l1 = `${loc} ${service} vibe`.trim() + ' ' + l1;
+        }
+
+        // Ensure line3 has CTA keyword.
+        if (!ctaRe.test(l3)) {
+            l3 = (l3 ? (l3 + ' ') : '') + `DM '${ctaKey}'`;
+        }
+
+        // Add a couple of light hashtags to help discoverability (still one line).
+        if (!/#/.test(l3)) {
+            const tags = [];
+            if (/pre/i.test(String(inputs?.serviceRaw || ''))) tags.push('#PreWedding');
+            if (/wedding_day/i.test(String(inputs?.serviceRaw || ''))) tags.push('#WeddingDay');
+            if (/Taunggyi/i.test(loc) || /taunggyi/i.test(loc)) tags.push('#Taunggyi');
+            if (/Inle/i.test(loc) || /inle/i.test(loc)) tags.push('#Inle');
+            tags.push('#WithYouStudio');
+            l3 = `${l3} ${tags.slice(0, 4).join(' ')}`.trim();
+        }
+
+        // Emoji handling (optional): keep minimal.
+        if (inputs?.useEmojis !== true) {
+            l1 = l1.replace(/[\u{1F300}-\u{1FAFF}]/gu, '').trim();
+            l2 = l2.replace(/[\u{1F300}-\u{1FAFF}]/gu, '').trim();
+            l3 = l3.replace(/[\u{1F300}-\u{1FAFF}]/gu, '').trim();
+        }
+
+        // Guarantee 3 lines.
+        l1 = l1 || `${loc || 'Taunggyi'} ${service || 'Pre-Wedding'}`.trim();
+        l2 = l2 || 'ဒီ mood ကို တကယ္လိုချင်လား?';
+        l3 = l3 || `DM '${ctaKey}' #WithYouStudio`;
+
+        return [l1, l2, l3].map((x) => String(x || '').trim()).filter(Boolean).slice(0, 3).join('\n').trim();
+    };
+
     const hasBannedMeta = (text = '') => WITH_YOU_COPY_READY_CONTRACT.bannedPatterns.some((rx) => rx.test(String(text || '')));
 
     const isValidFacebookFinal = (text = '') => {
@@ -2178,7 +2237,7 @@ window.runAssistant = async function(type) {
         const lines = t.split('\n').map((x) => x.trim()).filter(Boolean);
         if (lines.length !== 3) return false;
         if (lines.some((line) => WITH_YOU_COPY_READY_CONTRACT.tiktokLinePattern.test(line))) return false;
-        const hasConversionCue = /(message|inbox|booking|book|ဆက်သွယ်|viber|slot|အခုပဲ|reserve)/i.test(t);
+        const hasConversionCue = /(message|inbox|dm|booking|book|info|ဆက်သွယ်|viber|slot|အခုပဲ|reserve)/i.test(t);
         return hasConversionCue;
     };
 
@@ -2223,8 +2282,9 @@ window.runAssistant = async function(type) {
 
         const wantsFB = platform === 'both' || platform === 'facebook';
         const wantsTT = platform === 'both' || platform === 'tiktok';
-        const fbText = cleanFinalText(payload.facebook || '');
-        const ttText = normalizeTikTokFinal(payload.tiktok || '');
+        const inputs = getLiteInputs();
+        const fbText = normalizeLiteFacebookFinal(payload.facebook || '', inputs.contact, inputs.ctaKeyword);
+        const ttText = normalizeLiteTikTokFinal(payload.tiktok || '', inputs);
 
         fbBlock.classList.toggle('hidden', !wantsFB);
         ttBlock.classList.toggle('hidden', !wantsTT);
@@ -2293,9 +2353,11 @@ ${strongerRule}${wantsFB ? `
 - Body should be concise, conversion-focused, natural.
 ` : ''}${wantsTT ? `
 - tiktok value: exactly 3 plain lines only (NO labels):
-  1) short opening line
-  2) strong hook line
-  3) caption line with clear booking CTA
+  1) Scene line (visual + ${inputs.locationTargetLabel} vibe)
+  2) Hook line (curiosity or bold claim, 6-10 words)
+  3) CTA line must include: DM '${inputs.ctaKeyword || 'BOOK'}' + 2-4 hashtags (same line)
+- Keep it natural Burmese spoken style, not formal.
+- No phone/address.
 - Do NOT write "Cover:", "Hook:", "Caption:".
 - No extra lines, no section heading.
 ` : ''}
@@ -2419,17 +2481,19 @@ Write TikTok final output only for With You Photo Studio.
 Service: ${inputs.service}
 Goal: ${inputs.goal}
 Tone: ${inputs.tone}
+Target area: ${inputs.locationTargetLabel}
 Topic/Guideline: ${inputs.topicGuideline}
 
 Output exactly 3 plain lines:
-line 1 = short opening line
-line 2 = strong hook line
-line 3 = caption line with booking CTA
+line 1 = scene line (visual + location vibe)
+line 2 = hook line (curiosity/bold claim, short)
+line 3 = CTA line must include DM '${inputs.ctaKeyword || 'BOOK'}' + 2-4 hashtags (same line)
 
 Rules:
 - Burmese only
 - No extra text
 - No heading
+- No phone/address
 - Do NOT write "Cover:", "Hook:", "Caption:"
 `;
         }
@@ -2695,7 +2759,7 @@ Return STRICT JSON array only:
                     mode: 'studio_lite',
                     maxOutputTokens: 500
                 });
-                payload.tiktok = normalizeTikTokFinal(ttFallback?.result || '');
+                payload.tiktok = normalizeLiteTikTokFinal(ttFallback?.result || '', inputs);
             }
 
             const invalidFB = wantsFB && !isValidFacebookFinal(payload?.facebook || '');
@@ -2711,19 +2775,22 @@ Return STRICT JSON array only:
                     payload.facebook = normalizeLiteFacebookFinal(rewritePayload.facebook || '', inputs.contact, inputs.ctaKeyword);
                 }
                 if (wantsTT && isValidTikTokFinal(rewritePayload?.tiktok || '')) {
-                    payload.tiktok = normalizeTikTokFinal(rewritePayload.tiktok || '');
+                    payload.tiktok = normalizeLiteTikTokFinal(rewritePayload.tiktok || '', inputs);
                 }
             }
 
             if (wantsFB && String(payload?.facebook || '').trim()) {
                 payload.facebook = normalizeLiteFacebookFinal(payload.facebook || '', inputs.contact, inputs.ctaKeyword);
             }
+            if (wantsTT && String(payload?.tiktok || '').trim()) {
+                payload.tiktok = normalizeLiteTikTokFinal(payload.tiktok || '', inputs);
+            }
 
             renderLiteFinalResult(payload, inputs.platform);
             // Save Lite output to Cloud History (manual copy/post flow still benefits from history).
             if (userId) {
                 const fbText = wantsFB ? normalizeLiteFacebookFinal(payload.facebook || '', inputs.contact, inputs.ctaKeyword) : '';
-                const ttText = wantsTT ? normalizeTikTokFinal(payload.tiktok || '') : '';
+                const ttText = wantsTT ? normalizeLiteTikTokFinal(payload.tiktok || '', inputs) : '';
                 const combined = [
                     fbText ? `Facebook Final\n${fbText}` : '',
                     ttText ? `TikTok Final\n${ttText}` : ''
@@ -2794,6 +2861,98 @@ Return STRICT JSON array only:
         } catch (e) {
             console.error(e);
             window.showToast(getApiErrorMessage(e, 'Variants failed'));
+            return null;
+        } finally {
+            setButtonBusy(btn, false);
+        }
+    };
+
+    const buildLiteTikTokVariantsPrompt = (inputs) => {
+        const emojiRule = inputs.useEmojis
+            ? "Emojis allowed: use 1 to 3 max total.\n"
+            : "No emojis.\n";
+        return `
+You are a Myanmar TikTok copywriter for With You Photo Studio (${inputs.locationTargetLabel}).
+
+Task:
+Create 3 TikTok caption variants for the same topic.
+
+Inputs:
+- Service: ${inputs.service}
+- Goal: ${inputs.goal}
+- Tone: ${inputs.tone}
+- Page voice: ${inputs.voice}
+- Topic/Guideline: ${inputs.topicGuideline}
+- Offer (optional): ${inputs.offer || 'none'}
+
+Return STRICT JSON only:
+{"variants":["line1\\nline2\\nline3","line1\\nline2\\nline3","line1\\nline2\\nline3"]}
+
+Rules:
+- Burmese only, spoken style
+- Exactly 3 lines per variant
+- Line 1: scene + location vibe (${inputs.locationTargetLabel})
+- Line 2: hook (curiosity/bold claim)
+- Line 3: must include DM '${inputs.ctaKeyword || 'BOOK'}' + 2-4 hashtags (same line)
+- No phone/address
+${emojiRule}
+Make each variant meaningfully different (hook angle + word choice).
+`;
+    };
+
+    window.liteGenerateTikTokVariants = async function() {
+        const btn = document.getElementById('liteTTVariantsBtn');
+        setButtonBusy(btn, true, 'Generating...');
+        try {
+            const inputs = getLiteInputs();
+            const wantsTT = inputs.platform === 'both' || inputs.platform === 'tiktok';
+            if (!wantsTT) {
+                window.showToast('TikTok Variants သုံးချင်ရင် Platform ကို TikTok (သို့) Both ရွေးပါ။');
+                return null;
+            }
+
+            const d = await callGenerateLiteAPI({
+                userMessage: buildLiteTikTokVariantsPrompt(inputs),
+                mode: 'studio_lite',
+                maxOutputTokens: 900
+            });
+
+            const payload = parseJsonObjectFromText(d?.result || '') || {};
+            let variants = Array.isArray(payload?.variants) ? payload.variants : [];
+            variants = variants.map((x) => normalizeLiteTikTokFinal(String(x || ''), inputs)).filter(Boolean).slice(0, 3);
+            if (variants.length < 3) {
+                const fix = await callGenerateLiteAPI({
+                    userMessage: "Return STRICT JSON only: {\"variants\":[\"line1\\nline2\\nline3\",\"line1\\nline2\\nline3\",\"line1\\nline2\\nline3\"]}\n\nDraft:\n" + (d?.result || ''),
+                    mode: 'studio_lite',
+                    maxOutputTokens: 700
+                });
+                const fixed = parseJsonObjectFromText(fix?.result || '') || {};
+                variants = Array.isArray(fixed?.variants) ? fixed.variants.map((x) => normalizeLiteTikTokFinal(String(x || ''), inputs)).filter(Boolean).slice(0, 3) : variants;
+            }
+
+            const outEl = document.getElementById('liteTTOutput');
+            if (outEl) {
+                outEl.innerText = variants.map((v, i) => `Option ${i + 1}\n${v}`).join('\n\n---\n\n').trim();
+            }
+            const resultArea = document.getElementById('liteResultArea');
+            const fbBlock = document.getElementById('liteFBBlock');
+            const ttBlock = document.getElementById('liteTTBlock');
+            if (resultArea && fbBlock && ttBlock) {
+                fbBlock.classList.add('hidden');
+                ttBlock.classList.remove('hidden');
+                resultArea.classList.remove('hidden');
+            }
+
+            if (userId && variants.length) {
+                const combined = variants.map((v, i) => `Option ${i + 1}\n${v}`).join('\n\n---\n\n').trim();
+                await saveToRecents('lite_variants_tiktok', combined, inputs.topicGuideline || 'Lite TikTok Variants');
+            }
+
+            window.showToast('3 TikTok variants ready. Choose and post.');
+            return variants;
+        } catch (e) {
+            console.error(e);
+            window.showToast(getApiErrorMessage(e, 'TikTok variants failed'));
             return null;
         } finally {
             setButtonBusy(btn, false);
