@@ -19,9 +19,25 @@
             font-family: 'Padauk', sans-serif;
         }
     </style>
-  <script type="module" crossorigin src="/premium-marketing/assets/index-Ci1wSa1F.js"></script>
 </head>
 <body>
     <div id="root"></div>
+    <script>
+      (async function bootstrapPremiumMarketing() {
+        try {
+          const res = await fetch('/api/google-key', { cache: 'no-store' });
+          const data = await res.json();
+          if (res.ok && data && data.apiKey) {
+            window.__GEMINI_API_KEY__ = data.apiKey;
+          }
+        } catch (_) {}
+
+        const s = document.createElement('script');
+        s.type = 'module';
+        s.crossOrigin = 'anonymous';
+        s.src = '/premium-marketing/assets/index-Ci1wSa1F.js';
+        document.body.appendChild(s);
+      })();
+    </script>
 </body>
 </html>

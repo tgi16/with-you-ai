@@ -456,9 +456,8 @@ button { transition: all 0.2s ease; }
             <div class="text-[10px] text-slate-400 bg-slate-800/50 border border-slate-700 px-3 py-1 rounded-full">Today's Direction</div>
         </div>
 
-        <div class="shrink-0 grid grid-cols-3 gap-2">
+        <div class="shrink-0 grid grid-cols-2 gap-2">
             <button id="managerModeChatBtn" onclick="window.setManagerMode('chat')" class="manager-mode-btn bg-slate-800 border border-slate-700 text-slate-200 font-bold py-2.5 rounded-lg text-xs transition">Assistant Chat</button>
-            <button id="managerModeMasterBtn" onclick="window.setManagerMode('master')" class="manager-mode-btn bg-slate-900 border border-slate-700 text-slate-300 font-bold py-2.5 rounded-lg text-xs transition">Marketing Master</button>
             <button id="managerModePremiumBtn" onclick="window.setManagerMode('premium')" class="manager-mode-btn bg-slate-900 border border-slate-700 text-slate-300 font-bold py-2.5 rounded-lg text-xs transition">Premium Marketing</button>
         </div>
 
@@ -3463,21 +3462,16 @@ Return the pinned comment text only (no labels).
     };
 
     window.setManagerMode = function(mode = 'chat') {
-        const validModes = new Set(['chat', 'master', 'premium']);
+        const validModes = new Set(['chat', 'premium']);
         const nextMode = validModes.has(mode) ? mode : 'chat';
         const chatWrap = document.getElementById('managerChatMode');
         const masterWrap = document.getElementById('managerMasterMode');
         const premiumWrap = document.getElementById('managerPremiumMode');
         const chatBtn = document.getElementById('managerModeChatBtn');
-        const masterBtn = document.getElementById('managerModeMasterBtn');
         const premiumBtn = document.getElementById('managerModePremiumBtn');
-        if (!chatWrap || !masterWrap || !premiumWrap || !chatBtn || !masterBtn || !premiumBtn) return;
+        if (!chatWrap || !masterWrap || !premiumWrap || !chatBtn || !premiumBtn) return;
 
-        if (nextMode === 'master') {
-            chatWrap.classList.add('hidden');
-            masterWrap.classList.remove('hidden');
-            premiumWrap.classList.add('hidden');
-        } else if (nextMode === 'premium') {
+        if (nextMode === 'premium') {
             chatWrap.classList.add('hidden');
             masterWrap.classList.add('hidden');
             premiumWrap.classList.remove('hidden');
@@ -3488,7 +3482,6 @@ Return the pinned comment text only (no labels).
             premiumWrap.classList.add('hidden');
         }
         styleManagerModeBtn(chatBtn, nextMode === 'chat');
-        styleManagerModeBtn(masterBtn, nextMode === 'master');
         styleManagerModeBtn(premiumBtn, nextMode === 'premium');
         localStorage.setItem('manager:mode', nextMode);
     };
