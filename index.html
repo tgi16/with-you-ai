@@ -3416,7 +3416,178 @@ Return the pinned comment text only (no labels).
             const btn = document.querySelector(`.hook-angle-btn[onclick*="setLiteHookAngle('${val}'"]`);
             window.setLiteHookAngle(val, btn || undefined);
         }
+        if (viewId === 'manager' && typeof window.setManagerMode === 'function') {
+            const savedMode = (localStorage.getItem('manager:mode') || 'chat').toString().trim();
+            window.setManagerMode(savedMode);
+        }
     }
+
+    const getManagerJson = async (prompt, fallback = {}) => {
+        const first = await callGenerateLiteAPI({ userMessage: prompt, maxOutputTokens: 900 });
+        let payload = parseJsonObjectFromText(first?.result || '') || {};
+        if (Object.keys(payload).length) return payload;
+        try {
+            const schema = JSON.stringify(fallback || {}, null, 2);
+            const fix = await callGenerateLiteAPI({
+                userMessage: `Return STRICT JSON only.\nSchema:\n${schema}\n\nDraft:\n${first?.result || ''}`,
+                maxOutputTokens: 700
+            });
+            payload = parseJsonObjectFromText(fix?.result || '') || {};
+        } catch (_) {}
+        return payload;
+    };
+
+    const styleManagerModeBtn = (btn, active) => {
+        if (!btn) return;
+        btn.classList.toggle('bg-slate-800', active);
+        btn.classList.toggle('text-slate-200', active);
+        btn.classList.toggle('bg-slate-900', !active);
+        btn.classList.toggle('text-slate-300', !active);
+        btn.classList.toggle('border-sky-500/60', active);
+    };
+
+    window.setManagerMode = function(mode = 'chat') {
+        const nextMode = mode === 'master' ? 'master' : 'chat';
+        const chatWrap = document.getElementById('managerChatMode');
+        const masterWrap = document.getElementById('managerMasterMode');
+        const chatBtn = document.getElementById('managerModeChatBtn');
+        const masterBtn = document.getElementById('managerModeMasterBtn');
+        if (!chatWrap || !masterWrap || !chatBtn || !masterBtn) return;
+
+        if (nextMode === 'master') {
+            chatWrap.classList.add('hidden');
+            masterWrap.classList.remove('hidden');
+        } else {
+            chatWrap.classList.remove('hidden');
+            masterWrap.classList.add('hidden');
+        }
+        styleManagerModeBtn(chatBtn, nextMode === 'chat');
+        styleManagerModeBtn(masterBtn, nextMode === 'master');
+        localStorage.setItem('manager:mode', nextMode);
+    };
+
+    const appendManagerOutput = (title, body) => {
+        const outputWrap = document.getElementById('managerMasterResultWrap');
+        const outputEl = document.getElementById('managerMasterOutput');
+        if (!outputWrap || !outputEl) return '';
+        const text = `${title}\n\n${String(body || '').trim()}`.trim();
+        outputEl.innerText = text;
+        outputWrap.classList.remove('hidden');
+        return text;
+    };
+
+    window.managerGenerateStrategy = async function() {
+        const btn = document.getElementById('managerStrategyBtn');
+        const goal = (document.getElementById('managerGoalInput')?.value || '').trim();
+        if (!goal) return window.showToast('Goal ထည့်ပြီး Generate လုပ်ပါ။');
+        setButtonBusy(btn, true, 'Generating...');
+        try {
+            const payload = await getManagerJson(
+                `You are a Myanmar photo studio growth strategist.
+Goal: ${goal}
+Target market: Taunggyi (focus: indoor pre-wedding), with wedding day and ceremony coverage.
+
+Return STRICT JSON only:
+{"title":"...","plan":"7-10 short actionable bullets in Burmese","kpi":"3 short KPI lines"}
+
+Rules:
+- Burmese only
+- practical and execution-focused
+- no intro or meta text`,
+                { title: 'Strategy Plan', plan: '', kpi: '' }
+            );
+            const text = appendManagerOutput(
+                payload.title || 'Strategy Plan',
+                `${payload.plan || 'Plan မရခဲ့ပါ။ ထပ်စမ်းပါ။'}\n\nKPI\n${payload.kpi || '- Leads\n- DMs\n- Bookings'}`
+            );
+            if (text) await saveToRecents('manager_strategy', text, goal);
+            window.setManagerMode('master');
+        } catch (e) {
+            console.error(e);
+            window.showToast(getApiErrorMessage(e, 'Strategy generate failed'));
+        } finally {
+            setButtonBusy(btn, false);
+        }
+    };
+
+    window.managerGenerateSalesScript = async function() {
+        const btn = document.getElementById('managerSalesBtn');
+        const scenario = (document.getElementById('managerSalesType')?.value || 'new').trim();
+        const map = {
+            new: 'New Inquiry',
+            price: 'Price Objection',
+            followup: 'Follow-up',
+            close: 'Closing'
+        };
+        setButtonBusy(btn, true, 'Generating...');
+        try {
+            const payload = await getManagerJson(
+                `Write Myanmar sales DM script for a photo studio.
+Scenario: ${map[scenario] || 'New Inquiry'}
+Market: Taunggyi, service focus indoor pre-wedding.
+
+Return STRICT JSON only:
+{"title":"...","reply":"main reply (3-5 lines)","followup":"one short follow-up line","cta":"one soft CTA line"}
+
+Rules:
+- Burmese only
+- human tone, not robotic
+- no emojis`,
+                { title: 'Sales Script', reply: '', followup: '', cta: '' }
+            );
+            const text = appendManagerOutput(
+                payload.title || `Sales Script (${map[scenario] || 'New Inquiry'})`,
+                `${payload.reply || 'Reply မရခဲ့ပါ။'}\n\nFollow-up\n${payload.followup || '-'}\n\nCTA\n${payload.cta || '-'}`
+            );
+            if (text) await saveToRecents('manager_sales_script', text, map[scenario] || 'New Inquiry');
+            window.setManagerMode('master');
+        } catch (e) {
+            console.error(e);
+            window.showToast(getApiErrorMessage(e, 'Sales script failed'));
+        } finally {
+            setButtonBusy(btn, false);
+        }
+    };
+
+    window.managerGenerateCampaignPlan = async function() {
+        const btn = document.getElementById('managerCampaignBtn');
+        const campaignType = (document.getElementById('managerCampaignType')?.value || 'pre_wedding').trim();
+        const campaignMap = {
+            pre_wedding: { label: 'Indoor Pre-Wedding', cta: 'BOOK' },
+            wedding_day: { label: 'Wedding Day', cta: 'BOOK' },
+            ceremony: { label: 'Ceremony / အလှူပွဲ / ဆွမ်းကပ်နေ့', cta: 'INFO' }
+        };
+        const selected = campaignMap[campaignType] || campaignMap.pre_wedding;
+        setButtonBusy(btn, true, 'Generating...');
+        try {
+            const payload = await getManagerJson(
+                `Build a short social campaign plan in Burmese.
+Campaign: ${selected.label}
+Location: Taunggyi
+CTA keyword must be: ${selected.cta}
+
+Return STRICT JSON only:
+{"title":"...","flow":"day-by-day short plan (4-7 lines)","caption":"one ready-to-post short caption with exactly one CTA DM '${selected.cta}'"}
+
+Rules:
+- Burmese only
+- practical and conversion-focused
+- no emojis`,
+                { title: 'Campaign Plan', flow: '', caption: '' }
+            );
+            const text = appendManagerOutput(
+                payload.title || `${selected.label} Campaign Plan`,
+                `${payload.flow || 'Flow မရခဲ့ပါ။'}\n\nSample Caption\n${payload.caption || '-'}`
+            );
+            if (text) await saveToRecents('manager_campaign_plan', text, selected.label);
+            window.setManagerMode('master');
+        } catch (e) {
+            console.error(e);
+            window.showToast(getApiErrorMessage(e, 'Campaign plan failed'));
+        } finally {
+            setButtonBusy(btn, false);
+        }
+    };
 
     // --- HTML STRINGS ---
     function getTikTokHTML() {
