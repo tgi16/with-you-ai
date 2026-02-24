@@ -455,6 +455,50 @@ button { transition: all 0.2s ease; }
             <h2 class="text-xl md:text-3xl font-bold text-sky-300 flex items-center gap-3"><i class="ph ph-robot"></i> Strategy Partner</h2>
             <div class="text-[10px] text-slate-400 bg-slate-800/50 border border-slate-700 px-3 py-1 rounded-full">Today's Direction</div>
         </div>
+
+        <div class="shrink-0 grid grid-cols-2 gap-2">
+            <button id="managerModeChatBtn" onclick="window.setManagerMode('chat')" class="manager-mode-btn bg-slate-800 border border-slate-700 text-slate-200 font-bold py-2.5 rounded-lg text-xs transition">Assistant Chat</button>
+            <button id="managerModeMasterBtn" onclick="window.setManagerMode('master')" class="manager-mode-btn bg-slate-900 border border-slate-700 text-slate-300 font-bold py-2.5 rounded-lg text-xs transition">Marketing Master</button>
+        </div>
+
+        <div id="managerMasterMode" class="hidden flex-1 overflow-y-auto space-y-4 p-1 custom-scroll">
+            <div class="glass-panel p-4 rounded-xl border border-sky-500/20 space-y-3">
+                <div class="text-xs font-bold text-sky-300 uppercase">Strategy Planner</div>
+                <textarea id="managerGoalInput" rows="3" placeholder="ဥပမာ - လာမယ့် ၃ လအတွင်း indoor pre-wedding booking တိုးချင်တယ်..." class="w-full bg-slate-900/60 border border-slate-700 rounded-lg p-3 text-sm text-white resize-none"></textarea>
+                <button id="managerStrategyBtn" onclick="window.managerGenerateStrategy()" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-2.5 rounded-lg text-xs transition">Generate Strategy</button>
+            </div>
+
+            <div class="glass-panel p-4 rounded-xl border border-indigo-500/20 space-y-3">
+                <div class="text-xs font-bold text-indigo-300 uppercase">Sales Script Manager</div>
+                <select id="managerSalesType" class="w-full bg-slate-900/60 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+                    <option value="new">New Inquiry</option>
+                    <option value="price">Price Objection</option>
+                    <option value="followup">Follow-up</option>
+                    <option value="close">Closing</option>
+                </select>
+                <button id="managerSalesBtn" onclick="window.managerGenerateSalesScript()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-lg text-xs transition">Generate Sales Script</button>
+            </div>
+
+            <div class="glass-panel p-4 rounded-xl border border-emerald-500/20 space-y-3">
+                <div class="text-xs font-bold text-emerald-300 uppercase">Campaign Planner</div>
+                <select id="managerCampaignType" class="w-full bg-slate-900/60 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+                    <option value="pre_wedding">Pre-Wedding Indoor</option>
+                    <option value="wedding_day">Wedding Day</option>
+                    <option value="ceremony">Ceremony / အလှူပွဲ</option>
+                </select>
+                <button id="managerCampaignBtn" onclick="window.managerGenerateCampaignPlan()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-lg text-xs transition">Generate Campaign Plan</button>
+            </div>
+
+            <div id="managerMasterResultWrap" class="hidden glass-panel p-4 rounded-xl border border-slate-600/50">
+                <div class="flex justify-between items-center mb-2">
+                    <div class="text-xs font-bold text-amber-300 uppercase">Marketing Master Output</div>
+                    <button onclick="window.copyText('managerMasterOutput')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded border border-slate-600 text-white transition">Copy</button>
+                </div>
+                <div id="managerMasterOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed"></div>
+            </div>
+        </div>
+
+        <div id="managerChatMode" class="contents">
         
         <!-- Chat Area -->
         <div id="chatContainer" class="flex-1 overflow-y-auto space-y-4 p-2 custom-scroll">
@@ -487,6 +531,7 @@ button { transition: all 0.2s ease; }
                     <i class="ph ph-paper-plane-right-fill text-xl"></i>
                 </button>
             </div>
+        </div>
         </div>
     </div>
   </template>
