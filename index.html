@@ -456,9 +456,10 @@ button { transition: all 0.2s ease; }
             <div class="text-[10px] text-slate-400 bg-slate-800/50 border border-slate-700 px-3 py-1 rounded-full">Today's Direction</div>
         </div>
 
-        <div class="shrink-0 grid grid-cols-2 gap-2">
+        <div class="shrink-0 grid grid-cols-3 gap-2">
             <button id="managerModeChatBtn" onclick="window.setManagerMode('chat')" class="manager-mode-btn bg-slate-800 border border-slate-700 text-slate-200 font-bold py-2.5 rounded-lg text-xs transition">Assistant Chat</button>
             <button id="managerModeMasterBtn" onclick="window.setManagerMode('master')" class="manager-mode-btn bg-slate-900 border border-slate-700 text-slate-300 font-bold py-2.5 rounded-lg text-xs transition">Marketing Master</button>
+            <button id="managerModePremiumBtn" onclick="window.setManagerMode('premium')" class="manager-mode-btn bg-slate-900 border border-slate-700 text-slate-300 font-bold py-2.5 rounded-lg text-xs transition">Premium Marketing</button>
         </div>
 
         <div id="managerMasterMode" class="hidden flex-1 overflow-y-auto space-y-4 p-1 custom-scroll">
@@ -495,6 +496,12 @@ button { transition: all 0.2s ease; }
                     <button onclick="window.copyText('managerMasterOutput')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded border border-slate-600 text-white transition">Copy</button>
                 </div>
                 <div id="managerMasterOutput" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed"></div>
+            </div>
+        </div>
+
+        <div id="managerPremiumMode" class="hidden flex-1 min-h-0">
+            <div class="glass-panel rounded-2xl border border-violet-500/20 p-2 h-full">
+                <iframe id="premiumMarketingFrame" title="Premium Marketing" src="about:blank" class="w-full h-[72vh] rounded-xl border border-slate-700/60 bg-slate-950"></iframe>
             </div>
         </div>
 
@@ -3446,23 +3453,43 @@ Return the pinned comment text only (no labels).
         btn.classList.toggle('border-sky-500/60', active);
     };
 
+    const ensurePremiumMarketingFrame = () => {
+        const frame = document.getElementById('premiumMarketingFrame');
+        if (!frame) return;
+        if (!frame.dataset.loaded) {
+            frame.src = '/premium-marketing/index.html';
+            frame.dataset.loaded = '1';
+        }
+    };
+
     window.setManagerMode = function(mode = 'chat') {
-        const nextMode = mode === 'master' ? 'master' : 'chat';
+        const validModes = new Set(['chat', 'master', 'premium']);
+        const nextMode = validModes.has(mode) ? mode : 'chat';
         const chatWrap = document.getElementById('managerChatMode');
         const masterWrap = document.getElementById('managerMasterMode');
+        const premiumWrap = document.getElementById('managerPremiumMode');
         const chatBtn = document.getElementById('managerModeChatBtn');
         const masterBtn = document.getElementById('managerModeMasterBtn');
-        if (!chatWrap || !masterWrap || !chatBtn || !masterBtn) return;
+        const premiumBtn = document.getElementById('managerModePremiumBtn');
+        if (!chatWrap || !masterWrap || !premiumWrap || !chatBtn || !masterBtn || !premiumBtn) return;
 
         if (nextMode === 'master') {
             chatWrap.classList.add('hidden');
             masterWrap.classList.remove('hidden');
+            premiumWrap.classList.add('hidden');
+        } else if (nextMode === 'premium') {
+            chatWrap.classList.add('hidden');
+            masterWrap.classList.add('hidden');
+            premiumWrap.classList.remove('hidden');
+            ensurePremiumMarketingFrame();
         } else {
             chatWrap.classList.remove('hidden');
             masterWrap.classList.add('hidden');
+            premiumWrap.classList.add('hidden');
         }
         styleManagerModeBtn(chatBtn, nextMode === 'chat');
         styleManagerModeBtn(masterBtn, nextMode === 'master');
+        styleManagerModeBtn(premiumBtn, nextMode === 'premium');
         localStorage.setItem('manager:mode', nextMode);
     };
 
