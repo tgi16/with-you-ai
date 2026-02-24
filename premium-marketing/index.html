@@ -24,13 +24,28 @@
     <div id="root"></div>
     <script>
       (async function bootstrapPremiumMarketing() {
-        try {
-          const res = await fetch('/api/google-key', { cache: 'no-store' });
-          const data = await res.json();
-          if (res.ok && data && data.apiKey) {
-            window.__GEMINI_API_KEY__ = data.apiKey;
+        const originalFetch = window.fetch.bind(window);
+        window.fetch = async (input, init) => {
+          const rawUrl = typeof input === 'string' ? input : (input && input.url) ? input.url : '';
+          if (rawUrl.includes('generativelanguage.googleapis.com/')) {
+            try {
+              const parsed = new URL(rawUrl);
+              parsed.searchParams.delete('key');
+              const target = parsed.pathname + (parsed.search ? parsed.search : '');
+              const proxyUrl = '/api/gemini-proxy?target=' + encodeURIComponent(target);
+
+              const proxyInit = { ...(init || {}) };
+              if (!proxyInit.method && typeof input !== 'string' && input && input.method) {
+                proxyInit.method = input.method;
+              }
+              if (!proxyInit.body && typeof input !== 'string' && input && input.body) {
+                proxyInit.body = input.body;
+              }
+              return originalFetch(proxyUrl, proxyInit);
+            } catch (_) {}
           }
-        } catch (_) {}
+          return originalFetch(input, init);
+        };
 
         const s = document.createElement('script');
         s.type = 'module';
