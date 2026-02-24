@@ -24,6 +24,23 @@
     <div id="root"></div>
     <script>
       (async function bootstrapPremiumMarketing() {
+        const parentOrigin = window.location.origin;
+        window.__PREMIUM_BRAND_CONTEXT__ = '';
+        window.__PREMIUM_BRAND_PROFILE__ = {};
+
+        window.addEventListener('message', (event) => {
+          if (event.origin !== parentOrigin) return;
+          const msg = event.data || {};
+          if (msg.type === 'premium_brand_context') {
+            window.__PREMIUM_BRAND_CONTEXT__ = String(msg.context || '');
+            window.__PREMIUM_BRAND_PROFILE__ = msg.profile || {};
+          }
+        });
+
+        try {
+          window.parent.postMessage({ type: 'premium_request_brand' }, parentOrigin);
+        } catch (_) {}
+
         const originalFetch = window.fetch.bind(window);
         window.fetch = async (input, init) => {
           const rawUrl = typeof input === 'string' ? input : (input && input.url) ? input.url : '';
@@ -41,7 +58,47 @@
               if (!proxyInit.body && typeof input !== 'string' && input && input.body) {
                 proxyInit.body = input.body;
               }
-              return originalFetch(proxyUrl, proxyInit);
+              let inputText = '';
+              const context = String(window.__PREMIUM_BRAND_CONTEXT__ || '').trim();
+              if (typeof proxyInit.body === 'string' && proxyInit.body) {
+                try {
+                  const payload = JSON.parse(proxyInit.body);
+                  if (context && payload && Array.isArray(payload.contents)) {
+                    payload.contents = payload.contents.map((c) => {
+                      if (!c || !Array.isArray(c.parts)) return c;
+                      const parts = c.parts.map((p) => {
+                        if (p && typeof p.text === 'string') {
+                          inputText += p.text + '\n';
+                          return { ...p, text: `Brand Context:\n${context}\n\nUser Request:\n${p.text}` };
+                        }
+                        return p;
+                      });
+                      return { ...c, parts };
+                    });
+                  }
+                  proxyInit.body = JSON.stringify(payload);
+                } catch (_) {}
+              }
+
+              const resp = await originalFetch(proxyUrl, proxyInit);
+              try {
+                const cloned = resp.clone();
+                const data = await cloned.json();
+                const outputText = String(
+                  data?.candidates?.[0]?.content?.parts?.map((p) => p?.text || '').join('\n') ||
+                  data?.text ||
+                  ''
+                );
+                const totalTokens = Number(data?.usageMetadata?.totalTokenCount || 0);
+                window.parent.postMessage({
+                  type: 'premium_usage',
+                  inputText,
+                  outputText,
+                  totalTokens,
+                  requestCount: 1
+                }, parentOrigin);
+              } catch (_) {}
+              return resp;
             } catch (_) {}
           }
           return originalFetch(input, init);

@@ -3458,6 +3458,9 @@ Return the pinned comment text only (no labels).
         if (!frame.dataset.loaded) {
             frame.src = '/premium-marketing/index.html';
             frame.dataset.loaded = '1';
+            frame.addEventListener('load', () => {
+                postPremiumBridgeData();
+            }, { once: false });
         }
     };
 
@@ -3476,6 +3479,7 @@ Return the pinned comment text only (no labels).
             masterWrap.classList.add('hidden');
             premiumWrap.classList.remove('hidden');
             ensurePremiumMarketingFrame();
+            postPremiumBridgeData();
         } else {
             chatWrap.classList.remove('hidden');
             masterWrap.classList.add('hidden');
@@ -3494,6 +3498,51 @@ Return the pinned comment text only (no labels).
         outputEl.innerText = text;
         outputWrap.classList.remove('hidden');
         return text;
+    };
+
+    const getPremiumBrandPayload = async () => {
+        let brand = {};
+        if (userId) {
+            try {
+                const s = await getDoc(doc(db, 'artifacts', appId, 'users', userId, 'config', 'brand'));
+                if (s.exists()) brand = s.data() || {};
+            } catch (e) {
+                console.warn('Premium brand load skipped:', e?.message || e);
+            }
+        }
+
+        const profile = {
+            style: (brand.brandStyle || 'Premium, Cinematic, Emotional').toString().trim(),
+            targetClient: (brand.brandClient || 'Pre-wedding couples in Taunggyi').toString().trim(),
+            packages: (brand.brandPackages || '').toString().trim(),
+            phone: (brand.brandPhone || '').toString().trim(),
+            viber: (brand.brandViber || '').toString().trim(),
+            fb: (brand.brandFB || '').toString().trim(),
+            tt: (brand.brandTT || '').toString().trim(),
+            address: (brand.brandAddr || 'Taunggyi').toString().trim()
+        };
+
+        const context = [
+            `Studio: With You Photo Studio`,
+            `Location focus: ${profile.address || 'Taunggyi'}`,
+            `Brand style: ${profile.style}`,
+            `Target client: ${profile.targetClient}`,
+            `Packages: ${profile.packages || 'Use latest studio packages only.'}`,
+            `Contact: Phone ${profile.phone || '-'}, Viber ${profile.viber || '-'}`
+        ].join('\n');
+
+        return { profile, context };
+    };
+
+    const postPremiumBridgeData = async () => {
+        const frame = document.getElementById('premiumMarketingFrame');
+        if (!frame || !frame.contentWindow) return;
+        const payload = await getPremiumBrandPayload();
+        frame.contentWindow.postMessage({
+            type: 'premium_brand_context',
+            profile: payload.profile,
+            context: payload.context
+        }, window.location.origin);
     };
 
     window.managerGenerateStrategy = async function() {
@@ -3653,6 +3702,7 @@ Rules:
         try { 
             await setDoc(doc(db, 'artifacts', appId, 'users', userId, 'config', 'brand'), data, {merge: true}); 
             if(statusEl) { statusEl.innerText = "Cloud Saved ✅"; statusEl.classList.add('text-green-400'); }
+            await postPremiumBridgeData();
             window.showToast("Cloud Save Success!"); 
         } catch (e) { 
             console.error(e); 
@@ -4736,6 +4786,39 @@ ${cleanedResult}`
         a.download = n;
         a.click();
     };
+
+    window.addEventListener('message', async (event) => {
+        if (event.origin !== window.location.origin) return;
+        const msg = event.data || {};
+        if (!msg || typeof msg !== 'object') return;
+
+        if (msg.type === 'premium_request_brand') {
+            await postPremiumBridgeData();
+            return;
+        }
+
+        if (msg.type === 'premium_usage') {
+            if (!userId) return;
+            const inputText = String(msg.inputText || '');
+            const outputText = String(msg.outputText || '');
+            const totalTokens = Number(msg.totalTokens || 0);
+            const requestCount = Number(msg.requestCount || 1);
+            const estCost = totalTokens > 0
+                ? totalTokens * 0.000002
+                : ((inputText.length + outputText.length) * 0.000002);
+
+            try {
+                const usageRef = doc(db, 'artifacts', appId, 'users', userId, 'usage', 'stats');
+                await setDoc(usageRef, {
+                    totalCost: increment(estCost),
+                    totalRequests: increment(requestCount > 0 ? requestCount : 1),
+                    lastUpdated: Date.now()
+                }, { merge: true });
+            } catch (e) {
+                console.warn('Premium usage tracking failed:', e?.message || e);
+            }
+        }
+    });
 
     window.loadView('creative'); // Start with Creative
     setupDraftAutosave();
