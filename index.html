@@ -1208,6 +1208,7 @@ button { transition: all 0.2s ease; }
                 <option value="lite_variants_tiktok">Lite Variants (TikTok)</option>
                 <option value="lite_story_pack">Lite Story Pack</option>
                 <option value="lite_pinned_comment">Lite Pinned Comment</option>
+                <option value="premium_marketing">Premium Marketing</option>
                 <option value="mentor">Mentor</option>
                 <option value="pose">Pose</option>
                 <option value="ai_chat">AI Chat</option>
@@ -4816,6 +4817,19 @@ ${cleanedResult}`
                 }, { merge: true });
             } catch (e) {
                 console.warn('Premium usage tracking failed:', e?.message || e);
+            }
+            return;
+        }
+
+        if (msg.type === 'premium_history') {
+            if (!userId) return;
+            const content = String(msg.content || '').trim();
+            if (!content) return;
+            const topic = String(msg.topic || 'Premium Marketing Output').trim();
+            try {
+                await saveToRecents('premium_marketing', content, topic);
+            } catch (e) {
+                console.warn('Premium history save failed:', e?.message || e);
             }
         }
     });

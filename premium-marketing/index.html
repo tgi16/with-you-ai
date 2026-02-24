@@ -90,6 +90,7 @@
                   ''
                 );
                 const totalTokens = Number(data?.usageMetadata?.totalTokenCount || 0);
+                const topicLine = (inputText || '').split('\n').map((x) => x.trim()).filter(Boolean)[0] || 'Premium Marketing Output';
                 window.parent.postMessage({
                   type: 'premium_usage',
                   inputText,
@@ -97,6 +98,13 @@
                   totalTokens,
                   requestCount: 1
                 }, parentOrigin);
+                if (outputText) {
+                  window.parent.postMessage({
+                    type: 'premium_history',
+                    topic: topicLine.slice(0, 120),
+                    content: outputText
+                  }, parentOrigin);
+                }
               } catch (_) {}
               return resp;
             } catch (_) {}
