@@ -1017,6 +1017,18 @@ button { transition: all 0.2s ease; }
                         <input type="text" id="brandCanvaKit" placeholder="Canva Brand Kit Link" class="bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white">
                         <input type="text" id="brandCanvaTemplate" placeholder="Canva Template URL" class="bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white">
                     </div>
+                    <div class="mt-3 bg-slate-950/50 border border-slate-700 rounded-xl p-3 space-y-2">
+                        <div class="flex items-center justify-between gap-3">
+                            <div class="text-[11px] text-slate-300 font-bold uppercase tracking-wider">Canva OAuth Connection</div>
+                            <div id="canvaOAuthStatus" class="text-[11px] px-2 py-1 rounded border border-slate-700 text-slate-400">Not Connected</div>
+                        </div>
+                        <div id="canvaOAuthMeta" class="text-[11px] text-slate-500">Connect Canva to enable API-based template automation architecture.</div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+                            <button id="canvaConnectBtn" onclick="window.connectCanvaOAuth()" class="bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold py-2.5 rounded-lg transition">Connect Canva</button>
+                            <button onclick="window.refreshCanvaOAuthStatus()" class="bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold py-2.5 rounded-lg transition">Refresh Status</button>
+                            <button id="canvaDisconnectBtn" onclick="window.disconnectCanvaOAuth()" class="bg-slate-900 hover:bg-slate-800 border border-red-700 text-red-300 text-xs font-bold py-2.5 rounded-lg transition">Disconnect</button>
+                        </div>
+                    </div>
                     <input type="text" id="brandAddr" placeholder="Address (Taunggyi)" class="mt-3 w-full bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white">
                 </div>
                 <div class="pt-4 flex flex-col items-center gap-2">
@@ -1373,6 +1385,116 @@ button { transition: all 0.2s ease; }
 
         return '/api/publish';
     };
+
+    const getCanvaEndpoint = (path = '') => {
+        const fromWindow = (window.__API_BASE_URL || '').toString().trim();
+        const fromStorage = (localStorage.getItem('apiBaseUrl') || '').toString().trim();
+        const base = fromWindow || fromStorage;
+        const cleanPath = String(path || '').replace(/^\//, '');
+
+        if (base) {
+            return `${base.replace(/\/$/, '')}/api/canva/${cleanPath}`;
+        }
+
+        if (window.location.port === '5500' || window.location.port === '5501') {
+            return `${DEFAULT_DEV_API_BASE}/api/canva/${cleanPath}`;
+        }
+
+        return `/api/canva/${cleanPath}`;
+    };
+
+    const setCanvaOAuthUi = (state = {}) => {
+        const connected = state.connected === true;
+        const configured = state.configured !== false;
+        const statusEl = document.getElementById('canvaOAuthStatus');
+        const metaEl = document.getElementById('canvaOAuthMeta');
+        const connectBtn = document.getElementById('canvaConnectBtn');
+        const disconnectBtn = document.getElementById('canvaDisconnectBtn');
+
+        if (statusEl) {
+            if (!configured) {
+                statusEl.innerText = 'Not Configured';
+                statusEl.className = 'text-[11px] px-2 py-1 rounded border border-amber-700 text-amber-300';
+            } else if (connected) {
+                statusEl.innerText = 'Connected';
+                statusEl.className = 'text-[11px] px-2 py-1 rounded border border-emerald-700 text-emerald-300';
+            } else {
+                statusEl.innerText = 'Not Connected';
+                statusEl.className = 'text-[11px] px-2 py-1 rounded border border-slate-700 text-slate-400';
+            }
+        }
+
+        if (metaEl) {
+            if (!configured) {
+                metaEl.innerText = 'Server env missing for Canva OAuth (set CANVA_* vars in Vercel).';
+            } else if (connected) {
+                const exp = Number(state.expiresAt || 0);
+                const expText = exp ? new Date(exp).toLocaleString() : '-';
+                metaEl.innerText = `Token active. Expires: ${expText}`;
+            } else {
+                metaEl.innerText = 'Connect Canva to enable API-based template automation architecture.';
+            }
+        }
+        if (connectBtn) connectBtn.disabled = !configured;
+        if (disconnectBtn) disconnectBtn.disabled = !configured || !connected;
+    };
+
+    window.refreshCanvaOAuthStatus = async function() {
+        try {
+            const res = await fetch(getCanvaEndpoint('status'), { method: 'GET', credentials: 'include' });
+            const data = await res.json().catch(() => ({}));
+            setCanvaOAuthUi(data || {});
+            return data;
+        } catch (e) {
+            console.error('Canva status error', e);
+            setCanvaOAuthUi({ connected: false, configured: true });
+            return { connected: false, configured: true };
+        }
+    };
+
+    window.connectCanvaOAuth = async function() {
+        if (!requireAuth()) return;
+        try {
+            const returnTo = '/';
+            const url = `${getCanvaEndpoint('connect')}?uid=${encodeURIComponent(userId || '')}&returnTo=${encodeURIComponent(returnTo)}`;
+            const res = await fetch(url, { method: 'GET', credentials: 'include' });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok || !data?.authorizeUrl) throw new Error(data?.error || 'Failed to start Canva OAuth');
+            const popup = window.open(data.authorizeUrl, 'canva_oauth', 'width=640,height=760,noopener,noreferrer');
+            if (!popup) window.location.href = data.authorizeUrl;
+        } catch (e) {
+            console.error(e);
+            window.showToast(getApiErrorMessage(e, 'Canva connect failed'));
+        }
+    };
+
+    window.disconnectCanvaOAuth = async function() {
+        if (!requireAuth()) return;
+        try {
+            const res = await fetch(getCanvaEndpoint('disconnect'), {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: '{}'
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) throw new Error(data?.error || 'Disconnect failed');
+            await window.refreshCanvaOAuthStatus();
+            window.showToast('Canva disconnected');
+        } catch (e) {
+            console.error(e);
+            window.showToast(getApiErrorMessage(e, 'Disconnect failed'));
+        }
+    };
+
+    window.addEventListener('message', (event) => {
+        if (event.origin !== window.location.origin) return;
+        const payload = event.data || {};
+        if (payload.type !== 'canva_oauth_result') return;
+        window.refreshCanvaOAuthStatus();
+        if (payload.ok) window.showToast('Canva connected');
+        else if (payload.message) window.showToast(payload.message);
+    });
 
 
     const DRAFT_FIELDS = [
@@ -2136,12 +2258,14 @@ Return STRICT JSON array only:
             if(window.currentView === 'brand') loadBrandData();
             if(window.currentView === 'recent') renderHistoryList();
             window.loadUsage();
+            window.refreshCanvaOAuthStatus();
         } else {
             userId = null;
             if (unsubscribeUsage) { unsubscribeUsage(); unsubscribeUsage = null; }
             if (unsubscribeHistory) { unsubscribeHistory(); unsubscribeHistory = null; }
             overlay.classList.remove('hidden');
             setTimeout(() => overlay.classList.remove('opacity-0', 'pointer-events-none'), 50);
+            setCanvaOAuthUi({ connected: false, configured: true });
         }
     });
 // --- ASSISTANT SHORT ACTIONS (FIX MISSING FUNCTION) ---
@@ -3493,7 +3617,10 @@ Return the pinned comment text only (no labels).
             const tpl = document.getElementById(templateId);
             if (tpl) {
                 container.appendChild(tpl.content.cloneNode(true));
-                if (viewId === 'brand') loadBrandData();
+                if (viewId === 'brand') {
+                    loadBrandData();
+                    window.refreshCanvaOAuthStatus();
+                }
             }
         }
         window.currentView = viewId;
