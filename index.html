@@ -1217,7 +1217,19 @@ button { transition: all 0.2s ease; }
     let currentAnalysis = null;
     let chatHistory = [];
 
-    const getValue = (id) => { const el = document.getElementById(id); return el ? el.value : ""; };
+    const getScopedElement = (id) => {
+        const container = document.getElementById('content-container');
+        if (container) {
+            const inView = container.querySelector(`#${id}`);
+            if (inView) return inView;
+        }
+        return document.getElementById(id);
+    };
+
+    const getValue = (id) => {
+        const el = getScopedElement(id);
+        return el ? el.value : "";
+    };
 
     let unsubscribeUsage = null;
     let unsubscribeHistory = null;
@@ -1413,9 +1425,9 @@ button { transition: all 0.2s ease; }
     window.applyTemplatePreset = function() {
         const tpl = getValue('csTemplate') || 'default';
         const preset = TEMPLATE_PRESETS[tpl] || TEMPLATE_PRESETS.default;
-        const toneEl = document.getElementById('csTone');
-        const personaEl = document.getElementById('csPersona');
-        const ctaEl = document.getElementById('csCTA');
+        const toneEl = getScopedElement('csTone');
+        const personaEl = getScopedElement('csPersona');
+        const ctaEl = getScopedElement('csCTA');
         const guideEl = document.getElementById('csTemplateGuide');
         const focusEl = document.getElementById('crFocus');
         const fbEl = document.getElementById('crFB');
@@ -1569,7 +1581,7 @@ Return STRICT JSON array only:
                 ${item.reason ? `<div class="mt-2 text-xs text-slate-500 leading-relaxed">${escapeHtml(item.reason)}</div>` : ''}
             `;
             btn.addEventListener('click', async () => {
-                const topicEl = document.getElementById('csTopic');
+                const topicEl = getScopedElement('csTopic');
                 if (topicEl) {
                     topicEl.value = title;
                     topicEl.dispatchEvent(new Event('input', { bubbles: true }));
@@ -2109,9 +2121,9 @@ window.runAssistant = async function(type) {
         const isReligiousEvent = /(အလှူပွဲနေ့|ဆွမ်းကပ်နေ့|မင်္ဂလာဆွမ်းကပ်)/i.test(guide);
         inputs.ctaKeyword = isReligiousEvent ? 'INFO' : 'BOOK';
 
-        const csServiceEl = document.getElementById('csService');
-        const csToneEl = document.getElementById('csTone');
-        const csTopicEl = document.getElementById('csTopic');
+        const csServiceEl = getScopedElement('csService');
+        const csToneEl = getScopedElement('csTone');
+        const csTopicEl = getScopedElement('csTopic');
         const fbEl = document.getElementById('crFB');
         const ttEl = document.getElementById('crTT');
         if (csServiceEl) csServiceEl.value = serviceRaw;
