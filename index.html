@@ -363,6 +363,9 @@ button { transition: all 0.2s ease; }
                 <button onclick="window.loadView('creative')" id="nav-creative" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
                     <i class="ph ph-lightbulb text-lg text-orange-400"></i> Content & Ideas
                 </button>
+                <button onclick="window.loadView('premium')" id="nav-premium" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i class="ph ph-crown-simple text-lg text-fuchsia-400"></i> Premium Marketing
+                </button>
                 <button onclick="window.loadView('dm')" id="nav-dm" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
                     <i class="ph ph-chat-circle-text text-lg text-purple-400"></i> DM Auto-Detect
                 </button>
@@ -456,9 +459,8 @@ button { transition: all 0.2s ease; }
             <div class="text-[10px] text-slate-400 bg-slate-800/50 border border-slate-700 px-3 py-1 rounded-full">Today's Direction</div>
         </div>
 
-        <div class="shrink-0 grid grid-cols-2 gap-2">
-            <button id="managerModeChatBtn" onclick="window.setManagerMode('chat')" class="manager-mode-btn bg-slate-800 border border-slate-700 text-slate-200 font-bold py-2.5 rounded-lg text-xs transition">Assistant Chat</button>
-            <button id="managerModePremiumBtn" onclick="window.setManagerMode('premium')" class="manager-mode-btn bg-slate-900 border border-slate-700 text-slate-300 font-bold py-2.5 rounded-lg text-xs transition">Premium Marketing</button>
+        <div class="shrink-0">
+            <div class="text-xs text-slate-400 bg-slate-800/40 border border-slate-700 rounded-lg px-3 py-2">Assistant Chat</div>
         </div>
 
         <div id="managerMasterMode" class="hidden flex-1 overflow-y-auto space-y-4 p-1 custom-scroll">
@@ -498,12 +500,6 @@ button { transition: all 0.2s ease; }
             </div>
         </div>
 
-        <div id="managerPremiumMode" class="hidden flex-1 min-h-0">
-            <div class="glass-panel rounded-2xl border border-violet-500/20 p-2 h-full">
-                <iframe id="premiumMarketingFrame" title="Premium Marketing" src="about:blank" class="w-full h-[72vh] rounded-xl border border-slate-700/60 bg-slate-950"></iframe>
-            </div>
-        </div>
-
         <div id="managerChatMode" class="contents">
         
         <!-- Chat Area -->
@@ -538,6 +534,17 @@ button { transition: all 0.2s ease; }
                 </button>
             </div>
         </div>
+        </div>
+    </div>
+  </template>
+  <template id="tpl-premium">
+    <div class="animate-fade-in space-y-4 h-full flex flex-col">
+        <div class="flex items-center justify-between shrink-0">
+            <h2 class="text-xl md:text-3xl font-bold text-fuchsia-300 flex items-center gap-3"><i class="ph ph-crown-simple"></i> Premium Marketing</h2>
+            <div class="text-[10px] text-slate-400 bg-slate-800/50 border border-slate-700 px-3 py-1 rounded-full">Brand Synced</div>
+        </div>
+        <div class="glass-panel rounded-2xl border border-violet-500/20 p-2 h-full">
+            <iframe id="premiumMarketingFrame" title="Premium Marketing" src="about:blank" class="w-full h-[62vh] md:h-[76vh] rounded-xl border border-slate-700/60 bg-slate-950"></iframe>
         </div>
     </div>
   </template>
@@ -3390,6 +3397,10 @@ Return the pinned comment text only (no labels).
         const viewRenderers = {
             tiktok: () => { container.innerHTML = getTikTokHTML(); },
             pose: () => { container.innerHTML = getPoseHTML(); },
+            premium: () => {
+                const tpl = document.getElementById('tpl-premium');
+                if (tpl) container.appendChild(tpl.content.cloneNode(true));
+            },
             creative: () => {
                 const tpl = document.getElementById('tpl-creative');
                 if (tpl) container.appendChild(tpl.content.cloneNode(true));
@@ -3423,9 +3434,9 @@ Return the pinned comment text only (no labels).
             const btn = document.querySelector(`.hook-angle-btn[onclick*="setLiteHookAngle('${val}'"]`);
             window.setLiteHookAngle(val, btn || undefined);
         }
-        if (viewId === 'manager' && typeof window.setManagerMode === 'function') {
-            const savedMode = (localStorage.getItem('manager:mode') || 'chat').toString().trim();
-            window.setManagerMode(savedMode);
+        if (viewId === 'premium') {
+            ensurePremiumMarketingFrame();
+            postPremiumBridgeData();
         }
     }
 
@@ -4854,9 +4865,9 @@ window.askMaster = function(name, style) {
   </script>
   <div class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 z-50 flex justify-between items-end px-6 py-4 pb-6 shadow-2xl">
       
-      <button onclick="window.loadView('manager')" id="btm-manager" class="mobile-btm-nav flex flex-col items-center gap-1 text-slate-500 transition active:scale-90">
-          <i class="ph ph-robot text-2xl mb-0.5"></i>
-          <span class="text-[10px] font-bold">Partner</span>
+      <button onclick="window.loadView('premium')" id="btm-premium" class="mobile-btm-nav flex flex-col items-center gap-1 text-slate-500 transition active:scale-90">
+          <i class="ph ph-crown-simple text-2xl mb-0.5"></i>
+          <span class="text-[10px] font-bold">Premium</span>
       </button>
 
       <button onclick="window.loadView('mentor')" id="btm-mentor" class="mobile-btm-nav flex flex-col items-center gap-1 text-slate-500 transition active:scale-90">
