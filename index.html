@@ -366,9 +366,6 @@ button { transition: all 0.2s ease; }
                 <button onclick="window.loadView('premium')" id="nav-premium" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
                     <i class="ph ph-crown-simple text-lg text-fuchsia-400"></i> Premium Marketing
                 </button>
-                <button onclick="window.loadView('workflow')" id="nav-workflow" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                    <i class="ph ph-kanban text-lg text-cyan-300"></i> Workflow Hub
-                </button>
                 <button onclick="window.loadView('dm')" id="nav-dm" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
                     <i class="ph ph-chat-circle-text text-lg text-purple-400"></i> DM Auto-Detect
                 </button>
@@ -511,106 +508,6 @@ button { transition: all 0.2s ease; }
         </div>
         <div class="glass-panel rounded-2xl border border-violet-500/20 p-2 h-full">
             <iframe id="premiumMarketingFrame" title="Premium Marketing" src="about:blank" class="w-full h-[62vh] md:h-[76vh] rounded-xl border border-slate-700/60 bg-slate-950"></iframe>
-        </div>
-    </div>
-  </template>
-  <template id="tpl-workflow">
-    <div class="animate-fade-in space-y-5 h-full flex flex-col">
-        <div class="flex items-center justify-between shrink-0">
-            <h2 class="text-xl md:text-3xl font-bold text-cyan-300 flex items-center gap-3"><i class="ph ph-kanban"></i> Workflow Hub</h2>
-            <div class="text-[10px] text-slate-400 bg-slate-800/50 border border-slate-700 px-3 py-1 rounded-full">ChatGPT + Canva + CapCut</div>
-        </div>
-
-        <div class="glass-panel p-4 rounded-xl border border-emerald-500/20 space-y-3">
-            <div class="text-xs font-bold text-emerald-300 uppercase">Simple Mode (Recommended)</div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
-                <button onclick="window.workflowSimpleGenerate()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg text-xs transition">1) Generate + Copy Prompt</button>
-                <button onclick="window.workflowOpenTool('canva')" class="bg-slate-900 hover:bg-slate-800 border border-slate-700 text-white font-bold py-3 rounded-lg text-xs transition">2) Open Canva Template</button>
-                <button onclick="window.workflowOpenTool('capcut')" class="bg-slate-900 hover:bg-slate-800 border border-slate-700 text-white font-bold py-3 rounded-lg text-xs transition">3) Open CapCut</button>
-            </div>
-            <div class="text-[11px] text-slate-400">Canva auto-design create မဟုတ်သေးပါ။ Template link ကိုတန်းဖွင့်ပြီး copy workflow နဲ့မြန်မြန်လုပ်ပေးထားပါတယ်။</div>
-        </div>
-
-        <div class="flex items-center justify-between">
-            <div class="text-xs font-bold text-slate-400 uppercase">Advanced Mode</div>
-            <button onclick="window.workflowToggleAdvanced()" id="workflowAdvancedToggle" class="text-xs bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 px-3 py-1.5 rounded-lg transition">Show</button>
-        </div>
-
-        <div id="workflowAdvancedWrap" class="hidden space-y-5">
-        <div class="glass-panel p-4 rounded-xl border border-cyan-500/20 space-y-3">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Preset</label>
-                    <select id="workflowPreset" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
-                        <option value="pre_wedding_indoor">Pre-Wedding Indoor</option>
-                        <option value="wedding_day">Wedding Day</option>
-                        <option value="ceremony_info">အလှူပွဲ/ဆွမ်းကပ်နေ့</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Platform</label>
-                    <select id="workflowPlatform" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
-                        <option value="fb_tiktok">Facebook + TikTok</option>
-                        <option value="facebook">Facebook Only</option>
-                        <option value="tiktok">TikTok Only</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Goal</label>
-                    <select id="workflowGoal" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
-                        <option value="booking">Booking</option>
-                        <option value="awareness">Awareness</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">CTA</label>
-                    <input id="workflowCta" value="BOOK" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white" />
-                </div>
-            </div>
-            <textarea id="workflowTopic" rows="2" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm text-white resize-none" placeholder="Topic/Hook direction (ဥပမာ: Taunggyi indoor mood + emotion)"></textarea>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
-                <button onclick="window.workflowApplyPreset()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold py-2.5 rounded-lg text-xs transition">Apply Preset</button>
-                <button onclick="window.workflowBuildPack()" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-2.5 rounded-lg text-xs transition">Build Workflow Pack</button>
-                <button onclick="window.workflowSavePlan()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-lg text-xs transition">Save to Cloud History</button>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <button onclick="window.workflowOpenTool('chatgpt')" class="bg-slate-900 hover:bg-slate-800 border border-slate-700 text-white font-bold py-2.5 rounded-lg text-xs transition">Open ChatGPT</button>
-            <button onclick="window.workflowOpenTool('canva')" class="bg-slate-900 hover:bg-slate-800 border border-slate-700 text-white font-bold py-2.5 rounded-lg text-xs transition">Open Canva</button>
-            <button onclick="window.workflowOpenTool('capcut')" class="bg-slate-900 hover:bg-slate-800 border border-slate-700 text-white font-bold py-2.5 rounded-lg text-xs transition">Open CapCut</button>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-10">
-            <div class="glass-panel p-4 rounded-xl border border-slate-700/70 space-y-2">
-                <div class="flex items-center justify-between">
-                    <div class="text-xs font-bold text-cyan-300 uppercase">ChatGPT Prompt</div>
-                    <button onclick="window.workflowCopyField('workflowPromptOut')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded border border-slate-600">Copy</button>
-                </div>
-                <pre id="workflowPromptOut" class="whitespace-pre-wrap text-xs text-slate-200 leading-relaxed bg-slate-950/70 border border-slate-800 rounded-lg p-3"></pre>
-            </div>
-            <div class="glass-panel p-4 rounded-xl border border-slate-700/70 space-y-2">
-                <div class="flex items-center justify-between">
-                    <div class="text-xs font-bold text-emerald-300 uppercase">Canva Checklist</div>
-                    <button onclick="window.workflowCopyField('workflowCanvaOut')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded border border-slate-600">Copy</button>
-                </div>
-                <pre id="workflowCanvaOut" class="whitespace-pre-wrap text-xs text-slate-200 leading-relaxed bg-slate-950/70 border border-slate-800 rounded-lg p-3"></pre>
-            </div>
-            <div class="glass-panel p-4 rounded-xl border border-slate-700/70 space-y-2">
-                <div class="flex items-center justify-between">
-                    <div class="text-xs font-bold text-pink-300 uppercase">CapCut Edit Flow</div>
-                    <button onclick="window.workflowCopyField('workflowCapcutOut')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded border border-slate-600">Copy</button>
-                </div>
-                <pre id="workflowCapcutOut" class="whitespace-pre-wrap text-xs text-slate-200 leading-relaxed bg-slate-950/70 border border-slate-800 rounded-lg p-3"></pre>
-            </div>
-            <div class="glass-panel p-4 rounded-xl border border-slate-700/70 space-y-2">
-                <div class="flex items-center justify-between">
-                    <div class="text-xs font-bold text-amber-300 uppercase">Publish Checklist</div>
-                    <button onclick="window.workflowCopyField('workflowPublishOut')" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded border border-slate-600">Copy</button>
-                </div>
-                <pre id="workflowPublishOut" class="whitespace-pre-wrap text-xs text-slate-200 leading-relaxed bg-slate-950/70 border border-slate-800 rounded-lg p-3"></pre>
-            </div>
-        </div>
         </div>
     </div>
   </template>
@@ -1296,7 +1193,6 @@ button { transition: all 0.2s ease; }
                 <option value="lite_story_pack">Lite Story Pack</option>
                 <option value="lite_pinned_comment">Lite Pinned Comment</option>
                 <option value="premium_marketing">Premium Marketing</option>
-                <option value="workflow_plan">Workflow Hub</option>
                 <option value="mentor">Mentor</option>
                 <option value="pose">Pose</option>
                 <option value="ai_chat">AI Chat</option>
@@ -3594,11 +3490,6 @@ Return the pinned comment text only (no labels).
                 const tpl = document.getElementById('tpl-premium');
                 if (tpl) container.appendChild(tpl.content.cloneNode(true));
             },
-            workflow: () => {
-                const tpl = document.getElementById('tpl-workflow');
-                if (tpl) container.appendChild(tpl.content.cloneNode(true));
-                if (typeof window.workflowInit === 'function') window.workflowInit();
-            },
             creative: () => {
                 const tpl = document.getElementById('tpl-creative');
                 if (tpl) container.appendChild(tpl.content.cloneNode(true));
@@ -3696,188 +3587,6 @@ Return the pinned comment text only (no labels).
             profile: payload.profile,
             context: payload.context
         }, window.location.origin);
-    };
-
-    const WORKFLOW_PRESETS = {
-        pre_wedding_indoor: {
-            topic: 'Taunggyi indoor pre-wedding mood + emotion',
-            cta: 'BOOK',
-            goal: 'booking',
-            platform: 'fb_tiktok'
-        },
-        wedding_day: {
-            topic: 'Wedding day emotional highlights + family moments',
-            cta: 'BOOK',
-            goal: 'booking',
-            platform: 'fb_tiktok'
-        },
-        ceremony_info: {
-            topic: 'အလှူပွဲ/ဆွမ်းကပ်နေ့ respectful storytelling',
-            cta: 'INFO',
-            goal: 'awareness',
-            platform: 'facebook'
-        }
-    };
-
-    const workflowSetText = (id, text) => {
-        const el = document.getElementById(id);
-        if (el) el.innerText = String(text || '').trim();
-    };
-
-    window.workflowApplyPreset = function() {
-        const key = (getValue('workflowPreset') || 'pre_wedding_indoor').toString().trim();
-        const p = WORKFLOW_PRESETS[key] || WORKFLOW_PRESETS.pre_wedding_indoor;
-        const topicEl = document.getElementById('workflowTopic');
-        const ctaEl = document.getElementById('workflowCta');
-        const goalEl = document.getElementById('workflowGoal');
-        const platformEl = document.getElementById('workflowPlatform');
-        if (topicEl) topicEl.value = p.topic;
-        if (ctaEl) ctaEl.value = p.cta;
-        if (goalEl) goalEl.value = p.goal;
-        if (platformEl) platformEl.value = p.platform;
-        window.showToast('Workflow preset applied');
-        window.workflowBuildPack();
-    };
-
-    window.workflowBuildPack = async function() {
-        const preset = (getValue('workflowPreset') || 'pre_wedding_indoor').toString().trim();
-        const topic = (getValue('workflowTopic') || WORKFLOW_PRESETS[preset]?.topic || '').toString().trim();
-        const platform = (getValue('workflowPlatform') || 'fb_tiktok').toString().trim();
-        const goal = (getValue('workflowGoal') || 'booking').toString().trim();
-        const cta = ((getValue('workflowCta') || 'BOOK').toString().trim() || 'BOOK').toUpperCase();
-
-        let brand = {};
-        if (userId) {
-            try {
-                const snap = await getDoc(doc(db, 'artifacts', appId, 'users', userId, 'config', 'brand'));
-                if (snap.exists()) brand = snap.data() || {};
-            } catch (_) {}
-        }
-        const style = (brand.brandStyle || 'Premium, Cinematic').toString().trim();
-        const audience = (brand.brandClient || 'Taunggyi couples').toString().trim();
-        const contact = (brand.brandPhone || brand.brandViber || '09255521464').toString().trim();
-        const canvaKit = (brand.brandCanvaKit || '').toString().trim();
-        const canvaTemplate = (brand.brandCanvaTemplate || '').toString().trim();
-        window.__WORKFLOW_CANVA_KIT__ = canvaKit;
-        window.__WORKFLOW_CANVA_TEMPLATE__ = canvaTemplate;
-
-        const prompt = [
-            'You are a Myanmar social copywriter.',
-            `Service focus: ${preset === 'wedding_day' ? 'Wedding Day' : (preset === 'ceremony_info' ? 'Ceremony' : 'Indoor Pre-Wedding')}`,
-            `Topic: ${topic}`,
-            `Audience: ${audience}`,
-            `Brand style: ${style}`,
-            `Goal: ${goal}`,
-            `Platform: ${platform}`,
-            `Rules: Natural Burmese, 1 question, 1 CTA (DM '${cta}')`,
-            "Output JSON: {hook, caption, cta}"
-        ].join('\n');
-
-        const canva = [
-            '1) Create design in Canva',
-            '- FB feed: 1080x1350 (4:5)',
-            '- Reel/TikTok: 1080x1920 (9:16)',
-            '- Keep 1 headline + 1 CTA line only',
-            `- Use brand style: ${style}`,
-            `- Brand Kit: ${canvaKit || 'Not set in Brand Brain'}`,
-            `- Template URL: ${canvaTemplate || 'Not set in Brand Brain'}`,
-            '- Export: PNG (FB), MP4 cover if reel'
-        ].join('\n');
-
-        const capcut = [
-            '0-2s: Hook text on first strong frame',
-            '3-15s: Mood/emotion clips (3-5 cuts)',
-            '16-22s: Product value/BTS detail',
-            `Last 3s: CTA -> DM '${cta}'`,
-            'Add subtitles, keep under 25s'
-        ].join('\n');
-
-        const publish = [
-            'FB Post checklist:',
-            '- Use final caption from ChatGPT',
-            '- Add CTA once only',
-            '- Post time: 7-9 PM',
-            'After posting:',
-            '- Reply comments/DM within 30 mins',
-            `- Send quick reply with contact: ${contact}`
-        ].join('\n');
-
-        workflowSetText('workflowPromptOut', prompt);
-        workflowSetText('workflowCanvaOut', canva);
-        workflowSetText('workflowCapcutOut', capcut);
-        workflowSetText('workflowPublishOut', publish);
-        window.showToast('Workflow pack ready');
-    };
-
-    window.workflowCopyField = function(id) {
-        const text = document.getElementById(id)?.innerText || '';
-        if (!text.trim()) return window.showToast('Nothing to copy');
-        navigator.clipboard.writeText(text);
-        window.showToast('Copied');
-    };
-
-    window.workflowToggleAdvanced = function() {
-        const wrap = document.getElementById('workflowAdvancedWrap');
-        const btn = document.getElementById('workflowAdvancedToggle');
-        if (!wrap || !btn) return;
-        const willShow = wrap.classList.contains('hidden');
-        wrap.classList.toggle('hidden', !willShow);
-        btn.innerText = willShow ? 'Hide' : 'Show';
-    };
-
-    window.workflowSimpleGenerate = async function() {
-        await window.workflowBuildPack();
-        const prompt = document.getElementById('workflowPromptOut')?.innerText || '';
-        if (prompt.trim()) {
-            await navigator.clipboard.writeText(prompt);
-            window.showToast('Prompt copied. Paste in ChatGPT');
-        }
-    };
-
-    window.workflowSavePlan = async function() {
-        if (!requireAuth()) return;
-        const blocks = ['workflowPromptOut', 'workflowCanvaOut', 'workflowCapcutOut', 'workflowPublishOut']
-            .map((id) => document.getElementById(id)?.innerText || '')
-            .filter(Boolean);
-        if (!blocks.length) return window.showToast('Build pack first');
-        const topic = (getValue('workflowTopic') || 'Workflow Pack').toString().trim();
-        const combined = blocks.join('\n\n---\n\n');
-        await saveToRecents('workflow_plan', combined, topic);
-        if (typeof window.trackUsage === 'function') {
-            await window.trackUsage(topic, combined);
-        }
-        window.showToast('Workflow saved to Cloud History');
-    };
-
-    window.workflowOpenTool = function(tool) {
-        const canvaTemplate = (
-            document.getElementById('brandCanvaTemplate')?.value ||
-            window.__WORKFLOW_CANVA_TEMPLATE__ ||
-            ''
-        ).toString().trim();
-        const canvaKit = (
-            document.getElementById('brandCanvaKit')?.value ||
-            window.__WORKFLOW_CANVA_KIT__ ||
-            ''
-        ).toString().trim();
-        const map = {
-            chatgpt: 'https://chatgpt.com/',
-            canva: canvaTemplate || canvaKit || 'https://www.canva.com/',
-            capcut: 'https://www.capcut.com/'
-        };
-        const url = map[String(tool || '').toLowerCase()];
-        if (!url) return;
-        window.open(url, '_blank', 'noopener,noreferrer');
-    };
-
-    window.workflowInit = function() {
-        const out = document.getElementById('workflowPromptOut');
-        if (out && out.innerText.trim()) return;
-        window.workflowApplyPreset();
-        const wrap = document.getElementById('workflowAdvancedWrap');
-        const btn = document.getElementById('workflowAdvancedToggle');
-        if (wrap) wrap.classList.add('hidden');
-        if (btn) btn.innerText = 'Show';
     };
 
     // --- HTML STRINGS ---
